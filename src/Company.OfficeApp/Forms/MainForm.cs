@@ -65,6 +65,7 @@ public partial class MainForm : Form
         {
             AppPage.MyAccount => new MyAccountPage(),
             AppPage.UserAccounts => new UserAccountsPage(),
+            AppPage.Projects => new ProjectsPage(),
             _ => new PlaceholderPage(Access.Title(page)),   // real pages replace this as they're built
         };
 

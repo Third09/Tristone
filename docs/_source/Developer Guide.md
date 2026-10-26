@@ -485,7 +485,67 @@ Every create, edit, unlock, disable and enable writes an `audit_logs` row with t
 
 **Not tested yet:** the "last active Admin" protection. Your real Admin account is always a second active Admin, and it shouldn't be disabled just for a test. It will be tested on a separate test database before installation.
 
+# Chapter 13: Projects
+
+## 13.1 The table (script 002)
+
+The one shared list of company projects (DFD D1.1 / D5.3). Receipts, Inventory, Subcontractors and Website Admin will point to it. Added with the setup tool, which ran only the new script:
+
+```
+  skip  001_login_security.sql (already applied)
+  run   002_projects.sql
+```
+
+<!-- include: database/002_projects.sql -->
+
+Dates are `DATE` (no time) and map to C# `DateOnly`, so there are no time-zone surprises. Money is `NUMERIC(14,2)`, never floating point, so pesos add up exactly.
+
+## 13.2 The rules
+
+- **Admin only**, like the outline says. Other departments only pick projects from dropdowns.
+- Name, site and sector are required. The price can't be negative, and the target end date can't be before the start date (also enforced by the database).
+- **Completion date is automatic:** it's set to today when the status becomes *Done*, and cleared if the project is reopened. This gives "Finished in N days" and the website's completion date.
+- **Days:** "Day 45" while running, "Starts in 10 days" if the start is in the future, "Finished in N days" when done, "Cancelled".
+- **Revenue** = contract price for now (+ approved change orders when Receipts is built). **Expenses to date** = 0 for now; receipts, materials and subcontractor payouts are added as those parts are built. Payroll is company-wide overhead, not per project.
+- **Delete** is allowed only while nothing points to the project (`CountLinkedRecordsAsync`, which grows with Parts 3–5). After that, use *Cancelled* so history stays.
+- Every add, edit and delete goes to `audit_logs`. A shared helper, `AuditService`, now writes those rows for every page.
+
+<!-- include: src/Company.Shared/Models/Project.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/ProjectService.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/AuditService.cs -->
+
+## 13.3 Export to Excel
+
+`ExcelExport` (using the **ClosedXML** package, added to Company.OfficeApp) saves any list as `.xlsx`, with a bold header row, the header frozen, auto-width columns, and real numbers and dates (not text), so Excel can add them up. Every page's Export button will use it.
+
+<!-- include: src/Company.OfficeApp/Services/ExcelExport.cs -->
+
+## 13.4 Print Report
+
+`ProjectReport` draws a plain one-page report (details, days, revenue, expenses, profit, printed by and when) on a `PrintDocument`, shown in a print preview. To make a PDF, choose the **Microsoft Print to PDF** printer.
+
+<!-- include: src/Company.OfficeApp/Services/ProjectReport.cs -->
+
+## 13.5 The page
+
+<!-- include: src/Company.OfficeApp/Pages/ProjectsPage.cs -->
+
+## 13.6 Testing
+
+23 checks against the real database, with a temporary Admin and Employee and projects named `ZZTEST...` (all deleted afterwards):
+
+- An Employee can't add projects. Empty names, end before start, negative prices and unknown sectors are refused.
+- Saved values come back exactly. Days show "Day 45". Money shows as ₱2,500,000.00.
+- Marking *Done* sets today's completion date ("Finished in 45 days"), and reopening clears it. A future start shows "Starts in 10 days".
+- Search (including by client), the status filter and the sector filter work.
+- The Excel file has a header, the right number of rows, prices stored as numbers, and Yes/No for the website tick.
+- The print report renders one page.
+- The page's search, peso column, form loading and price limit (up to ₱9,999,999,999.99) work. Deleting an unused project works.
+- Edit history: Added, Edited (Done with its date), Edited (reopened), Deleted.
+
 # Coming next
 
-- Chapter 13: the next part of the app
+- Chapter 14: the next part of the app
 - Later chapters: each part of the app, then the installers (Phase 6)

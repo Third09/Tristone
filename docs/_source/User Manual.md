@@ -141,7 +141,29 @@ If you don't touch the keyboard or mouse for **5 minutes**, a *"Still there?"* m
 
 # 4. Dashboard *(coming soon)*
 
-# 5. Projects *(coming soon)*
+# 5. Projects
+
+**Admins only.** The company's one project list. Other departments pick projects from it.
+
+**Add a project**
+
+1. Click **Add Project**.
+2. Fill in the **name**, **site / location**, **client** (optional), **sector**, **contract price**, **start date**, and the **target end date** (tick the box to set one).
+3. Choose the **status**: Pending, Ongoing, Done or Cancelled.
+4. Tick **Show on website** if it should appear on the public website. You add photos and details later in Website Admin.
+5. Click **Save**.
+
+**Change a project:** click it in the list, change it, then click **Save**. When you set a project to **Done**, today's date is recorded as its completion date.
+
+**Summary** (worked out by the app): days so far (or how long it took), revenue, expenses to date, and profit to date. Expenses fill in as receipts, materials and subcontractor payments are recorded.
+
+| Button | Does |
+|---|---|
+| Export | Saves the list (as filtered) to an Excel file |
+| Print Report | A one-page report for the selected project. To make a PDF, choose "Microsoft Print to PDF". |
+| Delete | Only for projects with nothing recorded yet. Otherwise set them to **Cancelled**. |
+
+Use the **Search** box (name, site or client) and the **Status** and **Sector** filters to find projects.
 
 # 6. HR & Payroll *(coming soon)*
 

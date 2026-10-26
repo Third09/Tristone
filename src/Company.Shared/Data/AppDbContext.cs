@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<LoginLog> LoginLogs => Set<LoginLog>();
     public DbSet<PasswordRequest> PasswordRequests => Set<PasswordRequest>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Project> Projects => Set<Project>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -32,5 +33,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<LoginLog>().HasKey(l => l.LogId);
         modelBuilder.Entity<PasswordRequest>().HasKey(r => r.RequestId);
         modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditId);
+        modelBuilder.Entity<Project>().HasKey(p => p.ProjectId);
+        modelBuilder.Entity<Project>().Property(p => p.ContractPrice).HasColumnType("numeric(14,2)");
     }
 }

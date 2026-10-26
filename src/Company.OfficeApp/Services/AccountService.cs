@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Company.OfficeApp.Data;
 using Company.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -60,17 +59,9 @@ public static class AccountService
         user.UpdatedAt = DateTime.Now;
 
         // Edit history: the question only. The answer is never written anywhere readable.
-        db.AuditLogs.Add(new AuditLog
-        {
-            UserId = me.UserId,
-            TableName = "users",
-            RecordId = user.UserId,
-            RecordName = user.FullName,
-            Action = AuditActions.Edited,
-            OldValues = JsonSerializer.Serialize(new { security_question = oldQuestion }),
-            NewValues = JsonSerializer.Serialize(new { security_question = question, security_answer = "(changed)" }),
-            ChangedAt = DateTime.Now,
-        });
+        AuditService.Add(db, null, "users", user.UserId, user.FullName, AuditActions.Edited,
+            new { security_question = oldQuestion },
+            new { security_question = question, security_answer = "(changed)" });
         await db.SaveChangesAsync();
 
         me.SecurityQuestion = user.SecurityQuestion;

@@ -1,4 +1,4 @@
-# Re-applies every agreed outline change (Oct 26, 2026) on top of the tracked-changes backup.
+﻿# Re-applies every agreed outline change (Oct 26, 2026) on top of the tracked-changes backup.
 param([string]$Out = "$env:TEMP\claude_outline\rebuilt.docx")
 Copy-Item "$PSScriptRoot\..\..\_archive\Project Outline - with tracked changes.docx" $Out -Force
 . "$PSScriptRoot\outline_insert.ps1"
@@ -30,6 +30,7 @@ try {
     "Price comparison: the Employee enters quotes from several vendors for the same item; the Inventory Supervisor picks one, which becomes the approved purchase.")
   . "$PSScriptRoot\part4.ps1"
   . "$PSScriptRoot\part5.ps1"
+  . "$PSScriptRoot\part1b.ps1"
   $i = 0
   foreach ($p in $script:doc.Paragraphs) { $i++; $t = $p.Range.Text.Trim()
     if ($t) { "{0,3} {1,-10} L{2} {3}" -f $i, $p.Style.NameLocal, $(if ($p.Range.ListFormat.ListType) { $p.Range.ListFormat.ListLevelNumber } else { "-" }), $t.Substring(0, [Math]::Min(60, $t.Length)) } }

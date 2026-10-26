@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using Company.OfficeApp.Data;
 using Company.Shared.Data;
@@ -202,17 +201,7 @@ public static partial class UserAdminService
     };
 
     static void Audit(AppDbContext db, string action, User user, object? before, object? after) =>
-        db.AuditLogs.Add(new AuditLog
-        {
-            UserId = Session.CurrentUser?.UserId,
-            TableName = "users",
-            RecordId = user.UserId,
-            RecordName = user.FullName,
-            Action = action,
-            OldValues = before == null ? null : JsonSerializer.Serialize(before),
-            NewValues = after == null ? null : JsonSerializer.Serialize(after),
-            ChangedAt = DateTime.Now,
-        });
+        AuditService.Add(db, null, "users", user.UserId, user.FullName, action, before, after);
 
     static LoginLog LoginLogFor(User user, string action, string details) => new()
     {
