@@ -1,0 +1,8 @@
+# Normalize line endings in Git; Windows tools get CRLF on checkout.
+* text=auto
+*.sh text eol=lf
+
+# Never touch binary files
+*.docx binary
+*.png binary
+*.jpg binary

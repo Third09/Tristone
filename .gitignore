@@ -1,0 +1,23 @@
+# Build output (recreated by every build)
+bin/
+obj/
+
+# Visual Studio cache and personal settings
+.vs/
+*.user
+*.suo
+
+# Downloaded packages (recreated by npm install / dotnet restore)
+node_modules/
+packages/
+
+# Local secrets: connection strings with real passwords never go in Git
+*.local.json
+appsettings.*.local.json
+
+# Generated files
+docs/_tools/guides/html/
+installer/output/
+
+# Word lock files while a document is open
+~$*.docx

@@ -1,0 +1,466 @@
+// UI element data for the Tri-Stone Office App UI guide.
+// Each screen: { title, form, opensFrom, whoSees, note?, groups: [{ name, rows: [[plain, control, name, purpose]] }] }
+// A row whose control starts with "(component)" is invisible at runtime and needs no design.
+
+const shared = [
+  {
+    title: "Login Window",
+    form: "LoginForm (Form)",
+    opensFrom: "First screen when the app starts, and after signing out.",
+    whoSees: "Everyone",
+    groups: [
+      { name: "Main section", rows: [
+        ["Company logo", "PictureBox", "picLogo", "Shows the Tri-Stone logo."],
+        ["Title text", "Label", "lblTitle", "\"Sign in to Tri-Stone\"."],
+        ["Username box", "TextBox", "txtUsername", "Type username or email."],
+        ["Password box", "TextBox (UseSystemPasswordChar = True)", "txtPassword", "Type password; shows dots."],
+        ["Show password tick box", "CheckBox", "chkShowPassword", "Shows the password as plain text while ticked."],
+        ["Error message", "Label", "lblError", "Shows \"Wrong username or password\", attempts left, or \"Account locked, contact Admin\". Hidden until needed."],
+        ["Sign In button", "Button", "btnSignIn", "Checks the username and password and opens the Main Window."],
+        ["Forgot Password link", "LinkLabel", "lnkForgotPassword", "Opens the Forgot Password window."],
+        ["Exit button", "Button", "btnExit", "Closes the app."],
+      ]},
+    ],
+  },
+  {
+    title: "Forgot Password Window",
+    form: "ForgotPasswordForm (Form, pop-up)",
+    opensFrom: "Forgot Password link on the Login Window.",
+    whoSees: "Everyone",
+    note: "Step 1 asks for the username. Employees and Supervisors then see Step 2A (request sent to Admin). Admins see Step 2B (security question).",
+    groups: [
+      { name: "Step 1: Enter username", rows: [
+        ["Instructions text", "Label", "lblForgotInfo", "\"Enter your username.\""],
+        ["Username box", "TextBox", "txtForgotUsername", "Type username."],
+        ["Next button", "Button", "btnForgotNext", "Checks the account type and moves to Step 2A or 2B."],
+        ["Cancel button", "Button", "btnForgotCancel", "Closes the window."],
+      ]},
+      { name: "Step 2A: Employee / Supervisor", rows: [
+        ["Confirmation text", "Label", "lblRequestSent", "\"Your request was sent to the Admin. They will give you a new password.\""],
+        ["Close button", "Button", "btnForgotClose", "Closes the window."],
+      ]},
+      { name: "Step 2B: Admin only", rows: [
+        ["Security question text", "Label", "lblSecurityQuestion", "Shows the Admin's own security question."],
+        ["Answer box", "TextBox", "txtSecurityAnswer", "Type the answer."],
+        ["New password box", "TextBox (UseSystemPasswordChar = True)", "txtNewPassword", "Type the new password."],
+        ["Confirm password box", "TextBox (UseSystemPasswordChar = True)", "txtConfirmPassword", "Type the new password again."],
+        ["Reset Password button", "Button", "btnResetPassword", "Checks the answer and saves the new password."],
+      ]},
+    ],
+  },
+  {
+    title: "Main Window (Sidebar + Main Section)",
+    form: "MainForm (Form)",
+    opensFrom: "After a successful sign in.",
+    whoSees: "Everyone. Sidebar buttons show or hide based on the user's Department and Level.",
+    note: "Every page in this guide (Dashboard, Website Admin, etc.) is a UserControl that loads inside the Main section (pnlContent). The window itself never changes.",
+    groups: [
+      { name: "Sidebar (left side)", rows: [
+        ["Sidebar background", "Panel", "pnlSidebar", "Holds all sidebar buttons."],
+        ["Small logo", "PictureBox", "picSidebarLogo", "Company logo at the top of the sidebar."],
+        ["Dashboard button", "Button", "btnNavDashboard", "Opens Dashboard. Admin, Supervisors."],
+        ["Projects button", "Button", "btnNavProjects", "Opens Projects. Admin only."],
+        ["HR & Payroll button", "Button", "btnNavHr", "Opens HR & Payroll. Admin, HR department."],
+        ["Inventory button", "Button", "btnNavInventory", "Opens Inventory & Vendors. Admin, Inventory department."],
+        ["Subcontractors button", "Button", "btnNavSubcontractors", "Opens Subcontractors. Admin, Subcontractor department."],
+        ["Receipts button", "Button", "btnNavReceipts", "Opens Receipts. Admin, Receipts department."],
+        ["Website Admin button", "Button", "btnNavWebsite", "Opens Website Admin. Admin only."],
+        ["New inquiries badge", "Label", "lblWebsiteBadge", "Small number on the Website Admin button showing new website inquiries. Hidden when 0."],
+        ["User Accounts button", "Button", "btnNavUsers", "Opens User Accounts (create logins, unlock, reset passwords). Admin only."],
+        ["My Account button", "Button", "btnNavMyAccount", "Opens My Account. Everyone."],
+        ["Sign Out button", "Button", "btnSignOut", "Signs out and returns to the Login Window. Everyone."],
+      ]},
+      { name: "Top bar", rows: [
+        ["Page title", "Label", "lblPageTitle", "Name of the page currently open."],
+        ["User name", "Label", "lblUserName", "Name of the signed-in person."],
+        ["Department and level", "Label", "lblUserRole", "e.g. \"Inventory - Supervisor\"."],
+        ["Notification bell", "Button", "btnNotifications", "Opens the Notifications window. Admin only."],
+        ["Notification count badge", "Label", "lblNotificationCount", "Number of waiting password requests. Hidden when 0."],
+      ]},
+      { name: "Main section", rows: [
+        ["Main content area", "Panel", "pnlContent", "The page chosen in the sidebar loads here."],
+      ]},
+      { name: "Not visible (no design needed)", rows: [
+        ["Idle timer", "(component) Timer", "tmrIdle", "Counts 5 minutes with no activity, then opens the \"Still there?\" popup."],
+      ]},
+    ],
+  },
+  {
+    title: "\"Still There?\" Popup",
+    form: "IdleWarningForm (Form, pop-up)",
+    opensFrom: "Automatically after 5 minutes with no mouse or keyboard activity.",
+    whoSees: "Everyone",
+    groups: [
+      { name: "Main section", rows: [
+        ["Message", "Label", "lblIdleMessage", "\"Still there? You will be signed out soon.\""],
+        ["Countdown", "Label", "lblCountdown", "Counts down from 60 seconds."],
+        ["Stay Signed In button", "Button", "btnStaySignedIn", "Closes the popup and keeps working."],
+        ["Sign Out button", "Button", "btnIdleSignOut", "Signs out now."],
+      ]},
+      { name: "Not visible (no design needed)", rows: [
+        ["Countdown timer", "(component) Timer", "tmrCountdown", "Signs out automatically when the countdown reaches 0."],
+      ]},
+    ],
+  },
+  {
+    title: "Notifications Window",
+    form: "NotificationsForm (Form, pop-up)",
+    opensFrom: "Notification bell in the top bar.",
+    whoSees: "Admin only",
+    groups: [
+      { name: "Main section", rows: [
+        ["Password requests table", "DataGridView", "dgvPasswordRequests", "Columns: Name, Username, Department, Requested At, Status."],
+        ["Set New Password button", "Button", "btnSetNewPassword", "Opens the Set New Password window for the selected request."],
+        ["Dismiss button", "Button", "btnDismissRequest", "Removes a request without resetting (e.g. sent by mistake). Still kept in the logs."],
+        ["Close button", "Button", "btnCloseNotifications", "Closes the window."],
+      ]},
+    ],
+  },
+  {
+    title: "Set New Password Window",
+    form: "SetNewPasswordForm (Form, pop-up)",
+    opensFrom: "Set New Password button in Notifications (or User Accounts).",
+    whoSees: "Admin only",
+    groups: [
+      { name: "Main section", rows: [
+        ["User text", "Label", "lblResetUser", "Shows whose password is being reset."],
+        ["New password box", "TextBox", "txtResetPassword", "Type or generate the new password."],
+        ["Generate button", "Button", "btnGeneratePassword", "Fills in a random password."],
+        ["Copy button", "Button", "btnCopyPassword", "Copies the password so Admin can give it to the person."],
+        ["Save button", "Button", "btnSaveNewPassword", "Saves the new password. The person signs in with it right away."],
+        ["Cancel button", "Button", "btnCancelNewPassword", "Closes without changing anything."],
+      ]},
+    ],
+  },
+  {
+    title: "My Account Page",
+    form: "MyAccountPage (UserControl)",
+    opensFrom: "My Account button in the sidebar.",
+    whoSees: "Everyone. The Change password and Security question parts are Admin only (hidden for Employees and Supervisors).",
+    groups: [
+      { name: "My details (read only)", rows: [
+        ["Full name", "Label", "lblMyName", "Signed-in person's name."],
+        ["Username", "Label", "lblMyUsername", "Their username."],
+        ["Department and level", "Label", "lblMyRole", "e.g. \"HR & Payroll - Employee\"."],
+      ]},
+      { name: "Change password (Admin only)", rows: [
+        ["Group box", "GroupBox", "grpChangePassword", "Holds the password fields. Hidden for Employees and Supervisors; they ask Admin instead."],
+        ["Current password box", "TextBox (UseSystemPasswordChar = True)", "txtCurrentPassword", "Type current password."],
+        ["New password box", "TextBox (UseSystemPasswordChar = True)", "txtNewPassword", "Type new password."],
+        ["Confirm password box", "TextBox (UseSystemPasswordChar = True)", "txtConfirmPassword", "Type new password again."],
+        ["Save Password button", "Button", "btnSavePassword", "Saves the new password."],
+      ]},
+      { name: "Security question (Admin only)", rows: [
+        ["Group box", "GroupBox", "grpSecurityQuestion", "Hidden for non-Admins."],
+        ["Question dropdown", "ComboBox", "cboSecurityQuestion", "Pick a question."],
+        ["Answer box", "TextBox", "txtSecurityAnswer", "Type the answer."],
+        ["Save Security Question button", "Button", "btnSaveSecurityQuestion", "Saves the question and answer."],
+      ]},
+    ],
+  },
+];
+
+const websiteAdmin = [
+  {
+    title: "Website Admin Page (main frame)",
+    form: "WebsiteAdminPage (UserControl)",
+    opensFrom: "Website Admin button in the sidebar.",
+    whoSees: "Admin only",
+    note: "The page has 6 tabs across the top of the Main section. Each tab is described below.",
+    groups: [
+      { name: "Main section", rows: [
+        ["Tabs", "TabControl", "tabWebsiteAdmin", "6 tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic."],
+      ]},
+    ],
+  },
+  {
+    title: "Tab 1: Page Content",
+    form: "TabPage: tabPageContent",
+    opensFrom: "Website Admin > Page Content tab.",
+    whoSees: "Admin only",
+    note: "Edit any text, image or video on any page of the public website. The sections listed come from the website's Figma design.",
+    groups: [
+      { name: "Choose what to edit", rows: [
+        ["Website page dropdown", "ComboBox", "cboWebsitePage", "Home, Projects, Services, About Us, Contact, Footer."],
+        ["Section list", "ListBox", "lstSections", "Sections on the chosen page, e.g. Hero, Why Choose Us, Services Highlight, Leadership."],
+      ]},
+      { name: "Edit the section", rows: [
+        ["Section title box", "TextBox", "txtSectionTitle", "Heading text of the section."],
+        ["Section text box", "TextBox (Multiline = True)", "txtSectionBody", "Paragraph text of the section."],
+        ["Image / video preview", "PictureBox", "picSectionMedia", "Shows the current image (or video thumbnail)."],
+        ["Media file name", "Label", "lblMediaFile", "Name of the current image or video file."],
+        ["Upload Image button", "Button", "btnUploadImage", "Choose a new image from the computer."],
+        ["Upload Video button", "Button", "btnUploadVideo", "Choose a new video (e.g. hero background)."],
+        ["Remove Media button", "Button", "btnRemoveMedia", "Removes the image or video from this section."],
+        ["Last updated text", "Label", "lblLastUpdated", "\"Last changed by ___ on ___\"."],
+      ]},
+      { name: "Actions", rows: [
+        ["Save Changes button", "Button", "btnSaveContent", "Saves the section. The website shows it right away."],
+        ["Undo Changes button", "Button", "btnUndoContent", "Throws away unsaved edits."],
+        ["Preview Website button", "Button", "btnPreviewWebsite", "Opens the public website in the browser."],
+      ]},
+      { name: "Not visible (no design needed)", rows: [
+        ["File picker", "(component) OpenFileDialog", "ofdMedia", "The Windows \"Open file\" window used by the Upload buttons."],
+      ]},
+    ],
+  },
+  {
+    title: "Tab 2: Announcements",
+    form: "TabPage: tabAnnouncements",
+    opensFrom: "Website Admin > Announcements tab.",
+    whoSees: "Admin only",
+    groups: [
+      { name: "List", rows: [
+        ["Announcements table", "DataGridView", "dgvAnnouncements", "Columns: Title, Start Date, End Date, Showing on Website."],
+        ["Add button", "Button", "btnAddAnnouncement", "Clears the form to write a new announcement."],
+        ["Delete button", "Button", "btnDeleteAnnouncement", "Deletes the selected announcement (asks to confirm)."],
+      ]},
+      { name: "Edit form", rows: [
+        ["Title box", "TextBox", "txtAnnouncementTitle", "Short headline."],
+        ["Message box", "TextBox (Multiline = True)", "txtAnnouncementMessage", "Full announcement text."],
+        ["Start date picker", "DateTimePicker", "dtpAnnouncementStart", "First day it shows."],
+        ["End date picker", "DateTimePicker", "dtpAnnouncementEnd", "Last day it shows."],
+        ["Show on website tick box", "CheckBox", "chkAnnouncementActive", "Turns the announcement on or off."],
+        ["Save button", "Button", "btnSaveAnnouncement", "Saves the announcement."],
+        ["Cancel button", "Button", "btnCancelAnnouncement", "Throws away unsaved edits."],
+      ]},
+    ],
+  },
+  {
+    title: "Tab 3: Website Projects",
+    form: "TabPage: tabWebsiteProjects",
+    opensFrom: "Website Admin > Website Projects tab.",
+    whoSees: "Admin only",
+    note: "Only projects with \"Show on website\" turned on (in the Projects page) appear here. Name, sector, location, client, dates and price are edited on the Projects page; this tab adds the website-only details and photos.",
+    groups: [
+      { name: "Find a project", rows: [
+        ["Search box", "TextBox", "txtWebProjectSearch", "Search by project name."],
+        ["Sector filter", "ComboBox", "cboWebSectorFilter", "All, Residential, Commercial, Industrial, Repairs / Renovations."],
+        ["Projects table", "DataGridView", "dgvWebsiteProjects", "Columns: Project Name, Sector, Status, Published."],
+      ]},
+      { name: "Project details (from the Projects page, read only)", rows: [
+        ["Project name", "Label", "lblWebProjectName", "Name of the selected project."],
+        ["Sector and status", "Label", "lblWebProjectInfo", "e.g. \"Residential - Ongoing\"."],
+      ]},
+      { name: "Website-only details", rows: [
+        ["Description box", "TextBox (Multiline = True)", "txtWebDescription", "Overview shown on the website."],
+        ["Scope of work box", "TextBox (Multiline = True)", "txtWebScope", "e.g. \"Full build, interior fit-out\"."],
+        ["Project size box", "TextBox", "txtWebSize", "e.g. \"250 sqm, 2 storeys\"."],
+      ]},
+      { name: "What to show on the website", rows: [
+        ["Show client name", "CheckBox", "chkShowClient", "Tick to show the client's name."],
+        ["Show location", "CheckBox", "chkShowLocation", "Tick to show the location."],
+        ["Show project size", "CheckBox", "chkShowSize", "Tick to show the size."],
+        ["Show timeline", "CheckBox", "chkShowTimeline", "Tick to show start / completion dates."],
+        ["Show cost", "CheckBox", "chkShowCost", "Tick to show the cost overview."],
+        ["Show scope of work", "CheckBox", "chkShowScope", "Tick to show the scope of work."],
+      ]},
+      { name: "Photo gallery", rows: [
+        ["Photo thumbnails area", "FlowLayoutPanel", "flpGallery", "Shows all photos in order. Each photo inside is a PictureBox. Click one to select it."],
+        ["Selected photo preview", "PictureBox", "picSelectedPhoto", "Bigger view of the selected photo."],
+        ["Upload Photos button", "Button", "btnUploadPhotos", "Add one or more photos."],
+        ["Crop button", "Button", "btnCropPhoto", "Opens the Crop Photo window for the selected photo."],
+        ["Move Left button", "Button", "btnMovePhotoLeft", "Moves the selected photo earlier in the gallery."],
+        ["Move Right button", "Button", "btnMovePhotoRight", "Moves the selected photo later in the gallery."],
+        ["Set as Cover button", "Button", "btnSetCover", "Uses the selected photo as the project card thumbnail."],
+        ["Delete Photo button", "Button", "btnDeletePhoto", "Removes the selected photo (asks to confirm)."],
+      ]},
+      { name: "Actions", rows: [
+        ["Published tick box", "CheckBox", "chkPublished", "Visible on the website when ticked. Untick to hide without deleting."],
+        ["Save button", "Button", "btnSaveWebProject", "Saves all details, checkboxes and photo order."],
+        ["Preview button", "Button", "btnPreviewProject", "Opens this project's page on the website."],
+      ]},
+      { name: "Not visible (no design needed)", rows: [
+        ["File picker", "(component) OpenFileDialog", "ofdPhotos", "The Windows \"Open file\" window (multiple photos allowed)."],
+      ]},
+    ],
+  },
+  {
+    title: "Crop Photo Window",
+    form: "CropPhotoForm (Form, pop-up)",
+    opensFrom: "Crop button in the Website Projects tab.",
+    whoSees: "Admin only",
+    groups: [
+      { name: "Main section", rows: [
+        ["Crop area", "PictureBox", "picCropArea", "Shows the photo with a box you drag to choose the part to keep."],
+        ["Shape dropdown", "ComboBox", "cboAspectRatio", "Free, Square, Wide (16:9), Card (4:3)."],
+        ["Apply button", "Button", "btnApplyCrop", "Saves the cropped photo."],
+        ["Cancel button", "Button", "btnCancelCrop", "Closes without changes."],
+      ]},
+    ],
+  },
+  {
+    title: "Tab 4: Document Vault",
+    form: "TabPage: tabDocumentVault",
+    opensFrom: "Website Admin > Document Vault tab.",
+    whoSees: "Admin only",
+    groups: [
+      { name: "List", rows: [
+        ["Documents table", "DataGridView", "dgvDocuments", "Columns: Title, Type, Expiry Date, On Website, Uploaded By, Date Uploaded."],
+        ["Upload button", "Button", "btnUploadDocument", "Add a new document (PDF or image)."],
+        ["View button", "Button", "btnViewDocument", "Opens the selected document."],
+        ["Delete button", "Button", "btnDeleteDocument", "Deletes the selected document (asks to confirm)."],
+      ]},
+      { name: "Edit form", rows: [
+        ["Title box", "TextBox", "txtDocumentTitle", "e.g. \"PCAB License 2026\"."],
+        ["Type dropdown", "ComboBox", "cboDocumentType", "License, Permit, Certification, Legal Paper, Other."],
+        ["Expiry date picker", "DateTimePicker", "dtpDocumentExpiry", "When the document expires."],
+        ["No expiry tick box", "CheckBox", "chkNoExpiry", "Tick if it never expires (hides the date)."],
+        ["Show on website tick box", "CheckBox", "chkDocumentOnWebsite", "Shows the document on the public website."],
+        ["Replace File button", "Button", "btnReplaceDocument", "Swap the file for a newer version, keeping the details."],
+        ["Save button", "Button", "btnSaveDocument", "Saves the details."],
+      ]},
+      { name: "Not visible (no design needed)", rows: [
+        ["File picker", "(component) OpenFileDialog", "ofdDocument", "The Windows \"Open file\" window."],
+      ]},
+    ],
+  },
+  {
+    title: "Tab 5: Inquiries",
+    form: "TabPage: tabInquiries",
+    opensFrom: "Website Admin > Inquiries tab.",
+    whoSees: "Admin only",
+    note: "Every message from the website Contact form lands here. A copy also goes to the company Gmail, but the status and notes live only in the app.",
+    groups: [
+      { name: "Summary", rows: [
+        ["New count", "Label", "lblNewCount", "Number of New inquiries."],
+        ["Contacted count", "Label", "lblContactedCount", "Number of Contacted inquiries."],
+        ["Closed count", "Label", "lblClosedCount", "Number of Closed inquiries."],
+      ]},
+      { name: "Filters", rows: [
+        ["Status filter", "ComboBox", "cboInquiryStatusFilter", "All, New, Contacted, Closed."],
+        ["Search box", "TextBox", "txtInquirySearch", "Search by name, email or location."],
+        ["From date picker", "DateTimePicker", "dtpInquiryFrom", "Start of date range."],
+        ["To date picker", "DateTimePicker", "dtpInquiryTo", "End of date range."],
+        ["Refresh button", "Button", "btnRefreshInquiries", "Loads the newest inquiries."],
+      ]},
+      { name: "List", rows: [
+        ["Inquiries table", "DataGridView", "dgvInquiries", "Columns: Date, Name, Service, Location, Status."],
+        ["Export button", "Button", "btnExportInquiries", "Saves the list as an Excel file."],
+      ]},
+      { name: "Selected inquiry", rows: [
+        ["Name", "Label", "lblInqName", "Full name."],
+        ["Contact number", "Label", "lblInqContact", "Phone number."],
+        ["Email", "Label", "lblInqEmail", "Email address."],
+        ["Project location", "Label", "lblInqLocation", "Project location / address."],
+        ["Service required", "Label", "lblInqService", "Type of construction needed."],
+        ["Message", "TextBox (Multiline = True, ReadOnly = True)", "txtInqMessage", "The client's message."],
+        ["Copy Email button", "Button", "btnCopyEmail", "Copies the client's email to reply from Gmail."],
+        ["Status dropdown", "ComboBox", "cboInquiryStatus", "New, Contacted, Closed."],
+        ["Notes box", "TextBox (Multiline = True)", "txtInquiryNotes", "Internal notes, e.g. \"Called on Oct 27, site visit Friday\"."],
+        ["Save button", "Button", "btnSaveInquiry", "Saves the status and notes."],
+      ]},
+    ],
+  },
+  {
+    title: "Tab 6: Website Traffic",
+    form: "TabPage: tabWebsiteTraffic",
+    opensFrom: "Website Admin > Website Traffic tab.",
+    whoSees: "Admin only",
+    groups: [
+      { name: "Filters", rows: [
+        ["Period dropdown", "ComboBox", "cboTrafficPeriod", "Last 7 Days, Last 30 Days, This Year, Custom."],
+        ["From date picker", "DateTimePicker", "dtpTrafficFrom", "Start date (Custom only)."],
+        ["To date picker", "DateTimePicker", "dtpTrafficTo", "End date (Custom only)."],
+        ["Refresh button", "Button", "btnRefreshTraffic", "Reloads the numbers and chart."],
+      ]},
+      { name: "Numbers", rows: [
+        ["Total visitors", "Label", "lblTotalVisitors", "Visitors in the chosen period."],
+        ["Visitors today", "Label", "lblVisitorsToday", "Visitors today."],
+        ["Average per day", "Label", "lblAveragePerDay", "Average visitors per day in the period."],
+      ]},
+      { name: "Chart and table", rows: [
+        ["Visitor trend area chart", "FormsPlot (ScottPlot, added from NuGet)", "chartTraffic", "Area chart of visitors per day. Not in the default Toolbox; appears after installing the ScottPlot.WinForms package."],
+        ["Most visited pages table", "DataGridView", "dgvTopPages", "Columns: Page, Visits."],
+        ["Export button", "Button", "btnExportTraffic", "Saves the numbers as an Excel file."],
+      ]},
+    ],
+  },
+];
+
+const dashboard = [
+  {
+    title: "Dashboard Page",
+    form: "DashboardPage (UserControl)",
+    opensFrom: "Dashboard button in the sidebar.",
+    whoSees: "Admin (all departments) and Supervisors (only their own department's numbers). Log History: Admin only.",
+    groups: [
+      { name: "Filters", rows: [
+        ["Period dropdown", "ComboBox", "cboPeriod", "This Month, This Quarter, This Year, All Time, Custom."],
+        ["From date picker", "DateTimePicker", "dtpFrom", "Start date (Custom only)."],
+        ["To date picker", "DateTimePicker", "dtpTo", "End date (Custom only)."],
+        ["Department dropdown", "ComboBox", "cboDepartment", "All, HR & Payroll, Inventory, Subcontractors, Receipts. Admin only; Supervisors are locked to their own department."],
+        ["Refresh button", "Button", "btnRefreshDashboard", "Reloads all numbers, the chart and the tables."],
+      ]},
+      { name: "KPI cards (each card is a Panel with a title Label and a value Label inside)", rows: [
+        ["Completed Projects card", "Panel + Label", "pnlKpiCompleted / lblKpiCompleted", "Number of projects with status Done in the period."],
+        ["Gross Revenue card", "Panel + Label", "pnlKpiRevenue / lblKpiRevenue", "Total contract value of projects in the period."],
+        ["Operational Expenses card", "Panel + Label", "pnlKpiExpenses / lblKpiExpenses", "Receipts + materials + subcontractor payouts + payroll (company-wide)."],
+        ["Net Revenue card", "Panel + Label", "pnlKpiNet / lblKpiNet", "Gross Revenue minus Operational Expenses."],
+      ]},
+      { name: "Project Status chart", rows: [
+        ["Project status bar chart", "FormsPlot (ScottPlot, added from NuGet)", "chartProjectStatus", "One bar each for Done, Ongoing, Cancelled, Pending."],
+      ]},
+      { name: "Top Performing Projects", rows: [
+        ["Top projects table", "DataGridView", "dgvTopProjects", "Columns: Project, Revenue, Expenses, Profit, Margin %. Click a column title to sort; sorted by highest Profit at first."],
+        ["Export button", "Button", "btnExportTopProjects", "Saves the table as an Excel file."],
+      ]},
+      { name: "Log History (Admin only)", rows: [
+        ["Activity type dropdown", "ComboBox", "cboLogType", "All, Time In / Out, Login / Logout, Failed Login, Password Change, Password Request."],
+        ["Search box", "TextBox", "txtLogSearch", "Search by name or username."],
+        ["Log table", "DataGridView", "dgvLogHistory", "Columns: Date & Time, Name, Department, Activity, Details."],
+        ["Export button", "Button", "btnExportLogs", "Saves the filtered log as an Excel file."],
+      ]},
+    ],
+  },
+];
+
+const projects = [
+  {
+    title: "Projects Page",
+    form: "ProjectsPage (UserControl)",
+    opensFrom: "Projects button in the sidebar.",
+    whoSees: "Admin only",
+    note: "The one shared project list. Other departments only pick from it in dropdowns. Ticking \"Show on website\" makes the project appear in Website Admin > Website Projects.",
+    groups: [
+      { name: "Find a project", rows: [
+        ["Search box", "TextBox", "txtProjectSearch", "Search by project name, site or client."],
+        ["Status filter", "ComboBox", "cboStatusFilter", "All, Pending, Ongoing, Done, Cancelled."],
+        ["Sector filter", "ComboBox", "cboSectorFilter", "All, Residential, Commercial, Industrial, Repairs / Renovations."],
+        ["Projects table", "DataGridView", "dgvProjects", "Columns: Project Name, Site, Client, Sector, Contract Price, Start, Target End, Status, On Website."],
+      ]},
+      { name: "List actions", rows: [
+        ["Add Project button", "Button", "btnAddProject", "Clears the form to enter a new project."],
+        ["Delete button", "Button", "btnDeleteProject", "Deletes the selected project (asks to confirm). Not allowed if receipts or other records use it; set it to Cancelled instead."],
+        ["Export button", "Button", "btnExportProjects", "Saves the list as an Excel file."],
+      ]},
+      { name: "Project form", rows: [
+        ["Project name box", "TextBox", "txtProjectName", "e.g. \"Santos Residence\"."],
+        ["Site / location box", "TextBox", "txtProjectSite", "Address or area of the site."],
+        ["Client name box", "TextBox", "txtClientName", "Client or owner name."],
+        ["Sector dropdown", "ComboBox", "cboSector", "Residential, Commercial, Industrial, Repairs / Renovations."],
+        ["Contract price box", "NumericUpDown", "numContractPrice", "Contract amount in pesos. Used as the project's revenue on the Dashboard."],
+        ["Start date picker", "DateTimePicker", "dtpStartDate", "Project start date."],
+        ["Target end date picker", "DateTimePicker", "dtpTargetEndDate", "Planned completion date."],
+        ["Status dropdown", "ComboBox", "cboProjectStatus", "Pending, Ongoing, Done, Cancelled."],
+        ["Show on website tick box", "CheckBox", "chkShowOnWebsite", "Sends the project to Website Admin for publishing."],
+      ]},
+      { name: "Project summary (read only, calculated by the app)", rows: [
+        ["Days spent", "Label", "lblDaysSpent", "Today minus Start Date, e.g. \"Day 45\"."],
+        ["Expenses to date", "Label", "lblExpensesToDate", "Receipts + materials + subcontractor payouts for this project."],
+        ["Profit to date", "Label", "lblProfitToDate", "Contract Price minus Expenses to date."],
+      ]},
+      { name: "Form actions", rows: [
+        ["Save button", "Button", "btnSaveProject", "Saves the new or edited project."],
+        ["Cancel button", "Button", "btnCancelProject", "Throws away unsaved edits."],
+        ["Print Report button", "Button", "btnPrintProjectReport", "Opens a ready-made printable project report (details, days spent, costs) to print or save as PDF."],
+      ]},
+      { name: "Not visible (no design needed)", rows: [
+        ["Print preview", "(component) PrintPreviewDialog", "ppdProjectReport", "The print preview window used by Print Report."],
+        ["Print document", "(component) PrintDocument", "pdProjectReport", "Draws the report pages for printing."],
+      ]},
+    ],
+  },
+];
+
+module.exports = { shared, dashboard, projects, websiteAdmin };
