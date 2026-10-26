@@ -96,6 +96,33 @@ Click **My Account** in the sidebar to see your name, username, department and l
 
 Employees and Supervisors can't change their password here; ask an Admin.
 
+## For Admins: User Accounts
+
+Click **User Accounts** in the sidebar.
+
+**Make a new account**
+
+1. Click **Create Account**.
+2. Type the person's **full name** and a **username** (letters, numbers, dots, dashes or underscores; no spaces).
+3. Type a first password, or click **Generate**.
+4. Choose the **Level**. For Supervisors and Employees, also choose the **Department**. Admins have no department.
+5. Click **Save**. Give the username and password to the person in person.
+
+If the department already has an active person at that level (the plan is 1 Employee and 1 Supervisor per department), the app asks before saving.
+
+**Change an account:** click it in the list, change the name, username, level or department, and click **Save**. To change the password, use **Set New Password**.
+
+**Other buttons** (click the account first):
+
+| Button | Does |
+|---|---|
+| Set New Password | Gives the person a new password (also unlocks it) |
+| Unlock | For accounts locked after 5 wrong passwords |
+| Disable | Turns the account off, e.g. when someone leaves. Their records are kept. |
+| Enable | Turns a disabled account back on |
+
+You can't disable your own account, and the last active Admin can't be disabled or changed to another level.
+
 ## "Still there?"
 
 If you don't touch the keyboard or mouse for **5 minutes**, a *"Still there?"* message appears with a 60-second countdown.

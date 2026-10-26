@@ -64,6 +64,7 @@ public partial class MainForm : Form
         UserControl view = page switch
         {
             AppPage.MyAccount => new MyAccountPage(),
+            AppPage.UserAccounts => new UserAccountsPage(),
             _ => new PlaceholderPage(Access.Title(page)),   // real pages replace this as they're built
         };
 

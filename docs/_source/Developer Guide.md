@@ -447,7 +447,45 @@ The page (plain layout for now). `MainForm.ShowPage` now loads it for `AppPage.M
 - Full loop: the question set in My Account works in Forgot Password with the answer typed in capitals, and signing in after the reset works.
 - The `audit_logs` row has the question but not the answer.
 
+# Chapter 12: User Accounts
+
+## 12.1 The rules
+
+| Rule | Why |
+|---|---|
+| Only Admins can use this page or its service | Project Outline: only Admin creates accounts |
+| Username: 3 to 50 letters, numbers, `.` `-` `_`; no spaces; unique ignoring capital letters | Sign-in matches usernames ignoring case, so "Juan" and "juan" can't both exist |
+| Admins have no department; Supervisors and Employees have exactly one | Same rule the database enforces (`chk_users_department`) |
+| First password follows the normal password rules | 8+ characters, a letter and a number |
+| Second active person at the same department + level: the Admin is **asked**, not blocked | The plan is 1 Employee + 1 Supervisor per department, but a temporary replacement may be needed |
+| You can't disable yourself or remove your own Admin level | Avoids locking yourself out by accident |
+| The last active Admin can't be disabled or demoted | There must always be someone who can manage accounts |
+| Unlock and Enable reset the wrong-password counter | A fresh start after an Admin steps in |
+
+**For now the full name is typed.** Once HR & Payroll's Employee list exists, it becomes a dropdown of office staff and fills in `users.employee_id`.
+
+Every create, edit, unlock, disable and enable writes an `audit_logs` row with the before/after **name, username, level, department and status**. Passwords and hashes are never included. Unlocks also write *Account Unlocked* to `login_logs`.
+
+## 12.2 The code
+
+<!-- include: src/Company.OfficeApp/Services/UserAdminService.cs -->
+
+<!-- include: src/Company.OfficeApp/Pages/UserAccountsPage.cs -->
+
+## 12.3 Testing
+
+23 checks against the real database, with temporary accounts (deleted afterwards with their log and history rows):
+
+- A non-Admin can't create accounts. A username with a space, an Admin with a department, an Employee without one, and a weak first password are all refused. The same username in different capitals is refused.
+- A new account can sign in. A second Inventory Employee triggers the "already has" question. Renaming and changing the level shows up in the list and search.
+- 5 wrong passwords lock the account, Unlock lets it sign in again, Disable stops sign-in ("turned off"), and Enable brings it back.
+- An Admin can't disable themselves or remove their own Admin level.
+- The page lists accounts, search filters as you type, and clicking a row loads it into the form with the password box greyed out.
+- The edit history rows contain no password or hash.
+
+**Not tested yet:** the "last active Admin" protection. Your real Admin account is always a second active Admin, and it shouldn't be disabled just for a test. It will be tested on a separate test database before installation.
+
 # Coming next
 
-- Chapter 12: User Accounts page (Admin creates logins, unlocks, disables)
+- Chapter 13: the next part of the app
 - Later chapters: each part of the app, then the installers (Phase 6)
