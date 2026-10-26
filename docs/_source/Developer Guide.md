@@ -646,7 +646,56 @@ ProjectRow? Selected => dgvProjects.SelectedRows.Count > 0 ? dgvProjects.Selecte
 - The page: Create Account stays on "New account" (the bug above, now also checked on Projects and Employees). The username suggestion and the shown-only department work. Choosing Admin clears the department.
 - Username suggestions: jdelacruz, adelossantos, smorilla, msanjuan, cher.
 
+# Chapter 16: Responsive pages
+
+"Responsive" here means two things: **fits any screen** and **never feels stuck**.
+
+## 16.1 Fits any screen
+
+- **Sharp on high-resolution screens:** `<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>` in `Company.OfficeApp.csproj`. Text and controls scale correctly on laptop screens set to 125% or 150%, and when the window moves to another monitor.
+- **Main window opens maximized** (`WindowState = Maximized`; minimum 800 x 500).
+- **List pages use the space:** `Responsive.FitGrid(page, grid)` makes the table grow wider and taller when the window is bigger than the page's design size, and moves everything below the table down with it. When the window is *smaller*, nothing shrinks; the page scrolls (`AutoScroll`). It works out positions relative to the scroll position, so scrolling never misplaces controls.
+
+## 16.2 Never feels stuck
+
+- **Search waits for a pause in typing** (`Responsive.OnTypingPause`, 300 ms). Typing "santos" searches once, not six times. The search boxes' `TextChanged` handler was removed from the designer files and wired in code instead.
+- **Only the newest results show** (`LatestOnly`). If the filters change quickly, an older, slower query can't finish last and overwrite the newer list.
+- **Wait cursor while loading** (`Responsive.Busy`).
+- **Database warm-up:** Entity Framework sets itself up on its first query (about 1-2 seconds). `Db.WarmUpInBackground()` runs one tiny query while the Sign In window is open, so the real sign-in is quick (measured 0.2 s afterwards).
+- All database work was already `async`, so the window keeps responding while the database works.
+
+<!-- include: src/Company.OfficeApp/UI/Responsive.cs -->
+
+Each list page calls it in its constructor, for example:
+
+```csharp
+Responsive.FitGrid(this, dgvProjects);
+Responsive.OnTypingPause(txtProjectSearch, () => LoadProjectsAsync());
+```
+
+and each load uses the ticket:
+
+```csharp
+var ticket = loads.Start();
+using var busy = Responsive.Busy(this);
+var rows = await ProjectService.ListAsync(...);
+if (!loads.IsLatest(ticket)) return;   // a newer search already started
+dgvProjects.DataSource = rows;
+```
+
+**Every new list page should do the same.**
+
+## 16.3 Testing
+
+11 checks (test data removed afterwards):
+
+- After the warm-up, the first real query took 193 ms. The main window opens maximized.
+- At 1600 x 1000, the tables on Projects, User Accounts and Employees grow to 1570 pixels wide and 400-570 tall, and the Save button moves down.
+- At 800 x 500, nothing shrinks and each page scrolls (scroll area at least the design size).
+- Typing "ZZTEST Project 2" letter by letter left the list unchanged until the pause, then showed 1 row.
+- An older load is ignored once a newer one has started.
+
 # Coming next
 
-- Chapter 16: the next part of the app
+- Chapter 17: the next part of the app
 - Later chapters: each part of the app, then the installers (Phase 6)

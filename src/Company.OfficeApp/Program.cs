@@ -15,6 +15,7 @@ namespace Company.OfficeApp
             ApplicationConfiguration.Initialize();
 
             if (!EnsureDatabase()) return;
+            Db.WarmUpInBackground();
 
             string? notice = null;
             while (true)

@@ -64,7 +64,6 @@ namespace Company.OfficeApp.Pages
             txtUserSearch.Name = "txtUserSearch";
             txtUserSearch.Size = new Size(200, 23);
             txtUserSearch.TabIndex = 0;
-            txtUserSearch.TextChanged += Filter_Changed;
             //
             // lblStatusFilter
             //

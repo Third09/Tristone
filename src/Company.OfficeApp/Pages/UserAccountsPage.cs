@@ -1,5 +1,6 @@
 using Company.OfficeApp.Forms;
 using Company.OfficeApp.Services;
+using Company.OfficeApp.UI;
 using Company.Shared.Models;
 
 namespace Company.OfficeApp.Pages;
@@ -13,6 +14,7 @@ namespace Company.OfficeApp.Pages;
 public partial class UserAccountsPage : UserControl
 {
     int? editingUserId;   // null = creating a new account
+    readonly LatestOnly loads = new();
 
     public UserAccountsPage()
     {
@@ -21,6 +23,8 @@ public partial class UserAccountsPage : UserControl
         cboUserStatusFilter.Items.AddRange(["All", UserStatuses.Active, UserStatuses.Locked, UserStatuses.Disabled]);
         cboUserStatusFilter.SelectedIndex = 0;
         cboUserLevel.Items.AddRange(UserAdminService.LevelList);
+        Responsive.FitGrid(this, dgvUsers);
+        Responsive.OnTypingPause(txtUserSearch, () => LoadUsersAsync());
     }
 
     async void UserAccountsPage_Load(object sender, EventArgs e)
@@ -31,8 +35,11 @@ public partial class UserAccountsPage : UserControl
 
     async Task LoadUsersAsync(int? selectUserId = null)
     {
+        var ticket = loads.Start();
+        using var busy = Responsive.Busy(this);
         var status = cboUserStatusFilter.SelectedIndex > 0 ? (string)cboUserStatusFilter.SelectedItem! : null;
         var rows = await UserAdminService.ListAsync(txtUserSearch.Text, status);
+        if (!loads.IsLatest(ticket)) return;   // a newer search already started
         dgvUsers.DataSource = rows;
 
         if (selectUserId is { } id)

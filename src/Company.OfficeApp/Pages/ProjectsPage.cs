@@ -1,4 +1,5 @@
 using Company.OfficeApp.Services;
+using Company.OfficeApp.UI;
 using Company.Shared.Models;
 
 namespace Company.OfficeApp.Pages;
@@ -10,6 +11,7 @@ namespace Company.OfficeApp.Pages;
 public partial class ProjectsPage : UserControl
 {
     int? editingProjectId;   // null = adding a new project
+    readonly LatestOnly loads = new();
 
     public ProjectsPage()
     {
@@ -26,6 +28,8 @@ public partial class ProjectsPage : UserControl
         cboSector.Items.AddRange(ProjectSectors.All);
         cboProjectStatus.Items.AddRange(ProjectStatuses.All);
         Disposed += (_, _) => ppdProjectReport.Dispose();   // a dialog, not owned by the page's controls
+        Responsive.FitGrid(this, dgvProjects);
+        Responsive.OnTypingPause(txtProjectSearch, () => LoadProjectsAsync());
         StartNew();
     }
 
@@ -33,9 +37,13 @@ public partial class ProjectsPage : UserControl
 
     async Task LoadProjectsAsync(int? selectProjectId = null)
     {
+        var ticket = loads.Start();
+        using var busy = Responsive.Busy(this);
         string? status = cboStatusFilter.SelectedIndex > 0 ? (string)cboStatusFilter.SelectedItem! : null;
         string? sector = cboSectorFilter.SelectedIndex > 0 ? (string)cboSectorFilter.SelectedItem! : null;
-        dgvProjects.DataSource = await ProjectService.ListAsync(txtProjectSearch.Text, status, sector);
+        var rows = await ProjectService.ListAsync(txtProjectSearch.Text, status, sector);
+        if (!loads.IsLatest(ticket)) return;   // a newer search already started
+        dgvProjects.DataSource = rows;
 
         if (selectProjectId is { } id)
             foreach (DataGridViewRow r in dgvProjects.Rows)

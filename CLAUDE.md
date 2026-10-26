@@ -52,6 +52,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - Control names follow the UI Elements Guide (btn/txt/lbl/cbo/dgv/num/dtp/chk...).
 - Designer files: plain designer code. Big ones can be generated once with `docs/_tools/designer-gen`. **Never regenerate after the owner edits a form in the VS designer.**
 - Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15).
+- Responsive (ch. 16), every list page: `Responsive.FitGrid(this, grid)` in the constructor; search boxes via `Responsive.OnTypingPause` (not `TextChanged` in the designer); loads use `LatestOnly` tickets + `Responsive.Busy(this)`. App is PerMonitorV2 DPI-aware and MainForm opens maximized.
 - Every add/edit/delete writes `audit_logs` through `AuditService.Add` (department = which Edit History tab shows it). Never store passwords, hashes, security answers or government ID numbers in it.
 - Dates: `DATE` -> `DateOnly`; timestamps are plain `timestamp` (AppDbContext maps DateTime to "timestamp without time zone", which is required). Money: `NUMERIC`, shown with `ProjectService.Money` (en-PH, ₱).
 - Excel export: `ExcelExport` (ClosedXML). Printing: `PrintDocument` + `PrintPreviewDialog` ("Microsoft Print to PDF" for PDFs).
@@ -84,7 +85,7 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 
 ## Status (as of 2026-10-27)
 
-Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees.
+Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up).
 DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee.
 
 Next candidates: Attendance tab (needs the scanner's sample export file), Dashboard, Inventory, Subcontractors, Receipts, Website Admin, then the API + website Contact form, then Phase 6 installers.

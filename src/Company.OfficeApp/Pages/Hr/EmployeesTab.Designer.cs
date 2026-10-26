@@ -89,7 +89,6 @@ namespace Company.OfficeApp.Pages.Hr
             txtEmployeeSearch.Name = "txtEmployeeSearch";
             txtEmployeeSearch.Size = new Size(180, 23);
             txtEmployeeSearch.TabIndex = 0;
-            txtEmployeeSearch.TextChanged += Filter_Changed;
             // 
             // lblStatusFilter
             // 

@@ -200,6 +200,7 @@ namespace Company.OfficeApp.Forms
             Controls.Add(pnlTopBar);
             Controls.Add(pnlSidebar);
             MinimumSize = new Size(800, 500);
+            WindowState = FormWindowState.Maximized;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Tri-Stone Office";

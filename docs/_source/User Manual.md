@@ -73,6 +73,10 @@ If you never set a security question, ask another Admin to set a new password fo
 
 Use **Dismiss** if a request was sent by mistake. Every change is recorded in the log.
 
+## Screen size
+
+The app opens full screen. On big monitors, lists grow to show more rows; on small laptop screens, scroll down to see the rest of a page. Search boxes update the list when you stop typing.
+
 ## Signing out
 
 Click **Sign Out** at the bottom of the left sidebar, or close the window. Both are recorded.

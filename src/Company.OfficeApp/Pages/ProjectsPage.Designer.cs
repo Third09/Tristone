@@ -80,7 +80,6 @@ namespace Company.OfficeApp.Pages
             txtProjectSearch.Name = "txtProjectSearch";
             txtProjectSearch.Size = new Size(200, 23);
             txtProjectSearch.TabIndex = 0;
-            txtProjectSearch.TextChanged += Filter_Changed;
             //
             // lblStatusFilter
             //

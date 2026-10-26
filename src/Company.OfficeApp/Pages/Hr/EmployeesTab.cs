@@ -1,4 +1,5 @@
 using Company.OfficeApp.Services;
+using Company.OfficeApp.UI;
 using Company.Shared.Models;
 
 namespace Company.OfficeApp.Pages.Hr;
@@ -10,6 +11,7 @@ namespace Company.OfficeApp.Pages.Hr;
 public partial class EmployeesTab : UserControl
 {
     int? editingEmployeeId;   // null = adding a new employee
+    readonly LatestOnly loads = new();
 
     public EmployeesTab()
     {
@@ -25,6 +27,8 @@ public partial class EmployeesTab : UserControl
         cboPayScheduleFilter.SelectedIndex = 0;
         cboEmployeeDepartment.Items.AddRange(EmployeeDepartments.All);
         numDailyRate.Maximum = EmployeeService.MaxDailyRate;
+        Responsive.FitGrid(this, dgvEmployees);
+        Responsive.OnTypingPause(txtEmployeeSearch, () => LoadEmployeesAsync());
         StartNew();
     }
 
@@ -34,7 +38,11 @@ public partial class EmployeesTab : UserControl
     {
         string? status = (string)cboEmployeeStatusFilter.SelectedItem! == "All" ? null : (string)cboEmployeeStatusFilter.SelectedItem!;
         string? schedule = cboPayScheduleFilter.SelectedIndex > 0 ? (string)cboPayScheduleFilter.SelectedItem! : null;
-        dgvEmployees.DataSource = await EmployeeService.ListAsync(txtEmployeeSearch.Text, status, schedule);
+        var ticket = loads.Start();
+        using var busy = Responsive.Busy(this);
+        var rows = await EmployeeService.ListAsync(txtEmployeeSearch.Text, status, schedule);
+        if (!loads.IsLatest(ticket)) return;   // a newer search already started
+        dgvEmployees.DataSource = rows;
 
         if (selectEmployeeId is { } id)
             foreach (DataGridViewRow r in dgvEmployees.Rows)

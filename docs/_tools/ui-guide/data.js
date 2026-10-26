@@ -84,7 +84,7 @@ const shared = [
     form: "MainForm (Form)",
     opensFrom: "After a successful sign in.",
     whoSees: "Everyone. Sidebar buttons show or hide based on the user's Department and Level.",
-    note: "Every page in this guide (Dashboard, Website Admin, etc.) is a UserControl that loads inside the Main section (pnlContent). The window itself never changes.",
+    note: "Every page in this guide (Dashboard, Website Admin, etc.) is a UserControl that loads inside the Main section (pnlContent). The window opens maximized. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
     groups: [
       { name: "Sidebar (left side)", rows: [
         ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds all sidebar buttons, top to bottom. Hidden buttons take no space. The open page's button is shown in bold (for now)."],
