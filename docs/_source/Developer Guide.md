@@ -876,7 +876,41 @@ The page holds 5 tabs (Pages/Receipts) plus two pop-up windows: Receipt Entry (a
 - The CO form, receipt sheets with the scan, a 4-page report and a PDF all print. Weekly and monthly summaries add up.
 - Employee sees 4 tabs, Supervisor 5; "Needs Review (1)"; the viewer shows the scan.
 
+# Chapter 20: Dashboard
+
+## 20.1 How the numbers are counted
+
+The Dashboard uses the **completed-contract method**, the usual one for construction companies: a project's revenue and all its expenses count in the period it is **finished** (status Done, by its completed date). Company overhead (overhead receipts, equipment repairs, and payroll once HR payroll is built) counts by its own date.
+
+- Completed Projects = projects Done within the period.
+- Gross Revenue = their revenue from `ProjectFinance` (contract + approved change orders).
+- Operational Expenses = their expenses (materials + project receipts + payouts) + overhead in the period.
+- Net Revenue = Gross Revenue - Operational Expenses.
+
+**Department view** (Supervisors always; Admins by choice) shows only that department's expenses: Inventory = materials used + equipment repairs, Subcontractors = payouts, Receipts = project + overhead receipts, HR & Payroll = payroll. Revenue and Net are company-wide, so they are hidden in a department view. The service re-checks the signed-in user, so a Supervisor can never get all departments.
+
+**Top Performing Projects** lists projects active during the period (not Cancelled, started by its end, not finished before its start) with money to date, highest profit first. **Status chart** = current count per status (ScottPlot bar chart, NuGet package `ScottPlot.WinForms`). **Log History** (Admin only) reads `login_logs`.
+
+## 20.2 The code
+
+<!-- include: src/Company.OfficeApp/Services/DashboardService.cs -->
+
+<!-- include: src/Company.OfficeApp/Pages/DashboardPage.cs -->
+
+The designer generator can now put controls inside a Panel (`"PARENT": "pnlName"` in a spec), used for the four KPI cards.
+
+## 20.3 Testing
+
+24 checks with two test projects (A finished today, B ongoing) and real records in every part (all deleted afterwards):
+
+- KPIs for today: 1 completed project, revenue 1,000,000, expenses 20,000 materials + 5,000 receipts + 10,000 payouts + 3,000 overhead + 800 repairs = 38,800, net 961,200. B's receipt isn't counted (not finished). A period before A finished shows no revenue.
+- Department views: Inventory 20,800, Subcontractors 10,000, Receipts 8,000, HR 0. An Inventory Supervisor asking for "all" still gets Inventory only.
+- Status counts in the right order; top projects A (profit 965,000, margin 96.5%) then B; This Month / Quarter / Year ranges.
+- Log history finds a user's entries, filters failed logins, shows unknown usernames, and is empty for Supervisors.
+- The page: Admin sees the log and the department filter; a Supervisor sees neither, and no revenue card.
+
 # Coming next
 
-- Chapter 20: Dashboard
-- Later chapters: each part of the app, then the installers (Phase 6)
+- HR & Payroll: Attendance (needs the scanner's sample export file), payroll, cash advances
+- Website Admin, the API and the website Contact form
+- Phase 6: the server and the installers

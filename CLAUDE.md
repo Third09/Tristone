@@ -57,7 +57,8 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - Project revenue/expenses only through `Services/ProjectFinance` (Projects page, report and Dashboard all use it); add each new money source there and to `ProjectService.CountLinkedRecordsAsync`. Payroll and equipment repairs are overhead, not project expenses.
 - Approve buttons/actions: `Access.IsApprover(user, dept)` = Admins + that department's Supervisor; services re-check with `RequireApprover`.
 - Uploaded files: `FileStore` (folder from `app_settings.file_storage_path`, DB keeps relative paths; pdf/images/Word, 25 MB max).
-- designer-gen: `FORM = True` in a spec makes a pop-up window instead of a UserControl.
+- designer-gen: `FORM = True` in a spec makes a pop-up window instead of a UserControl; `"PARENT": "pnlX"` puts a control inside a Panel.
+- Dashboard money uses the completed-contract method (a project counts when Done); overhead counts by date. Keep `DashboardService` and `ProjectFinance` the only places that add money up.
 - Dates: `DATE` -> `DateOnly`; timestamps are plain `timestamp` (AppDbContext maps DateTime to "timestamp without time zone", which is required). Money: `NUMERIC`, shown with `ProjectService.Money` (en-PH, ₱).
 - Excel export: `ExcelExport` (ClosedXML). Printing: `PrintDocument` + `PrintPreviewDialog` ("Microsoft Print to PDF" for PDFs).
 - New DB change = new numbered script. Never edit an applied script.
@@ -89,7 +90,7 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 
 ## Status (as of 2026-10-27)
 
-Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs); 18 Subcontractors (directory, jobs + stages + retention, progress, vouchers SV-0001, payouts, voucher print); 19 Receipts & change orders (vault incl. stock purchases read from deliveries, needs review, CO-001 Admin approval, reports, TableReport/PDF).
+Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs); 18 Subcontractors (directory, jobs + stages + retention, progress, vouchers SV-0001, payouts, voucher print); 19 Receipts & change orders (vault incl. stock purchases read from deliveries, needs review, CO-001 Admin approval, reports, TableReport/PDF); 20 Dashboard (completed-contract KPIs, department view, ScottPlot status chart, top projects, log history).
 DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee, 005 inventory (+ app_settings), 006 subcontractors, 007 receipts + change orders.
 
-Next (owner said: build them all, test, guides, push after each): Dashboard. Attendance tab waits for the scanner's sample export file. Then Website Admin, then the API + website Contact form, then Phase 6 installers.
+Next: the UI Elements Guide still describes Parts 3-5 and the Dashboard as planned, so update it to the built controls. Attendance tab waits for the scanner's sample export file; then payroll/cash advances, Website Admin, then the API + website Contact form, then Phase 6 installers.

@@ -63,6 +63,7 @@ public partial class MainForm : Form
 
         UserControl view = page switch
         {
+            AppPage.Dashboard => new DashboardPage(),
             AppPage.MyAccount => new MyAccountPage(),
             AppPage.UserAccounts => new UserAccountsPage(),
             AppPage.Projects => new ProjectsPage(),

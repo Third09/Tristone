@@ -8,17 +8,18 @@ function editHistoryTab(part, tabControl, prefix) {
     form: `TabPage: tab${prefix}EditHistory`,
     opensFrom: `${part} page > Edit History tab.`,
     whoSees: `Admin and the ${part} Supervisor`,
-    note: "Read only. Every add, edit and delete in this department is recorded automatically.",
+    note: "Read only. Every add, edit and delete in this department is recorded automatically. One shared control (EditHistoryTab) is used in every department, so the control names are the same everywhere.",
     groups: [
       { name: "Filters", rows: [
-        ["From date picker", "DateTimePicker", `dtp${prefix}HistFrom`, "Start of date range."],
-        ["To date picker", "DateTimePicker", `dtp${prefix}HistTo`, "End of date range."],
-        ["Person dropdown", "ComboBox", `cbo${prefix}HistUser`, "All, or one user."],
-        ["Search box", "TextBox", `txt${prefix}HistSearch`, "Search by record name, e.g. an employee or item."],
+        ["From date picker", "DateTimePicker", "dtpHistFrom", "Start of date range."],
+        ["To date picker", "DateTimePicker", "dtpHistTo", "End of date range."],
+        ["Person dropdown", "ComboBox", "cboHistUser", "All, or one user."],
+        ["Search box", "TextBox", "txtHistSearch", "Search by record name, e.g. an employee or item."],
       ]},
       { name: "List", rows: [
-        ["Edit history table", "DataGridView", `dgv${prefix}EditHistory`, "Columns: Date & Time, Who, Action (Added / Edited / Deleted), Record, Field, Old Value, New Value."],
-        ["Export button", "Button", `btn${prefix}ExportHistory`, "Saves the filtered list as an Excel file."],
+        ["Edit history table", "DataGridView", "dgvEditHistory", "Columns: Date & Time, Who, Action (Added / Edited / Deleted), Record, Field, Old Value, New Value."],
+        ["Row count", "Label", "lblHistCount", "e.g. \"42 changes\"."],
+        ["Export button", "Button", "btnExportHistory", "Saves the filtered list as an Excel file."],
       ]},
     ],
   };
@@ -272,7 +273,7 @@ const inventory = [
     groups: [
       { name: "Main section", rows: [
         ["Tabs", "TabControl", "tabInventory", "7 tabs: Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History."],
-        ["Low-stock badge", "Label", "lblLowStockBadge", "Number of low-stock items, shown on the Materials tab. Hidden when 0."],
+        ["Low-stock count", "Label", "lblLowStockCount", "e.g. \"2 items are below their minimum stock\". The tab title also says \"Materials (2 low)\". Empty when 0."],
       ]},
     ],
   },
@@ -302,6 +303,7 @@ const inventory = [
         ["Current stock", "Label", "lblCurrentStock", "Current stock (read only)."],
         ["Minimum stock box", "NumericUpDown", "numMinimumStock", "Low-stock alert shows when stock drops below this."],
         ["Save button", "Button", "btnSaveMaterial", "Saves the material."],
+        ["Message", "Label", "lblMaterialMsg", "\"Saved.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelMaterial", "Throws away unsaved edits."],
       ]},
     ],
@@ -321,11 +323,13 @@ const inventory = [
         ["Date picker", "DateTimePicker", "dtpUsageDate", "Date used."],
         ["Notes box", "TextBox", "txtUsageNotes", "Optional notes."],
         ["Submit button", "Button", "btnSubmitUsage", "Sends it for Supervisor approval."],
+        ["Message", "Label", "lblUsageMsg", "\"Sent for approval.\" or what went wrong."],
       ]},
       { name: "Usage requests", rows: [
         ["Status filter", "ComboBox", "cboUsageStatusFilter", "All, Waiting Approval, Approved, Rejected."],
         ["Usage table", "DataGridView", "dgvUsageRequests", "Columns: Date, Project, Material, Qty, Cost, Requested By, Status."],
         ["Approve button", "Button", "btnApproveUsage", "Approves: stock goes down, cost goes to the project. Supervisor only."],
+        ["Approver note", "Label", "lblApproverNote", "Shown to Employees instead of the approve buttons."],
         ["Reject button", "Button", "btnRejectUsage", "Rejects the selected request. Supervisor only."],
       ]},
       { name: "Project material history", rows: [
@@ -358,6 +362,8 @@ const inventory = [
         ["Physical copy only tick box", "CheckBox", "chkDeliveryPhysicalOnly", "Tick if there is only a paper copy (no scan)."],
         ["Filed location box", "TextBox", "txtDeliveryFiledAt", "Where the paper copy is kept, e.g. \"Folder B, Oct 2026\". Required when Physical copy only is ticked."],
         ["Save Delivery button", "Button", "btnSaveDelivery", "Saves the delivery and adds the stock."],
+        ["Message", "Label", "lblDeliveryMsg", "\"Saved.\" or what went wrong."],
+        ["Open Receipt Scan button", "Button", "btnOpenDeliveryReceipt", "Opens the scan of the selected delivery."],
         ["Cancel button", "Button", "btnCancelDelivery", "Clears the form."],
       ]},
       { name: "Deliveries list", rows: [
@@ -398,6 +404,7 @@ const inventory = [
         ["Status dropdown", "ComboBox", "cboEquipmentStatus", "Available, Under Repair, Retired."],
         ["Next maintenance date picker", "DateTimePicker", "dtpNextMaintenance", "A reminder shows when this date is reached."],
         ["Save button", "Button", "btnSaveEquipment", "Saves the equipment."],
+        ["Message", "Label", "lblEquipmentMsg", "\"Saved.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelEquipment", "Throws away unsaved edits."],
       ]},
       { name: "Maintenance & repair log (for the selected equipment)", rows: [
@@ -422,6 +429,7 @@ const inventory = [
         ["Done by box", "TextBox", "txtMaintDoneBy", "Person or shop that did it."],
         ["Next maintenance date picker", "DateTimePicker", "dtpMaintNextDue", "Updates the equipment's next maintenance date."],
         ["Save button", "Button", "btnSaveMaintenance", "Saves the entry."],
+        ["Message", "Label", "lblMaintMsg", "\"Saved.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelMaintenance", "Closes without saving."],
       ]},
     ],
@@ -452,6 +460,7 @@ const inventory = [
         ["Account number box", "TextBox", "txtVendorAccountNo", "For payments."],
         ["VAT status dropdown", "ComboBox", "cboVendorVat", "VAT or Non-VAT."],
         ["Save button", "Button", "btnSaveVendor", "Saves the vendor."],
+        ["Message", "Label", "lblVendorMsg", "\"Saved.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelVendor", "Throws away unsaved edits."],
       ]},
       { name: "Vendor papers", rows: [
@@ -483,6 +492,7 @@ const inventory = [
         ["Unit price box", "NumericUpDown", "numQuoteUnitPrice", "Quoted price per unit."],
         ["Quantity box", "NumericUpDown", "numQuoteQty", "How many to buy."],
         ["Add Quote button", "Button", "btnAddQuote", "Adds the quote to the comparison table."],
+        ["Message", "Label", "lblQuoteMsg", "\"Quote added.\" or what went wrong."],
       ]},
       { name: "Compare", rows: [
         ["Quotes table", "DataGridView", "dgvQuotes", "Columns: Vendor, Date, Product, Unit Price, Qty, Total. Cheapest row highlighted."],
@@ -520,8 +530,7 @@ const subcontractors = [
       { name: "Find a subcontractor", rows: [
         ["Search box", "TextBox", "txtSubSearch", "Search by business or trade name."],
         ["Trade filter", "ComboBox", "cboSubTradeFilter", "All, or one trade category."],
-        ["Expiring licenses tick box", "CheckBox", "chkExpiringPcab", "Shows only PCAB licenses expiring soon or expired."],
-        ["Expiring licenses label", "Label", "lblPcabExpiring", "e.g. \"1 PCAB license expires within 30 days\". Hidden when 0."],
+        ["PCAB reminder", "Label", "lblPcabDue", "e.g. \"1 PCAB license is expired or expiring within 30 days\" (the tab title says it too). Expired rows are light red, expiring ones light yellow. Empty when 0."],
         ["Subcontractors table", "DataGridView", "dgvSubcontractors", "Columns: Business Name, Trades, Primary Contact, Phone, PCAB Expiry."],
       ]},
       { name: "List actions", rows: [
@@ -562,6 +571,7 @@ const subcontractors = [
       ]},
       { name: "Form actions", rows: [
         ["Save button", "Button", "btnSaveSubcontractor", "Saves the subcontractor."],
+        ["Message", "Label", "lblSubMsg", "\"Saved.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelSubcontractor", "Throws away unsaved edits."],
       ]},
     ],
@@ -577,6 +587,7 @@ const subcontractors = [
         ["Subcontractor filter", "ComboBox", "cboJobSubFilter", "All, or one subcontractor."],
         ["Jobs table", "DataGridView", "dgvJobs", "Columns: Subcontractor, Project, Scope, Contract Amount, % Done, Status."],
         ["New Job button", "Button", "btnNewJob", "Clears the form to assign a new job."],
+        ["Delete button", "Button", "btnDeleteJob", "Deletes the selected job (asks to confirm). Only while it has no progress, papers or billing."],
       ]},
       { name: "Job form", rows: [
         ["Subcontractor dropdown", "ComboBox", "cboJobSubcontractor", "Who is doing the work."],
@@ -587,6 +598,7 @@ const subcontractors = [
         ["End date picker", "DateTimePicker", "dtpJobEnd", "Job end."],
         ["Retention % box", "NumericUpDown", "numRetentionPct", "Held back from each payment. Default 10, can be 0."],
         ["Save Job button", "Button", "btnSaveJob", "Saves the job. Not allowed unless stages add up to 100%."],
+        ["Message", "Label", "lblJobMsg", "\"Saved.\", \"Billing has started: only the scope and dates can change.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelJob", "Throws away unsaved edits."],
       ]},
       { name: "Payment stages", rows: [
@@ -602,12 +614,15 @@ const subcontractors = [
       ]},
       { name: "Progress", rows: [
         ["Progress bar", "ProgressBar", "prgJobProgress", "Shows % completed."],
+        ["Progress text", "Label", "lblProgressPct", "e.g. \"60% done\"."],
         ["% completed box", "NumericUpDown", "numProgressPct", "New % completed."],
         ["Progress date picker", "DateTimePicker", "dtpProgressDate", "Date of the update."],
         ["Notes box", "TextBox (Multiline = True)", "txtProgressNotes", "What was done."],
         ["Attach Photo / File button", "Button", "btnAttachProgressFile", "Attach photos or documents for this update."],
+        ["Attached file name", "Label", "lblProgressFile", "Name of the attached photo or document."],
         ["Add Update button", "Button", "btnAddProgressUpdate", "Saves the progress update."],
-        ["Progress history table", "DataGridView", "dgvProgressHistory", "Columns: Date, %, Notes, Files."],
+        ["Progress history table", "DataGridView", "dgvProgressHistory", "Columns: Date, %, Notes, Files. Double-click a row to open its file."],
+        ["Message", "Label", "lblProgressMsg", "\"Progress saved.\" or what went wrong."],
       ]},
       { name: "Not visible (no design needed)", rows: [
         ["File picker", "(component) OpenFileDialog", "ofdJobFiles", "The Windows \"Open file\" window."],
@@ -627,15 +642,17 @@ const subcontractors = [
         ["Paid so far", "Label", "lblBillPaid", "Total paid out."],
         ["Retention held", "Label", "lblBillRetention", "Total retention held back."],
         ["Remaining balance", "Label", "lblBillRemaining", "Still to be paid."],
+        ["Done so far", "Label", "lblBillProgress", "The job's latest % completed."],
       ]},
       { name: "Stages", rows: [
-        ["Stages table", "DataGridView", "dgvBillingStages", "Columns: Stage, %, Amount, Retention, Payable Now, Status (Not Reached / Reached / Voucher Waiting / Approved / Paid)."],
+        ["Stages table", "DataGridView", "dgvBillingStages", "Columns: Stage, %, Amount, Retention, Payable Now, Voucher, Status (Not Reached / Reached / Voucher Waiting / Approved / Paid). A \"Retention release\" row appears once retention is held."],
         ["Mark Stage Reached button", "Button", "btnMarkStageReached", "Marks the selected stage as reached."],
         ["Prepare Voucher button", "Button", "btnPrepareVoucher", "Creates the billing voucher for the selected stage (waits for approval)."],
         ["Approve Voucher button", "Button", "btnApproveVoucher", "Approves the voucher. Supervisor only."],
         ["Reject Voucher button", "Button", "btnRejectVoucher", "Rejects the voucher. Supervisor only."],
         ["Print Voucher button", "Button", "btnPrintVoucher", "Prints or saves the voucher as PDF (with the subcontractor's bank details)."],
         ["Release Retention button", "Button", "btnReleaseRetention", "Prepares a voucher for the held retention, once the job is finished and checked."],
+        ["Approver note", "Label", "lblApproverNote", "Shown to Employees instead of the approve buttons."],
       ]},
       { name: "Record a payout", rows: [
         ["Payout date picker", "DateTimePicker", "dtpPayoutDate", "Date paid."],
@@ -643,6 +660,7 @@ const subcontractors = [
         ["Reference number box", "TextBox", "txtPayoutReference", "Bank or check reference."],
         ["Method dropdown", "ComboBox", "cboPayoutMethod", "Bank Transfer, Check, Cash."],
         ["Record Payout button", "Button", "btnRecordPayout", "Saves the payout for the approved voucher."],
+        ["Message", "Label", "lblBillMsg", "\"Payout recorded.\" or what went wrong."],
         ["Payouts table", "DataGridView", "dgvPayouts", "Columns: Date, Stage, Amount, Method, Reference."],
       ]},
       { name: "Not visible (no design needed)", rows: [
@@ -664,7 +682,7 @@ const receipts = [
     groups: [
       { name: "Main section", rows: [
         ["Tabs", "TabControl", "tabReceipts", "5 tabs: Receipt Vault, Needs Review, Change Orders, Reports, Edit History."],
-        ["Needs review badge", "Label", "lblNeedsReviewBadge", "Number of no-receipt expenses waiting, shown on the Needs Review tab. Hidden when 0."],
+        ["Needs review count", "TabPage title", "tabNeedsReview", "The tab title shows how many no-receipt expenses are waiting, e.g. \"Needs Review (2)\"."],
       ]},
     ],
   },
@@ -692,6 +710,8 @@ const receipts = [
         ["Reject button", "Button", "btnRejectReceipt", "Rejects the selected receipt(s). Supervisor only."],
         ["Print Selected button", "Button", "btnPrintSelectedReceipts", "Prints a summary sheet for the selected receipt(s)."],
         ["Export button", "Button", "btnExportReceipts", "Saves the filtered list as Excel."],
+        ["Approver note", "Label", "lblApproverNote", "Shown to Employees instead of the approve buttons."],
+        ["Message", "Label", "lblVaultMsg", "\"2 receipts approved.\" etc."],
       ]},
     ],
   },
@@ -710,7 +730,6 @@ const receipts = [
         ["Project option", "RadioButton", "rdoProjectExpense", "For one project (shows the project dropdown)."],
         ["Overhead option", "RadioButton", "rdoOverheadExpense", "Company overhead (rent, electricity, internet, supplies...)."],
         ["Project dropdown", "ComboBox", "cboReceiptForProject", "Which project. Project option only."],
-        ["Stock purchase", "Label", "lblStockPurchase", "Shows \"Stock purchase (from Inventory)\" for material deliveries. Read only."],
         ["Uploaded by", "Label", "lblUploadedBy", "Filled in automatically."],
       ]},
       { name: "Receipt copy", rows: [
@@ -723,6 +742,7 @@ const receipts = [
       ]},
       { name: "Actions", rows: [
         ["Save button", "Button", "btnSaveReceipt", "Saves it as Waiting Approval (or Needs Review if no receipt)."],
+        ["Message", "Label", "lblEntryMsg", "What is missing, e.g. \"Type the receipt number.\""],
         ["Cancel button", "Button", "btnCancelReceipt", "Closes without saving."],
       ]},
       { name: "Not visible (no design needed)", rows: [
@@ -737,11 +757,13 @@ const receipts = [
     whoSees: "Admin, Receipts Employee, Receipts Supervisor",
     groups: [
       { name: "Main section", rows: [
-        ["Scan preview", "PictureBox (SizeMode = Zoom)", "picReceiptScan", "Large view of the scanned receipt."],
+        ["Scan area", "Panel (AutoScroll = True)", "pnlScan", "Holds the scan; scrolls when zoomed in."],
+        ["Scan preview", "PictureBox (SizeMode = Zoom, inside pnlScan)", "picReceiptScan", "Large view of the scanned receipt (images; PDF/Word open with Open Original)."],
         ["Zoom In button", "Button", "btnZoomIn", "Makes the scan bigger."],
         ["Zoom Out button", "Button", "btnZoomOut", "Makes the scan smaller."],
         ["Open Original button", "Button", "btnOpenOriginal", "Opens the file in its own program (for PDF / Word)."],
-        ["Details", "Label (one per field)", "lblViewReceiptNo, lblViewDate, lblViewMerchant, lblViewAmount, lblViewCategory, lblViewProject, lblViewUploadedBy, lblViewStatus", "Receipt details and site association."],
+        ["Details", "Label (one per field)", "lblViewReceiptNo, lblViewDate, lblViewMerchant, lblViewAmount, lblViewCategory, lblViewProject, lblViewUploadedBy, lblViewStatus, lblViewCopy, lblViewReason", "Receipt details, site association, the copy (scan / paper and where filed) and the no-receipt reason."],
+        ["Message", "Label", "lblViewerMsg", "e.g. \"This scan is a PDF or Word file: click Open Original to view it.\""],
         ["Print button", "Button", "btnPrintReceipt", "Prints a summary sheet with the scan and details."],
         ["Close button", "Button", "btnCloseViewer", "Closes the window."],
       ]},
@@ -759,6 +781,8 @@ const receipts = [
         ["Approve button", "Button", "btnApproveNoReceipt", "Approves the selected expense. Supervisor only."],
         ["Reject button", "Button", "btnRejectNoReceipt", "Rejects the selected expense. Supervisor only."],
         ["Attach Receipt button", "Button", "btnAttachLateReceipt", "Attach a receipt that turned up later; clears the flag and moves it to the vault."],
+        ["Approver note", "Label", "lblApproverNote", "Shown to Employees instead of the approve buttons."],
+        ["Message", "Label", "lblReviewMsg", "\"Approved.\" etc."],
       ]},
     ],
   },
@@ -776,6 +800,7 @@ const receipts = [
         ["Approve button", "Button", "btnApproveCo", "Approves the selected change order. Admin only."],
         ["Reject button", "Button", "btnRejectCo", "Rejects the selected change order. Admin only."],
         ["Print Form button", "Button", "btnPrintCo", "Prints the change order form for the client to sign (or saves as PDF)."],
+        ["Admin note", "Label", "lblAdminNote", "Shown to non-Admins instead of the approve buttons."],
       ]},
       { name: "Change order form", rows: [
         ["CO number", "Label", "lblCoNumber", "Given automatically, e.g. \"CO-003\"."],
@@ -785,8 +810,10 @@ const receipts = [
         ["Cost change box", "NumericUpDown (allows minus)", "numCoCostChange", "+ or - pesos."],
         ["Days change box", "NumericUpDown (allows minus)", "numCoDaysChange", "+ or - days."],
         ["Attach Signed Document button", "Button", "btnAttachCoDoc", "Attach the client's signed document (scan)."],
+        ["View button", "Button", "btnViewCoDoc", "Opens the attached signed document."],
         ["Attached file name", "Label", "lblCoDocFile", "Name of the attached file."],
         ["Submit button", "Button", "btnSubmitCo", "Saves it and sends it to Admin for approval."],
+        ["Message", "Label", "lblCoMsg", "\"Submitted. It waits for an Admin's approval.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelCo", "Throws away unsaved edits."],
       ]},
       { name: "Budget impact preview (read only)", rows: [
@@ -816,6 +843,7 @@ const receipts = [
         ["Print button", "Button", "btnPrintReport", "Prints the report."],
         ["Save as PDF button", "Button", "btnReportPdf", "Saves the report as PDF."],
         ["Export Excel button", "Button", "btnReportExcel", "Saves the report as Excel."],
+        ["Message", "Label", "lblReportMsg", "\"Saved: ...\" or what went wrong."],
       ]},
       { name: "Not visible (no design needed)", rows: [
         ["Print preview", "(component) PrintPreviewDialog", "ppdReceiptReport", "Print preview window."],

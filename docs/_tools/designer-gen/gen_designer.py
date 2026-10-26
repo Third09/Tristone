@@ -3,7 +3,8 @@ Generates plain WinForms .Designer.cs files from a short spec, so big forms don'
 The output is normal designer code: Visual Studio's designer opens and edits it like any other form.
 
 Usage:  python gen_designer.py <spec.py> <output .Designer.cs>
-A spec file defines: NAMESPACE, CLASS, SIZE, CONTROLS, GRID_COLUMNS, EVENTS, LOAD_EVENT.
+A spec file defines: NAMESPACE, CLASS, SIZE, CONTROLS, GRID_COLUMNS, EVENTS, LOAD_EVENT (and FORM = True for a pop-up window).
+A control can sit inside a Panel with {"PARENT": "pnlName"} in its extras.
 """
 import runpy
 import sys
@@ -43,6 +44,10 @@ def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_
     w("        {")
     for t, n, *_ in controls:
         w(f"            {n} = new {t}();")
+    # Controls inside a container (extras "PARENT": "pnlName"); their Location is inside that container.
+    for t, n, *rest in controls:
+        if "PARENT" in rest[-1]:
+            w(f"            {rest[-1]['PARENT']}.Controls.Add({n});")
     for cols in grid_columns.values():
         for ct, cn, *_ in cols:
             w(f"            {cn} = new {ct}();")
@@ -74,7 +79,8 @@ def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_
         if not auto and cw is not None:
             w(f"            {n}.Size = new Size({cw}, {ch});")
         for k, v in extras.items():
-            w(f"            {n}.{k} = {v};")
+            if k != "PARENT":
+                w(f"            {n}.{k} = {v};")
         if t != "Label":
             w(f"            {n}.TabIndex = {tab};")
             tab += 1
@@ -106,8 +112,9 @@ def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_
         w("            StartPosition = FormStartPosition.CenterParent;")
     else:
         w("            AutoScroll = true;")
-    for t, n, *_ in controls:
-        w(f"            Controls.Add({n});")
+    for t, n, *rest in controls:
+        if "PARENT" not in rest[-1]:
+            w(f"            Controls.Add({n});")
     w(f"            Name = {T(cls)};")
     if not is_form:
         w(f"            Size = new Size({size[0]}, {size[1]});")

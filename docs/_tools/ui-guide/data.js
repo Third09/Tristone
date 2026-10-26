@@ -435,9 +435,10 @@ const dashboard = [
       ]},
       { name: "KPI cards (each card is a Panel with a title Label and a value Label inside)", rows: [
         ["Completed Projects card", "Panel + Label", "pnlKpiCompleted / lblKpiCompleted", "Number of projects with status Done in the period."],
-        ["Gross Revenue card", "Panel + Label", "pnlKpiRevenue / lblKpiRevenue", "Total contract value of projects in the period."],
-        ["Operational Expenses card", "Panel + Label", "pnlKpiExpenses / lblKpiExpenses", "Receipts + materials + subcontractor payouts + payroll (company-wide)."],
-        ["Net Revenue card", "Panel + Label", "pnlKpiNet / lblKpiNet", "Gross Revenue minus Operational Expenses."],
+        ["Gross Revenue card", "Panel + Label", "pnlKpiRevenue / lblKpiRevenue", "Revenue (contract + approved change orders) of projects finished in the period. Hidden in a department view."],
+        ["Operational Expenses card", "Panel + Label", "pnlKpiExpenses / lblKpiExpenses", "Expenses of those finished projects (materials, receipts, subcontractor payouts) + overhead in the period (overhead receipts, equipment repairs, payroll later). In a department view: only that department's expenses, titled e.g. \"Inventory Expenses\"."],
+        ["Net Revenue card", "Panel + Label", "pnlKpiNet / lblKpiNet", "Gross Revenue minus Operational Expenses. Hidden in a department view."],
+        ["Expense breakdown", "Label", "lblKpiBreakdown", "One line under the cards: where the expenses come from."],
       ]},
       { name: "Project Status chart", rows: [
         ["Project status bar chart", "FormsPlot (ScottPlot, added from NuGet)", "chartProjectStatus", "One bar each for Done, Ongoing, Cancelled, Pending."],
@@ -447,7 +448,7 @@ const dashboard = [
         ["Export button", "Button", "btnExportTopProjects", "Saves the table as an Excel file."],
       ]},
       { name: "Log History (Admin only)", rows: [
-        ["Activity type dropdown", "ComboBox", "cboLogType", "All, Time In / Out, Login / Logout, Failed Login, Password Change, Password Request."],
+        ["Activity type dropdown", "ComboBox", "cboLogType", "All, Login / Logout, Failed Login (incl. locks), Password Change, Password Request. Time In / Out joins when Attendance is built."],
         ["Search box", "TextBox", "txtLogSearch", "Search by name or username."],
         ["Log table", "DataGridView", "dgvLogHistory", "Columns: Date & Time, Name, Department, Activity, Details."],
         ["Export button", "Button", "btnExportLogs", "Saves the filtered log as an Excel file."],

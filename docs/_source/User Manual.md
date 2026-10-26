@@ -148,7 +148,28 @@ If you don't touch the keyboard or mouse for **5 minutes**, a *"Still there?"* m
 - **Only Admins change passwords.** Employees and Supervisors can't change their own.
 - **Idle check:** after 5 minutes without using the app, a *"Still there?"* message appears. If nobody answers within 60 seconds, the app signs out by itself.
 
-# 4. Dashboard *(coming soon)*
+# 4. Dashboard
+
+For Admins and Supervisors (Employees don't have it). It opens first after signing in.
+
+- **Period:** This Month, This Quarter, This Year, All Time, or Custom (then pick From and To). Click **Refresh** after changing it.
+- **Department** (Admins only): All, or one department. Supervisors always see their own department.
+
+**The four cards**
+
+- **Completed Projects:** projects set to Done in the period.
+- **Gross Revenue:** contract price + approved change orders of those finished projects.
+- **Operational Expenses:** those projects' expenses (materials used, project receipts, subcontractor payouts) plus company overhead in the period (overhead receipts, equipment repairs; payroll once it is built). The line under the cards shows the breakdown.
+- **Net Revenue:** Gross Revenue minus Operational Expenses.
+
+A project's money counts when it is finished, so a period with no finished projects shows no revenue. A department view shows only that department's expenses (Revenue and Net are hidden).
+
+**Project status chart:** how many projects are Done, Ongoing, Cancelled and Pending right now.
+
+**Top performing projects:** projects active in the period with revenue, expenses, profit and margin so far, highest profit first. Click a column title to sort; **Export** saves it to Excel.
+
+**Log history** (Admins only): sign-ins, sign-outs, failed attempts, account locks, password changes and password requests in the period. Filter by activity or search a name or username; **Export** saves it to Excel.
+
 
 # 5. Projects
 

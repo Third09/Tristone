@@ -51,4 +51,5 @@ public static class Departments
     public const string Inventory = "Inventory";
     public const string Subcontractors = "Subcontractors";
     public const string Receipts = "Receipts";
+    public static readonly string[] All = [HrPayroll, Inventory, Subcontractors, Receipts];
 }
