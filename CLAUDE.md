@@ -1,0 +1,90 @@
+# Tri-Stone Construction Services: Office App + Website API
+
+Read this first. It carries everything decided so far, so a new session (or another PC) can continue without re-asking.
+
+## How the owner wants to work
+
+- **Short replies, one step at a time.** The owner (Shem) gets overwhelmed by long answers and big lists. Give one small step, then wait. Mention future concerns only when that phase comes.
+- **Step-by-step guidance:** say exactly which program to open and where to click.
+- **No styling yet.** Screens are plain, default WinForms, left-aligned. The owner styles them later from a Figma design. Don't add colors, themes, logos or custom fonts.
+- **Keep all three guides updated as features are built** (see "Docs" below): Developer Guide (how it's built, with the real code), User Manual (how to use each screen), UI Elements Guide (buttons/controls per screen).
+- Localhost only until the very end. Linux server, network and installers are Phase 6.
+- Ask before decisions that are the owner's to make. When Claude picks a sensible default, say so plainly so the owner can object.
+
+## What it is
+
+- **Office app:** one WinForms app (.NET 10), `src/Company.OfficeApp`. It connects **directly** to PostgreSQL, with no API in between.
+- **Company.Api:** ASP.NET Core Web API, used **only** by the public website (projects, inquiries, page content). Still the template; not built yet.
+- **Company.Shared:** EF Core models + `AppDbContext`, used by both.
+- **Website:** separate repo (`C:\Users\shemm\tristone_website`, GitHub Third09/tristone_website), plain HTML/CSS/JS following a Figma design. Only the Contact page is ours to change: add the Project Location field and POST to the API.
+- **Final deployment (Phase 6):** PostgreSQL + API on a Linux Mint laptop (192.168.1.50); 5 Windows office PCs run the app over the LAN. Plan: self-contained .exe + Inno Setup Setup.exe; first run asks for the server address (Database Settings screen); `install-server.sh` for the server; a shared folder for scans/photos.
+
+## Folder layout
+
+```
+TriStone.slnx                  open in Visual Studio
+src/Company.Api|OfficeApp|Shared
+database/NNN_name.sql          numbered, idempotent (IF NOT EXISTS) scripts
+database/setup-database.ps1    creates construction_db if missing, runs unapplied scripts (tracked in schema_versions)
+database/setup-database.cmd    double-click version
+docs/                          Project Outline.docx (the living spec), UI Elements Guide.docx,
+                               User Manual.docx, Developer Guide.docx, diagrams/*.drawio (DFD + flowchart)
+docs/_source/*.md              text the Word guides are built from; <!-- include: path --> pulls real code
+docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, data2.js, build.js),
+                               outline/ (outline_insert.ps1 + partN.ps1 + rebuild_outline.ps1),
+                               designer-gen/ (gen_designer.py + specs/), render.ps1 (docx -> PNG check)
+```
+
+## Build, database, test
+
+- Build: `dotnet build TriStone.slnx`. Run: set Company.OfficeApp as startup project, F5.
+- Database: PostgreSQL 18, database `construction_db`. Create/update: `database\setup-database.cmd`.
+- psql without a password prompt: put `localhost:5432:*:postgres:<password>` in `%APPDATA%\postgresql\pgpass.conf`, then `"C:\Program Files\PostgreSQL\18\bin\psql.exe" -w -h localhost -U postgres -d construction_db`. Never write the real password in files or Git.
+- First Admin is inserted by hand (Developer Guide chapter 6). On this project it's `ITmorilla` (Shem John Adrian P. Morilla). Not linked to an employee yet. Password is weak and must be changed before real use.
+- The app's own DB settings are per PC: `C:\ProgramData\TriStone\OfficeApp\dbsettings.json`, with the password encrypted by DPAPI.
+- **Testing approach used so far:** a throwaway console app (net10.0-windows, references Company.OfficeApp) that runs real checks against the real DB, run on an STA thread with `WindowsFormsSynchronizationContext` + `Application.Run()`, with forms shown via `ShowDialog`. Test data is named `zz_...` (users) / `ZZTEST...` (records) and deleted afterwards. Cleanup order: `users.employee_id = NULL` -> employee_rates -> employees -> projects -> audit_logs / login_logs / password_requests -> users. Test windows appear on the real screen.
+- Commit messages: write them with a bash heredoc (`git commit -F -`). PowerShell here-strings with quotes break.
+
+## Code conventions
+
+- Pages are `UserControl`s loaded into `MainForm.pnlContent` by `MainForm.ShowPage` (switch on `AppPage`). Big pages with tabs keep each tab in its own UserControl (e.g. `Pages/Hr/EmployeesTab`).
+- Rules live in `Services/*Service.cs` (static, async, return `string? error`); pages call them. Services re-check permissions (`Access.CanSee` / Admin), not just the UI.
+- Control names follow the UI Elements Guide (btn/txt/lbl/cbo/dgv/num/dtp/chk...).
+- Designer files: plain designer code. Big ones can be generated once with `docs/_tools/designer-gen`. **Never regenerate after the owner edits a form in the VS designer.**
+- Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15).
+- Every add/edit/delete writes `audit_logs` through `AuditService.Add` (department = which Edit History tab shows it). Never store passwords, hashes, security answers or government ID numbers in it.
+- Dates: `DATE` -> `DateOnly`; timestamps are plain `timestamp` (AppDbContext maps DateTime to "timestamp without time zone", which is required). Money: `NUMERIC`, shown with `ProjectService.Money` (en-PH, ₱).
+- Excel export: `ExcelExport` (ClosedXML). Printing: `PrintDocument` + `PrintPreviewDialog` ("Microsoft Print to PDF" for PDFs).
+- New DB change = new numbered script. Never edit an applied script.
+
+## Decisions (owner-approved)
+
+**Roles and login (Part 0)**
+- One login for the whole app. Each account has a Level (Admin / Supervisor / Employee) and, except Admins, ONE Department (HR & Payroll, Inventory, Subcontractors, Receipts). Plan: 1 Employee + 1 Supervisor per department, several Admins (a second one asks, it doesn't block).
+- Sidebar by role (`Services/Access.cs`): Admin = everything; Supervisor = Dashboard (own department's numbers) + own department + My Account; Employee = own department + My Account. Projects, Website Admin, User Accounts = Admin only.
+- Only Admins create accounts and change passwords. Employees/Supervisors can't change their own password. Forgot Password = request to Admins (badge, "Password requests (N)" for now); Admin sets a new password and gives it in person (no temporary password, no forced change). Admins recover with a security question (set in My Account).
+- Lock after 5 wrong passwords (Admin unlocks). Statuses: Active / Locked / Disabled. "Still there?" popup after 5 minutes idle, auto sign-out after 60 s (`TRISTONE_IDLE_SECONDS` shortens it in Debug).
+- Each login belongs to one Active office employee (never site workers); name and department come from the employee. Administration staff only get Admin logins. Old accounts may stay unlinked.
+- Claude-chosen defaults the owner accepted: passwords 8+ chars with a letter and a number; usernames `^[A-Za-z0-9._-]{3,50}$`, unique ignoring case; no self-disable/self-demote; last active Admin protected (**not yet tested**: needs a separate test DB, never disable ITmorilla to test).
+
+**Projects (Part 1b)** Admin only; the one shared project list. Fields: name, site, client, sector (Residential / Commercial / Industrial / Repairs / Renovations), contract price, start, optional target end, status (Pending / Ongoing / Done / Cancelled), show on website. Completion date auto-set when Done. Revenue = contract price + approved change orders. Expenses = receipts + materials + subcontractor payouts (payroll and equipment repairs are company-wide overhead). Delete only while nothing links to it (`CountLinkedRecordsAsync`: extend it as Parts 3-5 are built; `Summarize` expenses are 0 until then).
+
+**Dashboard (Part 1)** KPI cards (completed projects, gross revenue, operational expenses, net revenue), status bar chart, Top Performing table (revenue, expenses, profit, margin %, sortable, highest profit first), Log History (Admin), date filters (month / quarter / year / all / custom). Supervisors see their department only. Charts: ScottPlot (not in the default Toolbox).
+
+**HR & Payroll (Part 2)** Page with 7 tabs (Settings and Edit History are Admin + HR Supervisor only). Built so far: **Employees** (office staff + site workers; departments Administration / HR & Payroll / Inventory / Subcontractors / Receipts / Site; the pay schedule follows the department: Site = weekly on Saturday, others = 15th and 30th; dated daily-rate history; unique Biometric ID; Inactive turns logins off, Reactivate doesn't turn them back on; government deductions switch, off by default).
+Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans a day: in / break out / break in / out; FAT32 USB export; sample file not received yet), Payroll (office: 15th covers 26th-10th, 30th covers 11th-25th; Feb -> last day; Sunday/holiday -> day before; site: Friday upload, Saturday counts next week; only scanned/validated days paid), rules: 8-5 Mon-Sat, 12-1 unpaid lunch, on time until 8:15, late = exact minutes (daily rate / 8 / 60), absent = no pay, OT after 5 PM only if HR approves at ₱100/hr, missing scans flagged for HR; cash advances (HR Employee records, HR Supervisor approves, fixed deduction per payday, carries over, never negative); payslips printed + PDF. Workers are NOT assigned to projects.
+
+**Inventory (Part 3)** Materials (name, category, unit, price, stock, minimum; low-stock alert); usage to a project = Employee records, Supervisor approves (stock down, cost to project); deliveries = no approval, stock up, receipt attached (scan or "physical copy only" + receipt no. + filed location), stored in Receipts as "Stock purchase" so it isn't double counted; equipment list (owned/rented) + maintenance log + next-maintenance reminder (no location tracking); vendors + papers; price comparison (Employee enters quotes, Supervisor picks the approved purchase).
+
+**Subcontractors (Part 4)** Directory (outline fields) + PCAB expiry reminder; no ratings for now; job = sub + project + scope + amount + dates + docs; progress %; payment by fixed stages per job (must total 100%); retention default 10% per job, released right after the job is finished and checked; Employee prepares the voucher, Supervisor approves; payouts are project expenses.
+
+**Receipts (Part 5)** Each receipt is Project or Company overhead; Employee uploads, Supervisor approves; no-receipt expenses are flagged "needs review" with a reason and approved by the Receipts Supervisor; change orders: Receipts Employee logs them, budget impact preview, Admin approves, then revenue and end date update; CO-001 numbering; printable form.
+
+**Website Admin (Part 6)** Tab inside the office app (Admin only); everything on the website editable; projects come from the Projects "Show on website" tick + website-only details/photos and per-field visibility; inquiries saved in the DB (New / Contacted / Closed + notes) and a copy emailed to the company Gmail (not set up yet).
+
+## Status (as of 2026-10-27)
+
+Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees.
+DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee.
+
+Next candidates: Attendance tab (needs the scanner's sample export file), Dashboard, Inventory, Subcontractors, Receipts, Website Admin, then the API + website Contact form, then Phase 6 installers.
