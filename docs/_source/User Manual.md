@@ -20,7 +20,39 @@ Site workers do not use the app. They only use the fingerprint scanner.
 
 A normal installer (Setup.exe) will be provided at the end of the project. The first time the app opens it asks for the server address once.
 
-# 3. Signing in and out *(coming soon)*
+# 3. Signing in and out
+
+## First time on a computer: Database Settings
+
+The first time the app opens on a computer (or if it can't find the database), the **Database Settings** window appears. Ask your Admin for the values.
+
+1. **Server address:** `localhost` on the development PC; the office server address (e.g. `192.168.1.50`) in the office.
+2. **Port:** leave `5432`.
+3. **Database name:** `construction_db`.
+4. **Database username / password:** given by your Admin.
+5. Click **Test Connection**. When it says *Connected.*, click **Save**.
+
+The settings are saved on that computer only. To change them later, click **Database settings** on the Sign In window.
+
+## Signing in
+
+1. Type your **username** (capital letters don't matter) and **password**.
+2. Tick **Show password** if you want to check what you typed.
+3. Click **Sign In** (or press Enter).
+
+If it doesn't work, the message under the password box tells you why:
+
+| Message | Meaning |
+|---|---|
+| Wrong username or password. *N* attempts left... | Try again carefully. After 5 wrong tries the account locks. |
+| This account is locked... | Ask an Admin to unlock it. |
+| This account is turned off... | Your account was disabled. Ask an Admin. |
+
+## Signing out
+
+Click **Sign Out**, or close the window. Both are recorded.
+
+## Rules
 
 - **One sign in** for the whole app.
 - **5 wrong passwords** lock the account. Only an Admin can unlock it.

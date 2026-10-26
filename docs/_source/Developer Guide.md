@@ -197,8 +197,110 @@ FROM users;
 
 After this, every other account is created by an Admin inside the app (User Accounts page).
 
+# Chapter 7: Connecting the desktop app to the database
+
+## 7.1 Packages
+
+Added with `dotnet add package` (or in Visual Studio: right-click the project, **Manage NuGet Packages**):
+
+| Project | Package | Why |
+|---|---|---|
+| Company.Shared | `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.3 | Entity Framework Core for PostgreSQL: read and save rows as C# objects |
+| Company.Shared | `BCrypt.Net-Next` 4.2.0 | Checking and making bcrypt password hashes |
+
+```powershell
+dotnet add src\Company.Shared package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add src\Company.Shared package BCrypt.Net-Next
+```
+
+## 7.2 Data classes (Company.Shared/Models)
+
+One C# class per table. `[Table]` and `[Column]` tie each class and property to the exact table and column names from the SQL scripts (which use lower_case_with_underscores). Fixed lists like levels and statuses are constants, so the code never has typos like "Admn".
+
+<!-- include: src/Company.Shared/Models/User.cs -->
+
+<!-- include: src/Company.Shared/Models/LoginLog.cs -->
+
+<!-- include: src/Company.Shared/Models/PasswordRequest.cs -->
+
+## 7.3 The database context
+
+`AppDbContext` is the connection Entity Framework uses. The tables are **created by the SQL scripts, not by Entity Framework**, so this class only maps classes to tables.
+
+<!-- include: src/Company.Shared/Data/AppDbContext.cs -->
+
+> **Bug found while testing.** Npgsql treats `DateTime` as "timestamp *with* time zone" and refuses local times, but our tables use plain `timestamp`. The `ConfigureConventions` block tells it every `DateTime` is a plain `timestamp`. Error before the fix: *Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone'*.
+
+## 7.4 Per-PC database settings
+
+Each PC saves where the database is in `C:\ProgramData\TriStone\OfficeApp\dbsettings.json`. That's what lets the same installed app work on `localhost` now and on `192.168.1.50` in the office later, without rebuilding.
+
+The database password in that file is encrypted with **Windows DPAPI** (`ProtectedData`, built into .NET 10 for Windows). Only that PC can decrypt it; a copied file is useless elsewhere.
+
+`TestConnectionAsync` turns PostgreSQL's error codes into plain messages: `28P01` = wrong password, `3D000` = database missing, socket/timeout = server unreachable.
+
+<!-- include: src/Company.OfficeApp/Data/DbSettings.cs -->
+
+`Db` is the one place pages get a database connection from:
+
+<!-- include: src/Company.OfficeApp/Data/Db.cs -->
+
+## 7.5 Database Settings window
+
+Shown on the first run on a new PC, or whenever the database can't be reached (the flowchart's "Database connected? No" branch). **Save** only saves settings that actually connect. Layout is plain for now; it will be styled from the Figma design.
+
+<!-- include: src/Company.OfficeApp/Forms/DatabaseSettingsForm.cs -->
+
+The `.Designer.cs` file next to it holds the control positions; open the form in Visual Studio's designer to see or move them.
+
+# Chapter 8: Signing in
+
+## 8.1 The sign-in rules (AuthService)
+
+| Situation | What happens | Logged as |
+|---|---|---|
+| Username doesn't exist | "Wrong username or password." | Failed Login, "Unknown username" |
+| Account Disabled | "This account is turned off..." | Failed Login, "Account disabled" |
+| Account Locked | "This account is locked..." (even with the right password) | Failed Login, "Account locked" |
+| Wrong password | Counter +1, "N attempts left" | Failed Login, "Wrong password (n of 5)" |
+| 5th wrong password | Status becomes Locked | Failed Login + Account Locked |
+| Right password | Counter reset to 0, last sign-in time saved | Login |
+| Sign Out (button or closing the window) | Session cleared | Logout |
+
+Usernames are matched without caring about upper/lower case. Every log row also stores the PC name (`Environment.MachineName`).
+
+<!-- include: src/Company.OfficeApp/Services/AuthService.cs -->
+
+`Session` remembers who is signed in on this PC; pages read it to decide what to show.
+
+<!-- include: src/Company.OfficeApp/Services/Session.cs -->
+
+## 8.2 Login window
+
+Control names match the UI Elements Guide (Part A: Login Window). The layout is plain and left-aligned on purpose; it will be styled once the Figma design is ready. Extra control: **Database settings** link, to change the server address from the Login window.
+
+<!-- include: src/Company.OfficeApp/Forms/LoginForm.cs -->
+
+## 8.3 Main window (placeholder) and start-up
+
+For now the main window only shows who is signed in and a **Sign Out** button. The sidebar and pages come next.
+
+<!-- include: src/Company.OfficeApp/Forms/MainForm.cs -->
+
+Start-up order: check the database (show Database Settings if needed), then Login, then Main window; after Sign Out, back to Login.
+
+<!-- include: src/Company.OfficeApp/Program.cs -->
+
+## 8.4 Testing
+
+The rules were tested against the real database with a temporary Employee account (`zz_test`), which was deleted afterwards together with its log rows. 14 checks passed:
+
+- Database settings: right settings connect; wrong port, wrong password and missing database each give the right plain message; the saved password is encrypted.
+- Sign in: unknown username refused; right password works even with different letter case; sign out clears the session; wrong passwords count down 4, 3, 2, 1; the 5th locks the account; a locked account is refused even with the right password.
+- `login_logs` received one correct row per attempt, with the PC name.
+
 # Coming next
 
-- Chapter 7: Connecting the desktop app to the database (connection settings, "Database Settings" screen)
-- Chapter 8: The Login window and Main Window
+- Chapter 9: Forgot Password (request to Admins, Admin security question)
+- Chapter 10: Main window sidebar by role, and the "Still there?" idle check
 - Later chapters: each part of the app, then the installers (Phase 6)
