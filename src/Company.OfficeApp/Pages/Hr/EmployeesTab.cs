@@ -42,7 +42,8 @@ public partial class EmployeesTab : UserControl
         UpdateButtons();
     }
 
-    EmployeeRow? Selected => dgvEmployees.CurrentRow?.DataBoundItem as EmployeeRow;
+    // SelectedRows, not CurrentRow: after ClearSelection (Add Employee) the grid still has a current row.
+    EmployeeRow? Selected => dgvEmployees.SelectedRows.Count > 0 ? dgvEmployees.SelectedRows[0].DataBoundItem as EmployeeRow : null;
 
     void UpdateButtons()
     {

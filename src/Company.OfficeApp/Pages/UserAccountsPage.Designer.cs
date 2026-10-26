@@ -34,8 +34,8 @@ namespace Company.OfficeApp.Pages
             btnDisableUser = new Button();
             btnEnableUser = new Button();
             lblFormMode = new Label();
-            lblUserFullName = new Label();
-            txtUserFullName = new TextBox();
+            lblUserEmployee = new Label();
+            cboUserEmployee = new ComboBox();
             lblNewUsername = new Label();
             txtNewUsername = new TextBox();
             lblNewUserPassword = new Label();
@@ -193,19 +193,21 @@ namespace Company.OfficeApp.Pages
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New account";
             //
-            // lblUserFullName
+            // lblUserEmployee
             //
-            lblUserFullName.AutoSize = true;
-            lblUserFullName.Location = new Point(12, 342);
-            lblUserFullName.Name = "lblUserFullName";
-            lblUserFullName.Text = "Full name";
+            lblUserEmployee.AutoSize = true;
+            lblUserEmployee.Location = new Point(12, 342);
+            lblUserEmployee.Name = "lblUserEmployee";
+            lblUserEmployee.Text = "Employee (office staff without a login; add them in HR & Payroll first)";
             //
-            // txtUserFullName
+            // cboUserEmployee
             //
-            txtUserFullName.Location = new Point(12, 360);
-            txtUserFullName.Name = "txtUserFullName";
-            txtUserFullName.Size = new Size(260, 23);
-            txtUserFullName.TabIndex = 8;
+            cboUserEmployee.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboUserEmployee.Location = new Point(12, 360);
+            cboUserEmployee.Name = "cboUserEmployee";
+            cboUserEmployee.Size = new Size(300, 23);
+            cboUserEmployee.TabIndex = 8;
+            cboUserEmployee.SelectedIndexChanged += cboUserEmployee_SelectedIndexChanged;
             //
             // lblNewUsername
             //
@@ -265,7 +267,7 @@ namespace Company.OfficeApp.Pages
             lblUserDepartment.AutoSize = true;
             lblUserDepartment.Location = new Point(12, 534);
             lblUserDepartment.Name = "lblUserDepartment";
-            lblUserDepartment.Text = "Department (not for Admins)";
+            lblUserDepartment.Text = "Department (from the employee; none for Admins)";
             //
             // cboUserDepartment
             //
@@ -273,6 +275,7 @@ namespace Company.OfficeApp.Pages
             cboUserDepartment.Location = new Point(12, 552);
             cboUserDepartment.Name = "cboUserDepartment";
             cboUserDepartment.Size = new Size(160, 23);
+            cboUserDepartment.Enabled = false;
             cboUserDepartment.TabIndex = 13;
             //
             // lblUserFormMsg
@@ -315,8 +318,8 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnDisableUser);
             Controls.Add(btnEnableUser);
             Controls.Add(lblFormMode);
-            Controls.Add(lblUserFullName);
-            Controls.Add(txtUserFullName);
+            Controls.Add(lblUserEmployee);
+            Controls.Add(cboUserEmployee);
             Controls.Add(lblNewUsername);
             Controls.Add(txtNewUsername);
             Controls.Add(lblNewUserPassword);
@@ -356,8 +359,8 @@ namespace Company.OfficeApp.Pages
         private Button btnDisableUser;
         private Button btnEnableUser;
         private Label lblFormMode;
-        private Label lblUserFullName;
-        private TextBox txtUserFullName;
+        private Label lblUserEmployee;
+        private ComboBox cboUserEmployee;
         private Label lblNewUsername;
         private TextBox txtNewUsername;
         private Label lblNewUserPassword;

@@ -602,7 +602,51 @@ python docs\_tools\designer-gen\gen_designer.py docs\_tools\designer-gen\specs\E
 - The tab's search, peso column, form loading and rate history display work.
 - Edit history is filed under HR & Payroll, and no government ID number appears in it.
 
+# Chapter 15: Linking logins to employees
+
+## 15.1 What changed
+
+Before HR & Payroll existed, the User Accounts page had a typed **Full name**. Now every new login is made **for an office employee**, picked from a dropdown, and the login takes that employee's **name** and **department**.
+
+| Rule | Detail |
+|---|---|
+| Who can get a login | Active employees who are not site workers and don't have a login yet |
+| One login per employee | Checked by the app, and by the database (script 004, a unique index on `users.employee_id`) |
+| Department | Comes from the employee: none for Admins; otherwise the employee's department. Someone in *Administration* can only get an Admin login. |
+| Old accounts | Accounts made before employees existed (like the first Admin) can stay unlinked, or be linked later. Once linked, they can't be unlinked. |
+| HR changes flow through | Renaming an employee or moving them between login departments updates their login. Moving someone with a Supervisor or Employee login to *Site* or *Administration* is refused until the login is changed. |
+| Username suggestion | First letter of the first name + surname: Juan Dela Cruz -> `jdelacruz`, Shem John Adrian P. Morilla -> `smorilla`. Surname words like *de, dela, de los, san, sta* are kept. |
+
+<!-- include: database/004_one_login_per_employee.sql -->
+
+The updated service (`LinkableEmployeesAsync`, `ResolveAsync`, `DepartmentFor`):
+
+<!-- include: src/Company.OfficeApp/Services/UserAdminService.cs -->
+
+<!-- include: src/Company.OfficeApp/Pages/UserAccountsPage.cs -->
+
+## 15.2 Bug found while testing: "Add" jumped back to editing
+
+On the User Accounts, Projects and Employees pages, clicking **Create Account / Add Project / Add Employee** could jump straight back to editing the first row. `ClearSelection()` removes the highlight, but the grid still has a `CurrentRow`, and the pages were reading `CurrentRow`. All three now read `SelectedRows` instead:
+
+```csharp
+// SelectedRows, not CurrentRow: after ClearSelection (Add ...) the grid still has a current row.
+ProjectRow? Selected => dgvProjects.SelectedRows.Count > 0 ? dgvProjects.SelectedRows[0].DataBoundItem as ProjectRow : null;
+```
+
+## 15.3 Testing
+
+29 checks against the real database (test data deleted afterwards):
+
+- The dropdown lists only Active office staff without a login, as "Name (Department)".
+- No employee, a site worker, an Inactive employee, or an Administration employee at Employee level are each refused.
+- A login takes its name and department from the employee. An Administration employee as Admin gets no department. People with logins leave the dropdown (except on their own account). A second login for the same employee is refused by the app and by the database.
+- An old unlinked account can stay unlinked, but a linked one can't be unlinked. Promoting to Supervisor keeps the department.
+- Renaming an employee and moving them to Receipts updates their login. Moving a Supervisor's employee to Site is refused. An Admin's employee can move freely.
+- The page: Create Account stays on "New account" (the bug above, now also checked on Projects and Employees). The username suggestion and the shown-only department work. Choosing Admin clears the department.
+- Username suggestions: jdelacruz, adelossantos, smorilla, msanjuan, cher.
+
 # Coming next
 
-- Chapter 15: the next part of the app
+- Chapter 16: the next part of the app
 - Later chapters: each part of the app, then the installers (Phase 6)

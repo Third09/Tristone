@@ -7,16 +7,26 @@ using Microsoft.EntityFrameworkCore;
 namespace Company.OfficeApp.Services;
 
 /// <summary>One row of the User Accounts table.</summary>
-public record UserRow(int UserId, string FullName, string Username, string? Department, string Level, string Status, DateTime? LastLoginAt);
+public record UserRow(int UserId, string FullName, string Username, string? Department, string Level, string Status, DateTime? LastLoginAt, int? EmployeeId);
 
-/// <summary>What the Admin types in the account form.</summary>
-public record UserInput(string FullName, string Username, string Level, string? Department);
+/// <summary>
+/// What the Admin picks in the account form. EmployeeId = the office staff member the login belongs to
+/// (null only for old accounts made before employees existed, like the first Admin).
+/// </summary>
+public record UserInput(int? EmployeeId, string Username, string Level);
+
+/// <summary>An office staff member who can be given a login (shown in the Employee dropdown).</summary>
+public record EmployeeOption(int? EmployeeId, string FullName, string Department)
+{
+    public override string ToString() => EmployeeId == null ? FullName : $"{FullName} ({Department})";
+}
 
 /// <summary>
 /// User Accounts page (Admin only): create logins, edit them, unlock, disable and enable.
-/// Rules (Project Outline, Part 0): only Admins create accounts; Admins have no department; Supervisors and
-/// Employees have exactly one. There must always be at least one active Admin.
-/// Every change goes to audit_logs (never the password).
+/// Rules (Project Outline, Part 0): only Admins create accounts; every login belongs to one Active office
+/// employee (never a site worker), one login per employee; the name and department come from the employee.
+/// Admins have no department; Supervisors and Employees get their employee's department.
+/// There must always be at least one active Admin. Every change goes to audit_logs (never the password).
 /// </summary>
 public static partial class UserAdminService
 {
@@ -37,33 +47,78 @@ public static partial class UserAdminService
         }
         if (status != null) q = q.Where(u => u.Status == status);
         return await q.OrderBy(u => u.FullName)
-            .Select(u => new UserRow(u.UserId, u.FullName, u.Username, u.Department, u.Level, u.Status, u.LastLoginAt))
+            .Select(u => new UserRow(u.UserId, u.FullName, u.Username, u.Department, u.Level, u.Status, u.LastLoginAt, u.EmployeeId))
             .ToListAsync();
     }
 
-    /// <summary>Null when the input is acceptable, otherwise the reason.</summary>
+    /// <summary>
+    /// Active office staff with no login yet (plus the one already linked to <paramref name="forUserId"/>),
+    /// for the Employee dropdown. Site workers never get logins.
+    /// </summary>
+    public static async Task<List<EmployeeOption>> LinkableEmployeesAsync(int? forUserId)
+    {
+        using var db = Db.Open();
+        var current = forUserId == null ? null
+            : await db.Users.Where(u => u.UserId == forUserId).Select(u => u.EmployeeId).FirstOrDefaultAsync();
+        return await db.Employees
+            .Where(e => (e.Status == EmployeeStatuses.Active && e.Department != EmployeeDepartments.Site
+                         && !db.Users.Any(u => u.EmployeeId == e.EmployeeId))
+                        || e.EmployeeId == current)
+            .OrderBy(e => e.FullName)
+            .Select(e => new EmployeeOption(e.EmployeeId, e.FullName, e.Department))
+            .ToListAsync();
+    }
+
+    /// <summary>Null when the username and level are acceptable, otherwise the reason. (The employee is checked when saving.)</summary>
     public static string? CheckInput(UserInput input)
     {
-        if (string.IsNullOrWhiteSpace(input.FullName)) return "Type the person's full name.";
-        if (input.FullName.Trim().Length > 100) return "The name is too long (100 characters at most).";
         if (!UsernamePattern().IsMatch(input.Username.Trim()))
             return "Username: 3 to 50 characters, only letters, numbers, dots, dashes and underscores (no spaces).";
         if (!LevelList.Contains(input.Level)) return "Choose a level.";
-        if (input.Level == UserLevels.Admin && input.Department != null) return "Admins don't belong to a department.";
-        if (input.Level != UserLevels.Admin && !DepartmentList.Contains(input.Department)) return "Choose a department.";
         return null;
+    }
+
+    /// <summary>The login's department: none for Admins, otherwise the employee's (must be a login department).</summary>
+    public static string? DepartmentFor(string level, string employeeDepartment) =>
+        level == UserLevels.Admin ? null : employeeDepartment;
+
+    /// <summary>
+    /// Works out the login's full name and department from the chosen employee and checks the employee rules.
+    /// <paramref name="existing"/> is the account being edited (null when creating).
+    /// </summary>
+    static async Task<(string FullName, string? Department, string? Error)> ResolveAsync(AppDbContext db, UserInput input, User? existing)
+    {
+        if (input.EmployeeId is not { } employeeId)
+        {
+            // Only old accounts made before employees existed may stay unlinked.
+            if (existing == null || existing.EmployeeId != null) return ("", null, "Choose the employee this login is for.");
+            if (input.Level != UserLevels.Admin && existing.Department == null)
+                return ("", null, "Link this account to an employee to give it a department.");
+            return (existing.FullName, input.Level == UserLevels.Admin ? null : existing.Department, null);
+        }
+
+        var e = await db.Employees.FirstOrDefaultAsync(x => x.EmployeeId == employeeId);
+        if (e == null) return ("", null, "That employee no longer exists.");
+        if (e.Department == EmployeeDepartments.Site) return ("", null, "Site workers don't get logins.");
+        if (e.Status != EmployeeStatuses.Active) return ("", null, $"{e.FullName} is Inactive.");
+        if (await db.Users.AnyAsync(u => u.EmployeeId == employeeId && u.UserId != (existing == null ? 0 : existing.UserId)))
+            return ("", null, $"{e.FullName} already has a login.");
+        if (input.Level != UserLevels.Admin && !DepartmentList.Contains(e.Department))
+            return ("", null, $"{e.FullName} works in {e.Department}, which has no Supervisor or Employee logins. Choose level Admin, or change their department in HR & Payroll first.");
+
+        return (e.FullName, DepartmentFor(input.Level, e.Department), null);
     }
 
     /// <summary>
     /// Active accounts already holding this department + level (the plan is 1 Employee and 1 Supervisor per
     /// department). The page asks the Admin to confirm when this isn't empty; it doesn't block.
     /// </summary>
-    public static async Task<List<string>> OthersInSameRoleAsync(UserInput input, int? exceptUserId)
+    public static async Task<List<string>> OthersInSameRoleAsync(string level, string? department, int? exceptUserId)
     {
-        if (input.Level == UserLevels.Admin) return [];
+        if (level == UserLevels.Admin || department == null) return [];
         using var db = Db.Open();
         return await db.Users
-            .Where(u => u.Level == input.Level && u.Department == input.Department && u.Status != UserStatuses.Disabled && u.UserId != exceptUserId)
+            .Where(u => u.Level == level && u.Department == department && u.Status != UserStatuses.Disabled && u.UserId != exceptUserId)
             .Select(u => u.FullName)
             .ToListAsync();
     }
@@ -77,13 +132,16 @@ public static partial class UserAdminService
 
         using var db = Db.Open();
         if (await UsernameTakenAsync(db, input.Username, null)) return (null, "That username is already used.");
+        var (fullName, department, error) = await ResolveAsync(db, input, null);
+        if (error != null) return (null, error);
 
         var user = new User
         {
-            FullName = input.FullName.Trim(),
+            EmployeeId = input.EmployeeId,
+            FullName = fullName,
             Username = input.Username.Trim(),
             Level = input.Level,
-            Department = input.Department,
+            Department = department,
             Status = UserStatuses.Active,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 11),
             CreatedAt = DateTime.Now,
@@ -97,7 +155,7 @@ public static partial class UserAdminService
         return (user.UserId, null);
     }
 
-    /// <summary>Changes name, username, level and department. Returns an error message, or null when saved.</summary>
+    /// <summary>Changes the linked employee, username and level. Returns an error message, or null when saved.</summary>
     public static async Task<string?> UpdateAsync(int userId, UserInput input)
     {
         if (RequireAdmin() is { } notAdmin) return notAdmin;
@@ -106,6 +164,8 @@ public static partial class UserAdminService
         using var db = Db.Open();
         var user = await db.Users.FirstAsync(u => u.UserId == userId);
         if (await UsernameTakenAsync(db, input.Username, userId)) return "That username is already used.";
+        var (fullName, department, error) = await ResolveAsync(db, input, user);
+        if (error != null) return error;
 
         if (user.IsAdmin && input.Level != UserLevels.Admin)
         {
@@ -114,10 +174,11 @@ public static partial class UserAdminService
         }
 
         var before = Snapshot(user);
-        user.FullName = input.FullName.Trim();
+        user.EmployeeId = input.EmployeeId;
+        user.FullName = fullName;
         user.Username = input.Username.Trim();
         user.Level = input.Level;
-        user.Department = input.Department;
+        user.Department = department;
         user.UpdatedAt = DateTime.Now;
 
         Audit(db, AuditActions.Edited, user, before, Snapshot(user));
@@ -193,6 +254,7 @@ public static partial class UserAdminService
     // The fields shown in Edit History. Never the password hash or security answer.
     static object Snapshot(User u) => new
     {
+        employee_id = u.EmployeeId,
         full_name = u.FullName,
         username = u.Username,
         level = u.Level,

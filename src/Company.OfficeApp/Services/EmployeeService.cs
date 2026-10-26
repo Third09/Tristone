@@ -127,9 +127,27 @@ public static partial class EmployeeService
         var e = await db.Employees.FirstAsync(x => x.EmployeeId == employeeId);
         if (await BiometricTakenAsync(db, input.BiometricId, employeeId) is { } owner) return $"Biometric ID {input.BiometricId!.Trim()} already belongs to {owner}.";
 
+        // A Supervisor/Employee login lives in its employee's department, so that department must stay a login department.
+        var logins = await db.Users.Where(u => u.EmployeeId == employeeId).ToListAsync();
+        if (logins.FirstOrDefault(u => !u.IsAdmin) is { } login && !UserAdminService.DepartmentList.Contains(input.Department))
+            return $"{e.FullName} has a {login.Level} login in {login.Department}. Change or turn off that login in User Accounts before moving them to {input.Department}.";
+
         var oldRate = await RateOn(db, employeeId, input.RateFrom);
         var before = Snapshot(e, oldRate, null);
         Apply(e, input);
+
+        // Their login shows the same name and department as the employee record.
+        foreach (var u in logins)
+        {
+            var dept = UserAdminService.DepartmentFor(u.Level, e.Department);
+            if (u.FullName == e.FullName && u.Department == dept) continue;
+            AuditService.Add(db, null, "users", u.UserId, u.FullName, AuditActions.Edited,
+                new { full_name = u.FullName, department = u.Department },
+                new { full_name = e.FullName, department = dept, reason = "Employee record changed" });
+            u.FullName = e.FullName;
+            u.Department = dept;
+            u.UpdatedAt = DateTime.Now;
+        }
 
         decimal? newRate = null;
         if (oldRate != input.DailyRate)

@@ -102,15 +102,20 @@ Click **User Accounts** in the sidebar.
 
 **Make a new account**
 
+First add the person in **HR & Payroll > Employees**. Only office staff get logins, never site workers.
+
 1. Click **Create Account**.
-2. Type the person's **full name** and a **username** (letters, numbers, dots, dashes or underscores; no spaces).
-3. Type a first password, or click **Generate**.
-4. Choose the **Level**. For Supervisors and Employees, also choose the **Department**. Admins have no department.
-5. Click **Save**. Give the username and password to the person in person.
+2. Pick the **Employee** from the list. Only office staff without a login are listed.
+3. A **username** is suggested (e.g. Juan Dela Cruz -> jdelacruz). Change it if you like: letters, numbers, dots, dashes or underscores, no spaces.
+4. Type a first password, or click **Generate**.
+5. Choose the **Level**. The **Department** fills in by itself from the employee (Admins have none).
+6. Click **Save**. Give the username and password to the person in person.
+
+The login's name and department follow the employee record. If HR renames someone or moves them to another department, their login updates too.
 
 If the department already has an active person at that level (the plan is 1 Employee and 1 Supervisor per department), the app asks before saving.
 
-**Change an account:** click it in the list, change the name, username, level or department, and click **Save**. To change the password, use **Set New Password**.
+**Change an account:** click it in the list, change the username or level (or which employee it's for), and click **Save**. To change the password, use **Set New Password**.
 
 **Other buttons** (click the account first):
 

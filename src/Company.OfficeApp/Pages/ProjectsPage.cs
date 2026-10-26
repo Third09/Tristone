@@ -43,7 +43,8 @@ public partial class ProjectsPage : UserControl
         btnDeleteProject.Enabled = btnPrintProjectReport.Enabled = Selected != null;
     }
 
-    ProjectRow? Selected => dgvProjects.CurrentRow?.DataBoundItem as ProjectRow;
+    // SelectedRows, not CurrentRow: after ClearSelection (Add Project) the grid still has a current row.
+    ProjectRow? Selected => dgvProjects.SelectedRows.Count > 0 ? dgvProjects.SelectedRows[0].DataBoundItem as ProjectRow : null;
 
     async void Filter_Changed(object sender, EventArgs e) => await LoadProjectsAsync();
 

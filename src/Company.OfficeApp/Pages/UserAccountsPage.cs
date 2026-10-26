@@ -6,7 +6,8 @@ namespace Company.OfficeApp.Pages;
 
 /// <summary>
 /// User Accounts (Admin only): list, create, edit, set password, unlock, disable, enable.
-/// For now the full name is typed; it will be picked from the Employee list once HR & Payroll is built.
+/// Each login is for one office employee, picked from HR & Payroll's Employee list; the name and department
+/// come from the employee.
 /// Plain layout for now; control names match the UI Elements Guide (Part 2: User Accounts Page).
 /// </summary>
 public partial class UserAccountsPage : UserControl
@@ -20,11 +21,13 @@ public partial class UserAccountsPage : UserControl
         cboUserStatusFilter.Items.AddRange(["All", UserStatuses.Active, UserStatuses.Locked, UserStatuses.Disabled]);
         cboUserStatusFilter.SelectedIndex = 0;
         cboUserLevel.Items.AddRange(UserAdminService.LevelList);
-        cboUserDepartment.Items.AddRange(UserAdminService.DepartmentList);
-        StartNew();
     }
 
-    async void UserAccountsPage_Load(object sender, EventArgs e) => await LoadUsersAsync();
+    async void UserAccountsPage_Load(object sender, EventArgs e)
+    {
+        await StartNewAsync();
+        await LoadUsersAsync();
+    }
 
     async Task LoadUsersAsync(int? selectUserId = null)
     {
@@ -38,7 +41,8 @@ public partial class UserAccountsPage : UserControl
         UpdateButtons();
     }
 
-    UserRow? Selected => dgvUsers.CurrentRow?.DataBoundItem as UserRow;
+    // SelectedRows, not CurrentRow: after ClearSelection (Create Account) the grid still has a current row.
+    UserRow? Selected => dgvUsers.SelectedRows.Count > 0 ? dgvUsers.SelectedRows[0].DataBoundItem as UserRow : null;
 
     void UpdateButtons()
     {
@@ -51,72 +55,118 @@ public partial class UserAccountsPage : UserControl
 
     async void Filter_Changed(object sender, EventArgs e) => await LoadUsersAsync();
 
-    void dgvUsers_SelectionChanged(object sender, EventArgs e)
+    async void dgvUsers_SelectionChanged(object sender, EventArgs e)
     {
         UpdateButtons();
-        if (Selected is { } u) StartEdit(u);
+        if (Selected is { } u) await StartEditAsync(u);
     }
 
     // ----- form -----
 
-    void StartNew()
+    // An unlinked old account (made before employees existed) shows this entry so it can stay unlinked.
+    static readonly EmployeeOption NotLinked = new(null, "(not linked to an employee)", "");
+
+    async Task StartNewAsync()
     {
         editingUserId = null;
         lblFormMode.Text = "New account";
-        txtUserFullName.Clear();
+        cboUserEmployee.Items.Clear();
+        cboUserEmployee.Items.AddRange([.. await UserAdminService.LinkableEmployeesAsync(null)]);
+        cboUserEmployee.SelectedIndex = -1;
         txtNewUsername.Clear();
         txtNewUserPassword.Clear();
         txtNewUserPassword.Enabled = lblNewUserPassword.Enabled = true;
         cboUserLevel.SelectedItem = UserLevels.Employee;
-        cboUserDepartment.SelectedIndex = -1;
-        lblUserFormMsg.Text = "";
+        lblUserFormMsg.Text = cboUserEmployee.Items.Count == 0
+            ? "No office staff without a login. Add the person in HR & Payroll > Employees first."
+            : "";
+        ShowDepartment();
     }
 
-    void StartEdit(UserRow u)
+    async Task StartEditAsync(UserRow u)
     {
         editingUserId = u.UserId;
         lblFormMode.Text = $"Editing: {u.FullName}";
-        txtUserFullName.Text = u.FullName;
+        var options = await UserAdminService.LinkableEmployeesAsync(u.UserId);
+        cboUserEmployee.Items.Clear();
+        if (u.EmployeeId == null) cboUserEmployee.Items.Add(NotLinked);
+        cboUserEmployee.Items.AddRange([.. options]);
+        cboUserEmployee.SelectedItem = u.EmployeeId == null ? NotLinked : options.FirstOrDefault(o => o.EmployeeId == u.EmployeeId);
         txtNewUsername.Text = u.Username;
         txtNewUserPassword.Clear();
         txtNewUserPassword.Enabled = lblNewUserPassword.Enabled = false;   // use Set New Password instead
         cboUserLevel.SelectedItem = u.Level;
-        cboUserDepartment.SelectedItem = u.Department;
         lblUserFormMsg.Text = "";
+        ShowDepartment(u.Department);
     }
 
-    void cboUserLevel_SelectedIndexChanged(object sender, EventArgs e)
+    /// <summary>Department follows the employee (none for Admins). Shown only; it can't be picked.</summary>
+    void ShowDepartment(string? unlinkedDepartment = null)
     {
-        var isAdmin = (string?)cboUserLevel.SelectedItem == UserLevels.Admin;
-        cboUserDepartment.Enabled = !isAdmin;
-        if (isAdmin) cboUserDepartment.SelectedIndex = -1;
+        var level = (string?)cboUserLevel.SelectedItem ?? "";
+        string? dept = cboUserEmployee.SelectedItem switch
+        {
+            EmployeeOption { EmployeeId: not null } o => UserAdminService.DepartmentFor(level, o.Department),
+            _ => level == UserLevels.Admin ? null : unlinkedDepartment,
+        };
+        cboUserDepartment.Items.Clear();
+        if (dept != null) { cboUserDepartment.Items.Add(dept); cboUserDepartment.SelectedIndex = 0; }
     }
 
-    void btnCreateAccount_Click(object sender, EventArgs e)
+    void cboUserLevel_SelectedIndexChanged(object sender, EventArgs e) => ShowDepartment(Selected?.Department);
+
+    void cboUserEmployee_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ShowDepartment(Selected?.Department);
+        // Suggest a username for new accounts, e.g. "Juan Dela Cruz" -> "jdelacruz".
+        if (editingUserId == null && txtNewUsername.Text == "" && cboUserEmployee.SelectedItem is EmployeeOption { EmployeeId: not null } o)
+            txtNewUsername.Text = SuggestUsername(o.FullName);
+    }
+
+    // Words that belong to a surname: "Juan Dela Cruz" -> "jdelacruz", "Ana de los Santos" -> "adelossantos".
+    static readonly HashSet<string> SurnameParticles = ["de", "del", "dela", "la", "los", "las", "delos", "san", "santa", "sta", "sto", "van", "von", "di"];
+
+    /// <summary>First letter of the first name + the surname, e.g. "Shem John Adrian P. Morilla" -> "smorilla".</summary>
+    public static string SuggestUsername(string fullName)
+    {
+        var parts = fullName.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(p => new string(p.Where(char.IsLetterOrDigit).ToArray())).Where(p => p != "").ToList();
+        if (parts.Count == 0) return "";
+        if (parts.Count == 1) return parts[0].Length > 50 ? parts[0][..50] : parts[0];
+
+        int start = parts.Count - 1;
+        while (start > 1 && SurnameParticles.Contains(parts[start - 1])) start--;
+        var name = parts[0][0] + string.Concat(parts.Skip(start));
+        return name.Length > 50 ? name[..50] : name;
+    }
+
+    async void btnCreateAccount_Click(object sender, EventArgs e)
     {
         dgvUsers.ClearSelection();
-        StartNew();
-        txtUserFullName.Focus();
+        await StartNewAsync();
+        cboUserEmployee.Focus();
     }
 
-    void btnCancelUser_Click(object sender, EventArgs e)
+    async void btnCancelUser_Click(object sender, EventArgs e)
     {
-        if (editingUserId != null && Selected is { } u) StartEdit(u); else StartNew();
+        if (editingUserId != null && Selected is { } u) await StartEditAsync(u); else await StartNewAsync();
     }
 
     async void btnSaveUser_Click(object sender, EventArgs e)
     {
-        var input = new UserInput(txtUserFullName.Text, txtNewUsername.Text,
-            (string?)cboUserLevel.SelectedItem ?? "", (string?)cboUserDepartment.SelectedItem);
+        var employee = cboUserEmployee.SelectedItem as EmployeeOption;
+        var input = new UserInput(employee?.EmployeeId, txtNewUsername.Text, (string?)cboUserLevel.SelectedItem ?? "");
 
+        if (employee == null) { lblUserFormMsg.Text = "Choose the employee this login is for."; return; }
         if (UserAdminService.CheckInput(input) is { } problem) { lblUserFormMsg.Text = problem; return; }
 
         // The plan is 1 Employee and 1 Supervisor per department: ask before adding a second.
-        var others = await UserAdminService.OthersInSameRoleAsync(input, editingUserId);
+        var department = cboUserDepartment.SelectedItem as string;
+        var others = await UserAdminService.OthersInSameRoleAsync(input.Level, department, editingUserId);
         if (others.Count > 0)
         {
             var ok = MessageBox.Show(this,
-                $"{input.Department} already has an active {input.Level}: {string.Join(", ", others)}.\n\nSave anyway?",
+                $"{department} already has an active {input.Level}: {string.Join(", ", others)}.\n\nSave anyway?",
                 "Same role already taken", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (ok != DialogResult.Yes) return;
         }
