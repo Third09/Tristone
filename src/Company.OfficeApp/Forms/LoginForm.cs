@@ -8,9 +8,11 @@ namespace Company.OfficeApp.Forms;
 /// </summary>
 public partial class LoginForm : Form
 {
-    public LoginForm()
+    /// <param name="notice">Shown under the password box, e.g. after an idle sign-out.</param>
+    public LoginForm(string? notice = null)
     {
         InitializeComponent();
+        lblError.Text = notice ?? "";
     }
 
     void chkShowPassword_CheckedChanged(object sender, EventArgs e) =>

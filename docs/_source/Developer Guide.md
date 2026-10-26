@@ -355,7 +355,65 @@ Tested against the real database with three temporary accounts (an Employee, a L
 - the person signs in with the new password;
 - an Employee can't use the security question; a wrong Admin answer is refused; a weak new password is refused; the right answer with extra spaces and capitals works.
 
+# Chapter 10: Main window and the idle check
+
+## 10.1 Who sees which page
+
+All page rules live in one class, `Access`. The sidebar uses it to show or hide buttons, and `ShowPage` checks it again before opening anything.
+
+| Page | Admin | Supervisor | Employee |
+|---|---|---|---|
+| Dashboard | yes | yes (own department's numbers) | no |
+| Projects, Website Admin, User Accounts | yes | no | no |
+| HR & Payroll / Inventory / Subcontractors / Receipts | all | own department only | own department only |
+| My Account | yes | yes | yes |
+
+The first page after signing in is the Dashboard if the person can see it, otherwise their department's page.
+
+<!-- include: src/Company.OfficeApp/Services/Access.cs -->
+
+## 10.2 The main window
+
+Three areas, all docked so they resize with the window:
+
+- `pnlSidebar`: a `FlowLayoutPanel` on the left. Buttons are stacked top to bottom, and hidden buttons take no space, so each role gets a tidy list.
+- `pnlTopBar`: page title, the person's name, department and level, and (Admin only) the notification button.
+- `pnlContent`: the chosen page loads here. Pages that aren't built yet show a placeholder.
+
+**Docking order matters.** In the designer, controls added *last* dock *first*. The sidebar is added last so it takes the full height on the left, and the top bar then spans the rest.
+
+**Closing with X.** The sign-out has to be written to the log *before* the window closes. Otherwise the app could exit before the row is saved. `MainForm_FormClosing` cancels the first close, writes the log, then closes again.
+
+<!-- include: src/Company.OfficeApp/Forms/MainForm.cs -->
+
+<!-- include: src/Company.OfficeApp/Pages/PlaceholderPage.cs -->
+
+## 10.3 The "Still there?" idle check
+
+- `IdleMonitor` is an `IMessageFilter`: it sees every keyboard and mouse message in the app (and lets them through untouched) and remembers the time of the last one.
+- The main window's `tmrIdle` checks once a second. After 5 minutes without activity it opens the popup.
+- The popup counts down 60 seconds. **Stay Signed In** resets the clock. **Sign Out** signs out normally. If nobody answers, it signs out by itself and the log says **Idle Sign Out**. The Login window then shows *"You were signed out after 5 minutes without activity."*
+
+**Testing tip.** In Debug builds, set the environment variable `TRISTONE_IDLE_SECONDS` (for example to `20`) to see the popup without waiting 5 minutes. In Visual Studio: project **Properties > Debug > Open debug launch profiles UI > Environment variables**. Release builds always use 5 minutes.
+
+<!-- include: src/Company.OfficeApp/Services/IdleMonitor.cs -->
+
+<!-- include: src/Company.OfficeApp/Forms/IdleWarningForm.cs -->
+
+The start-up loop passes the idle message to the Login window:
+
+<!-- include: src/Company.OfficeApp/Program.cs -->
+
+## 10.4 Testing
+
+A test program opened the real main window as three temporary accounts and ran the idle check with a 3-second timeout (accounts and their log rows deleted afterwards). 9 checks passed:
+
+- Admin sees all 9 pages and the notification button, and starts on Dashboard.
+- HR Employee sees only HR & Payroll and My Account, starts on HR & Payroll, and has no notification button.
+- Inventory Supervisor sees Dashboard, Inventory and My Account.
+- The popup appears about 3 seconds after the last activity. **Stay** keeps the session (and the popup comes back after the next idle period). **Sign Out** signs out as a normal Logout. No answer signs out after 60 seconds as **Idle Sign Out**.
+
 # Coming next
 
-- Chapter 10: Main window sidebar by role, and the "Still there?" idle check
+- Chapter 11: My Account (and the Admin security question)
 - Later chapters: each part of the app, then the installers (Phase 6)

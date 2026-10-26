@@ -87,7 +87,7 @@ const shared = [
     note: "Every page in this guide (Dashboard, Website Admin, etc.) is a UserControl that loads inside the Main section (pnlContent). The window itself never changes.",
     groups: [
       { name: "Sidebar (left side)", rows: [
-        ["Sidebar background", "Panel", "pnlSidebar", "Holds all sidebar buttons."],
+        ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds all sidebar buttons, top to bottom. Hidden buttons take no space. The open page's button is shown in bold (for now)."],
         ["Small logo", "PictureBox", "picSidebarLogo", "Company logo at the top of the sidebar."],
         ["Dashboard button", "Button", "btnNavDashboard", "Opens Dashboard. Admin, Supervisors."],
         ["Projects button", "Button", "btnNavProjects", "Opens Projects. Admin only."],
@@ -102,17 +102,18 @@ const shared = [
         ["Sign Out button", "Button", "btnSignOut", "Signs out and returns to the Login Window. Everyone."],
       ]},
       { name: "Top bar", rows: [
+        ["Top bar background", "Panel (Dock = Top)", "pnlTopBar", "Holds the top bar items."],
         ["Page title", "Label", "lblPageTitle", "Name of the page currently open."],
         ["User name", "Label", "lblUserName", "Name of the signed-in person."],
         ["Department and level", "Label", "lblUserRole", "e.g. \"Inventory - Supervisor\"."],
-        ["Notification bell", "Button", "btnNotifications", "Opens the Notifications window. Admin only."],
-        ["Notification count badge", "Label", "lblNotificationCount", "Number of waiting password requests. Hidden when 0."],
+        ["Notification bell", "Button", "btnNotifications", "Opens the Notifications window. Admin only. For now shows \"Password requests (N)\" as its text."],
+        ["Notification count badge", "Label", "lblNotificationCount", "Number of waiting password requests. Hidden when 0. (Not added yet: the count is in the button text until the design is done.)"],
       ]},
       { name: "Main section", rows: [
-        ["Main content area", "Panel", "pnlContent", "The page chosen in the sidebar loads here."],
+        ["Main content area", "Panel (Dock = Fill)", "pnlContent", "The page chosen in the sidebar loads here. Pages not built yet show \"(page): not built yet.\""],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["Idle timer", "(component) Timer", "tmrIdle", "Counts 5 minutes with no activity, then opens the \"Still there?\" popup."],
+        ["Idle timer", "(component) Timer", "tmrIdle", "Checks every second; after 5 minutes with no keyboard or mouse use it opens the \"Still there?\" popup."],
       ]},
     ],
   },

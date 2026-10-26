@@ -75,7 +75,21 @@ Use **Dismiss** if a request was sent by mistake. Every change is recorded in th
 
 ## Signing out
 
-Click **Sign Out**, or close the window. Both are recorded.
+Click **Sign Out** at the bottom of the left sidebar, or close the window. Both are recorded.
+
+## The main window
+
+- **Left sidebar:** the pages you're allowed to use. You only see your own department's page (Admins see everything). The page that's open is shown in **bold**.
+- **Top:** the page name, your name, and your department and level. Admins also see **Password requests (N)**.
+- **Middle:** the page you chose.
+
+## "Still there?"
+
+If you don't touch the keyboard or mouse for **5 minutes**, a *"Still there?"* message appears with a 60-second countdown.
+
+- Click **Stay Signed In** to keep working.
+- Click **Sign Out** to sign out now.
+- If nobody answers, the app signs out by itself, and the Sign In window says why.
 
 ## Rules
 

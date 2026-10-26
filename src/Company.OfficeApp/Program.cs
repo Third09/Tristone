@@ -16,9 +16,10 @@ namespace Company.OfficeApp
 
             if (!EnsureDatabase()) return;
 
+            string? notice = null;
             while (true)
             {
-                using (var login = new LoginForm())
+                using (var login = new LoginForm(notice))
                 {
                     if (login.ShowDialog() != DialogResult.OK) return;   // Exit on the Login window
                 }
@@ -26,6 +27,10 @@ namespace Company.OfficeApp
                 using var main = new MainForm();
                 Application.Run(main);
                 if (!main.SignedOut) return;                             // window closed with X
+
+                notice = main.SignedOutIdle
+                    ? "You were signed out after 5 minutes without activity."
+                    : null;
             }
         }
 

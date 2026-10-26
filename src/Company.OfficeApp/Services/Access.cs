@@ -1,0 +1,64 @@
+using Company.Shared.Models;
+
+namespace Company.OfficeApp.Services;
+
+/// <summary>The pages in the sidebar.</summary>
+public enum AppPage
+{
+    Dashboard,
+    Projects,
+    HrPayroll,
+    Inventory,
+    Subcontractors,
+    Receipts,
+    WebsiteAdmin,
+    UserAccounts,
+    MyAccount,
+}
+
+/// <summary>
+/// Who can open which page (Project Outline, Part 0): Admins see everything; Supervisors and Employees see
+/// only their own department's page; Supervisors also see the Dashboard (their department's numbers).
+/// The one place these rules live: the sidebar and every page ask here.
+/// </summary>
+public static class Access
+{
+    public static bool CanSee(User user, AppPage page)
+    {
+        if (user.IsAdmin) return true;
+
+        return page switch
+        {
+            AppPage.Dashboard => user.Level == UserLevels.Supervisor,
+            AppPage.HrPayroll => user.Department == Departments.HrPayroll,
+            AppPage.Inventory => user.Department == Departments.Inventory,
+            AppPage.Subcontractors => user.Department == Departments.Subcontractors,
+            AppPage.Receipts => user.Department == Departments.Receipts,
+            AppPage.MyAccount => true,
+            _ => false,   // Projects, Website Admin, User Accounts: Admin only
+        };
+    }
+
+    /// <summary>The page shown right after signing in.</summary>
+    public static AppPage FirstPage(User user)
+    {
+        if (CanSee(user, AppPage.Dashboard)) return AppPage.Dashboard;
+        return user.Department switch
+        {
+            Departments.HrPayroll => AppPage.HrPayroll,
+            Departments.Inventory => AppPage.Inventory,
+            Departments.Subcontractors => AppPage.Subcontractors,
+            Departments.Receipts => AppPage.Receipts,
+            _ => AppPage.MyAccount,
+        };
+    }
+
+    public static string Title(AppPage page) => page switch
+    {
+        AppPage.HrPayroll => "HR & Payroll",
+        AppPage.WebsiteAdmin => "Website Admin",
+        AppPage.UserAccounts => "User Accounts",
+        AppPage.MyAccount => "My Account",
+        _ => page.ToString(),
+    };
+}
