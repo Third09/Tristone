@@ -38,13 +38,15 @@ public static class ProjectFinance
             .GroupBy(u => u.ProjectId).Select(g => new { Id = g.Key, Sum = g.Sum(u => u.Cost ?? 0) })
             .ToDictionaryAsync(x => x.Id, x => x.Sum);
 
-        // Receipts (Part 5), change orders (Part 5) and subcontractor payouts (Part 4) join here when built.
+        var payouts = await SubBillingService.PayoutsByProjectAsync(db, ids);
+
+        // Receipts and change orders (Part 5) join here when built.
         return prices.ToDictionary(p => p.ProjectId, p => new ProjectMoney(
             p.ContractPrice,
             ChangeOrders: 0,
             Materials: materials.GetValueOrDefault(p.ProjectId),
             Receipts: 0,
-            Payouts: 0));
+            Payouts: payouts.GetValueOrDefault(p.ProjectId)));
     }
 
     public static async Task<ProjectMoney> ForProjectAsync(int projectId) =>

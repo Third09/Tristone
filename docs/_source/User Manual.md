@@ -248,7 +248,40 @@ Tools, heavy equipment and vehicles, owned or rented (rented needs the company a
 Supplier details, bank details and VAT status. After saving a vendor, upload their papers (company profile, bank details, certificate of registration) and open them with **View**.
 
 
-# 8. Subcontractors *(coming soon)*
+# 8. Subcontractors
+
+For Admins and the Subcontractors department. Approve buttons are for the **Subcontractors Supervisor** and Admins. Tabs: Directory, Jobs & Progress, Billing & Payouts, Edit History (Supervisor and Admins).
+
+## Directory
+
+Your subcontractors: company details, two contact people, addresses, bank details (printed on vouchers), trade categories and PCAB license.
+
+- **Add Subcontractor**, fill in the form, tick at least one trade, click **Save**.
+- PCAB reminder: a row turns **yellow** when the license expires within 30 days and **light red** once it has expired. The tab title says *Directory (N PCAB expiring)*.
+- A subcontractor with jobs can't be deleted.
+
+## Jobs & Progress
+
+1. Click **New Job**. Choose the **subcontractor** and the **project**, type the **scope**, **contract amount** and dates.
+2. Set the **retention %** (default 10, can be 0). It is held back from every payment.
+3. Set the **payment stages** (default: Down payment 30%, Midway 40%, Completion 30%). Edit the names and %s in the table; **Add Stage** / **Remove Stage**. They must add up to **100%**.
+4. Click **Save Job**. Then **Upload Document** for the contract or scope papers.
+
+Once billing starts, only the scope and dates can change.
+
+**Progress:** type the **% completed**, the date and notes, optionally **Attach Photo / File**, then **Add Update**. Double-click an update to open its file.
+
+## Billing & Payouts
+
+1. Choose the **job**. The top line shows the contract, paid so far, retention held and remaining balance.
+2. Select a stage and click **Mark Stage Reached**, then **Prepare Voucher**.
+3. The Supervisor selects it and clicks **Approve Voucher** (or **Reject Voucher**; the Employee can then prepare a new one).
+4. **Print Voucher** shows it with the subcontractor's bank details (choose "Microsoft Print to PDF" for a PDF).
+5. After paying, select the approved voucher, enter the date, method and reference number, and click **Record Payout**. The amount must match the voucher.
+
+**Retention:** when the job is 100% done (progress update) and every stage is paid, click **Release Retention**. That voucher is approved and paid the same way.
+
+Payouts count as the project's expenses on the Projects page and Dashboard.
 
 # 9. Receipts *(coming soon)*
 

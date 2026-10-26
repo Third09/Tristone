@@ -110,6 +110,12 @@ public static class AuditService
         "maintenance_logs" => "maintenance",
         "vendor_documents" => "vendor paper",
         "deliveries" => "delivery",
+        "sub_jobs" => "job",
+        "sub_job_stages" => "stage",
+        "sub_job_documents" => "job paper",
+        "sub_progress" => "progress",
+        "sub_vouchers" => "voucher",
+        "sub_payouts" => "payout",
         _ => table.TrimEnd('s').Replace("_", " "),
     };
 }

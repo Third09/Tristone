@@ -89,7 +89,7 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 
 ## Status (as of 2026-10-27)
 
-Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs).
-DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee, 005 inventory (+ app_settings).
+Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs); 18 Subcontractors (directory, jobs + stages + retention, progress, vouchers SV-0001, payouts, voucher print).
+DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee, 005 inventory (+ app_settings), 006 subcontractors.
 
-Next (owner said: build them all, test, guides, push after each): Subcontractors, Receipts + change orders, Dashboard. Attendance tab waits for the scanner's sample export file. Then Website Admin, then the API + website Contact form, then Phase 6 installers.
+Next (owner said: build them all, test, guides, push after each): Receipts + change orders, Dashboard. Attendance tab waits for the scanner's sample export file. Then Website Admin, then the API + website Contact form, then Phase 6 installers.

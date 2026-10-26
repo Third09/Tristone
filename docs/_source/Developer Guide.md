@@ -764,7 +764,64 @@ The designer generator now also makes pop-up windows (`FORM = True` in a spec), 
 - Equipment: rented without a company is refused; a past maintenance date shows as due; a maintenance entry moves the reminder; its cost counts as overhead; equipment with history can't be deleted.
 - Edit History has the changes but not the bank account number. The Inventory Employee sees 6 tabs, the Supervisor 7.
 
+# Chapter 18: Subcontractors
+
+## 18.1 The tables (script 006)
+
+| Table | Holds |
+|---|---|
+| `subcontractors`, `subcontractor_trades` | The directory: company details, two contacts, addresses, bank details, PCAB license; one row per ticked trade |
+| `sub_jobs`, `sub_job_stages` | A job = subcontractor + project + scope + amount + dates + retention %; its payment stages (must total 100%) |
+| `sub_job_documents`, `sub_progress` | Contract/scope papers; progress updates (% done, date, notes, optional file) |
+| `sub_vouchers` | Billing vouchers (SV-0001...) for a stage or for the retention release: Waiting / Approved / Rejected / Paid |
+| `sub_payouts` | What was paid for an approved voucher (date, amount, method, reference) |
+
+Two partial unique indexes make sure a stage (and a job's retention) has at most one voucher that isn't Rejected.
+
+<!-- include: database/006_subcontractors.sql -->
+
+## 18.2 The rules
+
+- **Stages:** each pays contract x stage %; the last stage takes any rounding centavos so the stages always add up to the contract exactly. Retention = stage amount x retention %; payable = amount - retention.
+- **Order of billing:** Employee marks a stage reached -> prepares the voucher -> Supervisor (or Admin) approves or rejects -> payout recorded for exactly the voucher's amount (bank transfer and check need a reference number). A rejected voucher sends the stage back to "Reached".
+- **Retention release:** only when the latest progress is 100% and every stage is paid; it gets its own voucher and approval.
+- **Locking:** once a stage is reached or a voucher exists, the subcontractor, project, amount, retention and stages can't change; scope and dates still can.
+- **Money:** payouts (what was actually paid, including released retention) are the project's subcontractor expense in `ProjectFinance`. A project with subcontractor jobs can't be deleted.
+- **PCAB:** expiring within 30 days = yellow row, expired = light red; the tab title says "Directory (N PCAB expiring)".
+- **Deleting:** a subcontractor with jobs can't be deleted; a job only while it has no progress, papers or billing.
+- The TIN and bank account number are kept out of the readable Edit History (only "on file: yes/no").
+
+## 18.3 The code
+
+<!-- include: src/Company.OfficeApp/Services/SubcontractorService.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/SubJobService.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/SubBillingService.cs -->
+
+The voucher print layout (same approach as the project report):
+
+<!-- include: src/Company.OfficeApp/Services/VoucherPrint.cs -->
+
+The page holds 4 tabs, each its own UserControl in `Pages/Subcontractors`:
+
+<!-- include: src/Company.OfficeApp/Pages/SubcontractorsPage.cs -->
+
+## 18.4 Testing
+
+56 checks against the real database (temporary accounts, project, subcontractors and files, all deleted afterwards):
+
+- Someone from Receipts can't add subcontractors; duplicates, no trade ticked and bad emails are refused; trade filter; PCAB expiring in 10 days is flagged.
+- Stages that add up to 90% are refused; stage amounts always add up to the contract after rounding.
+- Stage 1 of a 100,000 job: 30,000 less 10% = 27,000. A voucher before the stage is reached is refused; the amount can't change after billing starts but the scope can.
+- The Employee can't approve; the Supervisor approves; payout before approval, a wrong amount, a missing reference and paying twice are all refused.
+- After stage 1: project expense 27,000, profit 973,000; retention held 3,000; remaining 73,000.
+- Stage 2 rejected, then a new voucher approved and paid; stage 3 paid in cash.
+- Retention release before 100% is refused; after a 100% progress update it releases 10,000; the job ends "Paid in Full" with 100,000 as project expense.
+- The voucher prints with the bank details and approver. Deletes are blocked where history exists.
+- Edit History has the changes without the TIN or account number. The Employee sees 3 tabs, the Supervisor 4; all tabs fill with data.
+
 # Coming next
 
-- Chapter 18: Subcontractors
+- Chapter 19: Receipts & change orders
 - Later chapters: each part of the app, then the installers (Phase 6)

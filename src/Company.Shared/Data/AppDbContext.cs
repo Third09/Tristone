@@ -26,6 +26,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Delivery> Deliveries => Set<Delivery>();
     public DbSet<Equipment> Equipment => Set<Equipment>();
     public DbSet<MaintenanceLog> MaintenanceLogs => Set<MaintenanceLog>();
+    public DbSet<Subcontractor> Subcontractors => Set<Subcontractor>();
+    public DbSet<SubcontractorTrade> SubcontractorTrades => Set<SubcontractorTrade>();
+    public DbSet<SubJob> SubJobs => Set<SubJob>();
+    public DbSet<SubJobStage> SubJobStages => Set<SubJobStage>();
+    public DbSet<SubJobDocument> SubJobDocuments => Set<SubJobDocument>();
+    public DbSet<SubProgress> SubProgress => Set<SubProgress>();
+    public DbSet<SubVoucher> SubVouchers => Set<SubVoucher>();
+    public DbSet<SubPayout> SubPayouts => Set<SubPayout>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -63,5 +71,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Delivery>().HasKey(d => d.DeliveryId);
         modelBuilder.Entity<Equipment>().HasKey(e => e.EquipmentId);
         modelBuilder.Entity<MaintenanceLog>().HasKey(l => l.LogId);
+
+        modelBuilder.Entity<Subcontractor>().HasKey(s => s.SubcontractorId);
+        modelBuilder.Entity<SubcontractorTrade>().HasKey(t => new { t.SubcontractorId, t.Trade });
+        modelBuilder.Entity<SubJob>().HasKey(j => j.JobId);
+        modelBuilder.Entity<SubJobStage>().HasKey(s => s.StageId);
+        modelBuilder.Entity<SubJobDocument>().HasKey(d => d.DocumentId);
+        modelBuilder.Entity<SubProgress>().HasKey(p => p.ProgressId);
+        modelBuilder.Entity<SubVoucher>().HasKey(v => v.VoucherId);
+        modelBuilder.Entity<SubPayout>().HasKey(p => p.PayoutId);
     }
 }
