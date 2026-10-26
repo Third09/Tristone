@@ -165,7 +165,37 @@ If you don't touch the keyboard or mouse for **5 minutes**, a *"Still there?"* m
 
 Use the **Search** box (name, site or client) and the **Status** and **Sector** filters to find projects.
 
-# 6. HR & Payroll *(coming soon)*
+# 6. HR & Payroll
+
+For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. *(So far only Employees is built.)*
+
+## Employees
+
+Everyone who works for the company: **office staff** and **site workers**.
+
+**Add an employee**
+
+1. Click **Add Employee**.
+2. Fill in the **full name**, contact number, address and position.
+3. Choose the **department**. Choose **Site** for site workers. The pay schedule follows automatically:
+   - **Site:** paid every Saturday
+   - **everyone else:** paid the 15th and 30th
+4. Type the **daily rate** and the date it **applies from** (usually today).
+5. Type their **Biometric ID**, the number the fingerprint scanner gives them.
+6. **Government deductions** are off by default. Tick the box only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional.
+7. Click **Save**.
+
+**Give someone a raise**
+
+1. Click the employee.
+2. Type the new **daily rate**, and set **Rate applies from** to the day it starts. It can be a future date.
+3. Click **Save**.
+
+Past payslips keep the old rate. The **Daily rate history** table lists every rate.
+
+**When someone leaves:** click **Mark Inactive**. Their records stay, and if they have a login, it's turned off. **Reactivate** brings them back. An Admin then has to turn their login on again in User Accounts.
+
+Use **Search** (name or Biometric ID), the **Status** filter (Active by default) and the **Pay schedule** filter. **Export** saves the list to Excel.
 
 # 7. Inventory & Vendors *(coming soon)*
 

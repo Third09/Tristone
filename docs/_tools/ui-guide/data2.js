@@ -57,18 +57,19 @@ const hrPayroll = [
         ["Export button", "Button", "btnExportEmployees", "Saves the list as an Excel file."],
       ]},
       { name: "Personal details", rows: [
+        ["Form title", "Label", "lblFormMode", "\"New employee\" or \"Editing: (name)\". Clicking a row in the table loads it here."],
         ["Full name box", "TextBox", "txtEmployeeName", "Employee's full name."],
         ["Contact number box", "TextBox", "txtEmployeeContact", "Phone number."],
         ["Address box", "TextBox (Multiline = True)", "txtEmployeeAddress", "Home address."],
         ["Position box", "TextBox", "txtEmployeePosition", "e.g. \"Mason\", \"HR Staff\"."],
-        ["Department dropdown", "ComboBox", "cboEmployeeDepartment", "HR & Payroll, Inventory, Subcontractors, Receipts, or Site (for site workers)."],
+        ["Department dropdown", "ComboBox (DropDownList)", "cboEmployeeDepartment", "Administration, HR & Payroll, Inventory, Subcontractors, Receipts, or Site (for site workers)."],
       ]},
       { name: "Pay details", rows: [
-        ["Pay schedule dropdown", "ComboBox", "cboPaySchedule", "Office (paid 15th and 30th) or Site (paid every Saturday)."],
+        ["Pay schedule text", "Label", "lblPayScheduleValue", "Shown, not chosen: follows the department. Site = paid every Saturday; everyone else = paid the 15th and 30th."],
         ["Pay grade box", "TextBox", "txtPayGrade", "Pay grade label, if used."],
         ["Daily rate box", "NumericUpDown", "numDailyRate", "Daily rate in pesos."],
         ["Rate applies from date picker", "DateTimePicker", "dtpRateEffective", "The date a new daily rate starts. Past payslips keep the old rate."],
-        ["Rate history table", "DataGridView", "dgvRateHistory", "Columns: Applies From, Old Rate, New Rate, Changed By."],
+        ["Rate history table", "DataGridView", "dgvRateHistory", "Columns: Applies From, Daily Rate (newest first). Who changed it is in Edit History."],
         ["Biometric ID box", "TextBox", "txtBiometricId", "The number the scanner gives this person."],
       ]},
       { name: "Government deductions", rows: [
@@ -79,7 +80,8 @@ const hrPayroll = [
         ["TIN box", "TextBox", "txtEmployeeTin", "Optional."],
       ]},
       { name: "Form actions", rows: [
-        ["Save button", "Button", "btnSaveEmployee", "Saves the new or edited employee."],
+        ["Message", "Label", "lblEmployeeFormMsg", "\"Employee added.\", \"Saved.\" or what went wrong."],
+        ["Save button", "Button", "btnSaveEmployee", "Saves the new or edited employee. A changed daily rate starts on the \"applies from\" date."],
         ["Cancel button", "Button", "btnCancelEmployee", "Throws away unsaved edits."],
       ]},
     ],

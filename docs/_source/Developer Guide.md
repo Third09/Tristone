@@ -545,7 +545,64 @@ Dates are `DATE` (no time) and map to C# `DateOnly`, so there are no time-zone s
 - The page's search, peso column, form loading and price limit (up to ₱9,999,999,999.99) work. Deleting an unused project works.
 - Edit history: Added, Edited (Done with its date), Edited (reopened), Deleted.
 
+# Chapter 14: HR & Payroll: Employees
+
+## 14.1 The tables (script 003)
+
+- `employees`: office staff **and** site workers. Department is one of Administration, HR & Payroll, Inventory, Subcontractors, Receipts or **Site**. The pay schedule follows the department (the database checks it): **Site** = paid every Saturday, everyone else = **Office**, paid the 15th and 30th.
+- `employee_rates`: the **daily rate history**. A new rate starts on a date HR chooses, so past payslips keep the rate they were paid with. One rate per employee per date.
+- `users.employee_id` now points to `employees`, so a login can belong to an employee. (The User Accounts page will offer a dropdown of office staff next.)
+
+<!-- include: database/003_employees.sql -->
+
+## 14.2 The rules
+
+| Rule | Detail |
+|---|---|
+| Who | Admins and the HR department (Employee and Supervisor). Others are refused even if they get to the code. |
+| Required | Full name, department, daily rate (more than 0, at most ₱100,000) |
+| Biometric ID | Optional; up to 20 letters, numbers or dashes; can't belong to two people (the error says who has it) |
+| Changing the rate | Type the new rate and the date it applies from. If a rate already starts on that date, it's corrected; otherwise a new row is added. Old rates stay. |
+| Leaving | **Mark Inactive**: records kept, and any login of theirs is turned **off**. **Reactivate** brings the employee back, but the login stays off until an Admin turns it on. You can't mark yourself Inactive, or the last active Admin. |
+| Government IDs | Optional. In Edit History only *whether* each is on file is recorded, never the number. |
+| Tabs | Settings and Edit History are hidden for the HR Employee (Admin and HR Supervisor only). |
+
+<!-- include: src/Company.Shared/Models/Employee.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/EmployeeService.cs -->
+
+## 14.3 The page
+
+`HrPayrollPage` holds the 7 tabs. Each tab's content is its own `UserControl` in `Pages/Hr`, so each file stays small. Only Employees is built so far.
+
+<!-- include: src/Company.OfficeApp/Pages/HrPayrollPage.cs -->
+
+<!-- include: src/Company.OfficeApp/Pages/Hr/EmployeesTab.cs -->
+
+## 14.4 Generating big designer files
+
+Forms with dozens of controls were getting long to write by hand, so `docs/_tools/designer-gen/gen_designer.py` writes the `.Designer.cs` file from a short list: control type, name, position, size and extra properties. The output is normal designer code, so Visual Studio's designer opens it like any other form.
+
+```powershell
+python docs\_tools\designer-gen\gen_designer.py docs\_tools\designer-gen\specs\EmployeesTab.py src\Company.OfficeApp\Pages\Hr\EmployeesTab.Designer.cs
+```
+
+**Use it only to create a form.** After someone moves things in Visual Studio's designer (for example when styling from Figma), regenerating would overwrite those changes. From then on, edit in the designer.
+
+## 14.5 Testing
+
+23 checks against the real database, with temporary accounts and employees named `ZZTEST...` (all deleted afterwards):
+
+- An Inventory employee can't add employees. Missing department, zero rate and a biometric ID with a space are refused.
+- An HR Employee adds a site worker (Site schedule) and office staff (Office schedule). A duplicate biometric ID is refused with the owner's name.
+- The list shows today's rate. The schedule filter and search by biometric ID work.
+- A raise from next week keeps today at ₱600 and next week at ₱650. Correcting next week to ₱700 replaces that row (2 rows in history). Editing details without changing the rate adds no row.
+- Marking office staff Inactive turns their login off (sign-in says "turned off"). Reactivating leaves the login off.
+- The HR Employee sees 5 tabs, and the HR Supervisor sees all 7.
+- The tab's search, peso column, form loading and rate history display work.
+- Edit history is filed under HR & Payroll, and no government ID number appears in it.
+
 # Coming next
 
-- Chapter 14: the next part of the app
+- Chapter 15: the next part of the app
 - Later chapters: each part of the app, then the installers (Phase 6)

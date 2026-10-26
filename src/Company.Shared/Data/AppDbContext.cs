@@ -14,6 +14,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<PasswordRequest> PasswordRequests => Set<PasswordRequest>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Project> Projects => Set<Project>();
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<EmployeeRate> EmployeeRates => Set<EmployeeRate>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -35,5 +37,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditId);
         modelBuilder.Entity<Project>().HasKey(p => p.ProjectId);
         modelBuilder.Entity<Project>().Property(p => p.ContractPrice).HasColumnType("numeric(14,2)");
+        modelBuilder.Entity<Employee>().HasKey(e => e.EmployeeId);
+        modelBuilder.Entity<EmployeeRate>().HasKey(r => r.RateId);
+        modelBuilder.Entity<EmployeeRate>().Property(r => r.DailyRate).HasColumnType("numeric(10,2)");
     }
 }
