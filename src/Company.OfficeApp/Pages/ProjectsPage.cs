@@ -79,7 +79,7 @@ public partial class ProjectsPage : UserControl
         cboProjectStatus.SelectedItem = ProjectStatuses.Pending;
         chkShowOnWebsite.Checked = false;
         lblProjectFormMsg.Text = "";
-        ShowSummary(null);
+        _ = ShowSummaryAsync(null);
     }
 
     void StartEdit(Project p)
@@ -97,10 +97,10 @@ public partial class ProjectsPage : UserControl
         cboProjectStatus.SelectedItem = p.Status;
         chkShowOnWebsite.Checked = p.ShowOnWebsite;
         lblProjectFormMsg.Text = "";
-        ShowSummary(p);
+        _ = ShowSummaryAsync(p);
     }
 
-    void ShowSummary(Project? p)
+    async Task ShowSummaryAsync(Project? p)
     {
         if (p == null)
         {
@@ -110,7 +110,8 @@ public partial class ProjectsPage : UserControl
             lblProfitToDate.Text = "Profit to date: -";
             return;
         }
-        var s = ProjectService.Summarize(p, DateOnly.FromDateTime(DateTime.Today));
+        var s = await ProjectService.SummarizeAsync(p, DateOnly.FromDateTime(DateTime.Today));
+        if (editingProjectId != p.ProjectId) return;   // another project was picked meanwhile
         lblDaysSpent.Text = $"Days: {s.DaysText}";
         lblRevenue.Text = $"Revenue: {ProjectService.Money(s.Revenue)}";
         lblExpensesToDate.Text = $"Expenses to date: {ProjectService.Money(s.Expenses)}";
@@ -204,7 +205,7 @@ public partial class ProjectsPage : UserControl
     async void btnPrintProjectReport_Click(object sender, EventArgs e)
     {
         if (Selected is not { } row || await ProjectService.GetAsync(row.ProjectId) is not { } p) return;
-        using var report = new ProjectReport(p, ProjectService.Summarize(p, DateOnly.FromDateTime(DateTime.Today)));
+        using var report = new ProjectReport(p, await ProjectService.SummarizeAsync(p, DateOnly.FromDateTime(DateTime.Today)));
         ppdProjectReport.Document = report.Document;
         ppdProjectReport.ShowDialog(this);
     }

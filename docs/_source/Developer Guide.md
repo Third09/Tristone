@@ -695,7 +695,76 @@ dgvProjects.DataSource = rows;
 - Typing "ZZTEST Project 2" letter by letter left the list unchanged until the pause, then showed 1 row.
 - An older load is ignored once a newer one has started.
 
+# Chapter 17: Inventory & Vendors
+
+## 17.1 The tables (script 005)
+
+| Table | Holds |
+|---|---|
+| `app_settings` | Settings every PC shares. First one: `file_storage_path`, the folder for uploaded scans (`C:\TriStoneFiles` while building; a shared network folder on the server in Phase 6) |
+| `materials` | Name, category, unit, latest price, stock, minimum stock |
+| `material_usages` | Material used on a project: Waiting / Approved / Rejected, with the cost fixed when approved |
+| `vendors`, `vendor_documents` | Suppliers with bank details and VAT status; their papers (company profile, bank details, certificate of registration) |
+| `quotes`, `purchases` | Price comparison: quotes from several vendors; the chosen one becomes a purchase |
+| `deliveries` | What arrived, with the receipt: a scan, or "physical copy only" with where the paper is filed (the database refuses a delivery with neither) |
+| `equipment`, `maintenance_logs` | Tools, heavy equipment and vehicles (owned or rented); maintenance and repair history |
+
+<!-- include: database/005_inventory.sql -->
+
+## 17.2 The rules
+
+- **Stock is never typed in after a material is added.** It goes down only through *approved* usage and up only through deliveries. That keeps the stock trustworthy.
+- **Usage:** the Inventory Employee records it; the Inventory Supervisor (or an Admin) approves. On approval the stock drops and the cost (quantity x the material's price at that moment) becomes that project's material expense. Using more than what's in stock is refused.
+- **Low stock:** below the minimum shows light red; out of stock shows stronger red; the tab says "Materials (N low)".
+- **Price comparison:** the cheapest open quote is highlighted; the Supervisor approves one as the purchase and the other open quotes for that material close.
+- **Deliveries:** no approval (the purchase was already approved). Stock goes up and the material's price becomes the delivered price.
+- **Equipment:** rented equipment needs the rental company and rate. When the next maintenance date arrives the row turns light yellow and the tab says "Equipment (N due)". A maintenance entry can move that date. Repair costs are company-wide overhead.
+- **Deleting** a material, vendor or piece of equipment is refused once it has history; use the history-keeping alternative (Retired for equipment).
+- **Who:** Admins and the Inventory department. Approve buttons only for the Supervisor and Admins. Edit History for the Supervisor and Admins.
+- Vendor bank account numbers are kept out of the readable Edit History (only "on file: yes/no").
+
+## 17.3 Shared pieces added for this part (used by later parts too)
+
+**File storage.** `FileStore` copies an uploaded file into the storage folder under `folder\yyyy\MM\` with a random prefix, and the database keeps only that relative path. Only PDF, images and Word files up to 25 MB are accepted.
+
+<!-- include: src/Company.OfficeApp/Services/FileStore.cs -->
+
+**Who approves.** `Access.IsApprover(user, department)`: Admins and that department's Supervisor.
+
+**Project money in one place.** `ProjectFinance` adds up each project's revenue and expenses; the Projects page, the project report and (later) the Dashboard all use it, so they always agree. Approved material use is its first source of expenses.
+
+<!-- include: src/Company.OfficeApp/Services/ProjectFinance.cs -->
+
+**Edit History tab.** One reusable tab (`Pages/Shared/EditHistoryTab`) used by every department, one row per changed field, filterable by date, person and record, exportable to Excel. HR & Payroll's Edit History tab now works too.
+
+## 17.4 The code
+
+<!-- include: src/Company.OfficeApp/Services/MaterialService.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/PurchasingService.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/EquipmentService.cs -->
+
+The page holds 7 tabs, each its own UserControl in `Pages/Inventory`; a change in one tab refreshes the others that show the same data:
+
+<!-- include: src/Company.OfficeApp/Pages/InventoryPage.cs -->
+
+The designer generator now also makes pop-up windows (`FORM = True` in a spec), used for the Maintenance Entry window.
+
+## 17.5 Testing
+
+38 checks against the real database, with temporary accounts, a project, materials, vendors and equipment (all deleted afterwards, including the stored test file):
+
+- Someone from Receipts can't add materials; duplicates, negative prices and using more than the stock are refused; low stock is detected.
+- The Employee can't approve; the Supervisor approves (stock 100 -> 80, project expense 20 x 250 = 5,000, profit 95,000) and rejects; approving twice is refused.
+- A project with material use and a material with history can't be deleted.
+- Vendors (duplicates and bad emails refused); a vendor paper is copied into storage; a .exe is refused.
+- Two quotes: the cheapest is first; the Employee can't approve; the Supervisor's approval closes the other quote.
+- Deliveries: no receipt, or paper-only without a filed location, is refused; a scanned delivery raises stock 80 -> 130 and sets the price to 240 and marks the purchase delivered; a paper-only delivery is saved.
+- Equipment: rented without a company is refused; a past maintenance date shows as due; a maintenance entry moves the reminder; its cost counts as overhead; equipment with history can't be deleted.
+- Edit History has the changes but not the bank account number. The Inventory Employee sees 6 tabs, the Supervisor 7.
+
 # Coming next
 
-- Chapter 17: the next part of the app
+- Chapter 18: Subcontractors
 - Later chapters: each part of the app, then the installers (Phase 6)

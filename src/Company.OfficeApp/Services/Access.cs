@@ -39,6 +39,21 @@ public static class Access
         };
     }
 
+    /// <summary>
+    /// Can approve a department's requests (material usage, purchases, vouchers, receipts, cash advances):
+    /// Admins, and that department's Supervisor.
+    /// </summary>
+    public static bool IsApprover(User user, string department) =>
+        user.IsAdmin || (user.Level == UserLevels.Supervisor && user.Department == department);
+
+    /// <summary>Approver check for the signed-in user; returns the message to show, or null when allowed.</summary>
+    public static string? RequireApprover(string department) =>
+        Session.CurrentUser is { } u && IsApprover(u, department) ? null : $"Only an Admin or the {department} Supervisor can approve this.";
+
+    /// <summary>Page check for the signed-in user; returns the message to show, or null when allowed.</summary>
+    public static string? RequirePage(AppPage page) =>
+        Session.CurrentUser is { } u && CanSee(u, page) ? null : $"Only Admins and the {Title(page)} department can do this.";
+
     /// <summary>The page shown right after signing in.</summary>
     public static AppPage FirstPage(User user)
     {

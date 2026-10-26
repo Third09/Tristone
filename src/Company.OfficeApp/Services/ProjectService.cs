@@ -115,23 +115,23 @@ public static class ProjectService
     }
 
     /// <summary>
-    /// Records in other parts that use this project. Grows as Receipts (Part 5), Inventory (Part 3) and
-    /// Subcontractors (Part 4) are built; for now nothing points to projects yet.
+    /// Records in other parts that use this project (material use so far; receipts, change orders and
+    /// subcontractor jobs join as those parts are built).
     /// </summary>
-    public static Task<int> CountLinkedRecordsAsync(int projectId) => Task.FromResult(0);
+    public static async Task<int> CountLinkedRecordsAsync(int projectId)
+    {
+        using var db = Db.Open();
+        return await db.MaterialUsages.CountAsync(u => u.ProjectId == projectId);
+    }
 
     /// <summary>
-    /// Days spent, revenue, expenses to date and profit to date.
-    /// Revenue = contract price (+ approved change orders, once Receipts is built).
-    /// Expenses = receipts + materials + subcontractor payouts for this project (added as those parts are built;
-    /// payroll is company-wide overhead, not per project).
+    /// Days spent, revenue, expenses to date and profit to date, from <see cref="ProjectFinance"/>
+    /// (the same numbers the Dashboard uses).
     /// </summary>
-    public static ProjectSummary Summarize(Project p, DateOnly today)
+    public static async Task<ProjectSummary> SummarizeAsync(Project p, DateOnly today)
     {
-        var days = DaysText(p.StartDate, p.CompletedDate, p.Status, today);
-        decimal revenue = p.ContractPrice;
-        decimal expenses = 0;
-        return new ProjectSummary(days, revenue, expenses, revenue - expenses);
+        var money = await ProjectFinance.ForProjectAsync(p.ProjectId);
+        return new ProjectSummary(DaysText(p.StartDate, p.CompletedDate, p.Status, today), money.Revenue, money.Expenses, money.Profit);
     }
 
     public static string DaysText(DateOnly start, DateOnly? completed, string status, DateOnly today)

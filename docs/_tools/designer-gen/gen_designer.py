@@ -19,7 +19,7 @@ TB = "DataGridViewTextBoxColumn"
 NEEDS_INIT = ("DataGridView", "NumericUpDown")
 
 
-def generate(ns, cls, size, controls, grid_columns, events, load_event=None):
+def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_form=False):
     out = []
     w = out.append
     w(f"namespace {ns}")
@@ -97,11 +97,20 @@ def generate(ns, cls, size, controls, grid_columns, events, load_event=None):
     w("            // ")
     w("            AutoScaleDimensions = new SizeF(7F, 15F);")
     w("            AutoScaleMode = AutoScaleMode.Font;")
-    w("            AutoScroll = true;")
+    if is_form:
+        # A pop-up window: fixed size, centered on the window that opened it.
+        w(f"            ClientSize = new Size({size[0]}, {size[1]});")
+        w("            FormBorderStyle = FormBorderStyle.FixedDialog;")
+        w("            MaximizeBox = false;")
+        w("            MinimizeBox = false;")
+        w("            StartPosition = FormStartPosition.CenterParent;")
+    else:
+        w("            AutoScroll = true;")
     for t, n, *_ in controls:
         w(f"            Controls.Add({n});")
     w(f"            Name = {T(cls)};")
-    w(f"            Size = new Size({size[0]}, {size[1]});")
+    if not is_form:
+        w(f"            Size = new Size({size[0]}, {size[1]});")
     if load_event:
         w(f"            Load += {load_event};")
     for t, n, *_ in controls:
@@ -126,7 +135,7 @@ def generate(ns, cls, size, controls, grid_columns, events, load_event=None):
 if __name__ == "__main__":
     spec = runpy.run_path(sys.argv[1], init_globals={"T": T, "DDL": DDL, "TB": TB})
     code = generate(spec["NAMESPACE"], spec["CLASS"], spec["SIZE"], spec["CONTROLS"],
-                    spec.get("GRID_COLUMNS", {}), spec.get("EVENTS", {}), spec.get("LOAD_EVENT"))
+                    spec.get("GRID_COLUMNS", {}), spec.get("EVENTS", {}), spec.get("LOAD_EVENT"), spec.get("FORM", False))
     with open(sys.argv[2], "w", encoding="utf-8") as f:
         f.write(code)
     print("written", sys.argv[2])

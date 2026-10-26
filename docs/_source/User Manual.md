@@ -176,7 +176,7 @@ Use the **Search** box (name, site or client) and the **Status** and **Sector** 
 
 # 6. HR & Payroll
 
-For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. *(So far only Employees is built.)*
+For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. *(So far Employees and Edit History are built.)*
 
 ## Employees
 
@@ -206,7 +206,47 @@ Past payslips keep the old rate. The **Daily rate history** table lists every ra
 
 Use **Search** (name or Biometric ID), the **Status** filter (Active by default) and the **Pay schedule** filter. **Export** saves the list to Excel.
 
-# 7. Inventory & Vendors *(coming soon)*
+# 7. Inventory & Vendors
+
+For Admins and the Inventory department. Approve buttons are for the **Inventory Supervisor** and Admins. Tabs: Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History (Supervisor and Admins).
+
+## Materials
+
+The list of construction materials. Rows turn **light red** when stock is below the minimum and **red** when it runs out; the tab title shows how many are low, e.g. *Materials (2 low)*.
+
+- **Add Material:** name, category, unit, price, starting stock, minimum stock. Click **Save**.
+- After that, the stock changes only by itself: down when usage is approved, up when a delivery is recorded.
+
+## Material Usage
+
+1. Choose the **project** and the **material**, type the **quantity** and date, and click **Submit**. It waits for approval.
+2. The Supervisor selects it in the list and clicks **Approve** (or **Reject**). Approving lowers the stock and adds the cost to the project's expenses.
+
+At the bottom, pick a project to see all the material it has used and the total cost.
+
+## Price Comparison
+
+1. Choose the **material to buy**.
+2. Add a **quote** from each vendor (product, price, quantity). The cheapest open quote is highlighted.
+3. The Supervisor selects one and clicks **Approve as Purchase**. The other quotes for that material close.
+
+## Deliveries
+
+1. Pick the **approved purchase** (or "no approved purchase"); vendor, material and price fill in.
+2. Type the quantity received and the **receipt number**.
+3. **Attach Scan** of the receipt, or tick **Physical copy only** and type where the paper is filed.
+4. Click **Save Delivery**. The stock goes up.
+
+**Open Receipt Scan** shows a saved scan.
+
+## Equipment
+
+Tools, heavy equipment and vehicles, owned or rented (rented needs the company and rate). Set the **next maintenance** date; when it arrives the row turns **yellow** and the tab says *Equipment (N due)*. Use **Add Log Entry** after maintenance or a repair; it can set the next date. Retired equipment keeps its history.
+
+## Vendors
+
+Supplier details, bank details and VAT status. After saving a vendor, upload their papers (company profile, bank details, certificate of registration) and open them with **View**.
+
 
 # 8. Subcontractors *(coming soon)*
 

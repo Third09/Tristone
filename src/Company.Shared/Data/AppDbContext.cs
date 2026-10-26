@@ -16,6 +16,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<EmployeeRate> EmployeeRates => Set<EmployeeRate>();
+    public DbSet<AppSetting> AppSettings => Set<AppSetting>();
+    public DbSet<Material> Materials => Set<Material>();
+    public DbSet<MaterialUsage> MaterialUsages => Set<MaterialUsage>();
+    public DbSet<Vendor> Vendors => Set<Vendor>();
+    public DbSet<VendorDocument> VendorDocuments => Set<VendorDocument>();
+    public DbSet<Quote> Quotes => Set<Quote>();
+    public DbSet<Purchase> Purchases => Set<Purchase>();
+    public DbSet<Delivery> Deliveries => Set<Delivery>();
+    public DbSet<Equipment> Equipment => Set<Equipment>();
+    public DbSet<MaintenanceLog> MaintenanceLogs => Set<MaintenanceLog>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -27,6 +37,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         configurationBuilder.Properties<DateTime>().HaveColumnType("timestamp without time zone");
         configurationBuilder.Properties<DateTime?>().HaveColumnType("timestamp without time zone");
+        // Money and quantities are NUMERIC in the database (exact, never floating point).
+        configurationBuilder.Properties<decimal>().HaveColumnType("numeric");
+        configurationBuilder.Properties<decimal?>().HaveColumnType("numeric");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,5 +53,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Employee>().HasKey(e => e.EmployeeId);
         modelBuilder.Entity<EmployeeRate>().HasKey(r => r.RateId);
         modelBuilder.Entity<EmployeeRate>().Property(r => r.DailyRate).HasColumnType("numeric(10,2)");
+        modelBuilder.Entity<AppSetting>().HasKey(s => s.Key);
+        modelBuilder.Entity<Material>().HasKey(m => m.MaterialId);
+        modelBuilder.Entity<MaterialUsage>().HasKey(u => u.UsageId);
+        modelBuilder.Entity<Vendor>().HasKey(v => v.VendorId);
+        modelBuilder.Entity<VendorDocument>().HasKey(d => d.DocumentId);
+        modelBuilder.Entity<Quote>().HasKey(q => q.QuoteId);
+        modelBuilder.Entity<Purchase>().HasKey(p => p.PurchaseId);
+        modelBuilder.Entity<Delivery>().HasKey(d => d.DeliveryId);
+        modelBuilder.Entity<Equipment>().HasKey(e => e.EquipmentId);
+        modelBuilder.Entity<MaintenanceLog>().HasKey(l => l.LogId);
     }
 }
