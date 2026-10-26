@@ -175,9 +175,30 @@ git log --oneline               # list of save points
 
 Visual Studio has the same in the **Git Changes** window (View > Git Changes).
 
+# Chapter 6: The first Admin account
+
+The app has no sign-up screen (only Admins create accounts), so the very first Admin is added directly in the database, once. Open pgAdmin, click `construction_db`, then **Tools > Query Tool**, and run (with your own username, name and password):
+
+```sql
+INSERT INTO users (username, password_hash, full_name, level)
+VALUES ('YourUsername', crypt('YourPassword', gen_salt('bf', 11)), 'Your Full Name', 'Admin');
+```
+
+- `crypt(..., gen_salt('bf', 11))` stores a bcrypt hash (cost 11), never the password itself. The hash starts with `$2a$11$`.
+- `department` is left empty because Admins don't belong to one.
+- The real password is **never** written in a script file or saved in Git.
+
+Check it worked (the last column must be `t` for true):
+
+```sql
+SELECT username, level, status, password_hash = crypt('YourPassword', password_hash) AS password_works
+FROM users;
+```
+
+After this, every other account is created by an Admin inside the app (User Accounts page).
+
 # Coming next
 
-- Chapter 6: First Admin account
 - Chapter 7: Connecting the desktop app to the database (connection settings, "Database Settings" screen)
 - Chapter 8: The Login window and Main Window
 - Later chapters: each part of the app, then the installers (Phase 6)
