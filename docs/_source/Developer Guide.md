@@ -821,7 +821,62 @@ The page holds 4 tabs, each its own UserControl in `Pages/Subcontractors`:
 - The voucher prints with the bank details and approver. Deletes are blocked where history exists.
 - Edit History has the changes without the TIN or account number. The Employee sees 3 tabs, the Supervisor 4; all tabs fill with data.
 
+# Chapter 19: Receipts & change orders
+
+## 19.1 The tables (script 007)
+
+| Table | Holds |
+|---|---|
+| `receipts` | Every expense: receipt no., date, merchant, amount, category, Project (with project_id) or Overhead, the copy (scan file, or paper + where filed, or no receipt + reason), Waiting / Approved / Rejected |
+| `change_orders` | CO-001...: project, date requested, description, cost change (+/-), days change (+/-), signed document, Waiting / Approved / Rejected |
+
+Two checks in the database: a Project receipt must have a project (and an Overhead one must not); and every receipt has exactly one kind of copy (scan, paper with location, or "no receipt" with a reason).
+
+Delivery receipts are **not** copied into `receipts`: the vault reads them straight from Inventory's `deliveries` and shows them as "Stock purchase". That way nothing is stored twice and stock purchases can never be counted as project expenses by mistake.
+
+<!-- include: database/007_receipts.sql -->
+
+## 19.2 The rules
+
+- **Receipts:** the Receipts Employee adds; the Receipts Supervisor (or an Admin) approves or rejects, one or several at once. Only approved receipts count. Waiting or rejected ones can be edited (saving sends them back to Waiting); approved ones can't.
+- **Money:** approved Project receipts are project expenses in `ProjectFinance`; approved Overhead receipts are company overhead (Dashboard).
+- **No receipt:** needs a reason and shows under Needs Review until decided. Attaching a receipt later clears the flag and keeps the decision.
+- **Change orders:** logged by the Receipts department, approved by an Admin only. On approval the cost change is added to revenue (`ProjectFinance.ChangeOrders`) and the days move the project's target end date (also written to the Admin's project history). The revised price can't go below zero; a change order needs a cost or days change.
+- A project with receipts or change orders can't be deleted.
+
+## 19.3 The code
+
+<!-- include: src/Company.OfficeApp/Services/ReceiptService.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/ChangeOrderService.cs -->
+
+Reports build a list of rows; `TableReport` prints any such list over as many pages as needed and can save it straight to PDF with Windows' "Microsoft Print to PDF" printer:
+
+<!-- include: src/Company.OfficeApp/Services/ReceiptReports.cs -->
+
+<!-- include: src/Company.OfficeApp/Services/TableReport.cs -->
+
+`ProjectFinance` now has all four sources:
+
+<!-- include: src/Company.OfficeApp/Services/ProjectFinance.cs -->
+
+The page holds 5 tabs (Pages/Receipts) plus two pop-up windows: Receipt Entry (also used for "Attach Receipt") and Receipt Viewer.
+
+<!-- include: src/Company.OfficeApp/Pages/ReceiptsPage.cs -->
+
+## 19.4 Testing
+
+55 checks against the real database (temporary accounts, project, receipts, a delivery and files, all deleted afterwards):
+
+- Inventory staff can't add receipts; missing number, missing copy, paper without location, project expense without a project, future dates and no-receipt without a reason are refused.
+- Waiting receipts don't count; the Employee can't approve; the Supervisor approves two at once and rejects one; approved ones can't be edited.
+- The approved project receipt (1,250) counts, the rejected one doesn't, the overhead one counts as overhead; the approved no-receipt expense (80) brings it to 1,330; attaching its receipt later moves it to the vault, still approved.
+- A delivery from Inventory shows as a 2,500 stock purchase, isn't shown under the project and isn't counted.
+- Change orders: CO-001 format; preview 500,000 -> 550,000 and end date +10 days; Receipts staff and the Receipts Supervisor can't approve; the Admin's approval changes revenue and the end date; a rejected one changes nothing; below-zero prices refused.
+- The CO form, receipt sheets with the scan, a 4-page report and a PDF all print. Weekly and monthly summaries add up.
+- Employee sees 4 tabs, Supervisor 5; "Needs Review (1)"; the viewer shows the scan.
+
 # Coming next
 
-- Chapter 19: Receipts & change orders
+- Chapter 20: Dashboard
 - Later chapters: each part of the app, then the installers (Phase 6)

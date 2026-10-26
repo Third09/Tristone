@@ -69,6 +69,7 @@ public partial class MainForm : Form
             AppPage.HrPayroll => new HrPayrollPage(),
             AppPage.Inventory => new InventoryPage(),
             AppPage.Subcontractors => new SubcontractorsPage(),
+            AppPage.Receipts => new ReceiptsPage(),
             _ => new PlaceholderPage(Access.Title(page)),   // real pages replace this as they're built
         };
 

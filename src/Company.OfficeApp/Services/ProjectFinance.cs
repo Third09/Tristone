@@ -39,13 +39,14 @@ public static class ProjectFinance
             .ToDictionaryAsync(x => x.Id, x => x.Sum);
 
         var payouts = await SubBillingService.PayoutsByProjectAsync(db, ids);
+        var receipts = await ReceiptService.ByProjectAsync(db, ids);
+        var changeOrders = await ChangeOrderService.ByProjectAsync(db, ids);
 
-        // Receipts and change orders (Part 5) join here when built.
         return prices.ToDictionary(p => p.ProjectId, p => new ProjectMoney(
             p.ContractPrice,
-            ChangeOrders: 0,
+            ChangeOrders: changeOrders.GetValueOrDefault(p.ProjectId),
             Materials: materials.GetValueOrDefault(p.ProjectId),
-            Receipts: 0,
+            Receipts: receipts.GetValueOrDefault(p.ProjectId),
             Payouts: payouts.GetValueOrDefault(p.ProjectId)));
     }
 

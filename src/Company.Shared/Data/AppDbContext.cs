@@ -34,6 +34,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SubProgress> SubProgress => Set<SubProgress>();
     public DbSet<SubVoucher> SubVouchers => Set<SubVoucher>();
     public DbSet<SubPayout> SubPayouts => Set<SubPayout>();
+    public DbSet<Receipt> Receipts => Set<Receipt>();
+    public DbSet<ChangeOrder> ChangeOrders => Set<ChangeOrder>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -80,5 +82,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<SubProgress>().HasKey(p => p.ProgressId);
         modelBuilder.Entity<SubVoucher>().HasKey(v => v.VoucherId);
         modelBuilder.Entity<SubPayout>().HasKey(p => p.PayoutId);
+
+        modelBuilder.Entity<Receipt>().HasKey(r => r.ReceiptId);
+        modelBuilder.Entity<ChangeOrder>().HasKey(c => c.ChangeOrderId);
     }
 }

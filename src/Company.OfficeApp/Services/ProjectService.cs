@@ -115,14 +115,15 @@ public static class ProjectService
     }
 
     /// <summary>
-    /// Records in other parts that use this project (material use and subcontractor jobs so far; receipts and
-    /// change orders join when built).
+    /// Records in other parts that use this project: material use, subcontractor jobs, receipts, change orders.
     /// </summary>
     public static async Task<int> CountLinkedRecordsAsync(int projectId)
     {
         using var db = Db.Open();
         return await db.MaterialUsages.CountAsync(u => u.ProjectId == projectId)
-             + await db.SubJobs.CountAsync(j => j.ProjectId == projectId);
+             + await db.SubJobs.CountAsync(j => j.ProjectId == projectId)
+             + await db.Receipts.CountAsync(r => r.ProjectId == projectId)
+             + await db.ChangeOrders.CountAsync(c => c.ProjectId == projectId);
     }
 
     /// <summary>

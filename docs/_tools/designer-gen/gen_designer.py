@@ -16,7 +16,7 @@ def T(s):
 
 DDL = {"DropDownStyle": "ComboBoxStyle.DropDownList"}
 TB = "DataGridViewTextBoxColumn"
-NEEDS_INIT = ("DataGridView", "NumericUpDown")
+NEEDS_INIT = ("DataGridView", "NumericUpDown", "PictureBox")
 
 
 def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_form=False):

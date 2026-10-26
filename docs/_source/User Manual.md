@@ -283,6 +283,41 @@ Once billing starts, only the scope and dates can change.
 
 Payouts count as the project's expenses on the Projects page and Dashboard.
 
-# 9. Receipts *(coming soon)*
+# 9. Receipts & Change Orders
+
+For Admins and the Receipts department. Approve buttons for receipts are for the **Receipts Supervisor** and Admins; change orders are approved by an **Admin** only. Tabs: Receipt Vault, Needs Review, Change Orders, Reports, Edit History (Supervisor and Admins).
+
+## Receipt Vault
+
+All receipts. Filter by project (or Company Overhead), dates, category, status, or search by receipt number / merchant. Material delivery receipts from Inventory also appear here marked **Stock purchase** (read only; they are counted when the material is used, not twice).
+
+**Add a receipt:** click **Add Receipt**, then:
+
+1. Receipt number, date, merchant, amount and category.
+2. **Project expense** (choose the project) or **Company overhead** (rent, electricity, internet, office supplies...).
+3. The copy: **Attach Scan** (image, PDF or Word), or tick **Physical copy only** and type where the paper is filed, or tick **No receipt at all** and type why.
+4. Click **Save**. It waits for the Supervisor's approval.
+
+**Approve:** the Supervisor selects one or more waiting receipts (Ctrl+click) and clicks **Approve** (or **Reject**). Only approved receipts count as expenses. A waiting or rejected receipt can be fixed with **Edit**; saving sends it back for approval.
+
+**Open** (or double-click) shows the scan and details; **Zoom In / Out**, **Open Original** for PDF/Word, **Print** for a summary sheet. **Print Selected** prints a sheet for each selected receipt.
+
+## Needs Review
+
+Expenses with no receipt (the tab title shows how many are waiting, e.g. *Needs Review (2)*). The Supervisor approves or rejects them. If the receipt turns up later, select the expense and click **Attach Receipt**: type its number and attach the scan (or paper location). It moves to the vault and keeps its approval.
+
+## Change Orders
+
+1. Click **New Change Order**. Choose the project, the date the client asked, describe the change, and type the **cost change** and/or **days change** (use minus for less).
+2. The **budget impact** shows the contract price and end date now and after.
+3. **Attach Signed Document** (the client's signed paper), then **Submit**. It waits for an Admin.
+4. An Admin selects it and clicks **Approve** (or **Reject**). Once approved, the project's revenue and target end date change everywhere.
+
+**Print Form** gives the change order form for signing (choose "Microsoft Print to PDF" for a PDF). Numbers are given automatically: CO-001, CO-002...
+
+## Reports
+
+Choose the report (**Expense & Receipt Report**, **Weekly** or **Monthly Expense Summary**), the project (or All / Company Overhead) and the dates. Then **Preview**, **Print**, **Save as PDF** or **Export Excel**. Reports include approved expenses only.
+
 
 # 10. Website Admin *(coming soon)*

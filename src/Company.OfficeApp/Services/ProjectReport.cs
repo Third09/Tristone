@@ -31,7 +31,7 @@ public sealed class ProjectReport : IDisposable
             ("Completed", p.CompletedDate?.ToString("MMMM d, yyyy") ?? "-"),
             ("Days", s.DaysText),
             ("", ""),
-            ("Contract price (revenue)", ProjectService.Money(s.Revenue)),
+            ("Revenue (contract + change orders)", ProjectService.Money(s.Revenue)),
             ("Expenses to date", ProjectService.Money(s.Expenses)),
             ("Profit to date", ProjectService.Money(s.Profit)),
         ];

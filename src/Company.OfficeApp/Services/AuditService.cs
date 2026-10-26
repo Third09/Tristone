@@ -116,6 +116,7 @@ public static class AuditService
         "sub_progress" => "progress",
         "sub_vouchers" => "voucher",
         "sub_payouts" => "payout",
+        "change_orders" => "change order",
         _ => table.TrimEnd('s').Replace("_", " "),
     };
 }
