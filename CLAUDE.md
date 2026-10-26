@@ -42,7 +42,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - psql without a password prompt: put `localhost:5432:*:postgres:<password>` in `%APPDATA%\postgresql\pgpass.conf`, then `"C:\Program Files\PostgreSQL\18\bin\psql.exe" -w -h localhost -U postgres -d construction_db`. Never write the real password in files or Git.
 - First Admin is inserted by hand (Developer Guide chapter 6). On this project it's `ITmorilla` (Shem John Adrian P. Morilla). Not linked to an employee yet. Password is weak and must be changed before real use.
 - The app's own DB settings are per PC: `C:\ProgramData\TriStone\OfficeApp\dbsettings.json`, with the password encrypted by DPAPI.
-- **Testing approach used so far:** a throwaway console app (net10.0-windows, references Company.OfficeApp) that runs real checks against the real DB, run on an STA thread with `WindowsFormsSynchronizationContext` + `Application.Run()`, with forms shown via `ShowDialog`. Test data is named `zz_...` (users) / `ZZTEST...` (records) and deleted afterwards. Cleanup order: `users.employee_id = NULL` -> employee_rates -> employees -> projects -> audit_logs / login_logs / password_requests -> users. Test windows appear on the real screen.
+- **Testing approach used so far:** a throwaway console app (net10.0-windows, references Company.OfficeApp) that runs real checks against the real DB, run on an STA thread with `WindowsFormsSynchronizationContext` + `Application.Run()`, with forms shown via `ShowDialog`. Test data is named `zz_...` (users) / `ZZTEST...` (records) and deleted afterwards. Cleanup: a `cleanup.sql` deletes everything named zz_/ZZTEST in foreign-key order (child tables first, users last), plus any test files in the storage folder. Test windows appear on the real screen.
 - Commit messages: write them with a bash heredoc (`git commit -F -`). PowerShell here-strings with quotes break.
 
 ## Code conventions
@@ -53,7 +53,11 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - Designer files: plain designer code. Big ones can be generated once with `docs/_tools/designer-gen`. **Never regenerate after the owner edits a form in the VS designer.**
 - Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15).
 - Responsive (ch. 16), every list page: `Responsive.FitGrid(this, grid)` in the constructor; search boxes via `Responsive.OnTypingPause` (not `TextChanged` in the designer); loads use `LatestOnly` tickets + `Responsive.Busy(this)`. App is PerMonitorV2 DPI-aware and MainForm opens maximized.
-- Every add/edit/delete writes `audit_logs` through `AuditService.Add` (department = which Edit History tab shows it). Never store passwords, hashes, security answers or government ID numbers in it.
+- Every add/edit/delete writes `audit_logs` through `AuditService.Add` (department = which Edit History tab shows it). Never store passwords, hashes, security answers, government ID numbers or bank account numbers in it. `Pages/Shared/EditHistoryTab` shows it per department.
+- Project revenue/expenses only through `Services/ProjectFinance` (Projects page, report and Dashboard all use it); add each new money source there and to `ProjectService.CountLinkedRecordsAsync`. Payroll and equipment repairs are overhead, not project expenses.
+- Approve buttons/actions: `Access.IsApprover(user, dept)` = Admins + that department's Supervisor; services re-check with `RequireApprover`.
+- Uploaded files: `FileStore` (folder from `app_settings.file_storage_path`, DB keeps relative paths; pdf/images/Word, 25 MB max).
+- designer-gen: `FORM = True` in a spec makes a pop-up window instead of a UserControl.
 - Dates: `DATE` -> `DateOnly`; timestamps are plain `timestamp` (AppDbContext maps DateTime to "timestamp without time zone", which is required). Money: `NUMERIC`, shown with `ProjectService.Money` (en-PH, ₱).
 - Excel export: `ExcelExport` (ClosedXML). Printing: `PrintDocument` + `PrintPreviewDialog` ("Microsoft Print to PDF" for PDFs).
 - New DB change = new numbered script. Never edit an applied script.
@@ -85,7 +89,7 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 
 ## Status (as of 2026-10-27)
 
-Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up).
-DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee.
+Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs).
+DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee, 005 inventory (+ app_settings).
 
-Next candidates: Attendance tab (needs the scanner's sample export file), Dashboard, Inventory, Subcontractors, Receipts, Website Admin, then the API + website Contact form, then Phase 6 installers.
+Next (owner said: build them all, test, guides, push after each): Subcontractors, Receipts + change orders, Dashboard. Attendance tab waits for the scanner's sample export file. Then Website Admin, then the API + website Contact form, then Phase 6 installers.
