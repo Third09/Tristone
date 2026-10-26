@@ -16,6 +16,23 @@ public partial class MainForm : Form
         var u = Session.CurrentUser!;
         lblUserName.Text = $"Signed in as {u.FullName} ({u.Username})";
         lblUserRole.Text = u.IsAdmin ? "Admin" : $"{u.Department} - {u.Level}";
+        btnNotifications.Visible = u.IsAdmin;
+    }
+
+    async void MainForm_Load(object sender, EventArgs e) => await RefreshNotificationCountAsync();
+
+    /// <summary>Admin only: number of waiting Forgot Password requests on the notification button.</summary>
+    async Task RefreshNotificationCountAsync()
+    {
+        if (!btnNotifications.Visible) return;
+        var count = await PasswordService.CountWaitingRequestsAsync();
+        btnNotifications.Text = $"Password requests ({count})";
+    }
+
+    async void btnNotifications_Click(object sender, EventArgs e)
+    {
+        using (var f = new NotificationsForm()) f.ShowDialog(this);
+        await RefreshNotificationCountAsync();
     }
 
     async void btnSignOut_Click(object sender, EventArgs e)

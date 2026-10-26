@@ -299,8 +299,63 @@ The rules were tested against the real database with a temporary Employee accoun
 - Sign in: unknown username refused; right password works even with different letter case; sign out clears the session; wrong passwords count down 4, 3, 2, 1; the 5th locks the account; a locked account is refused even with the right password.
 - `login_logs` received one correct row per attempt, with the PC name.
 
+# Chapter 9: Forgot Password
+
+## 9.1 The rules
+
+From the Project Outline (Part 0): only Admins change passwords; Employees and Supervisors can't reset their own.
+
+| Who forgot | What happens |
+|---|---|
+| Employee / Supervisor | Forgot Password sends a **request** to the Admins (`password_requests`, status Waiting). A second request while one is waiting is not duplicated. Works even if the account is Locked. |
+| Admin | Answers their **security question**, then types a new password. Wrong answers are counted; after 10 failures in total only another Admin can reset it. |
+| Admin with no security question set | Told to ask another Admin. |
+| Disabled account | Refused: "This account is turned off." |
+
+When an Admin sets a new password (or an Admin resets their own with the security question):
+
+- the password is replaced with a new bcrypt hash;
+- a **Locked** account becomes **Active** and the wrong-password counter goes back to 0;
+- every waiting request from that person is marked **Done**, with which Admin handled it and when;
+- `login_logs` gets *Password Changed* (and *Account Unlocked* if it was locked).
+
+**New password rules:** at least 8 characters, with at least one letter and one number. The **Generate** button makes a random 10-character password without look-alike characters (no 0/O or 1/l/I), so it's easy to read out loud.
+
+**Security answers** ignore spaces at the ends and capital letters ("Manila " = "manila"). They are stored as bcrypt hashes, like passwords.
+
+## 9.2 The code
+
+<!-- include: src/Company.OfficeApp/Services/PasswordService.cs -->
+
+## 9.3 Forgot Password window
+
+One window with three steps on top of each other (three `Panel`s); only one is visible at a time.
+
+<!-- include: src/Company.OfficeApp/Forms/ForgotPasswordForm.cs -->
+
+## 9.4 Admin side: requests and Set New Password
+
+For now the main window has a **Password requests (N)** button, shown to Admins only. It becomes the notification bell in the top bar when the sidebar is built.
+
+<!-- include: src/Company.OfficeApp/Forms/NotificationsForm.cs -->
+
+<!-- include: src/Company.OfficeApp/Forms/SetNewPasswordForm.cs -->
+
+The main window refreshes the count when it opens and after the Notifications window closes:
+
+<!-- include: src/Company.OfficeApp/Forms/MainForm.cs -->
+
+## 9.5 Testing
+
+Tested against the real database with three temporary accounts (an Employee, a Locked Supervisor and an Admin with a security question), deleted afterwards with their log rows and requests. 22 checks passed, including:
+
+- requests are sent once, even from a Locked account; the waiting count and list are right;
+- password rules refuse short, letter-only and mismatched passwords; generated passwords pass;
+- a non-Admin can't set passwords; an Admin setting one unlocks the account, resets the counter and closes the request; Dismiss closes a request without changing the password;
+- the person signs in with the new password;
+- an Employee can't use the security question; a wrong Admin answer is refused; a weak new password is refused; the right answer with extra spaces and capitals works.
+
 # Coming next
 
-- Chapter 9: Forgot Password (request to Admins, Admin security question)
 - Chapter 10: Main window sidebar by role, and the "Still there?" idle check
 - Later chapters: each part of the app, then the installers (Phase 6)

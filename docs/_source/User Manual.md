@@ -48,6 +48,31 @@ If it doesn't work, the message under the password box tells you why:
 | This account is locked... | Ask an Admin to unlock it. |
 | This account is turned off... | Your account was disabled. Ask an Admin. |
 
+## Forgot your password?
+
+**Employees and Supervisors**
+
+1. On the Sign In window, click **Forgot password?**
+2. Type your username and click **Next**.
+3. The message says your request was sent to the Admins. An Admin will give you a new password in person. You can't change it yourself.
+
+**Admins**
+
+1. Click **Forgot password?**, type your username, click **Next**.
+2. Answer your **security question** (capital letters don't matter).
+3. Type a new password twice (at least 8 characters, with a letter and a number) and click **Reset Password**.
+
+If you never set a security question, ask another Admin to set a new password for you.
+
+## For Admins: handling password requests
+
+1. In the main window, the **Password requests (N)** button shows how many people are waiting.
+2. Click it, select the person, and click **Set New Password**.
+3. Click **Generate** (or type one), then **Copy**, and click **Save**.
+4. Give the new password to the person in person. If their account was locked, it is unlocked automatically.
+
+Use **Dismiss** if a request was sent by mistake. Every change is recorded in the log.
+
 ## Signing out
 
 Click **Sign Out**, or close the window. Both are recorded.

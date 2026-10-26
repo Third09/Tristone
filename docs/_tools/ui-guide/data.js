@@ -51,22 +51,31 @@ const shared = [
     whoSees: "Everyone",
     note: "Step 1 asks for the username. Employees and Supervisors then see Step 2A (request sent to Admin). Admins see Step 2B (security question).",
     groups: [
+      { name: "Steps (only one shows at a time)", rows: [
+        ["Step 1 area", "Panel", "pnlStep1", "Holds the Step 1 controls."],
+        ["Step 2A area", "Panel", "pnlRequestSent", "Holds the Step 2A controls."],
+        ["Step 2B area", "Panel", "pnlAdmin", "Holds the Step 2B controls."],
+      ]},
       { name: "Step 1: Enter username", rows: [
         ["Instructions text", "Label", "lblForgotInfo", "\"Enter your username.\""],
-        ["Username box", "TextBox", "txtForgotUsername", "Type username."],
+        ["Username box", "TextBox", "txtForgotUsername", "Type username (filled in from the Login Window if already typed)."],
+        ["Error message", "Label", "lblForgotError", "e.g. \"No account with that username\", \"This account is turned off\", or \"No security question is set\" (Admin)."],
         ["Next button", "Button", "btnForgotNext", "Checks the account type and moves to Step 2A or 2B."],
         ["Cancel button", "Button", "btnForgotCancel", "Closes the window."],
       ]},
       { name: "Step 2A: Employee / Supervisor", rows: [
-        ["Confirmation text", "Label", "lblRequestSent", "\"Your request was sent to the Admin. They will give you a new password.\""],
+        ["Confirmation text", "Label", "lblRequestSent", "\"Your request was sent to the Admins. They will give you a new password.\" (or \"You already sent a request\")."],
         ["Close button", "Button", "btnForgotClose", "Closes the window."],
       ]},
       { name: "Step 2B: Admin only", rows: [
+        ["Security question caption", "Label", "lblQuestionCaption", "\"Security question:\""],
         ["Security question text", "Label", "lblSecurityQuestion", "Shows the Admin's own security question."],
         ["Answer box", "TextBox", "txtSecurityAnswer", "Type the answer."],
         ["New password box", "TextBox (UseSystemPasswordChar = True)", "txtNewPassword", "Type the new password."],
         ["Confirm password box", "TextBox (UseSystemPasswordChar = True)", "txtConfirmPassword", "Type the new password again."],
-        ["Reset Password button", "Button", "btnResetPassword", "Checks the answer and saves the new password."],
+        ["Error message", "Label", "lblAdminError", "e.g. \"That answer is not correct\" or a password rule."],
+        ["Reset Password button", "Button", "btnResetPassword", "Checks the answer and saves the new password (also unlocks the account)."],
+        ["Cancel button", "Button", "btnAdminCancel", "Closes the window."],
       ]},
     ],
   },
@@ -131,7 +140,9 @@ const shared = [
     whoSees: "Admin only",
     groups: [
       { name: "Main section", rows: [
-        ["Password requests table", "DataGridView", "dgvPasswordRequests", "Columns: Name, Username, Department, Requested At, Status."],
+        ["Title text", "Label", "lblTitle", "\"Forgot Password requests\"."],
+        ["Password requests table", "DataGridView", "dgvPasswordRequests", "Waiting requests, oldest first. Columns: Name, Username, Department, Level, Requested At."],
+        ["Empty message", "Label", "lblEmpty", "\"No waiting requests.\" Shown when the list is empty."],
         ["Set New Password button", "Button", "btnSetNewPassword", "Opens the Set New Password window for the selected request."],
         ["Dismiss button", "Button", "btnDismissRequest", "Removes a request without resetting (e.g. sent by mistake). Still kept in the logs."],
         ["Close button", "Button", "btnCloseNotifications", "Closes the window."],
@@ -146,10 +157,12 @@ const shared = [
     groups: [
       { name: "Main section", rows: [
         ["User text", "Label", "lblResetUser", "Shows whose password is being reset."],
+        ["Password rules text", "Label", "lblRules", "\"At least 8 characters, with a letter and a number.\""],
         ["New password box", "TextBox", "txtResetPassword", "Type or generate the new password."],
         ["Generate button", "Button", "btnGeneratePassword", "Fills in a random password."],
         ["Copy button", "Button", "btnCopyPassword", "Copies the password so Admin can give it to the person."],
-        ["Save button", "Button", "btnSaveNewPassword", "Saves the new password. The person signs in with it right away."],
+        ["Message", "Label", "lblResetError", "\"Copied.\" or a password rule that wasn't met."],
+        ["Save button", "Button", "btnSaveNewPassword", "Saves the new password, unlocks a Locked account and closes their request. The person signs in with it right away."],
         ["Cancel button", "Button", "btnCancelNewPassword", "Closes without changing anything."],
       ]},
     ],

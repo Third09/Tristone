@@ -50,9 +50,11 @@ public partial class LoginForm : Form
         }
     }
 
-    void lnkForgotPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
-        MessageBox.Show(this, "Forgot Password is the next screen to be built.", "Forgot Password",
-            MessageBoxButtons.OK, MessageBoxIcon.Information);
+    void lnkForgotPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        using var f = new ForgotPasswordForm(txtUsername.Text);
+        f.ShowDialog(this);
+    }
 
     void lnkDbSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
