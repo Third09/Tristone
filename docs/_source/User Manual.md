@@ -83,6 +83,19 @@ Click **Sign Out** at the bottom of the left sidebar, or close the window. Both 
 - **Top:** the page name, your name, and your department and level. Admins also see **Password requests (N)**.
 - **Middle:** the page you chose.
 
+## My Account
+
+Click **My Account** in the sidebar to see your name, username, department and level.
+
+**Admins only:**
+
+- **Change password:** type your current password, then the new one twice (at least 8 characters, with a letter and a number), and click **Save Password**.
+- **Security question:** pick a question (or type your own), type the answer, type your current password to confirm, and click **Save Security Question**. You'll need this answer if you ever use *Forgot password?*. Capital letters don't matter.
+
+**Set your security question as soon as you get an Admin account.** Without it, only another Admin can reset your password.
+
+Employees and Supervisors can't change their password here; ask an Admin.
+
 ## "Still there?"
 
 If you don't touch the keyboard or mouse for **5 minutes**, a *"Still there?"* message appears with a 60-second countdown.

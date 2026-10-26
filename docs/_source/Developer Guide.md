@@ -413,7 +413,41 @@ A test program opened the real main window as three temporary accounts and ran t
 - Inventory Supervisor sees Dashboard, Inventory and My Account.
 - The popup appears about 3 seconds after the last activity. **Stay** keeps the session (and the popup comes back after the next idle period). **Sign Out** signs out as a normal Logout. No answer signs out after 60 seconds as **Idle Sign Out**.
 
+# Chapter 11: My Account
+
+## 11.1 The rules
+
+- Everyone sees their name, username, department and level.
+- **Only Admins** can change their own password and set a security question. Employees and Supervisors see *"Only Admins can change passwords... ask an Admin"* instead; the service refuses them too, so the rule can't be bypassed.
+- Both changes ask for the **current password** first, so nobody can change them on a PC someone left signed in.
+- New passwords follow the same rules as everywhere (8+ characters, a letter and a number) and must differ from the current one.
+- The security answer is stored as a bcrypt hash of the answer with spaces trimmed and in lower case, the same way Forgot Password checks it.
+
+## 11.2 Edit history
+
+Setting the security question writes one row to `audit_logs` (the first use of that table): table `users`, action *Edited*, the old and new **question**, and `"security_answer": "(changed)"`. The answer itself is never written anywhere readable. Password changes go to `login_logs` as *Password Changed*.
+
+<!-- include: src/Company.Shared/Models/AuditLog.cs -->
+
+## 11.3 The code
+
+<!-- include: src/Company.OfficeApp/Services/AccountService.cs -->
+
+The page (plain layout for now). `MainForm.ShowPage` now loads it for `AppPage.MyAccount`; every other page still shows the placeholder.
+
+<!-- include: src/Company.OfficeApp/Pages/MyAccountPage.cs -->
+
+## 11.4 Testing
+
+17 checks against the real database, with a temporary Employee and Admin (deleted afterwards with all their log and history rows):
+
+- Employee: password and security parts hidden, "ask an Admin" shown; the service refuses both changes.
+- Admin: both parts shown. The security question is refused with a wrong current password, an empty question or an empty answer, and saved otherwise.
+- Own password: refused if the current password is wrong, the new one is weak, or it's the same as the current one; otherwise changed, and signing in with it works.
+- Full loop: the question set in My Account works in Forgot Password with the answer typed in capitals, and signing in after the reset works.
+- The `audit_logs` row has the question but not the answer.
+
 # Coming next
 
-- Chapter 11: My Account (and the Admin security question)
+- Chapter 12: User Accounts page (Admin creates logins, unlocks, disables)
 - Later chapters: each part of the app, then the installers (Phase 6)

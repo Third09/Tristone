@@ -61,7 +61,11 @@ public partial class MainForm : Form
     {
         if (!Access.CanSee(Session.CurrentUser!, page)) return;
 
-        UserControl view = new PlaceholderPage(Access.Title(page));   // real pages replace this as they're built
+        UserControl view = page switch
+        {
+            AppPage.MyAccount => new MyAccountPage(),
+            _ => new PlaceholderPage(Access.Title(page)),   // real pages replace this as they're built
+        };
 
         foreach (Control old in pnlContent.Controls) old.Dispose();
         pnlContent.Controls.Clear();

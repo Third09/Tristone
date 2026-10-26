@@ -12,6 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users => Set<User>();
     public DbSet<LoginLog> LoginLogs => Set<LoginLog>();
     public DbSet<PasswordRequest> PasswordRequests => Set<PasswordRequest>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -30,5 +31,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<User>().HasKey(u => u.UserId);
         modelBuilder.Entity<LoginLog>().HasKey(l => l.LogId);
         modelBuilder.Entity<PasswordRequest>().HasKey(r => r.RequestId);
+        modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditId);
     }
 }

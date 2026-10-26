@@ -137,7 +137,7 @@ public static class PasswordService
     /// <summary>Security answers ignore spaces at the ends and upper/lower case ("Manila " = "manila").</summary>
     public static string NormalizeAnswer(string answer) => answer.Trim().ToLowerInvariant();
 
-    static async Task ApplyNewPasswordAsync(AppDbContext db, User user, string newPassword, string details)
+    internal static async Task ApplyNewPasswordAsync(AppDbContext db, User user, string newPassword, string details)
     {
         var wasLocked = user.Status == UserStatuses.Locked;
 
