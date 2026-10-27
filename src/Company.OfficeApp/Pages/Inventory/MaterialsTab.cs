@@ -71,8 +71,10 @@ public partial class MaterialsTab : UserControl
         editingId = null;
         lblFormMode.Text = "New material";
         txtMaterialName.Clear();
-        cboMaterialCategory.Text = "";
-        cboMaterialUnit.Text = "";
+        // SelectedIndex, not Text = "": clearing only the text keeps the old choice selected underneath,
+        // and picking that same choice again then doesn't register.
+        cboMaterialCategory.SelectedIndex = -1;
+        cboMaterialUnit.SelectedIndex = -1;
         numMaterialPrice.Value = 0;
         numStartingStock.Value = 0;
         numStartingStock.Enabled = lblStartingStock.Enabled = true;
