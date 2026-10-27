@@ -436,7 +436,7 @@ const dashboard = [
       { name: "KPI cards (each card is a Panel with a title Label and a value Label inside)", rows: [
         ["Completed Projects card", "Panel + Label", "pnlKpiCompleted / lblKpiCompleted", "Number of projects with status Done in the period."],
         ["Gross Revenue card", "Panel + Label", "pnlKpiRevenue / lblKpiRevenue", "Revenue (contract + approved change orders) of projects finished in the period. Hidden in a department view."],
-        ["Operational Expenses card", "Panel + Label", "pnlKpiExpenses / lblKpiExpenses", "Expenses of those finished projects (materials, receipts, subcontractor payouts) + overhead in the period (overhead receipts, equipment repairs, payroll later). In a department view: only that department's expenses, titled e.g. \"Inventory Expenses\"."],
+        ["Operational Expenses card", "Panel + Label", "pnlKpiExpenses / lblKpiExpenses", "Expenses of those finished projects (materials, receipts, subcontractor payouts) + overhead in the period (overhead receipts and equipment repairs; payroll joins when it is built). In a department view: only that department's expenses, titled e.g. \"Inventory Expenses\"."],
         ["Net Revenue card", "Panel + Label", "pnlKpiNet / lblKpiNet", "Gross Revenue minus Operational Expenses. Hidden in a department view."],
         ["Expense breakdown", "Label", "lblKpiBreakdown", "One line under the cards: where the expenses come from."],
       ]},
@@ -448,7 +448,7 @@ const dashboard = [
         ["Export button", "Button", "btnExportTopProjects", "Saves the table as an Excel file."],
       ]},
       { name: "Log History (Admin only)", rows: [
-        ["Activity type dropdown", "ComboBox", "cboLogType", "All, Login / Logout, Failed Login (incl. locks), Password Change, Password Request. Time In / Out joins when Attendance is built."],
+        ["Activity type dropdown", "ComboBox", "cboLogType", "All, Login / Logout (incl. idle sign-outs), Failed Login (incl. locks and unlocks), Password Change, Password Request."],
         ["Search box", "TextBox", "txtLogSearch", "Search by name or username."],
         ["Log table", "DataGridView", "dgvLogHistory", "Columns: Date & Time, Name, Department, Activity, Details."],
         ["Export button", "Button", "btnExportLogs", "Saves the filtered log as an Excel file."],
@@ -490,8 +490,8 @@ const projects = [
       ]},
       { name: "Project summary (read only, calculated by the app)", rows: [
         ["Days spent", "Label", "lblDaysSpent", "e.g. \"Day 45\", \"Starts in 10 days\", \"Finished in 120 days\" or \"Cancelled\"."],
-        ["Revenue", "Label", "lblRevenue", "Contract price (plus approved change orders, once Receipts is built)."],
-        ["Expenses to date", "Label", "lblExpensesToDate", "Receipts + materials + subcontractor payouts for this project (0 until those parts are built)."],
+        ["Revenue", "Label", "lblRevenue", "Contract price plus approved change orders."],
+        ["Expenses to date", "Label", "lblExpensesToDate", "Approved receipts + approved material usage + subcontractor payouts for this project."],
         ["Profit to date", "Label", "lblProfitToDate", "Revenue minus Expenses to date."],
       ]},
       { name: "Form actions", rows: [

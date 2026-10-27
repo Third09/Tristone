@@ -44,12 +44,15 @@ function table(rows) {
     ["Element (plain word, for Figma)", "WinForms control (Toolbox)", "Suggested (Name)", "What it does"]
       .map((t, i) => cell(t, i, { header: true, fill: HEAD_FILL })) });
   const body = rows.map((r, n) => {
-    const comp = r[1].startsWith("(component)");
+    const comp = hidden(r[1]);
     const fill = comp ? COMP_FILL : (n % 2 ? ALT_FILL : undefined);
     return new TableRow({ cantSplit: true, children: r.map((t, i) => cell(t, i, { fill })) });
   });
   return new Table({ width: { size: CONTENT_W, type: WidthType.DXA }, columnWidths: COLS, rows: [head, ...body] });
 }
+
+// Rows that need no design: dragged components, or ones the code creates itself.
+const hidden = (c) => c.startsWith("(component)") || c.startsWith("(made in code");
 
 function countOf(screen, pred) {
   return screen.groups.flatMap(g => g.rows).filter(r => pred(r[1])).length;
@@ -58,7 +61,7 @@ function countOf(screen, pred) {
 function screenBlock(s) {
   const buttons = countOf(s, c => c === "Button");
   const links = countOf(s, c => c === "LinkLabel");
-  const all = countOf(s, c => !c.startsWith("(component)"));
+  const all = countOf(s, c => !hidden(c));
   const out = [
     new Paragraph({ heading: HeadingLevel.HEADING_2, spacing: { before: 280, after: 100 }, children: [new TextRun({ text: s.title, font: FONT })] }),
     p([bold("In Visual Studio: "), plain(s.form)]),
@@ -118,7 +121,7 @@ const children = [
   p([bold("WinForms control: "), plain("the item to drag from the Visual Studio Toolbox.")], { bullet: true }),
   p([bold("Suggested (Name): "), plain("what to type in the (Name) box of the Properties window, so the design, the screen and the code all use the same name.")], { bullet: true }),
   p("Placement is up to the designer. This guide only fixes two things: the sidebar is on the left, and every page loads inside the Main section of the Main Window.", { after: 40 }),
-  p("Grey rows marked (component) are invisible while the app runs (timers, file pickers). They need no design.", { after: 160 }),
+  p("Grey rows marked (component) or (made in code) are invisible while the app runs (timers, file pickers, print windows). They need no design.", { after: 160 }),
   prefixTable,
   new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: true, children: [new TextRun({ text: "Part A: Screens everyone sees", font: FONT })] }),
   ...shared.flatMap(screenBlock),

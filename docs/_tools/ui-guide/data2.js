@@ -296,8 +296,8 @@ const inventory = [
       ]},
       { name: "Material form", rows: [
         ["Name box", "TextBox", "txtMaterialName", "e.g. \"Portland Cement 40kg\"."],
-        ["Category dropdown", "ComboBox", "cboMaterialCategory", "e.g. Cement, Steel, Wood, Electrical, Plumbing, Paint, Other."],
-        ["Unit dropdown", "ComboBox", "cboMaterialUnit", "Bag, Piece, Meter, Kilo, Box, Liter..."],
+        ["Category dropdown", "ComboBox", "cboMaterialCategory", "Cement, Aggregates, Steel, Wood, Electrical, Plumbing, Paint, Hardware, Other."],
+        ["Unit dropdown", "ComboBox", "cboMaterialUnit", "Bag, Piece, Meter, Kilo, Box, Liter, Sheet, Cubic Meter, Set, Roll."],
         ["Unit price box", "NumericUpDown", "numMaterialPrice", "Price per unit in pesos."],
         ["Starting stock box", "NumericUpDown", "numStartingStock", "Stock on hand when first added. After that, stock only changes through Usage and Deliveries."],
         ["Current stock", "Label", "lblCurrentStock", "Current stock (read only)."],
@@ -316,6 +316,7 @@ const inventory = [
     note: "The Employee records what was used on a project; the Supervisor approves. Only then does stock go down and the cost go to the project.",
     groups: [
       { name: "Record usage", rows: [
+        ["Section title", "Label", "lblRecordTitle", "\"Record material used on a project (waits for Supervisor approval)\"."],
         ["Project dropdown", "ComboBox", "cboUsageProject", "Which project used it."],
         ["Material dropdown", "ComboBox", "cboUsageMaterial", "Which material."],
         ["Available stock", "Label", "lblAvailableStock", "Shows current stock of the chosen material."],
@@ -326,15 +327,15 @@ const inventory = [
         ["Message", "Label", "lblUsageMsg", "\"Sent for approval.\" or what went wrong."],
       ]},
       { name: "Usage requests", rows: [
-        ["Status filter", "ComboBox", "cboUsageStatusFilter", "All, Waiting Approval, Approved, Rejected."],
-        ["Usage table", "DataGridView", "dgvUsageRequests", "Columns: Date, Project, Material, Qty, Cost, Requested By, Status."],
+        ["Status filter", "ComboBox", "cboUsageStatusFilter", "Waiting Approval (shown first), Approved, Rejected, All."],
+        ["Usage table", "DataGridView", "dgvUsageRequests", "Columns: Date, Project, Material, Qty, Unit, Cost, Requested By, Status."],
         ["Approve button", "Button", "btnApproveUsage", "Approves: stock goes down, cost goes to the project. Supervisor only."],
         ["Approver note", "Label", "lblApproverNote", "Shown to Employees instead of the approve buttons."],
         ["Reject button", "Button", "btnRejectUsage", "Rejects the selected request. Supervisor only."],
       ]},
       { name: "Project material history", rows: [
         ["Project dropdown", "ComboBox", "cboHistoryProject", "Pick a project to see what it used."],
-        ["History table", "DataGridView", "dgvProjectMaterials", "Columns: Date, Material, Qty, Cost."],
+        ["History table", "DataGridView", "dgvProjectMaterials", "Columns: Date, Material, Qty, Unit, Cost."],
         ["Total cost", "Label", "lblProjectMaterialTotal", "Total material cost for that project."],
         ["Export button", "Button", "btnExportProjectMaterials", "Saves the history as an Excel file."],
       ]},
@@ -348,6 +349,7 @@ const inventory = [
     note: "No approval needed (the purchase was approved in Price Comparison). Saving adds the stock and sends the receipt to the Receipts vault as \"Stock purchase\".",
     groups: [
       { name: "Record a delivery", rows: [
+        ["Section title", "Label", "lblRecordTitle", "\"Record a delivery (stock goes up; no approval needed)\"."],
         ["Approved purchase dropdown", "ComboBox", "cboDeliveryPurchase", "Pick the approved purchase this delivery is for (fills in vendor, material and price)."],
         ["Vendor dropdown", "ComboBox", "cboDeliveryVendor", "Who delivered."],
         ["Material dropdown", "ComboBox", "cboDeliveryMaterial", "What was delivered."],
@@ -367,10 +369,10 @@ const inventory = [
         ["Cancel button", "Button", "btnCancelDelivery", "Clears the form."],
       ]},
       { name: "Deliveries list", rows: [
-        ["Deliveries table", "DataGridView", "dgvDeliveries", "Columns: Date, Vendor, Material, Qty, Total, Receipt (Scan / Paper)."],
+        ["Deliveries table", "DataGridView", "dgvDeliveries", "Columns: Date, Vendor, Material, Qty, Total, Receipt No., Receipt (Scan / Paper)."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["File picker", "(component) OpenFileDialog", "ofdDeliveryReceipt", "The Windows \"Open file\" window."],
+        ["File picker", "(made in code, not dragged)", "-", "The Windows \"Open file\" window, opened by Attach Scan."],
       ]},
     ],
   },
@@ -385,7 +387,7 @@ const inventory = [
         ["Type filter", "ComboBox", "cboEquipmentTypeFilter", "All, Tool, Heavy Equipment, Vehicle."],
         ["Status filter", "ComboBox", "cboEquipmentStatusFilter", "All, Available, Under Repair, Retired."],
         ["Maintenance due label", "Label", "lblMaintenanceDue", "e.g. \"2 items due for maintenance\". Hidden when 0."],
-        ["Equipment table", "DataGridView", "dgvEquipment", "Columns: Name, Type, Owned/Rented, Status, Next Maintenance. Due rows highlighted."],
+        ["Equipment table", "DataGridView", "dgvEquipment", "Columns: Name, Type, Owned / Rented, Status, Next Maintenance. Due rows highlighted."],
       ]},
       { name: "List actions", rows: [
         ["Add Equipment button", "Button", "btnAddEquipment", "Clears the form to add new equipment."],
@@ -399,7 +401,7 @@ const inventory = [
         ["Rented option", "RadioButton", "rdoRented", "Company rents it (shows the rental fields)."],
         ["Rental company box", "TextBox", "txtRentalCompany", "Rented only."],
         ["Rental rate box", "NumericUpDown", "numRentalRate", "Rented only."],
-        ["Rate per dropdown", "ComboBox", "cboRentalRateUnit", "Per day, per week, per month. Rented only."],
+        ["Rate per dropdown", "ComboBox", "cboRentalRateUnit", "Day, Week, Month. Rented only."],
         ["Return date picker", "DateTimePicker", "dtpRentalReturn", "When it must be returned. Rented only."],
         ["Status dropdown", "ComboBox", "cboEquipmentStatus", "Available, Under Repair, Retired."],
         ["Next maintenance date picker", "DateTimePicker", "dtpNextMaintenance", "A reminder shows when this date is reached."],
@@ -408,7 +410,7 @@ const inventory = [
         ["Cancel button", "Button", "btnCancelEquipment", "Throws away unsaved edits."],
       ]},
       { name: "Maintenance & repair log (for the selected equipment)", rows: [
-        ["Log table", "DataGridView", "dgvMaintenanceLog", "Columns: Date, Preventive / Repair, Work Done, Cost, Done By."],
+        ["Log table", "DataGridView", "dgvMaintenanceLog", "Columns: Date, Type (Preventive / Repair), Work Done, Cost, Done By."],
         ["Add Log Entry button", "Button", "btnAddMaintenance", "Opens the Maintenance Entry window."],
         ["Delete Entry button", "Button", "btnDeleteMaintenance", "Removes the selected entry (asks to confirm)."],
       ]},
@@ -464,14 +466,14 @@ const inventory = [
         ["Cancel button", "Button", "btnCancelVendor", "Throws away unsaved edits."],
       ]},
       { name: "Vendor papers", rows: [
-        ["Papers table", "DataGridView", "dgvVendorDocs", "Columns: Paper Type, File, Uploaded."],
+        ["Papers table", "DataGridView", "dgvVendorDocs", "Columns: Paper, File, Uploaded."],
         ["Paper type dropdown", "ComboBox", "cboVendorDocType", "Company Profile, Bank Details, Certificate of Registration, Other."],
         ["Upload Paper button", "Button", "btnUploadVendorDoc", "Attach a scan (image or PDF)."],
         ["View button", "Button", "btnViewVendorDoc", "Opens the selected paper."],
         ["Delete Paper button", "Button", "btnDeleteVendorDoc", "Removes the selected paper (asks to confirm)."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["File picker", "(component) OpenFileDialog", "ofdVendorDoc", "The Windows \"Open file\" window."],
+        ["File picker", "(made in code, not dragged)", "-", "The Windows \"Open file\" window, opened by Upload Paper."],
       ]},
     ],
   },
@@ -495,13 +497,13 @@ const inventory = [
         ["Message", "Label", "lblQuoteMsg", "\"Quote added.\" or what went wrong."],
       ]},
       { name: "Compare", rows: [
-        ["Quotes table", "DataGridView", "dgvQuotes", "Columns: Vendor, Date, Product, Unit Price, Qty, Total. Cheapest row highlighted."],
-        ["Cheapest label", "Label", "lblCheapestQuote", "e.g. \"Cheapest: ABC Hardware, PHP 245/bag\"."],
+        ["Quotes table", "DataGridView", "dgvQuotes", "Columns: Vendor, Date, Product, Unit Price, Qty, Total, Status. The cheapest open quote is highlighted."],
+        ["Cheapest label", "Label", "lblCheapestQuote", "e.g. \"Cheapest open quote: ABC Hardware, ₱245.00 per Bag\"."],
         ["Delete Quote button", "Button", "btnDeleteQuote", "Removes the selected quote."],
         ["Approve as Purchase button", "Button", "btnApprovePurchase", "Picks the selected quote as the approved purchase. Supervisor only."],
       ]},
       { name: "Approved purchases", rows: [
-        ["Purchases table", "DataGridView", "dgvPurchases", "Columns: Date Approved, Vendor, Material, Qty, Total, Delivered (Yes / No)."],
+        ["Purchases table", "DataGridView", "dgvPurchases", "Columns: Approved (date), Vendor, Material, Qty, Total, Delivered Qty, Fully Delivered (tick)."],
       ]},
     ],
   },
@@ -625,7 +627,7 @@ const subcontractors = [
         ["Message", "Label", "lblProgressMsg", "\"Progress saved.\" or what went wrong."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["File picker", "(component) OpenFileDialog", "ofdJobFiles", "The Windows \"Open file\" window."],
+        ["File picker", "(made in code, not dragged)", "-", "The Windows \"Open file\" window, opened by Upload Document and Attach Photo / File."],
       ]},
     ],
   },
@@ -664,8 +666,8 @@ const subcontractors = [
         ["Payouts table", "DataGridView", "dgvPayouts", "Columns: Date, Stage, Amount, Method, Reference."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["Print preview", "(component) PrintPreviewDialog", "ppdVoucher", "Print preview window."],
-        ["Print document", "(component) PrintDocument", "pdVoucher", "Draws the voucher."],
+        ["Print preview", "(made in code, not dragged)", "-", "Print preview window, opened by Print Voucher."],
+        ["Print document", "(made in code, not dragged)", "-", "The voucher page is drawn by the VoucherPrint class."],
       ]},
     ],
   },
@@ -726,7 +728,7 @@ const receipts = [
         ["Date of purchase picker", "DateTimePicker", "dtpPurchaseDate", "When it was bought."],
         ["Merchant box", "TextBox", "txtMerchant", "Store / merchant name."],
         ["Amount box", "NumericUpDown", "numReceiptAmount", "Amount in pesos."],
-        ["Category dropdown", "ComboBox", "cboReceiptCategory", "Tools, Hardware, Meals, Permits, Materials, Transport, Utilities, Office Supplies, Other."],
+        ["Category dropdown", "ComboBox", "cboReceiptCategory", "Tools, Hardware, Meals, Permits, Materials, Transport, Utilities, Rent, Office Supplies, Equipment Repairs, Other."],
         ["Project option", "RadioButton", "rdoProjectExpense", "For one project (shows the project dropdown)."],
         ["Overhead option", "RadioButton", "rdoOverheadExpense", "Company overhead (rent, electricity, internet, supplies...)."],
         ["Project dropdown", "ComboBox", "cboReceiptForProject", "Which project. Project option only."],
@@ -746,7 +748,7 @@ const receipts = [
         ["Cancel button", "Button", "btnCancelReceipt", "Closes without saving."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["File picker", "(component) OpenFileDialog", "ofdReceiptScan", "The Windows \"Open file\" window."],
+        ["File picker", "(made in code, not dragged)", "-", "The Windows \"Open file\" window, opened by Attach Scan."],
       ]},
     ],
   },
@@ -777,7 +779,8 @@ const receipts = [
     note: "Expenses with no receipt. They do not count as expenses until the Receipts Supervisor approves.",
     groups: [
       { name: "Main section", rows: [
-        ["Needs review table", "DataGridView", "dgvNeedsReview", "Columns: Date, Amount, Category, Project / Overhead, Reason, Submitted By."],
+        ["Info text", "Label", "lblNeedsReviewInfo", "\"Expenses with no receipt. They count as expenses only after the Receipts Supervisor approves.\""],
+        ["Needs review table", "DataGridView", "dgvNeedsReview", "Columns: Date, Paid To, Amount, Category, Project / Overhead, Reason, Submitted By, Status."],
         ["Approve button", "Button", "btnApproveNoReceipt", "Approves the selected expense. Supervisor only."],
         ["Reject button", "Button", "btnRejectNoReceipt", "Rejects the selected expense. Supervisor only."],
         ["Attach Receipt button", "Button", "btnAttachLateReceipt", "Attach a receipt that turned up later; clears the flag and moves it to the vault."],
@@ -817,14 +820,15 @@ const receipts = [
         ["Cancel button", "Button", "btnCancelCo", "Throws away unsaved edits."],
       ]},
       { name: "Budget impact preview (read only)", rows: [
+        ["Section title", "Label", "lblCoImpactTitle", "\"Budget impact if approved\"."],
         ["Original contract price", "Label", "lblCoOriginalPrice", "Current contract price (with past approved change orders)."],
         ["Revised contract price", "Label", "lblCoRevisedPrice", "Price if this change order is approved."],
         ["Original end date", "Label", "lblCoOriginalEnd", "Current target end date."],
         ["Revised end date", "Label", "lblCoRevisedEnd", "End date if approved."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["Print preview", "(component) PrintPreviewDialog", "ppdChangeOrder", "Print preview window."],
-        ["Print document", "(component) PrintDocument", "pdChangeOrder", "Draws the change order form."],
+        ["Print preview", "(made in code, not dragged)", "-", "Print preview window, opened by Print Form."],
+        ["Print document", "(made in code, not dragged)", "-", "The change order form is drawn by the ChangeOrderPrint class."],
       ]},
     ],
   },
@@ -846,8 +850,8 @@ const receipts = [
         ["Message", "Label", "lblReportMsg", "\"Saved: ...\" or what went wrong."],
       ]},
       { name: "Not visible (no design needed)", rows: [
-        ["Print preview", "(component) PrintPreviewDialog", "ppdReceiptReport", "Print preview window."],
-        ["Print document", "(component) PrintDocument", "pdReceiptReport", "Draws the report pages."],
+        ["Print preview", "(made in code, not dragged)", "-", "Print preview window, opened by Preview and Print."],
+        ["Print document", "(made in code, not dragged)", "-", "The report pages are drawn by the ReceiptReports / TableReport classes."],
       ]},
     ],
   },
