@@ -43,6 +43,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - First Admin is inserted by hand (Developer Guide chapter 6). On this project it's `ITmorilla` (Shem John Adrian P. Morilla). Not linked to an employee yet. Password is weak and must be changed before real use.
 - The app's own DB settings are per PC: `C:\ProgramData\TriStone\OfficeApp\dbsettings.json`, with the password encrypted by DPAPI.
 - **Testing approach used so far:** a throwaway console app (net10.0-windows, references Company.OfficeApp) that runs real checks against the real DB, run on an STA thread with `WindowsFormsSynchronizationContext` + `Application.Run()`, with forms shown via `ShowDialog`. Test data is named `zz_...` (users) / `ZZTEST...` (records) and deleted afterwards. Cleanup: a `cleanup.sql` deletes everything named zz_/ZZTEST in foreign-key order (child tables first, users last), plus any test files in the storage folder. Test windows appear on the real screen.
+- **Two PCs.** Home (main) PC has the real database. Work PC has its own fresh database (test data only). Every test run on the work PC goes into `docs/Testing Log.md` (date, PC, what, result), and anything that still needs the real data goes under "Check at home". Tick items off there after checking at home.
 - Commit messages: write them with a bash heredoc (`git commit -F -`). PowerShell here-strings with quotes break.
 
 ## Code conventions
