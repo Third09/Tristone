@@ -43,8 +43,7 @@ public partial class UserAccountsPage : UserControl
         dgvUsers.DataSource = rows;
 
         if (selectUserId is { } id)
-            foreach (DataGridViewRow r in dgvUsers.Rows)
-                if (((UserRow)r.DataBoundItem!).UserId == id) { r.Selected = true; dgvUsers.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvUsers, (UserRow row) => row.UserId == id);
         UpdateButtons();
     }
 

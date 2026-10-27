@@ -64,8 +64,7 @@ public partial class SubBillingTab : UserControl
         if (!loads.IsLatest(ticket)) return;
         ShowBilling(b);
         if (selectStageId is { } sid)
-            foreach (DataGridViewRow r in dgvBillingStages.Rows)
-                if (((StageBillRow)r.DataBoundItem!).StageId == sid) { r.Selected = true; dgvBillingStages.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvBillingStages, (StageBillRow row) => row.StageId == sid);
     }
 
     void ShowBilling(JobBilling? b)

@@ -46,8 +46,7 @@ public partial class ProjectsPage : UserControl
         dgvProjects.DataSource = rows;
 
         if (selectProjectId is { } id)
-            foreach (DataGridViewRow r in dgvProjects.Rows)
-                if (((ProjectRow)r.DataBoundItem!).ProjectId == id) { r.Selected = true; dgvProjects.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
         btnDeleteProject.Enabled = btnPrintProjectReport.Enabled = Selected != null;
     }
 

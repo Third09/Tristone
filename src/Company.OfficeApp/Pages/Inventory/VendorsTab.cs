@@ -39,8 +39,7 @@ public partial class VendorsTab : UserControl
         if (!loads.IsLatest(ticket)) return;
         dgvVendors.DataSource = rows;
         if (selectId is { } id)
-            foreach (DataGridViewRow r in dgvVendors.Rows)
-                if (((VendorRow)r.DataBoundItem!).VendorId == id) { r.Selected = true; dgvVendors.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvVendors, (VendorRow row) => row.VendorId == id);
     }
 
     VendorRow? Selected => dgvVendors.SelectedRows.Count > 0 ? dgvVendors.SelectedRows[0].DataBoundItem as VendorRow : null;

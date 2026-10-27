@@ -51,7 +51,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - Rules live in `Services/*Service.cs` (static, async, return `string? error`); pages call them. Services re-check permissions (`Access.CanSee` / Admin), not just the UI.
 - Control names follow the UI Elements Guide (btn/txt/lbl/cbo/dgv/num/dtp/chk...).
 - Designer files: plain designer code. Big ones can be generated once with `docs/_tools/designer-gen`. **Never regenerate after the owner edits a form in the VS designer.**
-- Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15).
+- Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15). After a reload, re-select a row with `Responsive.SelectRow(grid, (XRow r) => r.Id == id)` (uses the first visible cell, so hidden columns can't crash it).
 - Responsive (ch. 16), every list page: `Responsive.FitGrid(this, grid)` in the constructor; search boxes via `Responsive.OnTypingPause` (not `TextChanged` in the designer); loads use `LatestOnly` tickets + `Responsive.Busy(this)`. App is PerMonitorV2 DPI-aware and MainForm opens maximized.
 - Every add/edit/delete writes `audit_logs` through `AuditService.Add` (department = which Edit History tab shows it). Never store passwords, hashes, security answers, government ID numbers or bank account numbers in it. `Pages/Shared/EditHistoryTab` shows it per department.
 - Project revenue/expenses only through `Services/ProjectFinance` (Projects page, report and Dashboard all use it); add each new money source there and to `ProjectService.CountLinkedRecordsAsync`. Payroll and equipment repairs are overhead, not project expenses.
@@ -93,4 +93,6 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs); 18 Subcontractors (directory, jobs + stages + retention, progress, vouchers SV-0001, payouts, voucher print); 19 Receipts & change orders (vault incl. stock purchases read from deliveries, needs review, CO-001 Admin approval, reports, TableReport/PDF); 20 Dashboard (completed-contract KPIs, department view, ScottPlot status chart, top projects, log history).
 DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee, 005 inventory (+ app_settings), 006 subcontractors, 007 receipts + change orders.
 
-Next: the UI Elements Guide still describes Parts 3-5 and the Dashboard as planned, so update it to the built controls. Attendance tab waits for the scanner's sample export file; then payroll/cash advances, Website Admin, then the API + website Contact form, then Phase 6 installers.
+2026-10-27: UI Elements Guide synced to Parts 3-5 + Dashboard; Developer Guide shortened (187 -> 9 pages).
+
+Next: Attendance tab waits for the scanner's sample export file; then payroll/cash advances, Website Admin, then the API + website Contact form, then Phase 6 installers.
