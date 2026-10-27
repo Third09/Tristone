@@ -133,7 +133,7 @@ Every new page should reuse these instead of writing its own:
 | `FileStore` | Saves uploaded scans into the storage folder (`app_settings.file_storage_path`); the database keeps only the relative path. PDF, images and Word, up to 25 MB. |
 | `ExcelExport` | Every Export button (ClosedXML). |
 | `TableReport` | Prints any list over several pages, or saves it as PDF. |
-| `Responsive` | `FitGrid` makes tables grow with the window; `OnTypingPause` waits for the user to stop typing before searching; `Busy` shows the wait cursor. |
+| `Responsive` | `FitGrid` makes tables grow with the window; `OnTypingPause` waits for the user to stop typing before searching; `Busy` shows the wait cursor; `SelectRow` highlights the record just saved after the table reloads. |
 
 A new list page usually starts like this:
 
@@ -142,9 +142,16 @@ Responsive.FitGrid(this, dgvProjects);
 Responsive.OnTypingPause(txtProjectSearch, () => LoadProjectsAsync());
 ```
 
+and after a save, the reload highlights the saved record again:
+
+```csharp
+Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
+```
+
 ## 3.5 Rules of thumb for the code
 
 - Read a grid's selection from `SelectedRows`, not `CurrentRow` (after "Add", the grid still has a current row).
+- To clear a dropdown, set `SelectedIndex = -1`, not `Text = ""`. Clearing only the text keeps the old choice selected underneath, and picking it again doesn't register (bug fixed on the Materials form).
 - Control names follow the UI Elements Guide (`btn`, `txt`, `cbo`, `dgv`...).
 - Screens stay plain, default WinForms until they are styled from the Figma design.
 - Big `.Designer.cs` files can be generated once with `docs/_tools/designer-gen`. Never regenerate a form after it has been edited in Visual Studio's designer.
@@ -200,6 +207,8 @@ Responsive.OnTypingPause(txtProjectSearch, () => LoadProjectsAsync());
 
 # Chapter 10: Testing
 
+**Two PCs.** The home PC has the real database. The work PC has its own fresh database with test data only. Every test run on the work PC is written in `docs\Testing Log.md`, and anything that still needs the real data is listed there under "Check at home".
+
 Each part was tested with a small throwaway console program that runs real checks against the real database and opens the real windows. Test data is named `zz_...` (users) or `ZZTEST...` (records) and deleted afterwards with a cleanup script, child tables first.
 
 | Part | Checks passed |
@@ -212,6 +221,7 @@ Each part was tested with a small throwaway console program that runs real check
 | Subcontractors | 56 |
 | Receipts | 55 |
 | Dashboard | 24 |
+| Row re-select after saving (Projects, Materials, Employees) | 11 |
 
 **Not tested yet:** the "last active Admin" protection. It needs a separate test database; never disable the real Admin account to test it.
 
