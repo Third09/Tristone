@@ -45,8 +45,7 @@ public partial class SubDirectoryTab : UserControl
         dgvSubcontractors.DataSource = rows;
         lblPcabDue.Text = due == 0 ? "" : $"{due} PCAB license{(due == 1 ? " is" : "s are")} expired or expiring within {SubLists.PcabWarningDays} days";
         if (selectId is { } id)
-            foreach (DataGridViewRow r in dgvSubcontractors.Rows)
-                if (((SubRow)r.DataBoundItem!).SubcontractorId == id) { r.Selected = true; dgvSubcontractors.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvSubcontractors, (SubRow row) => row.SubcontractorId == id);
     }
 
     SubRow? Selected => dgvSubcontractors.SelectedRows.Count > 0 ? dgvSubcontractors.SelectedRows[0].DataBoundItem as SubRow : null;

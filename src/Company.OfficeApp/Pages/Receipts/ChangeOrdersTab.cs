@@ -60,8 +60,7 @@ public partial class ChangeOrdersTab : UserControl
         dgvChangeOrders.DataSource = rows;
         dgvChangeOrders.ClearSelection();
         if (selectId is { } id)
-            foreach (DataGridViewRow r in dgvChangeOrders.Rows)
-                if (((CoRow)r.DataBoundItem!).ChangeOrderId == id) { r.Selected = true; dgvChangeOrders.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvChangeOrders, (CoRow row) => row.ChangeOrderId == id);
         filling = false;
         UpdateButtons();
     }

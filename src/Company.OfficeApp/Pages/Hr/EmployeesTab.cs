@@ -45,8 +45,7 @@ public partial class EmployeesTab : UserControl
         dgvEmployees.DataSource = rows;
 
         if (selectEmployeeId is { } id)
-            foreach (DataGridViewRow r in dgvEmployees.Rows)
-                if (((EmployeeRow)r.DataBoundItem!).EmployeeId == id) { r.Selected = true; dgvEmployees.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvEmployees, (EmployeeRow row) => row.EmployeeId == id);
         UpdateButtons();
     }
 

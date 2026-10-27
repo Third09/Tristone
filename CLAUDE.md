@@ -51,7 +51,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 - Rules live in `Services/*Service.cs` (static, async, return `string? error`); pages call them. Services re-check permissions (`Access.CanSee` / Admin), not just the UI.
 - Control names follow the UI Elements Guide (btn/txt/lbl/cbo/dgv/num/dtp/chk...).
 - Designer files: plain designer code. Big ones can be generated once with `docs/_tools/designer-gen`. **Never regenerate after the owner edits a form in the VS designer.**
-- Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15).
+- Grids: read the selection from `SelectedRows`, not `CurrentRow` (bug fixed in ch. 15). After a reload, re-select a row with `Responsive.SelectRow(grid, (XRow r) => r.Id == id)` (uses the first visible cell, so hidden columns can't crash it).
 - Responsive (ch. 16), every list page: `Responsive.FitGrid(this, grid)` in the constructor; search boxes via `Responsive.OnTypingPause` (not `TextChanged` in the designer); loads use `LatestOnly` tickets + `Responsive.Busy(this)`. App is PerMonitorV2 DPI-aware and MainForm opens maximized.
 - Every add/edit/delete writes `audit_logs` through `AuditService.Add` (department = which Edit History tab shows it). Never store passwords, hashes, security answers, government ID numbers or bank account numbers in it. `Pages/Shared/EditHistoryTab` shows it per department.
 - Project revenue/expenses only through `Services/ProjectFinance` (Projects page, report and Dashboard all use it); add each new money source there and to `ProjectService.CountLinkedRecordsAsync`. Payroll and equipment repairs are overhead, not project expenses.

@@ -56,6 +56,22 @@ public static class Responsive
         return new Restore(() => { if (!control.IsDisposed) control.UseWaitCursor = false; });
     }
 
+    /// <summary>
+    /// After a reload, selects (and scrolls to) the row whose item matches, e.g. the record just saved.
+    /// Uses the first visible cell, so hiding a column later can't break it.
+    /// </summary>
+    public static void SelectRow<T>(DataGridView grid, Func<T, bool> match) where T : class
+    {
+        foreach (DataGridViewRow r in grid.Rows)
+        {
+            if (r.DataBoundItem is not T item || !match(item)) continue;
+            var cell = r.Cells.Cast<DataGridViewCell>().FirstOrDefault(c => c.Visible);
+            if (cell != null) grid.CurrentCell = cell;
+            r.Selected = true;
+            return;
+        }
+    }
+
     sealed class Restore(Action undo) : IDisposable
     {
         public void Dispose() => undo();

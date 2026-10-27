@@ -89,8 +89,7 @@ public partial class SubJobsTab : UserControl
         dgvJobs.DataSource = rows;
         dgvJobs.ClearSelection();
         if (selectId is { } id)
-            foreach (DataGridViewRow r in dgvJobs.Rows)
-                if (((JobRow)r.DataBoundItem!).JobId == id) { r.Selected = true; dgvJobs.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvJobs, (JobRow row) => row.JobId == id);
     }
 
     JobRow? Selected => dgvJobs.SelectedRows.Count > 0 ? dgvJobs.SelectedRows[0].DataBoundItem as JobRow : null;

@@ -45,8 +45,7 @@ public partial class MaterialsTab : UserControl
         dgvMaterials.DataSource = rows;
         lblLowStockCount.Text = low == 0 ? "" : $"{low} item{(low == 1 ? " is" : "s are")} below minimum stock";
         if (selectId is { } id)
-            foreach (DataGridViewRow r in dgvMaterials.Rows)
-                if (((MaterialRow)r.DataBoundItem!).MaterialId == id) { r.Selected = true; dgvMaterials.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvMaterials, (MaterialRow row) => row.MaterialId == id);
     }
 
     MaterialRow? Selected => dgvMaterials.SelectedRows.Count > 0 ? dgvMaterials.SelectedRows[0].DataBoundItem as MaterialRow : null;

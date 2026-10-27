@@ -51,8 +51,7 @@ public partial class EquipmentTab : UserControl
         dgvEquipment.DataSource = rows;
         lblMaintenanceDue.Text = due == 0 ? "" : $"{due} item{(due == 1 ? " is" : "s are")} due for maintenance";
         if (selectId is { } id)
-            foreach (DataGridViewRow r in dgvEquipment.Rows)
-                if (((EquipmentRow)r.DataBoundItem!).EquipmentId == id) { r.Selected = true; dgvEquipment.CurrentCell = r.Cells[0]; }
+            Responsive.SelectRow(dgvEquipment, (EquipmentRow row) => row.EquipmentId == id);
     }
 
     EquipmentRow? Selected => dgvEquipment.SelectedRows.Count > 0 ? dgvEquipment.SelectedRows[0].DataBoundItem as EquipmentRow : null;
