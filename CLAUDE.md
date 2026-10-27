@@ -18,6 +18,7 @@ Read this first. It carries everything decided so far, so a new session (or anot
 - **Company.Shared:** EF Core models + `AppDbContext`, used by both.
 - **Website:** separate repo (`C:\Users\shemm\tristone_website`, GitHub Third09/tristone_website), plain HTML/CSS/JS following a Figma design. Only the Contact page is ours to change: add the Project Location field and POST to the API.
 - **Final deployment (Phase 6):** PostgreSQL + API on a Linux Mint laptop (192.168.1.50); 5 Windows office PCs run the app over the LAN. Plan: self-contained .exe + Inno Setup Setup.exe; first run asks for the server address (Database Settings screen); `install-server.sh` for the server; a shared folder for scans/photos.
+- **Phase 6 security (owner asked 2026-10-27; direct-to-DB kept, no pfSense):** port 5432 open only to the office LAN (`ufw` + `pg_hba.conf`), never the internet; the app uses its own limited DB role, not `postgres`; automatic daily backups copied off the server; strong passwords for the DB and every Admin.
 
 ## Folder layout
 
