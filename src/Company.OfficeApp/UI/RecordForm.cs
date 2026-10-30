@@ -18,6 +18,21 @@ public enum SaveAnswer { NothingChanged, Yes, No }
 /// </summary>
 public static partial class RecordForm
 {
+    /// <summary>
+    /// A grid whose list was loaded while it was hidden (a tab not opened yet) selects its first row by itself the
+    /// moment it is first shown. Call once in the page's constructor: while the grid is being shown, its selection
+    /// changes are ignored (<paramref name="ignoreSelection"/>), and right after, <paramref name="restoreSelection"/>
+    /// puts back the record the page means to show (usually none). Switching tabs later keeps the selection.
+    /// </summary>
+    public static void NoAutoSelect(DataGridView grid, Action<bool> ignoreSelection, Action restoreSelection)
+    {
+        grid.HandleCreated += (_, _) =>
+        {
+            ignoreSelection(true);
+            grid.BeginInvoke(() => { ignoreSelection(false); restoreSelection(); });
+        };
+    }
+
     /// <summary>Locks or unlocks the form: every control from <paramref name="formTop"/> down, except that title itself.</summary>
     public static void SetEnabled(Control page, Control formTop, bool on)
     {

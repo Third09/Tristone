@@ -29,6 +29,7 @@ public partial class VendorsTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvVendors.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvVendors, on => filling = on, RestoreSelection);
         dgvVendorDocs.AutoGenerateColumns = false;
         cboVendorVat.Items.AddRange(InventoryLists.VatStatuses);
         cboVendorDocType.Items.AddRange(InventoryLists.VendorDocTypes);
@@ -77,6 +78,17 @@ public partial class VendorsTab : UserControl
         btnDeleteVendor.Enabled = Selected != null;
         if (Selected is not { } row) ShowNothingSelected();
         else if (await PurchasingService.GetVendorAsync(row.VendorId) is { } v) await StartEditAsync(v);
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvVendors.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvVendors, (VendorRow r) => r.VendorId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        btnDeleteVendor.Enabled = Selected != null;
     }
 
     void ShowNothingSelected()

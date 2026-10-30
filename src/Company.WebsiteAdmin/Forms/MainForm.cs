@@ -22,6 +22,13 @@ public partial class MainForm : Form
                                         screen.WorkingArea.Width, screen.WorkingArea.Height);
         lblUserName.Text = WebsiteAuth.Current is { } a ? $"Signed in: {a.FullName} ({a.Username})" : "";
 
+        // Built tabs replace their "coming next" placeholder.
+        var inquiries = new Pages.InquiriesTab { Dock = DockStyle.Fill };
+        tabInquiries.Controls.Clear();
+        tabInquiries.Controls.Add(inquiries);
+        inquiries.Changed += async (_, _) => await ShowNewInquiriesAsync();
+        Shown += async (_, _) => await ShowNewInquiriesAsync();
+
         // Only a main account manages the Website Admin accounts (the service checks again on every action).
         if (WebsiteAuth.Current is { IsMain: true })
         {
@@ -29,6 +36,17 @@ public partial class MainForm : Form
             tab.Controls.Add(new Pages.AccountsTab { Dock = DockStyle.Fill });
             tabWebsiteAdmin.TabPages.Add(tab);
         }
+    }
+
+    /// <summary>The tab title says how many inquiries are waiting, e.g. "Inquiries (3 new)".</summary>
+    async Task ShowNewInquiriesAsync()
+    {
+        try
+        {
+            var counts = await WebsiteInquiries.CountsAsync();
+            tabInquiries.Text = counts.New == 0 ? "Inquiries" : $"Inquiries ({counts.New} new)";
+        }
+        catch { /* only a hint; the tab itself reports database problems */ }
     }
 
     async void btnSignOut_Click(object sender, EventArgs e)

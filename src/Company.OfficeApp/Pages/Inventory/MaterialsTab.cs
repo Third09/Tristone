@@ -30,6 +30,7 @@ public partial class MaterialsTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvMaterials.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvMaterials, on => filling = on, RestoreSelection);
         colPrice.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         cboMaterialCategoryFilter.Items.Add("All");
         cboMaterialCategoryFilter.Items.AddRange(InventoryLists.MaterialCategories);
@@ -90,6 +91,17 @@ public partial class MaterialsTab : UserControl
         if (filling) return;
         btnDeleteMaterial.Enabled = Selected != null;
         if (Selected is { } m) StartEdit(m); else ShowNothingSelected();
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvMaterials.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvMaterials, (MaterialRow r) => r.MaterialId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        btnDeleteMaterial.Enabled = Selected != null;
     }
 
     void ShowNothingSelected()

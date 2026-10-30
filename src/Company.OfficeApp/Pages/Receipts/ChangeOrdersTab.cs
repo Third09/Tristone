@@ -28,6 +28,7 @@ public partial class ChangeOrdersTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvChangeOrders.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvChangeOrders, on => filling = on, RestoreSelection);
         colCost.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         bool admin = Session.CurrentUser!.IsAdmin;
         btnApproveCo.Visible = btnRejectCo.Visible = admin;
@@ -96,6 +97,17 @@ public partial class ChangeOrdersTab : UserControl
         if (Selected is not { } row) { ShowNothingSelected(); return; }
         if (row.ChangeOrderId == editingId) return;
         if (await ChangeOrderService.GetAsync(row.ChangeOrderId) is { } c) await StartEditAsync(c);
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvChangeOrders.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvChangeOrders, (CoRow r) => r.ChangeOrderId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        UpdateButtons();
     }
 
     void ShowNothingSelected()

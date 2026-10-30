@@ -30,6 +30,7 @@ public partial class EquipmentTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvEquipment.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvEquipment, on => filling = on, RestoreSelection);
         dgvMaintenanceLog.AutoGenerateColumns = false;
         colLCost.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         cboEquipmentTypeFilter.Items.Add("All");
@@ -98,6 +99,17 @@ public partial class EquipmentTab : UserControl
         btnDeleteEquipment.Enabled = Selected != null;
         if (Selected is not { } row) ShowNothingSelected();
         else if (await EquipmentService.GetAsync(row.EquipmentId) is { } eq) await StartEditAsync(eq);
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvEquipment.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvEquipment, (EquipmentRow r) => r.EquipmentId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        btnDeleteEquipment.Enabled = Selected != null;
     }
 
     void ShowNothingSelected()

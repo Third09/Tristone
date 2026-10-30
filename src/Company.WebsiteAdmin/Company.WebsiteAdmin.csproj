@@ -20,6 +20,11 @@
     </Compile>
     <Compile Include="..\Company.OfficeApp\UI\Responsive.cs" Link="Shared\Responsive.cs" />
     <Compile Include="..\Company.OfficeApp\UI\RecordForm.cs" Link="Shared\RecordForm.cs" />
+    <Compile Include="..\Company.OfficeApp\Services\ExcelExport.cs" Link="Shared\ExcelExport.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
   </ItemGroup>
 
   <PropertyGroup>

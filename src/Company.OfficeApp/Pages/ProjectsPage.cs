@@ -26,6 +26,7 @@ public partial class ProjectsPage : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvProjects.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvProjects, on => filling = on, RestoreSelection);
         colContractPrice.DefaultCellStyle.FormatProvider = ProjectService.Peso;
 
         cboStatusFilter.Items.Add("All");
@@ -87,6 +88,17 @@ public partial class ProjectsPage : UserControl
     }
 
     // ----- form -----
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvProjects.ClearSelection();
+        if (editingProjectId is { } id) Responsive.SelectRow(dgvProjects, (ProjectRow r) => r.ProjectId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        btnDeleteProject.Enabled = btnPrintProjectReport.Enabled = Selected != null;
+    }
 
     void ShowNothingSelected()
     {

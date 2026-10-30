@@ -428,10 +428,10 @@ const websiteAdmin = [
   },
   {
     title: "Tab 5: Inquiries",
-    form: "TabPage: tabInquiries",
-    opensFrom: "Website Admin > Inquiries tab.",
-    whoSees: "Admin only",
-    note: "Every message from the website Contact form lands here. A copy also goes to the company Gmail, but the status and notes live only in the app.",
+    form: "TabPage: tabInquiries, holding InquiriesTab (UserControl)",
+    opensFrom: "Website Admin app > Inquiries tab. The tab title shows \"Inquiries (N new)\".",
+    whoSees: "Every Website Admin account",
+    note: "BUILT. Every message from the website Contact form lands here. The status and notes live only in the app; inquiries are never deleted. Same safe pattern as the list pages: nothing is selected by itself, the follow-up form is greyed out until a row is clicked, and Save lists the changes in a Yes/No message first.",
     groups: [
       { name: "Summary", rows: [
         ["New count", "Label", "lblNewCount", "Number of New inquiries."],
@@ -440,16 +440,18 @@ const websiteAdmin = [
       ]},
       { name: "Filters", rows: [
         ["Status filter", "ComboBox", "cboInquiryStatusFilter", "All, New, Contacted, Closed."],
-        ["Search box", "TextBox", "txtInquirySearch", "Search by name, email or location."],
-        ["From date picker", "DateTimePicker", "dtpInquiryFrom", "Start of date range."],
-        ["To date picker", "DateTimePicker", "dtpInquiryTo", "End of date range."],
+        ["Search box", "TextBox", "txtInquirySearch", "Search by name, email, phone or location."],
+        ["From date picker", "DateTimePicker (ShowCheckBox = True)", "dtpInquiryFrom", "Start of date range; tick to use it."],
+        ["To date picker", "DateTimePicker (ShowCheckBox = True)", "dtpInquiryTo", "End of date range; tick to use it."],
         ["Refresh button", "Button", "btnRefreshInquiries", "Loads the newest inquiries."],
       ]},
       { name: "List", rows: [
-        ["Inquiries table", "DataGridView", "dgvInquiries", "Columns: Date, Name, Service, Location, Status."],
+        ["Inquiries table", "DataGridView", "dgvInquiries", "Columns: Date, Name, Service, Location, Status. Newest first; New ones in bold."],
         ["Export button", "Button", "btnExportInquiries", "Saves the list as an Excel file."],
       ]},
       { name: "Selected inquiry", rows: [
+        ["Title", "Label", "lblInqTitle", "\"Inquiry from (name)\", or a hint to click an inquiry."],
+        ["Received", "Label", "lblInqReceived", "Date and time it arrived."],
         ["Name", "Label", "lblInqName", "Full name."],
         ["Contact number", "Label", "lblInqContact", "Phone number."],
         ["Email", "Label", "lblInqEmail", "Email address."],
@@ -459,7 +461,9 @@ const websiteAdmin = [
         ["Copy Email button", "Button", "btnCopyEmail", "Copies the client's email to reply from Gmail."],
         ["Status dropdown", "ComboBox", "cboInquiryStatus", "New, Contacted, Closed."],
         ["Notes box", "TextBox (Multiline = True)", "txtInquiryNotes", "Internal notes, e.g. \"Called on Oct 27, site visit Friday\"."],
-        ["Save button", "Button", "btnSaveInquiry", "Saves the status and notes."],
+        ["Save button", "Button", "btnSaveInquiry", "Lists the changes in a Yes/No message, then saves the status and notes."],
+        ["Cancel button", "Button", "btnCancelInquiry", "Puts back what's saved."],
+        ["Message", "Label", "lblInquiryMsg", "\"Saved.\", \"Copied ...\" or what went wrong."],
       ]},
     ],
   },

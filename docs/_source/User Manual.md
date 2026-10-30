@@ -381,3 +381,15 @@ Only a **main** Website Admin account sees the **Accounts** tab and can manage t
 4. **Unlock** is for accounts locked after 5 wrong passwords. **Disable** turns an account off; **Enable** turns it back on.
 
 You can't turn off your own account or remove your own main status, and the last active main account is protected.
+
+**Inquiries**
+
+Messages from the website Contact form. The tab title shows how many are new, e.g. *Inquiries (3 new)*; new ones are in **bold**.
+
+1. Use **Status**, **Search** (name, email, phone or location) and **From** / **To** to find messages. **Refresh** loads the newest.
+2. Click an inquiry to read it: name, contact number, email, project location, service and the message.
+3. **Copy Email**, then paste it in Gmail to reply.
+4. Set the **Status** (New, Contacted, Closed) and write **Notes** (only you and other Website Admins see them), then click **Save**, check the changes and click **Yes**.
+5. **Export** saves the list to Excel.
+
+Inquiries are never deleted; close them instead.

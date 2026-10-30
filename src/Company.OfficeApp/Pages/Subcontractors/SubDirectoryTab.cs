@@ -36,6 +36,7 @@ public partial class SubDirectoryTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvSubcontractors.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvSubcontractors, on => filling = on, RestoreSelection);
         cboSubTradeFilter.Items.Add("All");
         cboSubTradeFilter.Items.AddRange(SubLists.Trades);
         cboSubTradeFilter.SelectedIndex = 0;
@@ -98,6 +99,17 @@ public partial class SubDirectoryTab : UserControl
         btnDeleteSubcontractor.Enabled = Selected != null;
         if (Selected is not { } row) ShowNothingSelected();
         else if (await SubcontractorService.GetAsync(row.SubcontractorId) is { } found) StartEdit(found.Sub, found.Trades);
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvSubcontractors.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvSubcontractors, (SubRow r) => r.SubcontractorId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        btnDeleteSubcontractor.Enabled = Selected != null;
     }
 
     void ShowNothingSelected()

@@ -29,6 +29,7 @@ public partial class UserAccountsPage : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvUsers.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvUsers, on => filling = on, RestoreSelection);
         cboUserStatusFilter.Items.AddRange(["All", UserStatuses.Active, UserStatuses.Locked, UserStatuses.Disabled]);
         cboUserStatusFilter.SelectedIndex = 0;
         cboUserLevel.Items.AddRange(UserAdminService.LevelList);
@@ -85,6 +86,17 @@ public partial class UserAccountsPage : UserControl
         if (filling) return;
         UpdateButtons();
         if (Selected is { } u) await StartEditAsync(u); else ShowNothingSelected();
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvUsers.ClearSelection();
+        if (editingUserId is { } id) Responsive.SelectRow(dgvUsers, (UserRow r) => r.UserId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        UpdateButtons();
     }
 
     void ShowNothingSelected()

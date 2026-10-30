@@ -42,6 +42,7 @@ public partial class SubJobsTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvJobs.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvJobs, on => filling = on, RestoreSelection);
         dgvJobStages.AutoGenerateColumns = false;
         dgvJobDocs.AutoGenerateColumns = false;
         dgvProgressHistory.AutoGenerateColumns = false;
@@ -130,6 +131,17 @@ public partial class SubJobsTab : UserControl
         if (Selected is not { } row) ShowNothingSelected();
         else if (row.JobId != editingId && await SubJobService.GetAsync(row.JobId) is { } found)
             await StartEditAsync(found.Job, found.Stages, found.Locked);
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvJobs.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvJobs, (JobRow r) => r.JobId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        btnDeleteJob.Enabled = Selected != null;
     }
 
     void ShowNothingSelected()

@@ -28,6 +28,7 @@ public partial class AccountsTab : UserControl
         this.addOnly = addOnly;
         InitializeComponent();
         dgvAccounts.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvAccounts, on => filling = on, RestoreSelection);
         if (addOnly) { RecordForm.ShowFormOnly(this, lblFormMode); StartNew(); return; }
         Responsive.FitGrid(this, dgvAccounts);
         ShowNothingSelected();
@@ -68,6 +69,17 @@ public partial class AccountsTab : UserControl
         if (filling) return;
         UpdateButtons();
         if (Selected is { } a) StartEdit(a); else ShowNothingSelected();
+    }
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvAccounts.ClearSelection();
+        if (editingId is { } id) Responsive.SelectRow(dgvAccounts, (AccountRow r) => r.AccountId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        UpdateButtons();
     }
 
     void ShowNothingSelected()

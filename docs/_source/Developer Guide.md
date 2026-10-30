@@ -70,6 +70,7 @@ The database is never built by clicking in pgAdmin. Every change is a numbered s
 | 007 | `receipts`, `change_orders` |
 | 008 | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts) |
 | 009 | `website_accounts.is_main`: main accounts manage the other Website Admin accounts |
+| 010 | `inquiries`: website Contact form messages and their follow-up |
 
 ## 2.2 Conventions
 
@@ -154,6 +155,7 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 
 - Read a grid's selection from `SelectedRows`, not `CurrentRow` (after "Add", the grid still has a current row).
 - **Never let a grid select a row by itself.** After setting `DataSource`, call `ClearSelection()` (with a `filling` flag so `SelectionChanged` ignores the reload), then re-select only the record you mean. Otherwise the form silently edits the first row, and typing a "new" record overwrites it (bug found on Employees, 2026-10-30).
+- **A grid loaded while its tab is hidden still selects its first row when the tab is first shown.** Every list page calls `RecordForm.NoAutoSelect(grid, on => filling = on, RestoreSelection)` in its constructor: the selection made while the grid first appears is ignored, then only the record being shown is re-selected.
 - **Adding and editing are separate on every list page (`UI/RecordForm`):**
   - Add opens a pop-up that is a second copy of the same page made with `new XPage(addOnly: true)`: `RecordForm.ShowFormOnly` hides the list (everything above the form's title label) and record-only parts, and `RecordForm.AddDialog` shows it until the page raises `Added(id)`. Each form exists once. The add-only copy never loads the list (its hidden filters fire on start-up).
   - The page form only edits the clicked record; `RecordForm.SetEnabled` locks it when nothing is selected.
@@ -247,6 +249,10 @@ Only **main** accounts manage the others (owner decision, 30 Oct 2026), in the *
 - Password and username rules live in one place, `Company.Shared/AccountRules`, used by both apps.
 - Password changes and unlocks are written to `website_login_logs` with who did it.
 
+## 10.4 Inquiries
+
+Website Contact form messages land in `inquiries` (script 010); the API will add them later. Any signed-in Website Admin account can follow them up: status New / Contacted / Closed and internal notes (never shown on the website). Inquiries are never deleted, so nothing a client sent is lost. The database refuses an inquiry with neither an email nor a phone number. `Services/WebsiteInquiries` lists, counts and saves; the tab title shows "Inquiries (N new)".
+
 # Chapter 11: Testing
 
 **Two PCs.** The home PC has the real database. The work PC has its own fresh database with test data only. Every test run on the work PC is written in `docs\Testing Log.md`, and anything that still needs the real data is listed there under "Check at home".
@@ -267,6 +273,8 @@ Each part was tested with a small throwaway console program that runs real check
 | Add pop-ups, no auto-select, confirm before saving (Employees + 8 list pages) | 86 |
 | Website Admin app: sign-in, lock-out, main window | 16 |
 | Website Admin accounts (main only, pop-up, confirm, lock/unlock, password) | 22 |
+| Website Admin Inquiries | 18 |
+| Office tabs opened through the sidebar: nothing auto-selected | 10 |
 
 **Not tested yet:** the "last active Admin" protection. It needs a separate test database; never disable the real Admin account to test it.
 

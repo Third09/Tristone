@@ -20,6 +20,7 @@ public partial class EmployeesTab : UserControl
     {
         InitializeComponent();
         dgvEmployees.AutoGenerateColumns = false;
+        RecordForm.NoAutoSelect(dgvEmployees, on => filling = on, RestoreSelection);
         dgvRateHistory.AutoGenerateColumns = false;
         colCurrentRate.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         colRateAmount.DefaultCellStyle.FormatProvider = ProjectService.Peso;
@@ -84,6 +85,17 @@ public partial class EmployeesTab : UserControl
     Control[] FormInputs => [txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, cboEmployeeDepartment,
                              txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions,
                              txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin, btnSaveEmployee, btnCancelEmployee];
+
+    /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
+    void RestoreSelection()
+    {
+        filling = true;
+        dgvEmployees.ClearSelection();
+        if (editing?.EmployeeId is { } id) Responsive.SelectRow(dgvEmployees, (EmployeeRow r) => r.EmployeeId == id);
+        filling = false;
+        if (Selected == null) ShowNothingSelected();
+        UpdateButtons();
+    }
 
     void ShowNothingSelected()
     {
