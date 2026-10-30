@@ -465,7 +465,7 @@ Expense & Receipt Report (per project), Weekly and Monthly Expense Summary. Repo
 - **Attendance:** fingerprint scans uploaded from the USB scanner (4 scans a day: in, break out, break in, out).
 - **Payroll:** pay worked out from validated attendance, late minutes, approved overtime and deductions; payslips printed or saved as PDF.
 - **Cash Advances:** recorded by HR, approved by the HR Supervisor, deducted a fixed amount per payday.
-- **Website Admin app:** a separate program with its own accounts (not part of the office app) to edit the public website, choose which projects show, and read Contact form messages. **Built so far:** its sign-in (same password and lock-out rules as the office app) and its main window.
+- **Website Admin app:** a separate program with its own accounts (not part of the office app) to edit the public website, choose which projects show, and read Contact form messages. **Built so far:** its sign-in (same password and lock-out rules as the office app), its main window, and the **Accounts** tab: only **main** accounts can create, change, unlock, turn off or set passwords for the other Website Admin accounts (you can't turn off yourself or remove your own main status).
 
 # 12. Words used in this guide
 

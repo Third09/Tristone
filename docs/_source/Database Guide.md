@@ -2,7 +2,7 @@
 
 A guide to understanding the Tri-Stone database: what a database is, how this one is built, what every table holds, how the tables connect, and how the Data Flow Diagram (DFD) relates to it. Read it from the start if you're new to databases; each chapter builds on the one before.
 
-> Everything here matches the real database (`construction_db`, PostgreSQL 18) as of scripts 001-008: **30 tables**.
+> Everything here matches the real database (`construction_db`, PostgreSQL 18) as of scripts 001-009: **30 tables**.
 
 # 1. What a database is
 
@@ -108,6 +108,7 @@ The database is never built by clicking around in pgAdmin. Every change is a **n
 | `006_subcontractors.sql` | `subcontractors`, `subcontractor_trades`, `sub_jobs`, `sub_job_stages`, `sub_job_documents`, `sub_progress`, `sub_vouchers`, `sub_payouts` |
 | `007_receipts.sql` | `receipts`, `change_orders` |
 | `008_website_accounts.sql` | `website_accounts`, `website_login_logs` (the separate Website Admin app's own accounts) |
+| `009_website_main_account.sql` | the `is_main` column on `website_accounts` (main accounts manage the others) |
 
 **`setup-database.cmd`** (double-click) creates the database if it's missing, then runs every script that hasn't run yet. The table **`schema_versions`** remembers which scripts already ran, so each runs only **once**.
 
@@ -202,7 +203,7 @@ One row per sign-in, sign-out, idle sign-out, failed attempt, lock, unlock, pass
 
 ## website_accounts and website_login_logs: the Website Admin app's own sign-in
 
-The separate Website Admin app has its **own** accounts, not the office app's `users`. `website_accounts` holds `username` (unique ignoring capital letters, through a unique index on `LOWER(username)`), `password_hash` (bcrypt), `full_name`, `status` (Active / Locked / Disabled), `failed_login_count`, `last_login_at`. `website_login_logs` is its sign-in diary, built like `login_logs`. Nothing links the two account tables, so an office login can't sign in to the Website Admin app.
+The separate Website Admin app has its **own** accounts, not the office app's `users`. `website_accounts` holds `username` (unique ignoring capital letters, through a unique index on `LOWER(username)`), `password_hash` (bcrypt), `full_name`, `status` (Active / Locked / Disabled), `is_main` (a main account manages the others; script 009), `failed_login_count`, `last_login_at`. `website_login_logs` is its sign-in diary, built like `login_logs`. Nothing links the two account tables, so an office login can't sign in to the Website Admin app.
 
 ## password_requests
 

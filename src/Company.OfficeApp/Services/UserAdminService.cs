@@ -33,9 +33,6 @@ public static partial class UserAdminService
     public static readonly string[] DepartmentList = [Departments.HrPayroll, Departments.Inventory, Departments.Subcontractors, Departments.Receipts];
     public static readonly string[] LevelList = [UserLevels.Admin, UserLevels.Supervisor, UserLevels.Employee];
 
-    [GeneratedRegex(@"^[A-Za-z0-9._-]{3,50}$")]
-    private static partial Regex UsernamePattern();
-
     public static async Task<List<UserRow>> ListAsync(string search, string? status)
     {
         using var db = Db.Open();
@@ -72,8 +69,7 @@ public static partial class UserAdminService
     /// <summary>Null when the username and level are acceptable, otherwise the reason. (The employee is checked when saving.)</summary>
     public static string? CheckInput(UserInput input)
     {
-        if (!UsernamePattern().IsMatch(input.Username.Trim()))
-            return "Username: 3 to 50 characters, only letters, numbers, dots, dashes and underscores (no spaces).";
+        if (Company.Shared.AccountRules.CheckUsername(input.Username) is { } badName) return badName;
         if (!LevelList.Contains(input.Level)) return "Choose a level.";
         return null;
     }

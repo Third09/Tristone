@@ -367,6 +367,17 @@ The public website is managed in a **separate program**, Tri-Stone Website Admin
 2. Type your Website Admin **username** and **password**, then click **Sign In**.
 3. The rules are the same as the office app: capital letters in the username don't matter, and 5 wrong passwords lock the account.
 
-Forgot your password? Ask another Website Admin to set a new one.
+Forgot your password? Ask a main Website Admin account to set a new one.
 
 The main window fills the screen and shows who is signed in. Click **Sign Out** (top right) to leave. Its six tabs (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic) are being built one by one.
+
+**Accounts (main accounts only)**
+
+Only a **main** Website Admin account sees the **Accounts** tab and can manage the other accounts.
+
+1. **Create Account** opens a window: type the full name and a username, click **Generate** (or type a first password), tick **Main account** only if this person should manage accounts too, and click **Save**. Give the username and password to the person in person.
+2. To change someone: click them in the list, change the name, username or main tick, click **Save**, check the changes in the message and click **Yes**.
+3. **Set New Password** gives a new password (click **Generate**, then **Copy**, then **Save**). It also unlocks a locked account.
+4. **Unlock** is for accounts locked after 5 wrong passwords. **Disable** turns an account off; **Enable** turns it back on.
+
+You can't turn off your own account or remove your own main status, and the last active main account is protected.

@@ -17,6 +17,9 @@ public class WebsiteAccount
     /// <summary>One of <see cref="UserStatuses"/> (Active / Locked / Disabled).</summary>
     [Column("status")] public string Status { get; set; } = UserStatuses.Active;
 
+    /// <summary>A main account can manage the other Website Admin accounts (script 009).</summary>
+    [Column("is_main")] public bool IsMain { get; set; }
+
     [Column("failed_login_count")] public int FailedLoginCount { get; set; }
     [Column("last_login_at")] public DateTime? LastLoginAt { get; set; }
     [Column("created_at")] public DateTime CreatedAt { get; set; } = DateTime.Now;

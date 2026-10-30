@@ -17,7 +17,7 @@ public record PasswordRequestRow(int RequestId, int UserId, string FullName, str
 /// </summary>
 public static class PasswordService
 {
-    public const int MinPasswordLength = 8;
+    public const int MinPasswordLength = Company.Shared.AccountRules.MinPasswordLength;
 
     /// <summary>Wrong security answers allowed before only another Admin can reset the account.</summary>
     public const int MaxSecurityAnswerFailures = 10;
@@ -112,27 +112,11 @@ public static class PasswordService
         await db.SaveChangesAsync();
     }
 
-    /// <summary>Null when the new password is acceptable, otherwise the reason.</summary>
-    public static string? CheckNewPassword(string password, string confirm)
-    {
-        if (password.Length < MinPasswordLength) return $"The new password must be at least {MinPasswordLength} characters.";
-        if (!password.Any(char.IsDigit) || !password.Any(char.IsLetter)) return "The new password must have at least one letter and one number.";
-        if (password != confirm) return "The two passwords don't match.";
-        return null;
-    }
+    /// <summary>Null when the new password is acceptable, otherwise the reason (shared with the Website Admin app).</summary>
+    public static string? CheckNewPassword(string password, string confirm) => Company.Shared.AccountRules.CheckNewPassword(password, confirm);
 
-    /// <summary>A random 10-character password without look-alike characters (no 0/O, 1/l/I).</summary>
-    public static string GeneratePassword()
-    {
-        const string letters = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
-        const string digits = "23456789";
-        var chars = new char[10];
-        for (int i = 0; i < chars.Length; i++)
-            chars[i] = i < 2 ? digits[RandomNumberGenerator.GetInt32(digits.Length)]
-                             : letters[RandomNumberGenerator.GetInt32(letters.Length)];
-        RandomNumberGenerator.Shuffle(chars.AsSpan());
-        return new string(chars);
-    }
+    /// <summary>A random 10-character password without look-alike characters (shared with the Website Admin app).</summary>
+    public static string GeneratePassword() => Company.Shared.AccountRules.GeneratePassword();
 
     /// <summary>Security answers ignore spaces at the ends and upper/lower case ("Manila " = "manila").</summary>
     public static string NormalizeAnswer(string answer) => answer.Trim().ToLowerInvariant();

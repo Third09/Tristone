@@ -21,6 +21,14 @@ public partial class MainForm : Form
         MaximizedBounds = new Rectangle(screen.WorkingArea.X - screen.Bounds.X, screen.WorkingArea.Y - screen.Bounds.Y,
                                         screen.WorkingArea.Width, screen.WorkingArea.Height);
         lblUserName.Text = WebsiteAuth.Current is { } a ? $"Signed in: {a.FullName} ({a.Username})" : "";
+
+        // Only a main account manages the Website Admin accounts (the service checks again on every action).
+        if (WebsiteAuth.Current is { IsMain: true })
+        {
+            var tab = new TabPage("Accounts") { Name = "tabAccounts", Padding = new Padding(3) };
+            tab.Controls.Add(new Pages.AccountsTab { Dock = DockStyle.Fill });
+            tabWebsiteAdmin.TabPages.Add(tab);
+        }
     }
 
     async void btnSignOut_Click(object sender, EventArgs e)

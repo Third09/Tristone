@@ -69,6 +69,7 @@ The database is never built by clicking in pgAdmin. Every change is a numbered s
 | 006 | subcontractors, trades, jobs, stages, documents, progress, vouchers, payouts |
 | 007 | `receipts`, `change_orders` |
 | 008 | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts) |
+| 009 | `website_accounts.is_main`: main accounts manage the other Website Admin accounts |
 
 ## 2.2 Conventions
 
@@ -231,11 +232,20 @@ To run it: in Visual Studio, right-click **Company.WebsiteAdmin > Set as Startup
 Like the first office Admin, it is added once in pgAdmin (**Tools > Query Tool** on `construction_db`):
 
 ```sql
-INSERT INTO website_accounts (username, password_hash, full_name)
-VALUES ('YourUsername', crypt('YourPassword', gen_salt('bf', 11)), 'Your Full Name');
+INSERT INTO website_accounts (username, password_hash, full_name, is_main)
+VALUES ('YourUsername', crypt('YourPassword', gen_salt('bf', 11)), 'Your Full Name', TRUE);
 ```
 
-Managing more website accounts (add, unlock, turn off, set password) will be a screen inside the Website Admin app.
+`TRUE` makes it a **main** account. (If an account was added before script 009, the oldest one became main automatically.)
+
+## 10.3 Website Admin accounts
+
+Only **main** accounts manage the others (owner decision, 30 Oct 2026), in the **Accounts** tab, which only main accounts see. `Services/WebsiteAccounts` re-checks on every action that the signed-in account is an active main account.
+
+- Create Account (pop-up, same pattern as the office app), change name / username / main, Set New Password (also unlocks), Unlock, Disable, Enable.
+- You can't turn off your own account or remove your own main status; the last active main account is protected.
+- Password and username rules live in one place, `Company.Shared/AccountRules`, used by both apps.
+- Password changes and unlocks are written to `website_login_logs` with who did it.
 
 # Chapter 11: Testing
 
@@ -256,11 +266,12 @@ Each part was tested with a small throwaway console program that runs real check
 | Row re-select after saving (Projects, Materials, Employees) | 11 |
 | Add pop-ups, no auto-select, confirm before saving (Employees + 8 list pages) | 86 |
 | Website Admin app: sign-in, lock-out, main window | 16 |
+| Website Admin accounts (main only, pop-up, confirm, lock/unlock, password) | 22 |
 
 **Not tested yet:** the "last active Admin" protection. It needs a separate test database; never disable the real Admin account to test it.
 
 # Coming next
 
 - HR & Payroll: Attendance, Payroll, Cash Advances
-- Website Admin app: its accounts screen and the six website tabs; then the API and the website Contact form
+- Website Admin app: the six website tabs; then the API and the website Contact form
 - Phase 6: the server and the installers
