@@ -225,24 +225,32 @@ const websiteAdmin = [
     form: "MainForm (Form) in the Company.WebsiteAdmin project",
     opensFrom: "After signing in with a Website Admin account. It is not part of the office app.",
     whoSees: "People with a Website Admin account (separate from the office app's logins)",
-    note: "A separate desktop app with its own accounts (owner decision 2026-10-30). Full screen with no title bar, like the office app. Its main window has 6 tabs; each tab is described below. Built so far: the top bar and the empty tabs; the tab layouts below were planned when it was still an office-app page and are refined as each tab is built.",
+    note: "A separate desktop app with its own accounts (owner decision 2026-10-30). Laid out like the office app (owner request 2026-10-30): sidebar on the left, top bar, and the chosen page in pnlContent. Full screen with no title bar. Each page is described below (the sections are still titled \"Tab\" from the original plan; they are sidebar pages now). Pages not built yet show \"(page name): coming next.\"",
     groups: [
-      { name: "Top bar", rows: [
-        ["Top bar", "Panel (Dock = Top)", "pnlTopBar", "Holds the app name, who is signed in and Sign Out."],
-        ["App name", "Label", "lblAppTitle", "\"Tri-Stone Website Admin\"."],
-        ["Signed-in name", "Label", "lblUserName", "e.g. \"Signed in: Juan Dela Cruz (jdelacruz)\"."],
-        ["Sign Out button", "Button (Anchor = Top, Right)", "btnSignOut", "Signs out (recorded) and goes back to the Sign In window."],
+      { name: "Sidebar (left side)", rows: [
+        ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds the buttons, top to bottom. The open page's button is in bold."],
+        ["Page Content button", "Button", "btnNavPageContent", "Opens Page Content."],
+        ["Announcements button", "Button", "btnNavAnnouncements", "Opens Announcements."],
+        ["Website Projects button", "Button", "btnNavWebsiteProjects", "Opens Website Projects."],
+        ["Document Vault button", "Button", "btnNavDocumentVault", "Opens Document Vault."],
+        ["Inquiries button", "Button", "btnNavInquiries", "Opens Inquiries (the first page shown). Says how many are new, e.g. \"Inquiries (3 new)\"."],
+        ["Website Traffic button", "Button", "btnNavWebsiteTraffic", "Opens Website Traffic."],
+        ["Accounts button", "Button", "btnNavAccounts", "Opens Accounts. Main accounts only."],
+        ["Sign Out button", "Button", "btnSignOut", "Signs out (recorded) and goes back to the Sign In window."],
       ]},
-      { name: "Main section", rows: [
-        ["Tabs", "TabControl (Dock = Fill)", "tabWebsiteAdmin", "6 tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, plus Accounts for main accounts. Until a tab is built it shows \"(tab name): coming next.\""],
+      { name: "Top bar and main section", rows: [
+        ["Top bar", "Panel (Dock = Top)", "pnlTopBar", "Holds the page title and who is signed in."],
+        ["Page title", "Label", "lblPageTitle", "Name of the open page."],
+        ["Signed-in name", "Label", "lblUserName", "e.g. \"Signed in: Juan Dela Cruz (jdelacruz)\"."],
+        ["Main section", "Panel (Dock = Fill)", "pnlContent", "The chosen page loads here."],
       ]},
     ],
   },
   {
-    title: "Website Admin App: Tab: Accounts",
-    form: "TabPage: tabAccounts, holding AccountsTab (UserControl)",
-    opensFrom: "Website Admin app > Accounts tab.",
-    whoSees: "Main Website Admin accounts only (the tab is not added for others, and every action is checked again).",
+    title: "Website Admin App: Accounts page",
+    form: "AccountsTab (UserControl), loaded in pnlContent",
+    opensFrom: "Accounts button in the sidebar.",
+    whoSees: "Main Website Admin accounts only (the button is hidden for others, and every action is checked again).",
     note: "Same safe pattern as the office app's list pages: the list never selects a row by itself, the form is greyed out until a row is clicked, Create Account opens a pop-up (the same form without the list), and Save asks Yes/No listing the changes.",
     groups: [
       { name: "List", rows: [
@@ -269,7 +277,7 @@ const websiteAdmin = [
   {
     title: "Website Admin App: Set New Password Window",
     form: "SetAccountPasswordForm (Form, pop-up)",
-    opensFrom: "Set New Password button on the Accounts tab.",
+    opensFrom: "Set New Password button on the Accounts page.",
     whoSees: "Main Website Admin accounts only",
     groups: [
       { name: "Main section", rows: [
@@ -428,8 +436,8 @@ const websiteAdmin = [
   },
   {
     title: "Tab 5: Inquiries",
-    form: "TabPage: tabInquiries, holding InquiriesTab (UserControl)",
-    opensFrom: "Website Admin app > Inquiries tab. The tab title shows \"Inquiries (N new)\".",
+    form: "InquiriesTab (UserControl), loaded in pnlContent",
+    opensFrom: "Inquiries button in the sidebar (shows \"Inquiries (N new)\"). The first page after signing in.",
     whoSees: "Every Website Admin account",
     note: "BUILT. Every message from the website Contact form lands here. The status and notes live only in the app; inquiries are never deleted. Same safe pattern as the list pages: nothing is selected by itself, the follow-up form is greyed out until a row is clicked, and Save lists the changes in a Yes/No message first.",
     groups: [

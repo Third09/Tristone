@@ -1,17 +1,22 @@
+using Company.WebsiteAdmin.Pages;
 using Company.WebsiteAdmin.Services;
 
 namespace Company.WebsiteAdmin.Forms;
 
 /// <summary>
-/// The Website Admin app's main window: who is signed in, Sign Out, and the six website tabs
-/// (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic), filled in one by one.
-/// Full screen with no title bar, like the office app.
+/// The Website Admin app's main window, laid out like the office app: the sidebar on the left (the open page's
+/// button in bold), the page title and who is signed in at the top, and the chosen page in the middle.
+/// Full screen with no title bar. Accounts is shown to main accounts only.
 /// </summary>
 public partial class MainForm : Form
 {
     /// <summary>True when the person clicked Sign Out (back to Sign In); false when the window was closed.</summary>
     public bool SignedOut { get; private set; }
     bool loggedOut;   // sign-out already written to website_login_logs
+
+    enum WebPage { PageContent, Announcements, WebsiteProjects, DocumentVault, Inquiries, WebsiteTraffic, Accounts }
+
+    readonly Dictionary<WebPage, Button> navButtons;
 
     public MainForm()
     {
@@ -22,31 +27,80 @@ public partial class MainForm : Form
                                         screen.WorkingArea.Width, screen.WorkingArea.Height);
         lblUserName.Text = WebsiteAuth.Current is { } a ? $"Signed in: {a.FullName} ({a.Username})" : "";
 
-        // Built tabs replace their "coming next" placeholder.
-        var inquiries = new Pages.InquiriesTab { Dock = DockStyle.Fill };
-        tabInquiries.Controls.Clear();
-        tabInquiries.Controls.Add(inquiries);
-        inquiries.Changed += async (_, _) => await ShowNewInquiriesAsync();
-        Shown += async (_, _) => await ShowNewInquiriesAsync();
-
-        // Only a main account manages the Website Admin accounts (the service checks again on every action).
-        if (WebsiteAuth.Current is { IsMain: true })
+        navButtons = new()
         {
-            var tab = new TabPage("Accounts") { Name = "tabAccounts", Padding = new Padding(3) };
-            tab.Controls.Add(new Pages.AccountsTab { Dock = DockStyle.Fill });
-            tabWebsiteAdmin.TabPages.Add(tab);
-        }
+            [WebPage.PageContent] = btnNavPageContent,
+            [WebPage.Announcements] = btnNavAnnouncements,
+            [WebPage.WebsiteProjects] = btnNavWebsiteProjects,
+            [WebPage.DocumentVault] = btnNavDocumentVault,
+            [WebPage.Inquiries] = btnNavInquiries,
+            [WebPage.WebsiteTraffic] = btnNavWebsiteTraffic,
+            [WebPage.Accounts] = btnNavAccounts,
+        };
+        foreach (var (page, button) in navButtons) button.Click += (_, _) => ShowPage(page);
+        // Only a main account manages the Website Admin accounts (the service checks again on every action).
+        btnNavAccounts.Visible = WebsiteAuth.Current is { IsMain: true };
     }
 
-    /// <summary>The tab title says how many inquiries are waiting, e.g. "Inquiries (3 new)".</summary>
+    async void MainForm_Load(object sender, EventArgs e)
+    {
+        ShowPage(WebPage.Inquiries);   // the first finished page
+        await ShowNewInquiriesAsync();
+    }
+
+    static string Title(WebPage page) => page switch
+    {
+        WebPage.PageContent => "Page Content",
+        WebPage.WebsiteProjects => "Website Projects",
+        WebPage.DocumentVault => "Document Vault",
+        WebPage.WebsiteTraffic => "Website Traffic",
+        _ => page.ToString(),
+    };
+
+    /// <summary>Loads a page into the main area. Pages not built yet say so.</summary>
+    void ShowPage(WebPage page)
+    {
+        if (page == WebPage.Accounts && !btnNavAccounts.Visible) return;
+
+        UserControl view;
+        switch (page)
+        {
+            case WebPage.Inquiries:
+                var inquiries = new InquiriesTab();
+                inquiries.Changed += async (_, _) => await ShowNewInquiriesAsync();
+                view = inquiries;
+                break;
+            case WebPage.Accounts:
+                view = new AccountsTab();
+                break;
+            default:
+                view = new UserControl();
+                view.Controls.Add(new Label { AutoSize = true, Location = new Point(12, 12), Text = $"{Title(page)}: coming next." });
+                break;
+        }
+
+        foreach (Control old in pnlContent.Controls) old.Dispose();
+        pnlContent.Controls.Clear();
+        view.Dock = DockStyle.Fill;
+        pnlContent.Controls.Add(view);
+
+        lblPageTitle.Text = Title(page);
+        foreach (var (p, b) in navButtons)
+            b.Font = p == page ? NavFontOpen : Font;   // bold = the page that's open
+    }
+
+    Font? openFont;
+    Font NavFontOpen => openFont ??= new Font(Font, FontStyle.Bold);
+
+    /// <summary>The Inquiries button says how many are waiting, e.g. "Inquiries (3 new)".</summary>
     async Task ShowNewInquiriesAsync()
     {
         try
         {
             var counts = await WebsiteInquiries.CountsAsync();
-            tabInquiries.Text = counts.New == 0 ? "Inquiries" : $"Inquiries ({counts.New} new)";
+            btnNavInquiries.Text = counts.New == 0 ? "Inquiries" : $"Inquiries ({counts.New} new)";
         }
-        catch { /* only a hint; the tab itself reports database problems */ }
+        catch { /* only a hint; the page itself reports database problems */ }
     }
 
     async void btnSignOut_Click(object sender, EventArgs e)

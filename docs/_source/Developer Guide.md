@@ -225,7 +225,7 @@ The public website is managed in its **own desktop app**, `src/Company.WebsiteAd
 - It **shares files with the office app** instead of copying them: `DbSettings`, `Db`, the Database Settings window, `Responsive` and `RecordForm` are linked in its `.csproj`. A change in one place updates both apps. Both read the same per-PC settings file, so a PC set up for one works for the other.
 - It has **its own accounts** (`website_accounts`, script 008), separate from the office app's `users`. An office login can't sign in here, and the other way round.
 - Same rules as the office app: usernames ignore capital letters, passwords are bcrypt hashes, 5 wrong passwords lock the account, and every attempt goes to `website_login_logs` with the PC name.
-- The main window is full screen with no title bar. It shows who is signed in, a **Sign Out** button and six tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic. They're filled in one by one.
+- The main window is full screen with no title bar. It looks like the office app: a sidebar on the left (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, Accounts for main accounts, Sign Out), the page title and who is signed in at the top, and the chosen page in the middle. Pages are filled in one by one.
 
 To run it: in Visual Studio, right-click **Company.WebsiteAdmin > Set as Startup Project**, then press **F5**.
 
@@ -242,7 +242,7 @@ VALUES ('YourUsername', crypt('YourPassword', gen_salt('bf', 11)), 'Your Full Na
 
 ## 10.3 Website Admin accounts
 
-Only **main** accounts manage the others (owner decision, 30 Oct 2026), in the **Accounts** tab, which only main accounts see. `Services/WebsiteAccounts` re-checks on every action that the signed-in account is an active main account.
+Only **main** accounts manage the others (owner decision, 30 Oct 2026), on the **Accounts** page, whose sidebar button only main accounts see. `Services/WebsiteAccounts` re-checks on every action that the signed-in account is an active main account.
 
 - Create Account (pop-up, same pattern as the office app), change name / username / main, Set New Password (also unlocks), Unlock, Disable, Enable.
 - You can't turn off your own account or remove your own main status; the last active main account is protected.
@@ -251,7 +251,7 @@ Only **main** accounts manage the others (owner decision, 30 Oct 2026), in the *
 
 ## 10.4 Inquiries
 
-Website Contact form messages land in `inquiries` (script 010); the API will add them later. Any signed-in Website Admin account can follow them up: status New / Contacted / Closed and internal notes (never shown on the website). Inquiries are never deleted, so nothing a client sent is lost. The database refuses an inquiry with neither an email nor a phone number. `Services/WebsiteInquiries` lists, counts and saves; the tab title shows "Inquiries (N new)".
+Website Contact form messages land in `inquiries` (script 010); the API will add them later. Any signed-in Website Admin account can follow them up: status New / Contacted / Closed and internal notes (never shown on the website). Inquiries are never deleted, so nothing a client sent is lost. The database refuses an inquiry with neither an email nor a phone number. `Services/WebsiteInquiries` lists, counts and saves; the sidebar button shows "Inquiries (N new)".
 
 # Chapter 11: Testing
 
@@ -281,5 +281,5 @@ Each part was tested with a small throwaway console program that runs real check
 # Coming next
 
 - HR & Payroll: Attendance, Payroll, Cash Advances
-- Website Admin app: the six website tabs; then the API and the website Contact form
+- Website Admin app: the remaining website pages (Page Content, Announcements, Website Projects, Document Vault, Website Traffic); then the API and the website Contact form
 - Phase 6: the server and the installers

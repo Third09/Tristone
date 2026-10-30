@@ -369,11 +369,11 @@ The public website is managed in a **separate program**, Tri-Stone Website Admin
 
 Forgot your password? Ask a main Website Admin account to set a new one.
 
-The main window fills the screen and shows who is signed in. Click **Sign Out** (top right) to leave. Its six tabs (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic) are being built one by one.
+The main window looks like the office app: click a button in the **left sidebar** to open a page (the open one is in **bold**). The top shows the page name and who is signed in. Click **Sign Out** at the bottom of the sidebar to leave. Pages not finished yet say "coming next".
 
 **Accounts (main accounts only)**
 
-Only a **main** Website Admin account sees the **Accounts** tab and can manage the other accounts.
+Only a **main** Website Admin account sees the **Accounts** button and can manage the other accounts.
 
 1. **Create Account** opens a window: type the full name and a username, click **Generate** (or type a first password), tick **Main account** only if this person should manage accounts too, and click **Save**. Give the username and password to the person in person.
 2. To change someone: click them in the list, change the name, username or main tick, click **Save**, check the changes in the message and click **Yes**.
@@ -384,7 +384,7 @@ You can't turn off your own account or remove your own main status, and the last
 
 **Inquiries**
 
-Messages from the website Contact form. The tab title shows how many are new, e.g. *Inquiries (3 new)*; new ones are in **bold**.
+Messages from the website Contact form. The **Inquiries** button in the sidebar shows how many are new, e.g. *Inquiries (3 new)*; new ones are in **bold** in the list.
 
 1. Use **Status**, **Search** (name, email, phone or location) and **From** / **To** to find messages. **Refresh** loads the newest.
 2. Click an inquiry to read it: name, contact number, email, project location, service and the message.
