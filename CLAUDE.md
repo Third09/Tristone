@@ -113,4 +113,10 @@ DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one log
 - Home PC still to do: pull, run `database\setup-database.cmd` (scripts 008-011), set Company.Launcher as startup project, then the "Check at home" list in docs/Testing Log.md.
 - Owner's uncommitted Visual Studio designer edits on `Pages/Hr/EmployeesTab` (re-formatted designer, two .resx files, an empty `lblFormMode_Click` handler) are left out of commits on purpose; ask before committing them.
 
+**Page Content (Website Admin): waiting on owner decisions (explained 2026-10-30, no code yet).** The website repo (`Updated/html/index.html` = Services, "What We Build" projects, About Us; `contact.html`) has all text and ~19 images/videos typed into the HTML. Plan: (1) Page Content screen in Website Admin + a new DB script for editable items per page/section (text or image), seeded from the current website text, same RecordForm pattern; safe to build any time. (2) Website side needs a small label on each editable text/image (e.g. `services.title`); original HTML text stays as the fallback. Owner must decide:
+1. May we add those labels to pages other than Contact (or does the friend add them)? Owner may ask the friend first.
+2. How changes reach the site: **A Live** (site asks the API on every visit; instant, but the laptop must be on, images served from it, brief flicker) or **B Publish button** (Claude's recommendation: Website Admin triggers a Netlify rebuild that bakes text + images into the site; works with the laptop off, fast, good for Google, ~1-2 min delay, needs a one-time Netlify build step).
+3. How much is editable: everything, or **selected parts** (recommended: section titles, descriptions, service items, About Us text, main photos; menus/footer/buttons fixed).
+Build order: screen + table first, then the website labels, then the API / Publish piece.
+
 Next: Attendance tab waits for the scanner's sample export file; then payroll/cash advances, the remaining Website Admin pages (Page Content, Announcements, Website Projects, Document Vault, Website Traffic), then the API + website Contact form, then Phase 6 installers.
