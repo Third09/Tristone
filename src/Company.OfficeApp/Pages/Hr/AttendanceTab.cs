@@ -146,6 +146,28 @@ public partial class AttendanceTab : UserControl
         MessageBox.Show(this, string.Join("\n\n", lastProblems), "Rejected rows", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
+    // Makes the scanner's "Employee Form" from the employee list (ID = Biometric ID), to load on the scanner by USB.
+    async void btnExportToScanner_Click(object sender, EventArgs e)
+    {
+        using var dlg = new SaveFileDialog
+        {
+            Title = "Save the employee file for the scanner (put it on the USB stick)",
+            Filter = "Scanner employee file (*.xls)|*.xls",
+            FileName = "Employee Form.xls",
+        };
+        if (dlg.ShowDialog(this) != DialogResult.OK) return;
+        try
+        {
+            var result = await ScannerEmployeeFile.SaveAsync(dlg.FileName);
+            var text = $"Saved {result.Employees} employee{(result.Employees == 1 ? "" : "s")} to:\n{dlg.FileName}\n\n"
+                + "Copy it to the USB stick and load it on the scanner (its USB menu, upload user / employee information). "
+                + "Fingerprints are still registered on the scanner itself.";
+            if (result.Skipped.Count > 0) text += "\n\nNot included:\n" + string.Join("\n", result.Skipped);
+            MessageBox.Show(this, text, "Scanner employee file", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (IOException ex) { MessageBox.Show(this, "Couldn't save the file. Is it open in Excel?\n" + ex.Message, "Scanner employee file"); }
+    }
+
     async void btnFixScan_Click(object sender, EventArgs e)
     {
         if (Selected is not { } r) return;

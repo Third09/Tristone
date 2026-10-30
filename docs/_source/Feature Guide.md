@@ -329,6 +329,8 @@ There is one fingerprint scanner. Everyone scans **4 times a day**: in, break ou
 
 Uploading the same file again, or a file that overlaps an earlier one, is safe: each scan is stored once.
 
+**Sending the employee list to the scanner.** The scanner can load its employee list from a file on the USB stick, in its own *Employee Form* layout. **Make Scanner Employee File** fills that form with every **active** employee who has a numeric Biometric ID: ID, name, department and "employee" authority (scanner admins are set on the scanner). The scanner only knows numbered departments, so ours are sent as Site = 1, Administration = 3, HR & Payroll = 4, Inventory = 5, Subcontractors = 6, Receipts = 7. The schedule columns are left empty, like the scanner's own file, because the app works out late, absent and overtime itself. Fingerprints are still registered on the scanner, one person at a time.
+
 ## 7b.2 How a day is worked out
 
 | Rule | Example |

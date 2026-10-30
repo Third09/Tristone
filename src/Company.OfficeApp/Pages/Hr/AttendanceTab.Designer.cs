@@ -20,6 +20,7 @@ namespace Company.OfficeApp.Pages.Hr
             btnUploadBiometrics = new Button();
             lblImportSummary = new Label();
             btnViewImportErrors = new Button();
+            btnExportToScanner = new Button();
             lblAttendanceFrom = new Label();
             dtpAttendanceFrom = new DateTimePicker();
             lblAttendanceTo = new Label();
@@ -76,6 +77,15 @@ namespace Company.OfficeApp.Pages.Hr
             btnViewImportErrors.TabIndex = 1;
             btnViewImportErrors.Click += btnViewImportErrors_Click;
             // 
+            // btnExportToScanner
+            // 
+            btnExportToScanner.Location = new Point(178, 42);
+            btnExportToScanner.Name = "btnExportToScanner";
+            btnExportToScanner.Size = new Size(200, 28);
+            btnExportToScanner.Text = "Make Scanner Employee File";
+            btnExportToScanner.TabIndex = 2;
+            btnExportToScanner.Click += btnExportToScanner_Click;
+            // 
             // lblAttendanceFrom
             // 
             lblAttendanceFrom.AutoSize = true;
@@ -89,7 +99,7 @@ namespace Company.OfficeApp.Pages.Hr
             dtpAttendanceFrom.Name = "dtpAttendanceFrom";
             dtpAttendanceFrom.Size = new Size(115, 23);
             dtpAttendanceFrom.Format = DateTimePickerFormat.Short;
-            dtpAttendanceFrom.TabIndex = 2;
+            dtpAttendanceFrom.TabIndex = 3;
             dtpAttendanceFrom.ValueChanged += Filter_Changed;
             // 
             // lblAttendanceTo
@@ -105,7 +115,7 @@ namespace Company.OfficeApp.Pages.Hr
             dtpAttendanceTo.Name = "dtpAttendanceTo";
             dtpAttendanceTo.Size = new Size(115, 23);
             dtpAttendanceTo.Format = DateTimePickerFormat.Short;
-            dtpAttendanceTo.TabIndex = 3;
+            dtpAttendanceTo.TabIndex = 4;
             dtpAttendanceTo.ValueChanged += Filter_Changed;
             // 
             // lblAttendanceFilter
@@ -121,7 +131,7 @@ namespace Company.OfficeApp.Pages.Hr
             cboAttendanceFilter.Name = "cboAttendanceFilter";
             cboAttendanceFilter.Size = new Size(200, 23);
             cboAttendanceFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboAttendanceFilter.TabIndex = 4;
+            cboAttendanceFilter.TabIndex = 5;
             cboAttendanceFilter.SelectedIndexChanged += Filter_Changed;
             // 
             // lblAttendanceSearch
@@ -136,7 +146,7 @@ namespace Company.OfficeApp.Pages.Hr
             txtAttendanceSearch.Location = new Point(634, 80);
             txtAttendanceSearch.Name = "txtAttendanceSearch";
             txtAttendanceSearch.Size = new Size(180, 23);
-            txtAttendanceSearch.TabIndex = 5;
+            txtAttendanceSearch.TabIndex = 6;
             // 
             // dgvAttendance
             // 
@@ -151,7 +161,7 @@ namespace Company.OfficeApp.Pages.Hr
             dgvAttendance.Location = new Point(12, 112);
             dgvAttendance.Name = "dgvAttendance";
             dgvAttendance.Size = new Size(930, 380);
-            dgvAttendance.TabIndex = 6;
+            dgvAttendance.TabIndex = 7;
             dgvAttendance.SelectionChanged += dgvAttendance_SelectionChanged;
             dgvAttendance.CellFormatting += dgvAttendance_CellFormatting;
             dgvAttendance.CellDoubleClick += dgvAttendance_CellDoubleClick;
@@ -169,7 +179,7 @@ namespace Company.OfficeApp.Pages.Hr
             btnFixScan.Name = "btnFixScan";
             btnFixScan.Size = new Size(130, 28);
             btnFixScan.Text = "Fix Missing Scan";
-            btnFixScan.TabIndex = 7;
+            btnFixScan.TabIndex = 8;
             btnFixScan.Click += btnFixScan_Click;
             // 
             // btnApproveOvertime
@@ -178,7 +188,7 @@ namespace Company.OfficeApp.Pages.Hr
             btnApproveOvertime.Name = "btnApproveOvertime";
             btnApproveOvertime.Size = new Size(130, 28);
             btnApproveOvertime.Text = "Approve Overtime";
-            btnApproveOvertime.TabIndex = 8;
+            btnApproveOvertime.TabIndex = 9;
             btnApproveOvertime.Click += btnApproveOvertime_Click;
             // 
             // btnRejectOvertime
@@ -187,7 +197,7 @@ namespace Company.OfficeApp.Pages.Hr
             btnRejectOvertime.Name = "btnRejectOvertime";
             btnRejectOvertime.Size = new Size(120, 28);
             btnRejectOvertime.Text = "Reject Overtime";
-            btnRejectOvertime.TabIndex = 9;
+            btnRejectOvertime.TabIndex = 10;
             btnRejectOvertime.Click += btnRejectOvertime_Click;
             // 
             // btnExportAttendance
@@ -196,7 +206,7 @@ namespace Company.OfficeApp.Pages.Hr
             btnExportAttendance.Name = "btnExportAttendance";
             btnExportAttendance.Size = new Size(80, 28);
             btnExportAttendance.Text = "Export";
-            btnExportAttendance.TabIndex = 10;
+            btnExportAttendance.TabIndex = 11;
             btnExportAttendance.Click += btnExportAttendance_Click;
             // 
             // lblApproverNote
@@ -299,6 +309,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(btnUploadBiometrics);
             Controls.Add(lblImportSummary);
             Controls.Add(btnViewImportErrors);
+            Controls.Add(btnExportToScanner);
             Controls.Add(lblAttendanceFrom);
             Controls.Add(dtpAttendanceFrom);
             Controls.Add(lblAttendanceTo);
@@ -328,6 +339,7 @@ namespace Company.OfficeApp.Pages.Hr
         private Button btnUploadBiometrics;
         private Label lblImportSummary;
         private Button btnViewImportErrors;
+        private Button btnExportToScanner;
         private Label lblAttendanceFrom;
         private DateTimePicker dtpAttendanceFrom;
         private Label lblAttendanceTo;

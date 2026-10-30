@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.1" />
     <PackageReference Include="ExcelDataReader" Version="3.7.0" />
+    <PackageReference Include="NPOI" Version="2.7.5" />
     <PackageReference Include="ScottPlot.WinForms" Version="5.1.59" />
   </ItemGroup>
 
@@ -22,5 +23,10 @@
          The normal FormsPlot used for the Dashboard chart doesn't use it. -->
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The fingerprint scanner's own "Employee Form" (blank), filled by ScannerEmployeeFile. -->
+    <EmbeddedResource Include="Resources\ScannerEmployeeForm.xls" />
+  </ItemGroup>
 
 </Project>

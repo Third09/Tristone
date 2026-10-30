@@ -258,6 +258,17 @@ The days of everyone with a **Biometric ID**, worked out from the fingerprint sc
 3. The line next to the button says how many scans came in. Uploading the same file twice is safe: nothing is added twice.
 4. If someone's scanner ID isn't set as a Biometric ID in **Employees**, their scans are skipped and **View Rejected Rows** says who. Set the ID in Employees, then upload the file again.
 
+**Send the employee list to the scanner**
+
+Instead of typing names on the scanner:
+
+1. Make sure each person has a **Biometric ID** (a number) in Employees.
+2. Click **Make Scanner Employee File** and save it to the USB stick (it's called *Employee Form.xls*).
+3. On the scanner, open the USB menu and upload the user / employee information from the stick.
+4. Register each person's **fingerprint** on the scanner itself (the file can't carry fingerprints).
+
+The message after saving lists anyone left out (no Biometric ID yet, or an ID that isn't a number). Departments go to the scanner as numbers: Site = 1, Administration = 3, HR & Payroll = 4, Inventory = 5, Subcontractors = 6, Receipts = 7.
+
 **Check the days**
 
 - Pick the dates, and **Show** (All, Late, Absent, Missing Scan, Overtime Waiting Approval, Fixed by HR). **Search** finds a name.

@@ -11,6 +11,7 @@ CONTROLS = [
     ("Button", "btnUploadBiometrics", 12, 10, 160, 28, {"Text": T("Upload Scanner File")}),
     ("Label", "lblImportSummary", 180, 16, None, None, {"Text": T("No scanner file uploaded yet.")}),
     ("Button", "btnViewImportErrors", 12, 42, 160, 28, {"Text": T("View Rejected Rows")}),
+    ("Button", "btnExportToScanner", 178, 42, 200, 28, {"Text": T("Make Scanner Employee File")}),
     ("Label", "lblAttendanceFrom", 12, 83, None, None, {"Text": T("From")}),
     ("DateTimePicker", "dtpAttendanceFrom", 52, 80, 115, 23, {"Format": "DateTimePickerFormat.Short"}),
     ("Label", "lblAttendanceTo", 177, 83, None, None, {"Text": T("To")}),
@@ -49,6 +50,7 @@ GRID_COLUMNS = {
 EVENTS = {
     "btnUploadBiometrics": [("Click", "btnUploadBiometrics_Click")],
     "btnViewImportErrors": [("Click", "btnViewImportErrors_Click")],
+    "btnExportToScanner": [("Click", "btnExportToScanner_Click")],
     "dtpAttendanceFrom": [("ValueChanged", "Filter_Changed")],
     "dtpAttendanceTo": [("ValueChanged", "Filter_Changed")],
     "cboAttendanceFilter": [("SelectedIndexChanged", "Filter_Changed")],

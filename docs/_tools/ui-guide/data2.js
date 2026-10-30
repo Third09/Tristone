@@ -113,6 +113,7 @@ const hrPayroll = [
       { name: "Upload the scanner file", rows: [
         ["Upload Scanner File button", "Button", "btnUploadBiometrics", "Choose the \"All Report\" file exported from the scanner (USB). Uploading the same file again adds nothing."],
         ["Import summary", "Label", "lblImportSummary", "e.g. \"Last upload Oct 30, 8:17 PM (All Report.xls), Oct 1 - Oct 30, 2026: 312 scans imported, 1 row rejected\"."],
+        ["Make Scanner Employee File button", "Button", "btnExportToScanner", "Saves the scanner's \"Employee Form.xls\" with every active employee who has a Biometric ID, to load on the scanner by USB."],
         ["View Rejected Rows button", "Button", "btnViewImportErrors", "Shows whose scans were skipped and why (e.g. a scanner ID no employee has). Off when nothing was rejected."],
       ]},
       { name: "Filters", rows: [
