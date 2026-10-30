@@ -199,7 +199,10 @@ namespace Company.OfficeApp.Forms
             Controls.Add(pnlContent);
             Controls.Add(pnlTopBar);
             Controls.Add(pnlSidebar);
-            MinimumSize = new Size(800, 500);
+            ControlBox = false;
+            FormBorderStyle = FormBorderStyle.None;
+            MaximizeBox = false;
+            MinimizeBox = false;
             WindowState = FormWindowState.Maximized;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;

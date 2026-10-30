@@ -10,7 +10,10 @@ namespace Company.OfficeApp.Pages.Hr;
 /// </summary>
 public partial class EmployeesTab : UserControl
 {
-    int? editingEmployeeId;   // null = adding a new employee
+    // The form on this tab only edits the employee clicked in the list; adding uses EmployeeEntryForm.
+    Employee? editing;        // null = nobody selected, form is empty and locked
+    decimal editingRate;      // the daily rate shown when the employee was loaded, to spot a rate change
+    bool filling;             // true while the list reloads, so the grid's own selection changes are ignored
     readonly LatestOnly loads = new();
 
     public EmployeesTab()
@@ -29,7 +32,7 @@ public partial class EmployeesTab : UserControl
         numDailyRate.Maximum = EmployeeService.MaxDailyRate;
         Responsive.FitGrid(this, dgvEmployees);
         Responsive.OnTypingPause(txtEmployeeSearch, () => LoadEmployeesAsync());
-        StartNew();
+        ShowNothingSelected();
     }
 
     async void EmployeesTab_Load(object sender, EventArgs e) => await LoadEmployeesAsync();
@@ -42,10 +45,20 @@ public partial class EmployeesTab : UserControl
         using var busy = Responsive.Busy(this);
         var rows = await EmployeeService.ListAsync(txtEmployeeSearch.Text, status, schedule);
         if (!loads.IsLatest(ticket)) return;   // a newer search already started
-        dgvEmployees.DataSource = rows;
 
+        selectEmployeeId ??= editing?.EmployeeId;   // searching or filtering keeps the person being edited selected
+        filling = true;
+        dgvEmployees.DataSource = rows;
+        // Never let the grid pick the first row by itself: the form would silently edit that person,
+        // and typing a "new" employee into it would overwrite them.
+        dgvEmployees.ClearSelection();
         if (selectEmployeeId is { } id)
             Responsive.SelectRow(dgvEmployees, (EmployeeRow row) => row.EmployeeId == id);
+        filling = false;
+
+        if (Selected is not { } selected) ShowNothingSelected();
+        else if (selected.EmployeeId != editing?.EmployeeId && await EmployeeService.GetAsync(selected.EmployeeId) is { } emp)
+            await StartEditAsync(emp);
         UpdateButtons();
     }
 
@@ -62,15 +75,20 @@ public partial class EmployeesTab : UserControl
 
     async void dgvEmployees_SelectionChanged(object sender, EventArgs e)
     {
+        if (filling) return;
         UpdateButtons();
-        if (Selected is { } row && await EmployeeService.GetAsync(row.EmployeeId) is { } emp) await StartEditAsync(emp);
+        if (Selected is not { } row) ShowNothingSelected();
+        else if (await EmployeeService.GetAsync(row.EmployeeId) is { } emp) await StartEditAsync(emp);
     }
 
+    Control[] FormInputs => [txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, cboEmployeeDepartment,
+                             txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions,
+                             txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin, btnSaveEmployee, btnCancelEmployee];
 
-    void StartNew()
+    void ShowNothingSelected()
     {
-        editingEmployeeId = null;
-        lblFormMode.Text = "New employee";
+        editing = null;
+        lblFormMode.Text = "Click an employee in the list to see or change their details. To add someone, click Add Employee.";
         foreach (var t in new[] { txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, txtPayGrade,
                                   txtBiometricId, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin })
             t.Clear();
@@ -81,11 +99,13 @@ public partial class EmployeesTab : UserControl
         dgvRateHistory.DataSource = null;
         lblEmployeeFormMsg.Text = "";
         ShowPaySchedule();
+        foreach (var c in FormInputs) c.Enabled = false;
     }
 
     async Task StartEditAsync(Employee e)
     {
-        editingEmployeeId = e.EmployeeId;
+        editing = e;
+        foreach (var c in FormInputs) c.Enabled = true;
         lblFormMode.Text = $"Editing: {e.FullName}";
         txtEmployeeName.Text = e.FullName;
         txtEmployeeContact.Text = e.ContactNumber ?? "";
@@ -106,14 +126,42 @@ public partial class EmployeesTab : UserControl
         dtpRateEffective.Value = DateTime.Today;
         numDailyRate.Value = await EmployeeService.RateOnAsync(e.EmployeeId, DateOnly.FromDateTime(DateTime.Today))
                              ?? rates.LastOrDefault()?.DailyRate ?? 0;
+        editingRate = numDailyRate.Value;
         ShowPaySchedule();
     }
 
-    void ShowPaySchedule()
+    void ShowPaySchedule() => lblPayScheduleValue.Text = EmployeeService.PayScheduleText(cboEmployeeDepartment.SelectedItem as string);
+
+    /// <summary>One line per changed field, for the "Save these changes?" question. Empty = nothing changed.</summary>
+    List<string> DescribeChanges(Employee e, EmployeeInput i)
     {
-        lblPayScheduleValue.Text = cboEmployeeDepartment.SelectedItem is string dept
-            ? (PaySchedules.For(dept) == PaySchedules.Site ? "Pay schedule: Site (paid every Saturday)" : "Pay schedule: Office (paid the 15th and 30th)")
-            : "Pay schedule: (choose a department)";
+        var lines = new List<string>();
+        void Text(string label, string? before, string? after)
+        {
+            before = (before ?? "").Trim(); after = (after ?? "").Trim();
+            if (before != after) lines.Add($"{label}: {(before == "" ? "(empty)" : before)} -> {(after == "" ? "(empty)" : after)}");
+        }
+        // Government ID numbers are private: say that they change, not what they are.
+        void Private(string label, string? before, string? after)
+        {
+            if ((before ?? "").Trim() != (after ?? "").Trim()) lines.Add($"{label}: changed");
+        }
+        Text("Name", e.FullName, i.FullName);
+        Text("Contact number", e.ContactNumber, i.ContactNumber);
+        Text("Address", e.Address, i.Address);
+        Text("Position", e.Position, i.Position);
+        if (e.Department != i.Department)
+            lines.Add($"Department: {e.Department} -> {i.Department} ({EmployeeService.PayScheduleText(i.Department).Replace("Pay schedule: ", "pay schedule ")})");
+        Text("Pay grade", e.PayGrade, i.PayGrade);
+        if (i.DailyRate != editingRate)
+            lines.Add($"Daily rate: {ProjectService.Money(editingRate)} -> {ProjectService.Money(i.DailyRate)} from {i.RateFrom:d MMM yyyy}");
+        Text("Biometric ID", e.BiometricId, i.BiometricId);
+        if (e.GovDeductions != i.GovDeductions) lines.Add($"Government deductions: {(i.GovDeductions ? "turned on" : "turned off")}");
+        Private("SSS number", e.SssNo, i.SssNo);
+        Private("PhilHealth number", e.PhilHealthNo, i.PhilHealthNo);
+        Private("Pag-IBIG number", e.PagIbigNo, i.PagIbigNo);
+        Private("TIN", e.Tin, i.Tin);
+        return lines;
     }
 
     void cboEmployeeDepartment_SelectedIndexChanged(object sender, EventArgs e) => ShowPaySchedule();
@@ -125,41 +173,45 @@ public partial class EmployeesTab : UserControl
         txtSssNo.Text, txtPhilHealthNo.Text, txtPagIbigNo.Text, txtEmployeeTin.Text,
         numDailyRate.Value, DateOnly.FromDateTime(dtpRateEffective.Value));
 
-    void btnAddEmployee_Click(object sender, EventArgs e)
+    async void btnAddEmployee_Click(object sender, EventArgs e)
     {
-        dgvEmployees.ClearSelection();
-        StartNew();
-        txtEmployeeName.Focus();
+        using var f = new EmployeeEntryForm();
+        if (f.ShowDialog(this) != DialogResult.OK || f.NewEmployeeId is not { } newId) return;
+        editing = null;
+        if (cboEmployeeStatusFilter.SelectedIndex != 0) cboEmployeeStatusFilter.SelectedIndex = 0;   // new people are Active
+        await LoadEmployeesAsync(newId);
+        lblEmployeeFormMsg.Text = "Employee added.";
     }
 
     async void btnCancelEmployee_Click(object sender, EventArgs e)
     {
-        if (editingEmployeeId is { } id && await EmployeeService.GetAsync(id) is { } emp) await StartEditAsync(emp); else StartNew();
+        if (editing != null && await EmployeeService.GetAsync(editing.EmployeeId) is { } emp) await StartEditAsync(emp);
     }
 
     async void btnSaveEmployee_Click(object sender, EventArgs e)
     {
+        if (editing is not { } before) return;
         var input = ReadForm();
         if (EmployeeService.CheckInput(input) is { } problem) { lblEmployeeFormMsg.Text = problem; return; }
+
+        var changes = DescribeChanges(before, input);
+        if (changes.Count == 0) { lblEmployeeFormMsg.Text = "Nothing changed."; return; }
+        var ok = MessageBox.Show(this,
+            $"Save these changes to {before.FullName}?\n\n" + string.Join("\n", changes.Select(c => "- " + c)),
+            "Save changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+        if (ok != DialogResult.Yes) { lblEmployeeFormMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
 
         btnSaveEmployee.Enabled = false;
         try
         {
-            if (editingEmployeeId is { } id)
-            {
-                var error = await EmployeeService.UpdateAsync(id, input);
-                lblEmployeeFormMsg.Text = error ?? "Saved.";
-                if (error == null) await LoadEmployeesAsync(id);
-            }
-            else
-            {
-                var (newId, error) = await EmployeeService.CreateAsync(input);
-                lblEmployeeFormMsg.Text = error ?? "Employee added.";
-                if (newId != null) await LoadEmployeesAsync(newId);
-            }
+            var error = await EmployeeService.UpdateAsync(before.EmployeeId, input);
+            if (error != null) { lblEmployeeFormMsg.Text = error; return; }
+            if (await EmployeeService.GetAsync(before.EmployeeId) is { } fresh) await StartEditAsync(fresh);
+            await LoadEmployeesAsync(before.EmployeeId);
+            lblEmployeeFormMsg.Text = "Saved.";
         }
         catch (Exception ex) { lblEmployeeFormMsg.Text = "Can't reach the database. " + ex.Message; }
-        finally { btnSaveEmployee.Enabled = true; }
+        finally { btnSaveEmployee.Enabled = editing != null; }
     }
 
     // ----- list actions -----

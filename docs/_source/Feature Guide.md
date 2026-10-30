@@ -53,6 +53,7 @@ Private details are **never** written in the history: passwords, security answer
 
 ## 1.4 Things that work the same everywhere
 
+- **The main window always fills the screen** (above the taskbar) and has no title bar or minimize / maximize / close buttons, so it can't be resized, moved or closed by accident. Leave with **Sign Out**.
 - **Search boxes** wait until you stop typing for a moment, then search. You don't need to press Enter.
 - **Click a row** in a list to load it into the form next to it. After **Save**, the same row stays highlighted.
 - **Add ...** buttons clear the form for a new record. **Cancel** throws away changes you haven't saved.
@@ -264,6 +265,18 @@ A project can only be deleted while **nothing** is recorded against it (no mater
 # 7. HR & Payroll: Employees
 
 Everyone who works for the company: **office staff** and **site workers**.
+
+## 7.0 Adding vs. changing an employee
+
+Adding and changing are kept **completely separate**, so one can never be mistaken for the other:
+
+- **Add Employee** opens its own **Add Employee** window. Saving there always creates a **new** person.
+- The form under the list is **only for changing** the employee you clicked. Until you click someone, it's empty and greyed out.
+- When you open the tab, search or filter, the list **never selects anyone by itself**.
+- **Save** first shows a message listing every change, for example *Position: Mason -> Foreman* or *Daily rate: ₱600.00 -> ₱700.00 from 2 Nov 2026*. Nothing is saved until you click **Yes**. Government ID numbers are listed only as "changed", never shown.
+- If nothing was changed, **Save** just says *Nothing changed.*
+
+**Why:** before this, the form was quietly in "editing" mode for the first employee in the list. Typing a new person into it and clicking Save **overwrote** that employee instead of adding a new one.
 
 ## 7.1 Departments and pay schedule
 

@@ -75,11 +75,11 @@ Use **Dismiss** if a request was sent by mistake. Every change is recorded in th
 
 ## Screen size
 
-The app opens full screen. On big monitors, lists grow to show more rows; on small laptop screens, scroll down to see the rest of a page. Search boxes update the list when you stop typing.
+The app always fills the whole screen (above the taskbar). It has no title bar or minimize / maximize / close buttons, so it can't be resized or closed by accident. To leave, click **Sign Out**. On big monitors, lists grow to show more rows; on small laptop screens, scroll down to see the rest of a page. Search boxes update the list when you stop typing.
 
 ## Signing out
 
-Click **Sign Out** at the bottom of the left sidebar, or close the window. Both are recorded.
+Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Sign In window comes back. To close the app completely, close the Sign In window.
 
 ## The main window
 
@@ -205,7 +205,7 @@ Everyone who works for the company: **office staff** and **site workers**.
 
 **Add an employee**
 
-1. Click **Add Employee**.
+1. Click **Add Employee**. A separate **Add Employee** window opens.
 2. Fill in the **full name**, contact number, address and position.
 3. Choose the **department**. Choose **Site** for site workers. The pay schedule follows automatically:
    - **Site:** paid every Saturday
@@ -213,13 +213,22 @@ Everyone who works for the company: **office staff** and **site workers**.
 4. Type the **daily rate** and the date it **applies from** (usually today).
 5. Type their **Biometric ID**, the number the fingerprint scanner gives them.
 6. **Government deductions** are off by default. Tick the box only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional.
-7. Click **Save**.
+7. Click **Save**. The window closes and the new employee is selected in the list.
+
+**Change an employee's details**
+
+The form under the list is only for **changing** someone. It stays empty and greyed out until you click an employee.
+
+1. Click the employee in the list.
+2. Change what you need.
+3. Click **Save**. A message lists every change (for example *Position: Mason -> Foreman*). Click **Yes** to save, or **No** to go back.
+4. **Cancel** puts back what's saved.
 
 **Give someone a raise**
 
 1. Click the employee.
 2. Type the new **daily rate**, and set **Rate applies from** to the day it starts. It can be a future date.
-3. Click **Save**.
+3. Click **Save**, check the change in the message, and click **Yes**.
 
 Past payslips keep the old rate. The **Daily rate history** table lists every rate.
 

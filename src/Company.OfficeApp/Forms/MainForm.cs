@@ -22,6 +22,12 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+        // Always full screen with no title bar, so it can't be resized, moved or minimized by accident.
+        // Maximizing stops at the taskbar so the clock and other apps stay reachable.
+        // (Windows reads this position relative to the monitor, not the whole desktop.)
+        var screen = Screen.FromPoint(Cursor.Position);
+        MaximizedBounds = new Rectangle(screen.WorkingArea.X - screen.Bounds.X, screen.WorkingArea.Y - screen.Bounds.Y,
+                                        screen.WorkingArea.Width, screen.WorkingArea.Height);
 
         navButtons = new()
         {

@@ -25,6 +25,13 @@ public static partial class EmployeeService
 {
     public const decimal MaxDailyRate = 100_000m;
 
+    /// <summary>The pay schedule line shown under the department dropdown.</summary>
+    public static string PayScheduleText(string? department) => department == null
+        ? "Pay schedule: (choose a department)"
+        : PaySchedules.For(department) == PaySchedules.Site
+            ? "Pay schedule: Site (paid every Saturday)"
+            : "Pay schedule: Office (paid the 15th and 30th)";
+
     [GeneratedRegex(@"^[A-Za-z0-9-]{1,20}$")]
     private static partial Regex BiometricPattern();
 

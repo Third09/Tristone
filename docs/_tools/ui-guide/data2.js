@@ -43,7 +43,7 @@ const hrPayroll = [
     form: "TabPage: tabEmployees",
     opensFrom: "HR & Payroll > Employees tab.",
     whoSees: "Admin, HR Employee, HR Supervisor",
-    note: "Holds office staff (who have logins) and site workers (no login). Logins are made separately in User Accounts.",
+    note: "Holds office staff (who have logins) and site workers (no login). Logins are made separately in User Accounts. The form on this tab only edits the employee clicked in the list (empty and greyed out until then; the list never selects anyone by itself). Adding uses the Add Employee window.",
     groups: [
       { name: "Find an employee", rows: [
         ["Search box", "TextBox", "txtEmployeeSearch", "Search by name or Biometric ID."],
@@ -52,13 +52,13 @@ const hrPayroll = [
         ["Employees table", "DataGridView", "dgvEmployees", "Columns: Name, Position, Department, Pay Schedule, Daily Rate, Biometric ID, Status."],
       ]},
       { name: "List actions", rows: [
-        ["Add Employee button", "Button", "btnAddEmployee", "Clears the form to enter a new employee."],
+        ["Add Employee button", "Button", "btnAddEmployee", "Opens the Add Employee window."],
         ["Mark Inactive button", "Button", "btnMarkInactive", "Marks the selected employee Inactive (asks to confirm). Their login stops working; records are kept."],
         ["Reactivate button", "Button", "btnReactivateEmployee", "Makes an Inactive employee Active again."],
         ["Export button", "Button", "btnExportEmployees", "Saves the list as an Excel file."],
       ]},
       { name: "Personal details", rows: [
-        ["Form title", "Label", "lblFormMode", "\"New employee\" or \"Editing: (name)\". Clicking a row in the table loads it here."],
+        ["Form title", "Label", "lblFormMode", "\"Editing: (name)\", or a hint to click an employee when nobody is selected."],
         ["Full name box", "TextBox", "txtEmployeeName", "Employee's full name."],
         ["Contact number box", "TextBox", "txtEmployeeContact", "Phone number."],
         ["Address box", "TextBox (Multiline = True)", "txtEmployeeAddress", "Home address."],
@@ -81,9 +81,26 @@ const hrPayroll = [
         ["TIN box", "TextBox", "txtEmployeeTin", "Optional."],
       ]},
       { name: "Form actions", rows: [
-        ["Message", "Label", "lblEmployeeFormMsg", "\"Employee added.\", \"Saved.\" or what went wrong."],
-        ["Save button", "Button", "btnSaveEmployee", "Saves the new or edited employee. A changed daily rate starts on the \"applies from\" date."],
-        ["Cancel button", "Button", "btnCancelEmployee", "Throws away unsaved edits."],
+        ["Message", "Label", "lblEmployeeFormMsg", "\"Employee added.\", \"Saved.\", \"Nothing changed.\" or what went wrong."],
+        ["Save button", "Button", "btnSaveEmployee", "First shows a Yes/No message listing every change; saves only on Yes. A changed daily rate starts on the \"applies from\" date."],
+        ["Cancel button", "Button", "btnCancelEmployee", "Puts back what's saved (throws away unsaved edits)."],
+      ]},
+    ],
+  },
+  {
+    title: "Add Employee Window",
+    form: "EmployeeEntryForm (Form, pop-up)",
+    opensFrom: "Add Employee button in the Employees tab.",
+    whoSees: "Admin, HR Employee, HR Supervisor",
+    note: "Same fields as the Employees tab form (without the rate history). Saving always creates a new employee, then the window closes and the new person is selected in the list.",
+    groups: [
+      { name: "Main section", rows: [
+        ["Window title", "Label", "lblFormTitle", "\"New employee\"."],
+        ["Employee fields", "TextBox / ComboBox / NumericUpDown / DateTimePicker / CheckBox", "txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, cboEmployeeDepartment, txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin", "Same names and meaning as on the Employees tab."],
+        ["Pay schedule text", "Label", "lblPayScheduleValue", "Follows the department."],
+        ["Message", "Label", "lblEmployeeFormMsg", "What is missing, e.g. \"Type the employee's full name.\""],
+        ["Save button", "Button", "btnSaveEmployee", "Adds the employee and closes the window."],
+        ["Cancel button", "Button", "btnCancelEmployee", "Closes without saving."],
       ]},
     ],
   },
