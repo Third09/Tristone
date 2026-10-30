@@ -68,6 +68,7 @@ The database is never built by clicking in pgAdmin. Every change is a numbered s
 | 005 | `app_settings`, materials, usage, vendors, quotes, purchases, deliveries, equipment, maintenance |
 | 006 | subcontractors, trades, jobs, stages, documents, progress, vouchers, payouts |
 | 007 | `receipts`, `change_orders` |
+| 008 | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts) |
 
 ## 2.2 Conventions
 
@@ -212,7 +213,31 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 - **Change orders** (CO-001...): logged by Receipts staff, approved by an **Admin only**. On approval the cost change is added to the project's revenue and the days move its target end date.
 - Reports print over several pages or save as PDF (`TableReport`).
 
-# Chapter 10: Testing
+# Chapter 10: The Website Admin app (Part 6)
+
+## 10.1 A separate app
+
+The public website is managed in its **own desktop app**, `src/Company.WebsiteAdmin`, not in the office app (owner decision, 30 Oct 2026). It is a second WinForms project in the same solution and uses the **same database**.
+
+- It **shares files with the office app** instead of copying them: `DbSettings`, `Db`, the Database Settings window, `Responsive` and `RecordForm` are linked in its `.csproj`. A change in one place updates both apps. Both read the same per-PC settings file, so a PC set up for one works for the other.
+- It has **its own accounts** (`website_accounts`, script 008), separate from the office app's `users`. An office login can't sign in here, and the other way round.
+- Same rules as the office app: usernames ignore capital letters, passwords are bcrypt hashes, 5 wrong passwords lock the account, and every attempt goes to `website_login_logs` with the PC name.
+- The main window is full screen with no title bar. It shows who is signed in, a **Sign Out** button and six tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic. They're filled in one by one.
+
+To run it: in Visual Studio, right-click **Company.WebsiteAdmin > Set as Startup Project**, then press **F5**.
+
+## 10.2 The first Website Admin account
+
+Like the first office Admin, it is added once in pgAdmin (**Tools > Query Tool** on `construction_db`):
+
+```sql
+INSERT INTO website_accounts (username, password_hash, full_name)
+VALUES ('YourUsername', crypt('YourPassword', gen_salt('bf', 11)), 'Your Full Name');
+```
+
+Managing more website accounts (add, unlock, turn off, set password) will be a screen inside the Website Admin app.
+
+# Chapter 11: Testing
 
 **Two PCs.** The home PC has the real database. The work PC has its own fresh database with test data only. Every test run on the work PC is written in `docs\Testing Log.md`, and anything that still needs the real data is listed there under "Check at home".
 
@@ -229,11 +254,13 @@ Each part was tested with a small throwaway console program that runs real check
 | Receipts | 55 |
 | Dashboard | 24 |
 | Row re-select after saving (Projects, Materials, Employees) | 11 |
+| Add pop-ups, no auto-select, confirm before saving (Employees + 8 list pages) | 86 |
+| Website Admin app: sign-in, lock-out, main window | 16 |
 
 **Not tested yet:** the "last active Admin" protection. It needs a separate test database; never disable the real Admin account to test it.
 
 # Coming next
 
 - HR & Payroll: Attendance, Payroll, Cash Advances
-- The Website Admin app (separate from the office app), the API and the website Contact form
+- Website Admin app: its accounts screen and the six website tabs; then the API and the website Contact form
 - Phase 6: the server and the installers

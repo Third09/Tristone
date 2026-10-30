@@ -36,6 +36,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SubPayout> SubPayouts => Set<SubPayout>();
     public DbSet<Receipt> Receipts => Set<Receipt>();
     public DbSet<ChangeOrder> ChangeOrders => Set<ChangeOrder>();
+    public DbSet<WebsiteAccount> WebsiteAccounts => Set<WebsiteAccount>();
+    public DbSet<WebsiteLoginLog> WebsiteLoginLogs => Set<WebsiteLoginLog>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -55,6 +57,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasKey(u => u.UserId);
+        modelBuilder.Entity<WebsiteAccount>().HasKey(a => a.AccountId);
+        modelBuilder.Entity<WebsiteLoginLog>().HasKey(l => l.LogId);
         modelBuilder.Entity<LoginLog>().HasKey(l => l.LogId);
         modelBuilder.Entity<PasswordRequest>().HasKey(r => r.RequestId);
         modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditId);

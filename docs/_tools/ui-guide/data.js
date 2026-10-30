@@ -201,14 +201,40 @@ const shared = [
 
 const websiteAdmin = [
   {
-    title: "Website Admin App (main window)",
-    form: "Separate app (planned project Company.WebsiteAdmin), its main window",
-    opensFrom: "Its own shortcut, after signing in with a Website Admin account. It is not part of the office app.",
-    whoSees: "People with a Website Admin account (separate from the office app's logins)",
-    note: "A separate desktop app with its own accounts (owner decision 2026-10-30). Its main window has 6 tabs; each tab is described below. The tab layouts below were planned when it was still an office-app page and are refined when the app is built.",
+    title: "Website Admin App: Sign In Window",
+    form: "LoginForm (Form) in the Company.WebsiteAdmin project",
+    opensFrom: "Opening the Tri-Stone Website Admin app.",
+    whoSees: "Everyone opening the app. Signs in with a Website Admin account, not an office-app login.",
+    note: "Same layout and rules as the office app's Sign In window. No Forgot Password link: another Website Admin sets a new password.",
     groups: [
       { name: "Main section", rows: [
-        ["Tabs", "TabControl", "tabWebsiteAdmin", "6 tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic."],
+        ["Title", "Label", "lblTitle", "\"Sign in to Tri-Stone Website Admin\"."],
+        ["Username box", "TextBox", "txtUsername", "Capital letters don't matter."],
+        ["Password box", "TextBox (UseSystemPasswordChar = True)", "txtPassword", "Shows dots."],
+        ["Show password tick box", "CheckBox", "chkShowPassword", "Shows the typed password."],
+        ["Message", "Label", "lblError", "What went wrong, e.g. \"Wrong username or password. 4 attempts left before the account locks.\""],
+        ["Sign In button", "Button", "btnSignIn", "Checks the account and opens the main window (also Enter)."],
+        ["Exit button", "Button", "btnExit", "Closes the app."],
+        ["Help text", "Label", "lblHelp", "Reminds that this uses a Website Admin account, and to ask another Website Admin if the password is forgotten."],
+        ["Database settings link", "LinkLabel", "lnkDbSettings", "Opens the same Database Settings window as the office app."],
+      ]},
+    ],
+  },
+  {
+    title: "Website Admin App (main window)",
+    form: "MainForm (Form) in the Company.WebsiteAdmin project",
+    opensFrom: "After signing in with a Website Admin account. It is not part of the office app.",
+    whoSees: "People with a Website Admin account (separate from the office app's logins)",
+    note: "A separate desktop app with its own accounts (owner decision 2026-10-30). Full screen with no title bar, like the office app. Its main window has 6 tabs; each tab is described below. Built so far: the top bar and the empty tabs; the tab layouts below were planned when it was still an office-app page and are refined as each tab is built.",
+    groups: [
+      { name: "Top bar", rows: [
+        ["Top bar", "Panel (Dock = Top)", "pnlTopBar", "Holds the app name, who is signed in and Sign Out."],
+        ["App name", "Label", "lblAppTitle", "\"Tri-Stone Website Admin\"."],
+        ["Signed-in name", "Label", "lblUserName", "e.g. \"Signed in: Juan Dela Cruz (jdelacruz)\"."],
+        ["Sign Out button", "Button (Anchor = Top, Right)", "btnSignOut", "Signs out (recorded) and goes back to the Sign In window."],
+      ]},
+      { name: "Main section", rows: [
+        ["Tabs", "TabControl (Dock = Fill)", "tabWebsiteAdmin", "6 tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic. Until a tab is built it shows \"(tab name): coming next.\""],
       ]},
     ],
   },

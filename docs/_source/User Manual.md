@@ -357,4 +357,16 @@ Expenses with no receipt (the tab title shows how many are waiting, e.g. *Needs 
 Choose the report (**Expense & Receipt Report**, **Weekly** or **Monthly Expense Summary**), the project (or All / Company Overhead) and the dates. Then **Preview**, **Print**, **Save as PDF** or **Export Excel**. Reports include approved expenses only.
 
 
-# 10. Website Admin *(coming soon: a separate app with its own sign-in, not part of the office app)*
+# 10. Website Admin (separate app)
+
+The public website is managed in a **separate program**, Tri-Stone Website Admin, not in the office app. It has **its own accounts**: your office login doesn't work there.
+
+**Signing in**
+
+1. Open **Tri-Stone Website Admin**.
+2. Type your Website Admin **username** and **password**, then click **Sign In**.
+3. The rules are the same as the office app: capital letters in the username don't matter, and 5 wrong passwords lock the account.
+
+Forgot your password? Ask another Website Admin to set a new one.
+
+The main window fills the screen and shows who is signed in. Click **Sign Out** (top right) to leave. Its six tabs (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic) are being built one by one.

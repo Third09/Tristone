@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tri-Stone Website Admin: a separate desktop app for managing the public website, with its own accounts
+    (owner decision 2026-10-30). Same database as the office app.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Company.Shared\Company.Shared.csproj" />
+  </ItemGroup>
+
+  <!-- Shared with the office app as linked files (one copy each): per-PC database settings, the Database Settings
+       window, and the screen helpers. Both apps read the same settings file, so a PC set up once works for both. -->
+  <ItemGroup>
+    <Compile Include="..\Company.OfficeApp\Data\DbSettings.cs" Link="Shared\DbSettings.cs" />
+    <Compile Include="..\Company.OfficeApp\Data\Db.cs" Link="Shared\Db.cs" />
+    <Compile Include="..\Company.OfficeApp\Forms\DatabaseSettingsForm.cs" Link="Shared\DatabaseSettingsForm.cs" />
+    <Compile Include="..\Company.OfficeApp\Forms\DatabaseSettingsForm.Designer.cs" Link="Shared\DatabaseSettingsForm.Designer.cs">
+      <DependentUpon>DatabaseSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Company.OfficeApp\UI\Responsive.cs" Link="Shared\Responsive.cs" />
+    <Compile Include="..\Company.OfficeApp\UI\RecordForm.cs" Link="Shared\RecordForm.cs" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+
+</Project>
