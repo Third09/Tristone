@@ -20,9 +20,13 @@ public partial class HrPayrollPage : UserControl
         tabAttendance.Controls.Add(new AttendanceTab { Dock = DockStyle.Fill });
         tabHrEditHistory.Controls.Add(new EditHistoryTab(Departments.HrPayroll) { Dock = DockStyle.Fill });
 
-        // Tabs not built yet show a note.
-        foreach (var tab in new[] { tabPayroll, tabPayslipHistory, tabCashAdvances, tabHrSettings })
-            tab.Controls.Add(new Label { Text = $"{tab.Text}: not built yet.", AutoSize = true, Location = new Point(12, 12) });
+        var payslips = new PayslipHistoryTab { Dock = DockStyle.Fill };
+        tabPayroll.Controls.Add(new PayrollTab { Dock = DockStyle.Fill });
+        tabPayslipHistory.Controls.Add(payslips);
+        tabCashAdvances.Controls.Add(new CashAdvancesTab { Dock = DockStyle.Fill });
+        tabHrSettings.Controls.Add(new HrSettingsTab { Dock = DockStyle.Fill });
+        // A payroll finalized on the Payroll tab shows up in Payslip History when that tab is opened.
+        tabHrPayroll.SelectedIndexChanged += async (_, _) => { if (tabHrPayroll.SelectedTab == tabPayslipHistory && payslips.IsHandleCreated) await payslips.ReloadAsync(); };
 
         var me = Session.CurrentUser!;
         if (!me.IsAdmin && me.Level != UserLevels.Supervisor)

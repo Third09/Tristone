@@ -208,7 +208,7 @@ Use the **Search** box (name, site or client) and the **Status** and **Sector** 
 
 # 6. HR & Payroll
 
-For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. *(So far Employees, Attendance and Edit History are built.)*
+For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. 
 
 ## Employees
 
@@ -280,6 +280,31 @@ The message after saving lists anyone left out (no Biometric ID yet, or an ID th
 2. Tick each time that is known and set it, type the **reason**, and click **Save**. Check the list of changes, then click **Yes**.
 
 **Overtime** (HR Supervisor and Admins): select a day with overtime waiting and click **Approve Overtime** or **Reject Overtime**. Only approved overtime is paid.
+
+## Payroll
+
+1. Choose the **pay group** (Office: 15th and 30th, or Site: weekly) and the **pay period**.
+2. Read the line under it. If it lists **missing scans** or **overtime waiting**, fix them in **Attendance** first.
+3. Click **Compute Payroll**. You can compute again as often as you like until it's finalized.
+4. The HR Supervisor (or an Admin) checks the table and clicks **Finalize Payroll**. This takes the cash advances and locks the payroll; those attendance days can't change any more.
+5. **Print Payslips** (one page each), **Save Payslips as PDF** (one file), or **Export** the table. Double-click a name to see that payslip.
+
+## Payslip History
+
+Every payslip of a finalized payroll. Search a name or pick a payroll, select a payslip, then **View**, **Print** or **Save as PDF**.
+
+## Cash Advances
+
+1. Click **New Cash Advance**: the employee, the amount, how much to deduct each payday, the date and the reason. **Save**.
+2. The HR Supervisor selects it and clicks **Approve** (or **Reject**).
+3. From then on, every payday takes that amount until it's paid off. If a payslip is too small, the rest waits for the next payday. Select an advance to see the deductions taken so far.
+
+## Settings (Admins and HR Supervisor)
+
+- **Work schedule:** start and end, break, grace minutes (15 = on time until 8:15), work days, overtime per hour and from how many minutes.
+- **Government deductions:** the employee-share rates and limits for SSS, PhilHealth and Pag-IBIG, and income tax on or off. They apply only to employees whose **Government deductions** box is ticked in Employees. The defaults are the 2025 rates: check them with your accountant.
+- Click **Save Settings**, check the list of changes, click **Yes**. Attendance is worked out again (days already paid don't change).
+- **Holidays:** pick the date, type the name, choose **Regular** (paid even when not worked) or **Special** (no work, no pay), click **Add Holiday**. Nobody is marked absent on a holiday, and a payday on a holiday moves to the day before.
 
 **Export** saves the list to Excel.
 

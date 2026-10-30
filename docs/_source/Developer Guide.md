@@ -210,7 +210,15 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 - **Make Scanner Employee File** (`Services/ScannerEmployeeFile`): fills the scanner's own "Employee Form" (blank copy embedded as `Resources/ScannerEmployeeForm.xls`) with active employees who have a numeric Biometric ID: ID, name, department number (Site = 1, Administration = 3, HR & Payroll = 4, Inventory = 5, Subcontractors = 6, Receipts = 7), authority 0. The scanner writes its .xls in a way NPOI can't open, so the template is read with ExcelDataReader and written again as a normal .xls with NPOI (values and merged cells of both sheets; day/weekday headings filled for today). The scanner's instructions expect the file to be edited and re-saved in Excel, so a normal .xls is what it reads.
 - Not yet: holidays (Settings tab) count as work days for now.
 
-**Still to build:** Payroll, Cash Advances, Payslips, Settings (holidays).
+**Built: Settings, Cash Advances, Payroll, Payslip History** (script 013: `holidays`, `cash_advances`, `payroll_runs`, `payslips`, `cash_advance_deductions`; settings in `app_settings` "hr.*").
+
+- **Settings** (`Services/HrSettings`): work hours, grace, work days, overtime rate and minimum, and the government rates. `AttendanceRules.Current` holds them; saving (or adding/deleting a holiday) works the last 120 days out again. A holiday with no scans isn't Absent.
+- **Pay calendar** (`Services/PayPeriods`): office 26th-10th paid the 15th, 11th-25th paid the 30th (February: last day); site Saturday-Friday paid Saturday; a payday on a Sunday or holiday moves to the day before.
+- **Pay** (`Services/PayrollService`): paid days = Present / Late, or fixed by HR (Missing Scan unpaid until fixed); each day at that day's rate; Regular holidays not worked are paid, Special aren't; late + early minutes x daily rate / 480; approved overtime x rate / hour; government deductions only with the employee's switch on (monthly basis = daily rate x 26: SSS on the salary credit, PhilHealth between floor and ceiling, Pag-IBIG up to the cap; office half per payday, site 12/52; tax from the TRAIN yearly table spread over 24 or 52 paydays); cash advances last, never more than what's left.
+- **Draft / Final:** Compute can run again; Finalize (HR Supervisor / Admin) is refused while there are unfixed missing scans or overtime waiting, then takes the cash advances and locks the run. Attendance never changes a day inside a finalized period (upload, recompute, fix, overtime).
+- **Payslips:** `PayslipPrint`, one page each, straight to PDF with "Microsoft Print to PDF".
+
+**Still to build:** nothing in the office app; the Website Admin pages, the API and installers are next.
 
 # Chapter 7: Inventory & Vendors (Part 3)
 

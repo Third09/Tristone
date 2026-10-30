@@ -354,9 +354,45 @@ If someone forgot to scan, HR clicks **Fix Missing Scan**, sets the known times 
 
 Overtime is never paid by itself. The **HR Supervisor** (or an Admin) approves or rejects each day's overtime. A decision stays after another upload, unless the overtime minutes change (then it waits again).
 
-## 7b.5 Not yet
+## 7b.5 Holidays
 
-Holidays aren't set up yet (they come with the Settings tab), so a holiday with no scans shows as Absent for now. Payroll will use these days: only complete or fixed days are paid.
+Holidays are set in **Settings**. Nobody is marked absent on one. **Regular** holidays are paid even when not worked; **Special** holidays are no work, no pay. Working on a holiday is paid like a normal day.
+
+# 7c. HR & Payroll: Payroll, cash advances, payslips
+
+## 7c.1 When people are paid
+
+| Group | Payday | Covers |
+|---|---|---|
+| Office | the 15th | the 26th of last month to the 10th |
+| Office | the 30th (February: its last day) | the 11th to the 25th |
+| Site | every Saturday | Saturday to Friday before it |
+
+A payday on a Sunday or holiday moves to the day before. HR uses the days between the end of a period and payday to upload the scanner file, fix missing scans and approve overtime.
+
+## 7c.2 How pay is worked out
+
+| Part | Rule | Example (₱800 a day) |
+|---|---|---|
+| Basic pay | each paid day at that day's rate; paid = Present or Late, or fixed by HR | 11 days = ₱8,800 |
+| Missing Scan / Absent | not paid (fix a missing scan to pay it) | |
+| Regular holiday not worked | paid | +₱800 |
+| Late and early minutes | daily rate / 480 per minute | 30 min = −₱50 |
+| Overtime | approved hours x ₱100 | 2 h = +₱200 |
+| Gross pay | | ₱9,750 |
+| Government deductions | only if the employee's switch is on | |
+| Cash advance | its amount per payday, never more than what's left | −₱1,000 |
+| Net pay | never below zero | ₱8,750 |
+
+**Government deductions** (switch on): from a monthly basis of daily rate x 26. SSS 5% of the salary credit (₱5,000-₱35,000), PhilHealth 2.5% (basis kept between ₱10,000 and ₱100,000), Pag-IBIG 2% up to ₱10,000. Office pays half each payday, site 12/52 each week. Income tax uses the TRAIN yearly table (0% up to ₱250,000) on pay after those. These are the 2025 employee shares and can be changed in Settings; have the accountant check them.
+
+## 7c.3 Draft and Final
+
+**Compute Payroll** makes a draft: compute again as often as needed. **Finalize** (HR Supervisor or Admin) is refused while there are missing scans not fixed or overtime waiting. Finalizing computes once more, takes the cash advances, and locks it: those attendance days can't be changed, re-uploaded or fixed any more, so the payslips always match.
+
+## 7c.4 Cash advances
+
+The HR Employee records the amount, the deduction per payday, the date and the reason; the HR Supervisor approves. Each finalized payroll takes the per-payday amount until it's paid off. If the pay left is smaller, only that is taken and the rest carries over (pay never goes negative). Example: ₱5,000 at ₱2,000 per payday, pay left ₱1,500 → ₱1,500 taken, ₱3,500 still owed.
 
 # 8. Inventory & Vendors
 

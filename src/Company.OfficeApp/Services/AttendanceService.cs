@@ -97,17 +97,49 @@ public static class AttendanceService
     }
 
     /// <summary>
+    /// Works out the last 120 days again (after HR Settings or holidays change). Days already paid by a finalized
+    /// payroll are never touched.
+    /// </summary>
+    public static async Task RecomputeRecentAsync()
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        using var db = Db.Open();
+        await RecomputeAsync(db, today.AddDays(-120), today);
+    }
+
+    /// <summary>
+    /// The finalized payroll periods per pay group: those days are paid and locked (no recompute, fix or overtime change).
+    /// </summary>
+    static async Task<List<(string Group, DateOnly From, DateOnly To)>> LockedPeriodsAsync(AppDbContext db) =>
+        (await db.PayrollRuns.AsNoTracking().Where(r => r.Status == PayrollStatuses.Final)
+            .Select(r => new { r.PayGroup, r.PeriodFrom, r.PeriodTo }).ToListAsync())
+        .Select(r => (r.PayGroup, r.PeriodFrom, r.PeriodTo)).ToList();
+
+    static bool IsLocked(List<(string Group, DateOnly From, DateOnly To)> locked, string group, DateOnly date) =>
+        locked.Any(l => l.Group == group && date >= l.From && date <= l.To);
+
+    /// <summary>Message when a day is in a finalized payroll, else null.</summary>
+    static async Task<string?> LockedMessageAsync(AppDbContext db, AttendanceDay d)
+    {
+        var group = await db.Employees.Where(e => e.EmployeeId == d.EmployeeId).Select(e => e.PaySchedule).FirstAsync();
+        return IsLocked(await LockedPeriodsAsync(db), group, d.WorkDate) ? "This day is in a finalized payroll, so it can't change." : null;
+    }
+
+    /// <summary>
     /// Works out every day in the range for every active employee who has a Biometric ID: days with scans from the
-    /// scans, work days without scans (up to yesterday, from the employee's first rate date) as Absent.
-    /// Days HR fixed by hand are left as they are.
+    /// scans, work days without scans (up to yesterday, from the employee's first rate date, not on a holiday) as
+    /// Absent. Days HR fixed by hand, and days in a finalized payroll, are left as they are.
     /// </summary>
     static async Task RecomputeAsync(AppDbContext db, DateOnly from, DateOnly to)
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
         if (to > today) to = today;
+        AttendanceRules.Current = await HrSettingsService.LoadAsync();
+        var holidays = (await db.Holidays.AsNoTracking().Where(h => h.HolidayDate >= from && h.HolidayDate <= to).Select(h => h.HolidayDate).ToListAsync()).ToHashSet();
+        var locked = await LockedPeriodsAsync(db);
         var employees = await db.Employees.AsNoTracking()
             .Where(e => e.Status == EmployeeStatuses.Active && e.BiometricId != null && e.BiometricId != "")
-            .Select(e => new { e.EmployeeId, e.CreatedAt, FirstRate = db.EmployeeRates.Where(r => r.EmployeeId == e.EmployeeId).Min(r => (DateOnly?)r.EffectiveFrom) })
+            .Select(e => new { e.EmployeeId, e.CreatedAt, e.PaySchedule, FirstRate = db.EmployeeRates.Where(r => r.EmployeeId == e.EmployeeId).Min(r => (DateOnly?)r.EffectiveFrom) })
             .ToListAsync();
         var ids = employees.Select(e => e.EmployeeId).ToList();
         var start = from.ToDateTime(TimeOnly.MinValue);
@@ -124,10 +156,10 @@ public static class AttendanceService
             for (var date = from; date <= to; date = date.AddDays(1))
             {
                 days.TryGetValue((e.EmployeeId, date), out var row);
-                if (row?.FixedBy != null) continue;   // HR's fix stays
+                if (row?.FixedBy != null || IsLocked(locked, e.PaySchedule, date)) continue;   // HR's fix stays; paid days stay
                 DayResult result;
                 if (scans.TryGetValue((e.EmployeeId, date), out var times)) result = AttendanceRules.FromScans(date, times);
-                else if (AttendanceRules.IsWorkDay(date) && date < today && date >= employedFrom) result = AttendanceRules.FromTimes(date, null, null, null, null);
+                else if (AttendanceRules.IsWorkDay(date) && !holidays.Contains(date) && date < today && date >= employedFrom) result = AttendanceRules.FromTimes(date, null, null, null, null);
                 else { if (row != null) db.AttendanceDays.Remove(row); continue; }
 
                 if (row == null) { row = new AttendanceDay { EmployeeId = e.EmployeeId, WorkDate = date }; db.AttendanceDays.Add(row); }
@@ -194,6 +226,8 @@ public static class AttendanceService
         if (CheckFix(timeIn, breakOut, breakIn, timeOut, reason) is { } problem) return problem;
         using var db = Db.Open();
         var d = await db.AttendanceDays.FirstAsync(x => x.DayId == dayId);
+        if (await LockedMessageAsync(db, d) is { } paid) return paid;
+        AttendanceRules.Current = await HrSettingsService.LoadAsync();
         var name = await db.Employees.Where(e => e.EmployeeId == d.EmployeeId).Select(e => e.FullName).FirstAsync();
         var before = Snapshot(d);
         Apply(d, AttendanceRules.FromTimes(d.WorkDate, timeIn, breakOut, breakIn, timeOut));
@@ -215,6 +249,7 @@ public static class AttendanceService
         using var db = Db.Open();
         var d = await db.AttendanceDays.FirstAsync(x => x.DayId == dayId);
         if (d.OtStatus != OtStatuses.Waiting) return d.OtMinutes == 0 ? "This day has no overtime." : $"This overtime is already {d.OtStatus}.";
+        if (await LockedMessageAsync(db, d) is { } paid) return paid;
         var name = await db.Employees.Where(e => e.EmployeeId == d.EmployeeId).Select(e => e.FullName).FirstAsync();
         d.OtStatus = decision;
         d.OtDecidedBy = Session.CurrentUser!.UserId;

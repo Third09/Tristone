@@ -119,6 +119,9 @@ public static class AuditService
         "change_orders" => "change order",
         "attendance_imports" => "scanner upload",
         "attendance_days" => "attendance",
+        "cash_advances" => "cash advance",
+        "payroll_runs" => "payroll",
+        "app_settings" => "settings",
         _ => table.TrimEnd('s').Replace("_", " "),
     };
 }

@@ -7,21 +7,29 @@ public record DayResult(TimeOnly? TimeIn, TimeOnly? BreakOut, TimeOnly? BreakIn,
                         int LateMinutes, int EarlyMinutes, int OtMinutes, string Status);
 
 /// <summary>
-/// The work-day rules (Project Outline, Part 2): 8 AM to 5 PM, Monday to Saturday, 12-1 unpaid lunch, four scans a
-/// day (in, break out, break in, out). On time until 8:15; after that, late counts the exact minutes from 8:00.
-/// Coming back from lunch after 1:00 also counts as late minutes, and leaving before 5:00 counts as early minutes
-/// (Claude-chosen defaults, 2026-10-30). Overtime = minutes after 5 PM, counted from 30 minutes on, paid only when
-/// HR approves. Sunday is a rest day: any scans make it "Rest Day Work", all of it waiting for approval as overtime.
+/// The work-day rules (Project Outline, Part 2), owner-approved 2026-10-30, with the hours from HR Settings
+/// (<see cref="Current"/>; defaults 8 AM to 5 PM, Monday to Saturday, 12-1 unpaid lunch). Four scans a day (in, break
+/// out, break in, out). On time until start + grace (8:15); after that, late counts the exact minutes from the start.
+/// Coming back from lunch late also counts as late minutes, and leaving before the end counts as early minutes.
+/// Overtime = minutes after the end, counted from the minimum (30) on, paid only when HR approves. A day that isn't a
+/// work day: any scans make it "Rest Day Work", all of it waiting for approval as overtime.
 /// </summary>
 public static class AttendanceRules
 {
-    public static readonly TimeOnly Start = new(8, 0), Grace = new(8, 15), LunchOut = new(12, 0), LunchIn = new(13, 0), End = new(17, 0);
-    public const int OtMinimumMinutes = 30;
+    /// <summary>The settings in use. <see cref="AttendanceService"/> loads them from HR Settings before working out days.</summary>
+    public static HrSettings Current { get; set; } = HrSettings.Default;
+
+    public static TimeOnly Start => Current.WorkStart;
+    public static TimeOnly Grace => Current.OnTimeUntil;
+    public static TimeOnly LunchOut => Current.BreakStart;
+    public static TimeOnly LunchIn => Current.BreakEnd;
+    public static TimeOnly End => Current.WorkEnd;
+    public static int OtMinimumMinutes => Current.OvertimeMinimumMinutes;
     public const int RepeatScanMinutes = 3;   // a second scan within 3 minutes is the same scan (the scanner's own setting)
 
-    static readonly TimeOnly[] Expected = [Start, LunchOut, LunchIn, End];
+    static TimeOnly[] Expected => [Start, LunchOut, LunchIn, End];
 
-    public static bool IsWorkDay(DateOnly d) => d.DayOfWeek != DayOfWeek.Sunday;
+    public static bool IsWorkDay(DateOnly d) => Current.IsWorkDay(d);
 
     /// <summary>Works out a day from its raw scans (any number, any order).</summary>
     public static DayResult FromScans(DateOnly date, IEnumerable<TimeOnly> scans)

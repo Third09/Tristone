@@ -39,6 +39,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<AttendanceImport> AttendanceImports => Set<AttendanceImport>();
     public DbSet<AttendanceScan> AttendanceScans => Set<AttendanceScan>();
     public DbSet<AttendanceDay> AttendanceDays => Set<AttendanceDay>();
+    public DbSet<Holiday> Holidays => Set<Holiday>();
+    public DbSet<CashAdvance> CashAdvances => Set<CashAdvance>();
+    public DbSet<PayrollRun> PayrollRuns => Set<PayrollRun>();
+    public DbSet<Payslip> Payslips => Set<Payslip>();
+    public DbSet<CashAdvanceDeduction> CashAdvanceDeductions => Set<CashAdvanceDeduction>();
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
@@ -94,5 +99,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<AttendanceImport>().HasKey(i => i.ImportId);
         modelBuilder.Entity<AttendanceScan>().HasKey(s => s.ScanId);
         modelBuilder.Entity<AttendanceDay>().HasKey(d => d.DayId);
+        modelBuilder.Entity<Holiday>().HasKey(h => h.HolidayDate);
+        modelBuilder.Entity<CashAdvance>().HasKey(c => c.AdvanceId);
+        modelBuilder.Entity<PayrollRun>().HasKey(r => r.RunId);
+        modelBuilder.Entity<Payslip>().HasKey(p => p.PayslipId);
+        modelBuilder.Entity<CashAdvanceDeduction>().HasKey(d => d.DeductionId);
     }
 }

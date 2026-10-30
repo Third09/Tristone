@@ -276,6 +276,30 @@ FROM attendance_days d JOIN employees e ON e.employee_id = d.employee_id
 WHERE d.ot_status = 'Waiting';
 ```
 
+## Payroll (script 013)
+
+- **holidays**: `holiday_date` (the key), `name`, `kind` (Regular = paid when not worked; Special = no work, no pay).
+- **cash_advances**: `employee_id` → employees, `given_on`, `amount`, `per_payday`, `balance` (what's still owed), `reason`, `status` (Waiting / Active / Paid Off / Rejected).
+- **payroll_runs**: one per pay group and period: `pay_group` (Office / Site), `period_from`, `period_to`, `pay_date`, `status` (Draft / Final). Unique per group and start date.
+- **payslips**: one per employee per run: `daily_rate`, `days_paid`, `basic_pay`, `holiday_days`, `holiday_pay`, `late_minutes`, `late_deduction`, `ot_minutes`, `ot_pay`, `gross_pay`, `sss`, `philhealth`, `pagibig`, `tax`, `cash_advance`, `net_pay` (never below 0).
+- **cash_advance_deductions**: what each payslip took from each advance: `advance_id`, `payslip_id`, `amount`, `balance_after`.
+- Work hours, overtime rate and government rates live in **app_settings** with keys starting `hr.` (e.g. `hr.ot_rate`).
+
+```sql
+-- Net pay of every payslip in finalized payrolls, newest first
+SELECT r.pay_date, r.pay_group, e.full_name, p.gross_pay, p.net_pay
+FROM payslips p
+JOIN payroll_runs r ON r.run_id = p.run_id
+JOIN employees e ON e.employee_id = p.employee_id
+WHERE r.status = 'Final'
+ORDER BY r.pay_date DESC, e.full_name;
+
+-- Who still owes cash advances
+SELECT e.full_name, c.amount, c.balance FROM cash_advances c
+JOIN employees e ON e.employee_id = c.employee_id
+WHERE c.status = 'Active';
+```
+
 # 7. Inventory tables
 
 ```
@@ -427,8 +451,8 @@ A data store in the DFD is a **concept**; in the database it can be one table or
 | D2.1 Employee Records | `employees`, `employee_rates` |
 | D2.2 User Accounts & Roles | `users` (all logins, including Website Admins), `login_logs`, `password_requests` |
 | D2.3 Attendance & Site Schedule Records | `attendance_imports`, `attendance_scans`, `attendance_days` |
-| D2.4 Tax Brackets & Statutory Tables | *Not built yet (Payroll)* |
-| D2.5 Payroll Records | *Not built yet (Payroll)* |
+| D2.4 Tax Brackets & Statutory Tables | `app_settings` (`hr.*` rates) + the TRAIN tax table in the code (`PayrollService.AnnualTax`), `holidays` |
+| D2.5 Payroll Records | `payroll_runs`, `payslips`, `cash_advances`, `cash_advance_deductions` |
 | D3.1 Material Inventory | `materials`, `material_usages`, `deliveries` |
 | D3.2 Equipment Records | `equipment` |
 | D3.3 Site Deployment Records | *Not built: equipment location tracking was dropped (owner decision)* |
