@@ -6,7 +6,7 @@ const shared = [
   {
     title: "Login Window",
     form: "LoginForm (Form)",
-    opensFrom: "First screen when the app starts, and after signing out.",
+    opensFrom: "First screen when Tri-Stone (TriStone.exe, the one program) starts, and after signing out. The same window signs in office staff, Admins and Website Admins.",
     whoSees: "Everyone",
     groups: [
       { name: "Main section", rows: [
@@ -18,7 +18,7 @@ const shared = [
         ["Error message", "Label", "lblError", "Shows \"Wrong username or password\", attempts left, or \"Account locked, contact Admin\". Hidden until needed."],
         ["Sign In button", "Button", "btnSignIn", "Checks the username and password and opens the Main Window."],
         ["Forgot Password link", "LinkLabel", "lnkForgotPassword", "Opens the Forgot Password window."],
-        ["Exit button", "Button", "btnExit", "Closes the app."],
+        ["Exit button", "Button", "btnExit", "Closes Tri-Stone."],
         ["Database settings link", "LinkLabel", "lnkDbSettings", "Opens the Database Settings window (to change the server address). Small, not prominent."],
       ]},
     ],
@@ -81,8 +81,8 @@ const shared = [
   },
   {
     title: "Main Window (Sidebar + Main Section)",
-    form: "MainForm (Form)",
-    opensFrom: "After a successful sign in.",
+    form: "MainForm (Form) in Company.OfficeApp",
+    opensFrom: "After an office login signs in to Tri-Stone (Admins choose Office App). Website Admin logins get the Website Admin main window instead (Part 6).",
     whoSees: "Everyone. Sidebar buttons show or hide based on the user's Department and Level.",
     note: "Every office-app page in this guide (Dashboard, Projects, etc.) is a UserControl that loads inside the Main section (pnlContent); Website Admin is a separate app (Part 6). The window always fills the screen above the taskbar, with no title bar and no minimize / maximize / close buttons (FormBorderStyle = None, ControlBox = False), so it can't be resized, moved or closed by accident; Sign Out is the way out. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
     groups: [

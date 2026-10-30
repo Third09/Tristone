@@ -1,4 +1,4 @@
-# Tri-Stone Office App: Feature Guide
+# Tri-Stone: Feature Guide
 
 This guide explains **how each feature works and why**: what happens behind each button, the rules the app follows, and what the messages mean. It is for the people who use the app every day.
 
@@ -82,7 +82,7 @@ On every list page (Projects, User Accounts, Employees, Materials, Vendors, Equi
 
 ## 2.1 Signing in
 
-Type your **username** and **password**, then **Sign In**. Capital letters in the username don't matter (`JDelaCruz` = `jdelacruz`); in the password they **do**.
+Open **Tri-Stone**, type your **username** and **password**, then **Sign In**. The same Sign In serves the office app and the Website Admin screens; your login decides which opens (see 1.1). Capital letters in the username don't matter (`JDelaCruz` = `jdelacruz`); in the password they **do**.
 
 Every sign-in, sign-out and failed attempt is recorded with the computer's name (Dashboard > Log History).
 
@@ -128,7 +128,7 @@ Examples: `bodega2026` is OK. `password` is refused (no number). `12345678` is r
 
 ## 2.6 "Still there?" (idle sign-out)
 
-After **5 minutes** without touching the keyboard or mouse, a *"Still there?"* message appears with a **60-second** countdown.
+After **5 minutes** without touching the keyboard or mouse, a *"Still there?"* message appears with a **60-second** countdown. This works the same in the office app and the Website Admin screens.
 
 - **Stay Signed In:** keep working.
 - **Sign Out:** sign out now.

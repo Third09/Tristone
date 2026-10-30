@@ -113,7 +113,7 @@ const prefixTable = new Table({
 });
 
 const children = [
-  new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun({ text: "Tri-Stone Office App - UI Elements Guide", font: FONT })] }),
+  new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun({ text: "Tri-Stone - UI Elements Guide", font: FONT })] }),
   p("What each screen needs: how many buttons, what each one does, and the other elements. For the UI designer (Figma) and for building the screens in Visual Studio (WinForms)."),
   new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: "How to read this guide", font: FONT })] }),
   p("Every element has three names:", { after: 40 }),

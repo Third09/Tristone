@@ -406,7 +406,7 @@ A data store in the DFD is a **concept**; in the database it can be one table or
 | D1.1 Project & Financial Records | `projects` + the money tables in chapter 10 |
 | D1.2 Website Traffic Records | *Not built (website part)* |
 | D2.1 Employee Records | `employees`, `employee_rates` |
-| D2.2 User Accounts & Roles | `users`, `login_logs`, `password_requests` |
+| D2.2 User Accounts & Roles | `users` (all logins, including Website Admins), `login_logs`, `password_requests` |
 | D2.3 Attendance & Site Schedule Records | *Not built yet (Attendance)* |
 | D2.4 Tax Brackets & Statutory Tables | *Not built yet (Payroll)* |
 | D2.5 Payroll Records | *Not built yet (Payroll)* |
@@ -423,7 +423,7 @@ A data store in the DFD is a **concept**; in the database it can be one table or
 | D5.3 Project & Contract Records | `projects` (the same table as D1.1) |
 | *(not in the DFD)* | `audit_logs` (edit history), `app_settings`, `schema_versions` |
 
-**Where the DFD and the built app differ:** the DFD was drawn before some decisions were made. Site deployment tracking and subcontractor ratings were dropped, and the DFD's "approved / pending / denied" account statuses became Active / Locked / Disabled. If the DFD is used for a presentation, update those parts so it matches.
+**Where the DFD and the built app differ:** the DFD was drawn before some decisions were made. Site deployment tracking and subcontractor ratings were dropped, and the DFD's "approved / pending / denied" account statuses became Active / Locked / Disabled. Website Admin is no longer part of the office app: it has its own screens, opened by the same Tri-Stone Sign In with Website Admin logins (one account list). If the DFD is used for a presentation, update those parts so it matches.
 
 ## 11.4 Reading one flow end to end
 

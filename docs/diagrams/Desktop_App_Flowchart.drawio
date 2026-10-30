@@ -407,7 +407,7 @@
         <mxCell id="p1_e39" edge="1" parent="1" source="p1_n44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="p1_n45">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="p1_tweb" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;" value="Web systems (separate from this desktop app): Website Admin Portal = page 7, Public Web Portal = page 8" vertex="1">
+        <mxCell id="p1_tweb" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;" value="Website Admin (separate screens, same Tri-Stone Sign In) = page 7; Public Web Portal (separate web system) = page 8" vertex="1">
           <mxGeometry height="30" width="420" x="40" y="1620" as="geometry" />
         </mxCell>
       </root>
@@ -2413,7 +2413,7 @@
         <mxCell id="p1_supervisor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="SUPERVISOR DASHBOARD&lt;br&gt;• View assigned project/site status&lt;br&gt;• Review attendance and tardiness&lt;br&gt;• Monitor material requests&lt;br&gt;• Review progress and cost summaries&lt;br&gt;• Approve assigned requests only" vertex="1">
           <mxGeometry height="150" width="390" x="700" y="1680" as="geometry" />
         </mxCell>
-        <mxCell id="p1_rbac_note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="ROLE-BASED ACCESS CONTROL (RBAC)&lt;br&gt;System checks account role and permissions after successful login. Admin retains access to all existing modules; Supervisor and Employee see only permitted features." vertex="1">
+        <mxCell id="p1_rbac_note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="ROLE-BASED ACCESS CONTROL (RBAC)&lt;br&gt;System checks account role and permissions after successful login. Admin retains access to all existing modules (and chooses Office App or Website Admin); Supervisor and Employee see only permitted features; a Website Admin login opens the Website Admin screens." vertex="1">
           <mxGeometry height="95" width="390" x="1310" y="1580" as="geometry" />
         </mxCell>
         <mxCell id="p1_e_role_sup" edge="1" parent="1" source="p1_n22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;fontSize=10;" target="p1_supervisor" value="If role = Supervisor">
@@ -4239,7 +4239,7 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="p7_t1" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=18;fontStyle=1;" value="WEBSITE ADMIN PORTAL (CONTENT MANAGEMENT SYSTEM) — SEPARATE WEB SYSTEM, NOT PART OF THE DESKTOP APP" vertex="1">
+        <mxCell id="p7_t1" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=18;fontStyle=1;" value="WEBSITE ADMIN (CONTENT MANAGEMENT SYSTEM) — SEPARATE SCREENS, OPENED BY THE SAME TRI-STONE SIGN IN" vertex="1">
           <mxGeometry height="30" width="1300" x="40" y="8" as="geometry" />
         </mxCell>
         <mxCell id="p7_legbox2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;" value="" vertex="1">
@@ -4290,10 +4290,10 @@
         <mxCell id="p7_t17" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;" value="DATABASE" vertex="1">
           <mxGeometry height="20" width="150" x="315" y="170" as="geometry" />
         </mxCell>
-        <mxCell id="p7_n18" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="START (Admin signs in to Website Admin Portal)" vertex="1">
+        <mxCell id="p7_n18" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="START (Website Admin or Admin signs in to Tri-Stone)" vertex="1">
           <mxGeometry height="80" width="190" x="715" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="p7_t19" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;" value="Separate web system; published content feeds the Public Web Portal (page 8)" vertex="1">
+        <mxCell id="p7_t19" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=0;strokeColor=none;fillColor=none;whiteSpace=wrap;fontSize=10;fontStyle=2;" value="Separate screens (opened by Tri-Stone for Website Admin logins and Admins); published content feeds the Public Web Portal (page 8)" vertex="1">
           <mxGeometry height="26" width="330" x="915" y="117" as="geometry" />
         </mxCell>
         <mxCell id="p7_n20" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="Select function (1–5) or logout?" vertex="1">

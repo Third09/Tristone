@@ -1,4 +1,4 @@
-# Tri-Stone Office App: Developer Guide
+# Tri-Stone: Developer Guide
 
 How the Tri-Stone Construction Services system is put together: the tools, the database, how the code is organized, and the main rules of each part. It explains the design, not every line. The code itself is in `src\`. The older full-length guide with every source file printed out is kept in `docs\_archive`.
 
@@ -32,14 +32,17 @@ How the Tri-Stone Construction Services system is put together: the tools, the d
 TriStone\
 ├── TriStone.slnx              open this in Visual Studio
 ├── src\
-│   ├── Company.OfficeApp\     the desktop app (WinForms)
+│   ├── Company.Launcher\      Tri-Stone: the one program people open
+│   ├── Company.OfficeApp\     the office screens and their rules (WinForms library)
+│   ├── Company.WebsiteAdmin\  the Website Admin screens (WinForms library)
 │   ├── Company.Api\           Web API, for the public website only
-│   └── Company.Shared\        data classes + database context, used by both
+│   └── Company.Shared\        data classes + database context, used by all
 ├── database\                  numbered SQL scripts + setup-database.cmd
-└── docs\                      outline, guides, diagrams, and the tools that build them
+├── docs\                      outline, guides, diagrams, testing log, tools
+└── Apps\Tri-Stone\            built by every build: TriStone.exe (not saved in Git)
 ```
 
-The website must never touch the database itself, which is why the API is a separate project. `Company.Shared` holds the classes both apps need, so a change is made once.
+The website must never touch the database itself, which is why the API is a separate project. `Company.Shared` holds the classes everything needs, so a change is made once. The office and Website Admin screens are libraries; Tri-Stone is the only program people open.
 
 ## 1.3 Getting it running
 
@@ -96,7 +99,7 @@ Only a bcrypt hash is stored. Never write the real password in a file or in Git.
 
 ## 3.1 Start-up
 
-`Program.cs`: check the database (show **Database Settings** if it can't connect), then **Login**, then the **Main window**. After Sign Out it goes back to Login.
+`Company.Launcher/Program.cs` (Tri-Stone): check the database (show **Database Settings** if it can't connect), then **Sign In**, then the right **Main window**: the office one, or the Website Admin one for Website Admin logins (Admins choose, chapter 10). After Sign Out it goes back to Sign In.
 
 Each PC keeps its own database settings in `C:\ProgramData\TriStone\OfficeApp\dbsettings.json`. The password in it is encrypted with Windows DPAPI, so the file is useless on another PC. This is what lets the same app work on `localhost` now and on the server later without rebuilding.
 
@@ -109,7 +112,9 @@ Each PC keeps its own database settings in `C:\ProgramData\TriStone\OfficeApp\db
 | `Company.OfficeApp/Services` | **All the rules.** Static, async methods that return an error message or `null` |
 | `Company.OfficeApp/Pages` | One `UserControl` per sidebar page; big pages keep each tab in its own subfolder (`Pages/Inventory`, `Pages/Receipts`...) |
 | `Company.OfficeApp/Forms` | Windows: Login, Main, Database Settings, pop-ups |
-| `Company.OfficeApp/UI` | `Responsive` helpers |
+| `Company.OfficeApp/UI` | `Responsive` and `RecordForm` helpers (used by both sets of screens) |
+| `Company.WebsiteAdmin` | The Website Admin screens (`Forms/MainForm`, `Pages/InquiriesTab`) and their rules (`Services/WebsiteInquiries`) |
+| `Company.Launcher` | Tri-Stone: start-up, Sign In routing, the Admin's "which app" window |
 
 Pages only show data and call services. A service re-checks who is signed in before doing anything, so a rule can't be skipped by reaching the code another way.
 
@@ -176,7 +181,7 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 
 **Passwords.** Only Admins create accounts and set passwords. Rules: 8+ characters with a letter and a number. **Forgot Password** sends a request to the Admins, who set a new password and give it in person. An Admin who forgets answers their own security question (set in **My Account**).
 
-**User Accounts** (Admin only). Every login belongs to one Active office employee and takes its name and department from them. Administration staff only get Admin logins. You can't disable yourself or remove your own Admin level, and the last active Admin is protected.
+**User Accounts** (Admin only). Every login belongs to one Active office employee and takes its name and department from them. Levels: Admin, Supervisor, Employee and **Website Admin** (chapter 10); Admins and Website Admins have no department. Administration staff only get Admin or Website Admin logins. You can't disable yourself or remove your own Admin level, and the last active Admin is protected. One list of logins serves both the office and the Website Admin screens.
 
 # Chapter 5: Projects and Dashboard (Part 1)
 

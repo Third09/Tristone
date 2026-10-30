@@ -1,0 +1,7 @@
+# Decisions made on Oct 30, 2026 (Website Admin as its own screens, one account list, one Sign In).
+# Expects outline_insert.ps1 loaded and the outline open.
+Replace-Para "Note: built as the Website Admin tab inside the Desktop App" "Note: built as separate Website Admin screens, not a page of the office app. Everyone signs in on the same Tri-Stone Sign In with one list of logins: a Website Admin login opens these screens, an Admin chooses Office App or Website Admin, everyone else gets the office app. It shares the same database as the Desktop App."
+Replace-Para "Admin only. Everything on the website is editable from here" "Website Admin logins and Admins. Everything on the website is editable from here: all text and images on every page (Home, Projects, Services, About Us, Contact)."
+Replace-Para "One login for the whole app. Each account has one Department" "One login for the whole system (the office app and the Website Admin screens). Each account has one Level: Admin, Supervisor, Employee or Website Admin, and (except Admins and Website Admins) one Department, which decides which pages show in the sidebar. Supervisors are specific to their department, not to projects."
+Insert-After "One login for the whole system" @(
+  "Website Admin logins are made by an Admin in User Accounts like any other login (linked to an office employee, no department). Tri-Stone, the one program everyone opens, decides which screens open from the login.")

@@ -1,6 +1,6 @@
-# Tri-Stone Office App: User Manual
+# Tri-Stone: User Manual
 
-How to use the Tri-Stone office app, screen by screen. This manual grows as each screen is finished; sections marked *(coming soon)* are planned but not built yet.
+How to use Tri-Stone, screen by screen: the office app and the Website Admin screens. This manual grows as each screen is finished; sections marked *(coming soon)* are planned but not built yet.
 
 # 1. Who can do what
 
@@ -19,7 +19,9 @@ Site workers do not use the app. They only use the fingerprint scanner.
 
 # 2. Installing the app *(coming soon)*
 
-A normal installer (Setup.exe) will be provided at the end of the project. The first time the app opens it asks for the server address once.
+A normal installer (Setup.exe) will be provided at the end of the project. It installs **Tri-Stone**, the one program everyone opens (office staff and Website Admins alike), and puts a shortcut on the desktop. The first time it opens it asks for the server address once.
+
+Until then, on the development PCs, the program is `Apps\Tri-Stone\TriStone.exe` inside the project folder.
 
 # 3. Signing in and out
 

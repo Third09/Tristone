@@ -32,7 +32,9 @@ database/NNN_name.sql          numbered, idempotent (IF NOT EXISTS) scripts
 database/setup-database.ps1    creates construction_db if missing, runs unapplied scripts (tracked in schema_versions)
 database/setup-database.cmd    double-click version
 docs/                          Project Outline.docx (the living spec), UI Elements Guide.docx,
-                               User Manual.docx, Developer Guide.docx, diagrams/*.drawio (DFD + flowchart)
+                               User Manual.docx, Feature Guide.docx, Developer Guide.docx, Database Guide.docx,
+                               Testing Log.md, diagrams/*.drawio (DFD + flowchart)
+                               (outline changes: docs/_tools/outline/partN.ps1, latest part_oct30.ps1)
 docs/_source/*.md              text the Word guides are built from; <!-- include: path --> pulls real code
 docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, data2.js, build.js),
                                outline/ (outline_insert.ps1 + partN.ps1 + rebuild_outline.ps1),
@@ -98,11 +100,17 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 **Website Admin built so far:** sidebar layout like the office app (owner request 2026-10-30), same idle sign-out, Inquiries page (`inquiries`, script 010: New / Contacted / Closed + internal notes, Website Admins and Admins can follow up, never deleted, Copy Email for replying from Gmail, "Inquiries (N new)" on its sidebar button). Messages arrive through the API later; until then the website uses Netlify Forms to email Gmail.
 **Website Admin (Part 6)** **Separate screens, opened through Tri-Stone** (owner decisions 2026-10-30): not a page of the office app; `src/Company.WebsiteAdmin` (library) in the same solution, same database, same Sign In (Tri-Stone launcher). Website Admin logins open it; Admins choose. The office app's Website Admin sidebar button and `AppPage.WebsiteAdmin` were removed. Everything on the website editable; projects come from the Projects "Show on website" tick + website-only details/photos and per-field visibility; inquiries saved in the DB (New / Contacted / Closed + notes) and a copy emailed to the company Gmail (not set up yet).
 
-## Status (as of 2026-10-27)
+## Status (as of 2026-10-30)
 
 Built and tested (Developer Guide chapters): 1-6 setup, DB, first Admin; 7-8 DB settings + sign-in; 9 Forgot Password; 10 sidebar + idle; 11 My Account; 12 User Accounts; 13 Projects (+ Excel export, print report); 14 HR Employees; 15 logins linked to employees; 16 responsive pages (fit any screen, search waits for typing, DB warm-up); 17 Inventory & Vendors (all 7 tabs); 18 Subcontractors (directory, jobs + stages + retention, progress, vouchers SV-0001, payouts, voucher print); 19 Receipts & change orders (vault incl. stock purchases read from deliveries, needs review, CO-001 Admin approval, reports, TableReport/PDF); 20 Dashboard (completed-contract KPIs, department view, ScottPlot status chart, top projects, log history).
 DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one login per employee, 005 inventory (+ app_settings), 006 subcontractors, 007 receipts + change orders, 008 website accounts, 009 website main account flag (both merged away by 011), 010 inquiries (website Contact form messages), 011 merge website accounts into users (Website Admin level; tables website_accounts / website_login_logs dropped after copying accounts, passwords, sign-in history and inquiry follow-ups).
 
 2026-10-27: UI Elements Guide synced to Parts 3-5 + Dashboard; Developer Guide shortened (187 -> 9 pages).
+2026-10-30 (work PC, all logged in docs/Testing Log.md):
+- Safe add/edit on every list page (`RecordForm`): no auto-select (incl. hidden tabs), Add opens a pop-up, Save asks Yes/No listing changes; main window full screen with no corner buttons; Materials dropdown-clearing bug fixed.
+- New guides: Feature Guide (staff), Database Guide (owner's study guide). Testing Log for the two-PC setup.
+- Website Admin: its own screens (`Company.WebsiteAdmin`), sidebar layout, Inquiries page (script 010). One account list + one Sign In: Tri-Stone launcher (`Company.Launcher`, the only program, `Apps\Tri-Stone\TriStone.exe`), Website Admin level in User Accounts (script 011). Office app and Website Admin are libraries.
+- Home PC still to do: pull, run `database\setup-database.cmd` (scripts 008-011), set Company.Launcher as startup project, then the "Check at home" list in docs/Testing Log.md.
+- Owner's uncommitted Visual Studio designer edits on `Pages/Hr/EmployeesTab` (re-formatted designer, two .resx files, an empty `lblFormMode_Click` handler) are left out of commits on purpose; ask before committing them.
 
 Next: Attendance tab waits for the scanner's sample export file; then payroll/cash advances, the remaining Website Admin pages (Page Content, Announcements, Website Projects, Document Vault, Website Traffic), then the API + website Contact form, then Phase 6 installers.
