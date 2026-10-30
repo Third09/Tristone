@@ -21,7 +21,9 @@ public partial class SubJobsTab : UserControl
         internal void SetAmount(decimal amount) => Amount = amount;
     }
 
-    int? editingId;
+    int? editingId;          // null = nothing selected (or the "add only" pop-up)
+    JobInput? original;      // the form as loaded, to list what changed before saving
+    readonly bool addOnly;   // this copy is the New Job pop-up (RecordForm)
     bool locked;
     string? progressFile;
     readonly BindingList<StageLine> stages = [];
@@ -30,8 +32,14 @@ public partial class SubJobsTab : UserControl
     /// <summary>Raised after a job is added, changed or deleted, so the Billing tab can refresh its job list.</summary>
     public event EventHandler? Changed;
 
-    public SubJobsTab()
+    /// <summary>The New Job pop-up reports the new job's id here.</summary>
+    public event Action<int>? Added;
+
+    public SubJobsTab() : this(false) { }
+
+    public SubJobsTab(bool addOnly)
     {
+        this.addOnly = addOnly;
         InitializeComponent();
         dgvJobs.AutoGenerateColumns = false;
         dgvJobStages.AutoGenerateColumns = false;
@@ -40,14 +48,23 @@ public partial class SubJobsTab : UserControl
         colAmount.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         colStageAmount.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         dgvJobStages.DataSource = stages;
+        if (addOnly)
+        {
+            // Papers and progress are added after the job exists, on the Jobs & Progress tab.
+            RecordForm.ShowFormOnly(this, lblFormMode, lblJobDocs, dgvJobDocs, btnUploadJobDoc, btnViewJobDoc,
+                lblProgressTitle, prgJobProgress, lblProgressPct, lblProgressPctInput, lblProgressDate, lblProgressNotes,
+                numProgressPct, dtpProgressDate, txtProgressNotes, btnAttachProgressFile, btnAddProgressUpdate,
+                lblProgressMsg, lblProgressFile, dgvProgressHistory);
+            return;
+        }
         Responsive.FitGrid(this, dgvJobs);
         Responsive.FitGrid(this, dgvProgressHistory);
     }
 
     async void SubJobsTab_Load(object sender, EventArgs e)
     {
+        if (addOnly) StartNew(); else ShowNothingSelected();
         await ReloadListsAsync();
-        StartNew();
     }
 
     /// <summary>Refills the subcontractor and project dropdowns (after the Directory changes) and the job list.</summary>
@@ -64,7 +81,7 @@ public partial class SubJobsTab : UserControl
         var project = (cboJobProject.SelectedItem as ProjectOption)?.ProjectId;
         Fill(cboJobSubcontractor, [.. subs], subs.FirstOrDefault(s => s.SubcontractorId == sub));
         Fill(cboJobProject, [.. projects], projects.FirstOrDefault(p => p.ProjectId == project));
-        await LoadAsync(editingId);
+        if (!addOnly) await LoadAsync(editingId);
     }
 
     bool filling;
@@ -81,15 +98,25 @@ public partial class SubJobsTab : UserControl
 
     async Task LoadAsync(int? selectId = null)
     {
+        if (addOnly) return;   // the Add pop-up has no list (its hidden filters still fire on start-up)
         var ticket = loads.Start();
         using var busy = Responsive.Busy(this);
         var rows = await SubJobService.ListAsync((cboJobProjectFilter.SelectedItem as ProjectOption)?.ProjectId,
                                                  (cboJobSubFilter.SelectedItem as SubRow)?.SubcontractorId);
         if (!loads.IsLatest(ticket)) return;
+
+        selectId ??= editingId;   // filtering keeps the job being edited selected
+        filling = true;
         dgvJobs.DataSource = rows;
-        dgvJobs.ClearSelection();
+        dgvJobs.ClearSelection();   // never pick the first row by itself (RecordForm)
         if (selectId is { } id)
             Responsive.SelectRow(dgvJobs, (JobRow row) => row.JobId == id);
+        filling = false;
+
+        if (Selected is not { } selected) ShowNothingSelected();
+        else if (selected.JobId != editingId && await SubJobService.GetAsync(selected.JobId) is { } found)
+            await StartEditAsync(found.Job, found.Stages, found.Locked);
+        btnDeleteJob.Enabled = Selected != null;
     }
 
     JobRow? Selected => dgvJobs.SelectedRows.Count > 0 ? dgvJobs.SelectedRows[0].DataBoundItem as JobRow : null;
@@ -98,14 +125,24 @@ public partial class SubJobsTab : UserControl
 
     async void dgvJobs_SelectionChanged(object sender, EventArgs e)
     {
+        if (filling) return;
         btnDeleteJob.Enabled = Selected != null;
-        if (Selected is { } row && row.JobId != editingId && await SubJobService.GetAsync(row.JobId) is { } found)
+        if (Selected is not { } row) ShowNothingSelected();
+        else if (row.JobId != editingId && await SubJobService.GetAsync(row.JobId) is { } found)
             await StartEditAsync(found.Job, found.Stages, found.Locked);
+    }
+
+    void ShowNothingSelected()
+    {
+        StartNew();
+        lblFormMode.Text = "Click a job in the list to see or change it. To add one, click New Job.";
+        RecordForm.SetEnabled(this, lblFormMode, false);
     }
 
     void StartNew()
     {
         editingId = null;
+        original = null;
         locked = false;
         lblFormMode.Text = "New job";
         cboJobSubcontractor.SelectedIndex = -1;
@@ -125,6 +162,7 @@ public partial class SubJobsTab : UserControl
 
     async Task StartEditAsync(SubJob j, List<SubJobStage> jobStages, bool isLocked)
     {
+        RecordForm.SetEnabled(this, lblFormMode, true);
         editingId = j.JobId;
         lblFormMode.Text = $"Editing job #{j.JobId}";
         cboJobSubcontractor.SelectedItem = cboJobSubcontractor.Items.Cast<SubRow>().FirstOrDefault(s => s.SubcontractorId == j.SubcontractorId);
@@ -145,6 +183,7 @@ public partial class SubJobsTab : UserControl
         lblJobMsg.Text = isLocked ? "Billing has started: only the scope and dates can change." : "";
         SetLocked(isLocked);
         Stages_Changed(this, EventArgs.Empty);
+        original = ReadForm();
         ShowJobExtras(true);
         await LoadDocsAndProgressAsync();
     }
@@ -234,12 +273,20 @@ public partial class SubJobsTab : UserControl
         DateOnly.FromDateTime(dtpJobStart.Value), DateOnly.FromDateTime(dtpJobEnd.Value), numRetentionPct.Value,
         stages.Select(s => new StageInput(s.Name, s.Percent)).ToList());
 
-    void btnNewJob_Click(object sender, EventArgs e) { dgvJobs.ClearSelection(); StartNew(); cboJobSubcontractor.Focus(); }
+    async void btnNewJob_Click(object sender, EventArgs e)
+    {
+        var page = new SubJobsTab(addOnly: true);
+        if (RecordForm.AddDialog(this, "New Job", page, a => page.Added += a) is not { } newId) return;
+        editingId = null;
+        await LoadAsync(newId);
+        lblJobMsg.Text = "Job added. You can upload its papers now.";
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
 
     async void btnCancelJob_Click(object sender, EventArgs e)
     {
+        if (addOnly) { FindForm()?.Close(); return; }
         if (editingId is { } id && await SubJobService.GetAsync(id) is { } found) await StartEditAsync(found.Job, found.Stages, found.Locked);
-        else StartNew();
     }
 
     async void btnSaveJob_Click(object sender, EventArgs e)
@@ -248,20 +295,30 @@ public partial class SubJobsTab : UserControl
         Stages_Changed(this, EventArgs.Empty);
         var input = ReadForm();
         if (SubJobService.CheckInput(input) is { } problem) { lblJobMsg.Text = problem; return; }
+        if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
+        if (editingId is { } jobId && original != null)
+        {
+            var answer = RecordForm.ConfirmSave(this, $"job #{jobId}", original, input,
+                new Dictionary<string, string> { ["SubcontractorId"] = "Subcontractor", ["ProjectId"] = "Project", ["RetentionPct"] = "Retention %" });
+            if (answer == SaveAnswer.NothingChanged) { lblJobMsg.Text = "Nothing changed."; return; }
+            if (answer == SaveAnswer.No) { lblJobMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
+        }
         btnSaveJob.Enabled = false;
         try
         {
             if (editingId is { } id)
             {
                 var error = await SubJobService.UpdateAsync(id, input);
-                lblJobMsg.Text = error ?? "Saved.";
-                if (error == null) { await LoadAsync(id); Changed?.Invoke(this, EventArgs.Empty); }
+                if (error != null) { lblJobMsg.Text = error; return; }
+                editingId = null;   // reload the form from the saved job
+                await LoadAsync(id);
+                lblJobMsg.Text = "Saved.";
+                Changed?.Invoke(this, EventArgs.Empty);
             }
             else
             {
                 var (newId, error) = await SubJobService.CreateAsync(input);
-                lblJobMsg.Text = error ?? "Job added.";
-                if (newId != null) { await LoadAsync(newId); Changed?.Invoke(this, EventArgs.Empty); }
+                if (newId is { } added) Added?.Invoke(added); else lblJobMsg.Text = error;
             }
         }
         catch (Exception ex) { lblJobMsg.Text = "Can't reach the database. " + ex.Message; }
@@ -274,7 +331,7 @@ public partial class SubJobsTab : UserControl
         if (MessageBox.Show(this, $"Delete job #{j.JobId} ({j.Subcontractor} - {j.Project})?", "Delete job", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
         var error = await SubJobService.DeleteAsync(j.JobId);
         if (error != null) { MessageBox.Show(this, error, "Not deleted", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
-        StartNew();
+        editingId = null;
         await LoadAsync();
         Changed?.Invoke(this, EventArgs.Empty);
     }

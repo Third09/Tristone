@@ -63,6 +63,18 @@ Private details are **never** written in the history: passwords, security answer
 - **Money** is shown in pesos, for example ₱1,250.00.
 - **Delete** is only allowed while nothing else depends on the record. Once it has history, use the "keep history" option instead (Cancelled, Inactive, Retired, Disabled). That way old reports stay correct.
 
+## 1.5 Adding vs. changing a record
+
+On every list page (Projects, User Accounts, Employees, Materials, Vendors, Equipment, Subcontractors, Jobs, Change Orders), adding and changing are kept **completely separate**, so one can never be mistaken for the other:
+
+- **Add / New / Create** opens a **separate window** with the form. Saving there always creates a **new** record; the window closes and the new record is selected in the list. Parts that only make sense for a saved record (papers, maintenance log, progress) are added afterwards on the page.
+- The form under the list is **only for changing** the record you clicked. Until you click one, it's empty and greyed out.
+- When a page opens, or you search or filter, the list **never selects anything by itself**.
+- **Save** first shows a message listing every change, for example *Unit price: 250 -> 275*. Nothing is saved until you click **Yes**. Government IDs, TIN and bank account numbers are listed only as "changed", never shown.
+- If nothing was changed, **Save** just says *Nothing changed.*
+
+**Why:** before this, a list selected its first row by itself, so the form was quietly editing that record. Typing a "new" one into it and clicking Save **overwrote** the existing record instead of adding a new one.
+
 # 2. Signing in and staying safe
 
 ## 2.1 Signing in
@@ -268,15 +280,7 @@ Everyone who works for the company: **office staff** and **site workers**.
 
 ## 7.0 Adding vs. changing an employee
 
-Adding and changing are kept **completely separate**, so one can never be mistaken for the other:
-
-- **Add Employee** opens its own **Add Employee** window. Saving there always creates a **new** person.
-- The form under the list is **only for changing** the employee you clicked. Until you click someone, it's empty and greyed out.
-- When you open the tab, search or filter, the list **never selects anyone by itself**.
-- **Save** first shows a message listing every change, for example *Position: Mason -> Foreman* or *Daily rate: ₱600.00 -> ₱700.00 from 2 Nov 2026*. Nothing is saved until you click **Yes**. Government ID numbers are listed only as "changed", never shown.
-- If nothing was changed, **Save** just says *Nothing changed.*
-
-**Why:** before this, the form was quietly in "editing" mode for the first employee in the list. Typing a new person into it and clicking Save **overwrote** that employee instead of adding a new one.
+Works like every list page (see 1.5): **Add Employee** opens its own window; the form under the list only changes the employee you clicked; **Save** lists the changes (for example *Daily rate: ₱600.00 -> ₱700.00 from 2 Nov 2026*) and waits for **Yes**.
 
 ## 7.1 Departments and pay schedule
 

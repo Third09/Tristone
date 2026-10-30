@@ -10,36 +10,62 @@ namespace Company.OfficeApp.Pages.Inventory;
 /// </summary>
 public partial class VendorsTab : UserControl
 {
-    int? editingId;
+    int? editingId;          // null = nothing selected (or the "add only" pop-up)
+    VendorInput? original;   // the form as loaded, to list what changed before saving
+    bool filling;            // true while the list reloads, so the grid's own selection changes are ignored
+    readonly bool addOnly;   // this copy is the Add Vendor pop-up (RecordForm)
     readonly LatestOnly loads = new();
 
     /// <summary>Raised after a vendor is added, changed or deleted (other tabs list vendors).</summary>
     public event EventHandler? Changed;
 
-    public VendorsTab()
+    /// <summary>The Add Vendor pop-up reports the new vendor's id here.</summary>
+    public event Action<int>? Added;
+
+    public VendorsTab() : this(false) { }
+
+    public VendorsTab(bool addOnly)
     {
+        this.addOnly = addOnly;
         InitializeComponent();
         dgvVendors.AutoGenerateColumns = false;
         dgvVendorDocs.AutoGenerateColumns = false;
         cboVendorVat.Items.AddRange(InventoryLists.VatStatuses);
         cboVendorDocType.Items.AddRange(InventoryLists.VendorDocTypes);
         cboVendorDocType.SelectedIndex = 0;
+        if (addOnly)
+        {
+            // Papers are uploaded after the vendor exists, on the Vendors tab.
+            RecordForm.ShowFormOnly(this, lblFormMode, lblPapers, dgvVendorDocs, cboVendorDocType, btnUploadVendorDoc, btnViewVendorDoc, btnDeleteVendorDoc);
+            StartNew();
+            return;
+        }
         Responsive.FitGrid(this, dgvVendors);
         Responsive.OnTypingPause(txtVendorSearch, () => LoadAsync());
-        StartNew();
+        ShowNothingSelected();
     }
 
-    async void VendorsTab_Load(object sender, EventArgs e) => await LoadAsync();
+    async void VendorsTab_Load(object sender, EventArgs e) { if (!addOnly) await LoadAsync(); }
 
     async Task LoadAsync(int? selectId = null)
     {
+        if (addOnly) return;   // the Add pop-up has no list (its hidden filters still fire on start-up)
         var ticket = loads.Start();
         using var busy = Responsive.Busy(this);
         var rows = await PurchasingService.ListVendorsAsync(txtVendorSearch.Text);
         if (!loads.IsLatest(ticket)) return;
+
+        selectId ??= editingId;   // searching keeps the vendor being edited selected
+        filling = true;
         dgvVendors.DataSource = rows;
+        dgvVendors.ClearSelection();   // never pick the first row by itself (RecordForm)
         if (selectId is { } id)
             Responsive.SelectRow(dgvVendors, (VendorRow row) => row.VendorId == id);
+        filling = false;
+
+        if (Selected is not { } selected) ShowNothingSelected();
+        else if (selected.VendorId != editingId && await PurchasingService.GetVendorAsync(selected.VendorId) is { } v) await StartEditAsync(v);
+        btnDeleteVendor.Enabled = Selected != null;
     }
 
     VendorRow? Selected => dgvVendors.SelectedRows.Count > 0 ? dgvVendors.SelectedRows[0].DataBoundItem as VendorRow : null;
@@ -47,13 +73,23 @@ public partial class VendorsTab : UserControl
 
     async void dgvVendors_SelectionChanged(object sender, EventArgs e)
     {
+        if (filling) return;
         btnDeleteVendor.Enabled = Selected != null;
-        if (Selected is { } row && await PurchasingService.GetVendorAsync(row.VendorId) is { } v) await StartEditAsync(v);
+        if (Selected is not { } row) ShowNothingSelected();
+        else if (await PurchasingService.GetVendorAsync(row.VendorId) is { } v) await StartEditAsync(v);
+    }
+
+    void ShowNothingSelected()
+    {
+        StartNew();
+        lblFormMode.Text = "Click a vendor in the list to see or change it. To add one, click Add Vendor.";
+        RecordForm.SetEnabled(this, lblFormMode, false);
     }
 
     void StartNew()
     {
         editingId = null;
+        original = null;
         lblFormMode.Text = "New vendor";
         foreach (var t in new[] { txtVendorName, txtVendorContact, txtVendorPhone, txtVendorEmail, txtVendorAddress,
                                   txtVendorBank, txtVendorAccountName, txtVendorAccountNo })
@@ -66,6 +102,7 @@ public partial class VendorsTab : UserControl
 
     async Task StartEditAsync(Vendor v)
     {
+        RecordForm.SetEnabled(this, lblFormMode, true);
         editingId = v.VendorId;
         lblFormMode.Text = $"Editing: {v.Name}";
         txtVendorName.Text = v.Name;
@@ -78,6 +115,7 @@ public partial class VendorsTab : UserControl
         txtVendorAccountNo.Text = v.AccountNumber ?? "";
         cboVendorVat.SelectedItem = v.VatStatus;
         lblVendorMsg.Text = "";
+        original = ReadForm();
         await LoadDocsAsync();
     }
 
@@ -91,31 +129,50 @@ public partial class VendorsTab : UserControl
     VendorInput ReadForm() => new(txtVendorName.Text, txtVendorContact.Text, txtVendorPhone.Text, txtVendorEmail.Text,
         txtVendorAddress.Text, txtVendorBank.Text, txtVendorAccountName.Text, txtVendorAccountNo.Text, (string?)cboVendorVat.SelectedItem ?? "");
 
-    void btnAddVendor_Click(object sender, EventArgs e) { dgvVendors.ClearSelection(); StartNew(); txtVendorName.Focus(); }
+    async void btnAddVendor_Click(object sender, EventArgs e)
+    {
+        var page = new VendorsTab(addOnly: true);
+        if (RecordForm.AddDialog(this, "Add Vendor", page, a => page.Added += a) is not { } newId) return;
+        editingId = null;
+        await LoadAsync(newId);
+        lblVendorMsg.Text = "Vendor added. You can upload their papers now.";
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
 
     async void btnCancelVendor_Click(object sender, EventArgs e)
     {
-        if (editingId is { } id && await PurchasingService.GetVendorAsync(id) is { } v) await StartEditAsync(v); else StartNew();
+        if (addOnly) { FindForm()?.Close(); return; }
+        if (editingId is { } id && await PurchasingService.GetVendorAsync(id) is { } v) await StartEditAsync(v);
     }
 
     async void btnSaveVendor_Click(object sender, EventArgs e)
     {
         var input = ReadForm();
         if (PurchasingService.CheckVendor(input) is { } problem) { lblVendorMsg.Text = problem; return; }
+        if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
+        if (editingId != null && original != null)
+        {
+            var answer = RecordForm.ConfirmSave(this, original.Name, original, input,
+                new Dictionary<string, string> { ["VatStatus"] = "VAT status" }, nameof(VendorInput.AccountNumber));
+            if (answer == SaveAnswer.NothingChanged) { lblVendorMsg.Text = "Nothing changed."; return; }
+            if (answer == SaveAnswer.No) { lblVendorMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
+        }
         btnSaveVendor.Enabled = false;
         try
         {
             if (editingId is { } id)
             {
                 var error = await PurchasingService.UpdateVendorAsync(id, input);
-                lblVendorMsg.Text = error ?? "Saved.";
-                if (error == null) { await LoadAsync(id); Changed?.Invoke(this, EventArgs.Empty); }
+                if (error != null) { lblVendorMsg.Text = error; return; }
+                editingId = null;   // reload the form from the saved record
+                await LoadAsync(id);
+                lblVendorMsg.Text = "Saved.";
+                Changed?.Invoke(this, EventArgs.Empty);
             }
             else
             {
                 var (newId, error) = await PurchasingService.CreateVendorAsync(input);
-                lblVendorMsg.Text = error ?? "Vendor added. You can upload their papers now.";
-                if (newId != null) { await LoadAsync(newId); Changed?.Invoke(this, EventArgs.Empty); }
+                if (newId is { } added) Added?.Invoke(added); else lblVendorMsg.Text = error;
             }
         }
         catch (Exception ex) { lblVendorMsg.Text = "Can't reach the database. " + ex.Message; }
@@ -128,7 +185,7 @@ public partial class VendorsTab : UserControl
         if (MessageBox.Show(this, $"Delete \"{v.Name}\"?", "Delete vendor", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
         var error = await PurchasingService.DeleteVendorAsync(v.VendorId);
         if (error != null) { MessageBox.Show(this, error, "Not deleted", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
-        StartNew();
+        editingId = null;
         await LoadAsync();
         Changed?.Invoke(this, EventArgs.Empty);
     }

@@ -77,6 +77,13 @@ Use **Dismiss** if a request was sent by mistake. Every change is recorded in th
 
 The app always fills the whole screen (above the taskbar). It has no title bar or minimize / maximize / close buttons, so it can't be resized or closed by accident. To leave, click **Sign Out**. On big monitors, lists grow to show more rows; on small laptop screens, scroll down to see the rest of a page. Search boxes update the list when you stop typing.
 
+## Adding and changing records (every list page)
+
+- **Add / New / Create** buttons open a **separate window** with the form. Saving there always makes a **new** record, then the window closes and the new record is selected in the list.
+- The form under the list is **only for changing** the record you clicked. Until you click one, it's empty and greyed out. The list never selects anything by itself.
+- **Save** first shows a message listing every change, for example *Unit price: 250 -> 275*. Click **Yes** to save or **No** to go back. Private numbers (government IDs, TIN, bank account numbers) are shown only as "changed".
+- **Cancel** puts back what's saved. In an Add window, **Cancel** closes it without saving.
+
 ## Signing out
 
 Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Sign In window comes back. To close the app completely, close the Sign In window.
@@ -108,18 +115,18 @@ Click **User Accounts** in the sidebar.
 
 First add the person in **HR & Payroll > Employees**. Only office staff get logins, never site workers.
 
-1. Click **Create Account**.
+1. Click **Create Account**. The **Create Account** window opens.
 2. Pick the **Employee** from the list. Only office staff without a login are listed.
 3. A **username** is suggested (e.g. Juan Dela Cruz -> jdelacruz). Change it if you like: letters, numbers, dots, dashes or underscores, no spaces.
 4. Type a first password, or click **Generate**.
 5. Choose the **Level**. The **Department** fills in by itself from the employee (Admins have none).
-6. Click **Save**. Give the username and password to the person in person.
+6. Click **Save**. The window closes and the new account is selected. Give the username and password to the person in person.
 
 The login's name and department follow the employee record. If HR renames someone or moves them to another department, their login updates too.
 
 If the department already has an active person at that level (the plan is 1 Employee and 1 Supervisor per department), the app asks before saving.
 
-**Change an account:** click it in the list, change the username or level (or which employee it's for), and click **Save**. To change the password, use **Set New Password**.
+**Change an account:** click it in the list, change the username or level (or which employee it's for), click **Save**, check the changes in the message and click **Yes**. To change the password, use **Set New Password**.
 
 **Other buttons** (click the account first):
 
@@ -177,13 +184,13 @@ A project's money counts when it is finished, so a period with no finished proje
 
 **Add a project**
 
-1. Click **Add Project**.
+1. Click **Add Project**. The **Add Project** window opens.
 2. Fill in the **name**, **site / location**, **client** (optional), **sector**, **contract price**, **start date**, and the **target end date** (tick the box to set one).
 3. Choose the **status**: Pending, Ongoing, Done or Cancelled.
 4. Tick **Show on website** if it should appear on the public website. You add photos and details later in Website Admin.
 5. Click **Save**.
 
-**Change a project:** click it in the list, change it, then click **Save**. When you set a project to **Done**, today's date is recorded as its completion date.
+**Change a project:** click it in the list, change it, click **Save**, check the changes in the message and click **Yes**. When you set a project to **Done**, today's date is recorded as its completion date.
 
 **Summary** (worked out by the app): days so far (or how long it took), revenue, expenses to date, and profit to date. Expenses fill in as receipts, materials and subcontractor payments are recorded.
 
@@ -244,7 +251,7 @@ For Admins and the Inventory department. Approve buttons are for the **Inventory
 
 The list of construction materials. Rows turn **light red** when stock is below the minimum and **red** when it runs out; the tab title shows how many are low, e.g. *Materials (2 low)*.
 
-- **Add Material:** name, category, unit, price, starting stock, minimum stock. Click **Save**.
+- **Add Material** opens a window: name, category, unit, price, starting stock, minimum stock. Click **Save**.
 - After that, the stock changes only by itself: down when usage is approved, up when a delivery is recorded.
 
 ## Material Usage
@@ -286,13 +293,13 @@ For Admins and the Subcontractors department. Approve buttons are for the **Subc
 
 Your subcontractors: company details, two contact people, addresses, bank details (printed on vouchers), trade categories and PCAB license.
 
-- **Add Subcontractor**, fill in the form, tick at least one trade, click **Save**.
+- **Add Subcontractor** opens a window: fill in the form, tick at least one trade, click **Save**.
 - PCAB reminder: a row turns **yellow** when the license expires within 30 days and **light red** once it has expired. The tab title says *Directory (N PCAB expiring)*.
 - A subcontractor with jobs can't be deleted.
 
 ## Jobs & Progress
 
-1. Click **New Job**. Choose the **subcontractor** and the **project**, type the **scope**, **contract amount** and dates.
+1. Click **New Job** (a window opens). Choose the **subcontractor** and the **project**, type the **scope**, **contract amount** and dates.
 2. Set the **retention %** (default 10, can be 0). It is held back from every payment.
 3. Set the **payment stages** (default: Down payment 30%, Midway 40%, Completion 30%). Edit the names and %s in the table; **Add Stage** / **Remove Stage**. They must add up to **100%**.
 4. Click **Save Job**. Then **Upload Document** for the contract or scope papers.
@@ -338,7 +345,7 @@ Expenses with no receipt (the tab title shows how many are waiting, e.g. *Needs 
 
 ## Change Orders
 
-1. Click **New Change Order**. Choose the project, the date the client asked, describe the change, and type the **cost change** and/or **days change** (use minus for less).
+1. Click **New Change Order** (a window opens). Choose the project, the date the client asked, describe the change, and type the **cost change** and/or **days change** (use minus for less).
 2. The **budget impact** shows the contract price and end date now and after.
 3. **Attach Signed Document** (the client's signed paper), then **Submit**. It waits for an Admin.
 4. An Admin selects it and clicks **Approve** (or **Reject**). Once approved, the project's revenue and target end date change everywhere.

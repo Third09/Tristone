@@ -472,12 +472,12 @@ const projects = [
         ["Projects table", "DataGridView", "dgvProjects", "Columns: Project Name, Site, Client, Sector, Contract Price, Start, Target End, Status, On Website."],
       ]},
       { name: "List actions", rows: [
-        ["Add Project button", "Button", "btnAddProject", "Clears the form to enter a new project."],
+        ["Add Project button", "Button", "btnAddProject", "Opens the Add Project window (the same form, without the list)."],
         ["Delete button", "Button", "btnDeleteProject", "Deletes the selected project (asks to confirm). Not allowed if receipts or other records use it; set it to Cancelled instead."],
         ["Export button", "Button", "btnExportProjects", "Saves the list as an Excel file."],
       ]},
       { name: "Project form", rows: [
-        ["Form title", "Label", "lblFormMode", "\"New project\" or \"Editing: (name)\". Clicking a row in the table loads it here."],
+        ["Form title", "Label", "lblFormMode", "\"Editing: (name)\", or a hint to click a project. The form is greyed out until a row is clicked; the list never selects a row by itself."],
         ["Project name box", "TextBox", "txtProjectName", "e.g. \"Santos Residence\"."],
         ["Site / location box", "TextBox", "txtProjectSite", "Address or area of the site."],
         ["Client name box", "TextBox", "txtClientName", "Client or owner name."],
@@ -496,7 +496,7 @@ const projects = [
       ]},
       { name: "Form actions", rows: [
         ["Message", "Label", "lblProjectFormMsg", "\"Project added.\", \"Saved.\" or what went wrong."],
-        ["Save button", "Button", "btnSaveProject", "Saves the new or edited project."],
+        ["Save button", "Button", "btnSaveProject", "Lists the changes in a Yes/No message first; saves only on Yes."],
         ["Cancel button", "Button", "btnCancelProject", "Throws away unsaved edits."],
         ["Print Report button", "Button", "btnPrintProjectReport", "Opens a ready-made printable project report (details, days spent, costs) to print or save as PDF."],
       ]},

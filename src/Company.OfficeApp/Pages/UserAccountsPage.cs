@@ -13,37 +13,56 @@ namespace Company.OfficeApp.Pages;
 /// </summary>
 public partial class UserAccountsPage : UserControl
 {
-    int? editingUserId;   // null = creating a new account
+    int? editingUserId;      // null = nothing selected (or the "add only" pop-up)
+    UserInput? original;     // the form as loaded, to list what changed before saving
+    bool filling;            // true while the list reloads, so the grid's own selection changes are ignored
+    readonly bool addOnly;   // this copy is the Create Account pop-up (RecordForm)
     readonly LatestOnly loads = new();
 
-    public UserAccountsPage()
+    /// <summary>The Create Account pop-up reports the new account's id here.</summary>
+    public event Action<int>? Added;
+
+    public UserAccountsPage() : this(false) { }
+
+    public UserAccountsPage(bool addOnly)
     {
+        this.addOnly = addOnly;
         InitializeComponent();
         dgvUsers.AutoGenerateColumns = false;
         cboUserStatusFilter.Items.AddRange(["All", UserStatuses.Active, UserStatuses.Locked, UserStatuses.Disabled]);
         cboUserStatusFilter.SelectedIndex = 0;
         cboUserLevel.Items.AddRange(UserAdminService.LevelList);
+        if (addOnly) { RecordForm.ShowFormOnly(this, lblFormMode); return; }
         Responsive.FitGrid(this, dgvUsers);
         Responsive.OnTypingPause(txtUserSearch, () => LoadUsersAsync());
     }
 
     async void UserAccountsPage_Load(object sender, EventArgs e)
     {
-        await StartNewAsync();
+        if (addOnly) { await StartNewAsync(); return; }
+        ShowNothingSelected();
         await LoadUsersAsync();
     }
 
     async Task LoadUsersAsync(int? selectUserId = null)
     {
+        if (addOnly) return;   // the Add pop-up has no list (its hidden filters still fire on start-up)
         var ticket = loads.Start();
         using var busy = Responsive.Busy(this);
         var status = cboUserStatusFilter.SelectedIndex > 0 ? (string)cboUserStatusFilter.SelectedItem! : null;
         var rows = await UserAdminService.ListAsync(txtUserSearch.Text, status);
         if (!loads.IsLatest(ticket)) return;   // a newer search already started
-        dgvUsers.DataSource = rows;
 
+        selectUserId ??= editingUserId;   // searching keeps the account being edited selected
+        filling = true;
+        dgvUsers.DataSource = rows;
+        dgvUsers.ClearSelection();         // never pick the first row by itself (RecordForm)
         if (selectUserId is { } id)
             Responsive.SelectRow(dgvUsers, (UserRow row) => row.UserId == id);
+        filling = false;
+
+        if (Selected is not { } selected) ShowNothingSelected();
+        else if (selected.UserId != editingUserId) await StartEditAsync(selected);
         UpdateButtons();
     }
 
@@ -63,8 +82,23 @@ public partial class UserAccountsPage : UserControl
 
     async void dgvUsers_SelectionChanged(object sender, EventArgs e)
     {
+        if (filling) return;
         UpdateButtons();
-        if (Selected is { } u) await StartEditAsync(u);
+        if (Selected is { } u) await StartEditAsync(u); else ShowNothingSelected();
+    }
+
+    void ShowNothingSelected()
+    {
+        editingUserId = null;
+        original = null;
+        lblFormMode.Text = "Click an account in the list to see or change it. To make one, click Create Account.";
+        cboUserEmployee.Items.Clear();
+        txtNewUsername.Clear();
+        txtNewUserPassword.Clear();
+        cboUserLevel.SelectedIndex = -1;
+        cboUserDepartment.Items.Clear();
+        lblUserFormMsg.Text = "";
+        RecordForm.SetEnabled(this, lblFormMode, false);
     }
 
     // ----- form -----
@@ -75,6 +109,7 @@ public partial class UserAccountsPage : UserControl
     async Task StartNewAsync()
     {
         editingUserId = null;
+        original = null;
         lblFormMode.Text = "New account";
         cboUserEmployee.Items.Clear();
         cboUserEmployee.Items.AddRange([.. await UserAdminService.LinkableEmployeesAsync(null)]);
@@ -91,6 +126,7 @@ public partial class UserAccountsPage : UserControl
 
     async Task StartEditAsync(UserRow u)
     {
+        RecordForm.SetEnabled(this, lblFormMode, true);
         editingUserId = u.UserId;
         lblFormMode.Text = $"Editing: {u.FullName}";
         var options = await UserAdminService.LinkableEmployeesAsync(u.UserId);
@@ -104,7 +140,11 @@ public partial class UserAccountsPage : UserControl
         cboUserLevel.SelectedItem = u.Level;
         lblUserFormMsg.Text = "";
         ShowDepartment(u.Department);
+        original = ReadForm();
     }
+
+    UserInput ReadForm() => new((cboUserEmployee.SelectedItem as EmployeeOption)?.EmployeeId, txtNewUsername.Text,
+                                (string?)cboUserLevel.SelectedItem ?? "");
 
     /// <summary>Department follows the employee (none for Admins). Shown only; it can't be picked.</summary>
     void ShowDepartment(string? unlinkedDepartment = null)
@@ -148,23 +188,34 @@ public partial class UserAccountsPage : UserControl
 
     async void btnCreateAccount_Click(object sender, EventArgs e)
     {
-        dgvUsers.ClearSelection();
-        await StartNewAsync();
-        cboUserEmployee.Focus();
+        var page = new UserAccountsPage(addOnly: true);
+        if (RecordForm.AddDialog(this, "Create Account", page, a => page.Added += a) is not { } newId) return;
+        editingUserId = null;
+        await LoadUsersAsync(newId);
+        lblUserFormMsg.Text = "Account created. Give the username and password to the person.";
     }
 
     async void btnCancelUser_Click(object sender, EventArgs e)
     {
-        if (editingUserId != null && Selected is { } u) await StartEditAsync(u); else await StartNewAsync();
+        if (addOnly) { FindForm()?.Close(); return; }
+        if (editingUserId != null && Selected is { } u) await StartEditAsync(u);
     }
 
     async void btnSaveUser_Click(object sender, EventArgs e)
     {
         var employee = cboUserEmployee.SelectedItem as EmployeeOption;
-        var input = new UserInput(employee?.EmployeeId, txtNewUsername.Text, (string?)cboUserLevel.SelectedItem ?? "");
+        var input = ReadForm();
 
         if (employee == null) { lblUserFormMsg.Text = "Choose the employee this login is for."; return; }
         if (UserAdminService.CheckInput(input) is { } problem) { lblUserFormMsg.Text = problem; return; }
+        if (!addOnly && editingUserId == null) return;   // the form is locked when nothing is selected
+        if (editingUserId != null && original != null)
+        {
+            var answer = RecordForm.ConfirmSave(this, Selected?.FullName ?? input.Username, original, input,
+                new Dictionary<string, string> { ["EmployeeId"] = "Employee" });
+            if (answer == SaveAnswer.NothingChanged) { lblUserFormMsg.Text = "Nothing changed."; return; }
+            if (answer == SaveAnswer.No) { lblUserFormMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
+        }
 
         // The plan is 1 Employee and 1 Supervisor per department: ask before adding a second.
         var department = cboUserDepartment.SelectedItem as string;
@@ -183,14 +234,15 @@ public partial class UserAccountsPage : UserControl
             if (editingUserId is { } id)
             {
                 var error = await UserAdminService.UpdateAsync(id, input);
-                lblUserFormMsg.Text = error ?? "Saved.";
-                if (error == null) await LoadUsersAsync(id);
+                if (error != null) { lblUserFormMsg.Text = error; return; }
+                editingUserId = null;   // reload the form from the saved account
+                await LoadUsersAsync(id);
+                lblUserFormMsg.Text = "Saved.";
             }
             else
             {
                 var (newId, error) = await UserAdminService.CreateAsync(input, txtNewUserPassword.Text);
-                lblUserFormMsg.Text = error ?? "Account created. Give the username and password to the person.";
-                if (newId != null) await LoadUsersAsync(newId);
+                if (newId is { } created) Added?.Invoke(created); else lblUserFormMsg.Text = error;
             }
         }
         catch (Exception ex) { lblUserFormMsg.Text = "Can't reach the database. " + ex.Message; }

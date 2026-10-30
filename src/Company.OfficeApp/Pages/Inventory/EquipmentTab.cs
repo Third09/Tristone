@@ -11,14 +11,23 @@ namespace Company.OfficeApp.Pages.Inventory;
 /// </summary>
 public partial class EquipmentTab : UserControl
 {
-    int? editingId;
+    int? editingId;             // null = nothing selected (or the "add only" pop-up)
+    EquipmentInput? original;   // the form as loaded, to list what changed before saving
+    bool filling;               // true while the list reloads, so the grid's own selection changes are ignored
+    readonly bool addOnly;      // this copy is the Add Equipment pop-up (RecordForm)
     readonly LatestOnly loads = new();
 
     /// <summary>Raised after changes, so the page can refresh the "due" count on the tab.</summary>
     public event EventHandler? Changed;
 
-    public EquipmentTab()
+    /// <summary>The Add Equipment pop-up reports the new item's id here.</summary>
+    public event Action<int>? Added;
+
+    public EquipmentTab() : this(false) { }
+
+    public EquipmentTab(bool addOnly)
     {
+        this.addOnly = addOnly;
         InitializeComponent();
         dgvEquipment.AutoGenerateColumns = false;
         dgvMaintenanceLog.AutoGenerateColumns = false;
@@ -32,15 +41,23 @@ public partial class EquipmentTab : UserControl
         cboEquipmentType.Items.AddRange(InventoryLists.EquipmentTypes);
         cboEquipmentStatus.Items.AddRange(InventoryLists.EquipmentStatuses);
         cboRentalRateUnit.Items.AddRange(InventoryLists.RateUnits);
+        if (addOnly)
+        {
+            // The maintenance log is kept after the equipment exists, on the Equipment tab.
+            RecordForm.ShowFormOnly(this, lblFormMode, lblLogTitle, dgvMaintenanceLog, btnAddMaintenance, btnDeleteMaintenance);
+            StartNew();
+            return;
+        }
         Responsive.FitGrid(this, dgvEquipment);
         Responsive.OnTypingPause(txtEquipmentSearch, () => LoadAsync());
-        StartNew();
+        ShowNothingSelected();
     }
 
-    async void EquipmentTab_Load(object sender, EventArgs e) => await LoadAsync();
+    async void EquipmentTab_Load(object sender, EventArgs e) { if (!addOnly) await LoadAsync(); }
 
     async Task LoadAsync(int? selectId = null)
     {
+        if (addOnly) return;   // the Add pop-up has no list (its hidden filters still fire on start-up)
         var ticket = loads.Start();
         using var busy = Responsive.Busy(this);
         string? type = cboEquipmentTypeFilter.SelectedIndex > 0 ? (string)cboEquipmentTypeFilter.SelectedItem! : null;
@@ -48,10 +65,19 @@ public partial class EquipmentTab : UserControl
         var rows = await EquipmentService.ListAsync(txtEquipmentSearch.Text, type, status);
         var due = await EquipmentService.MaintenanceDueCountAsync();
         if (!loads.IsLatest(ticket)) return;
+
+        selectId ??= editingId;   // searching keeps the item being edited selected
+        filling = true;
         dgvEquipment.DataSource = rows;
-        lblMaintenanceDue.Text = due == 0 ? "" : $"{due} item{(due == 1 ? " is" : "s are")} due for maintenance";
+        dgvEquipment.ClearSelection();   // never pick the first row by itself (RecordForm)
         if (selectId is { } id)
             Responsive.SelectRow(dgvEquipment, (EquipmentRow row) => row.EquipmentId == id);
+        filling = false;
+        lblMaintenanceDue.Text = due == 0 ? "" : $"{due} item{(due == 1 ? " is" : "s are")} due for maintenance";
+
+        if (Selected is not { } selected) ShowNothingSelected();
+        else if (selected.EquipmentId != editingId && await EquipmentService.GetAsync(selected.EquipmentId) is { } eq) await StartEditAsync(eq);
+        btnDeleteEquipment.Enabled = Selected != null;
     }
 
     EquipmentRow? Selected => dgvEquipment.SelectedRows.Count > 0 ? dgvEquipment.SelectedRows[0].DataBoundItem as EquipmentRow : null;
@@ -68,13 +94,23 @@ public partial class EquipmentTab : UserControl
 
     async void dgvEquipment_SelectionChanged(object sender, EventArgs e)
     {
+        if (filling) return;
         btnDeleteEquipment.Enabled = Selected != null;
-        if (Selected is { } row && await EquipmentService.GetAsync(row.EquipmentId) is { } eq) await StartEditAsync(eq);
+        if (Selected is not { } row) ShowNothingSelected();
+        else if (await EquipmentService.GetAsync(row.EquipmentId) is { } eq) await StartEditAsync(eq);
+    }
+
+    void ShowNothingSelected()
+    {
+        StartNew();
+        lblFormMode.Text = "Click an item in the list to see or change it. To add one, click Add Equipment.";
+        RecordForm.SetEnabled(this, lblFormMode, false);
     }
 
     void StartNew()
     {
         editingId = null;
+        original = null;
         lblFormMode.Text = "New equipment";
         txtEquipmentName.Clear();
         cboEquipmentType.SelectedIndex = 0;
@@ -95,6 +131,7 @@ public partial class EquipmentTab : UserControl
 
     async Task StartEditAsync(Equipment eq)
     {
+        RecordForm.SetEnabled(this, lblFormMode, true);
         editingId = eq.EquipmentId;
         lblFormMode.Text = $"Editing: {eq.Name}";
         txtEquipmentName.Text = eq.Name;
@@ -111,6 +148,7 @@ public partial class EquipmentTab : UserControl
         dtpNextMaintenance.Checked = eq.NextMaintenance != null;
         lblEquipmentMsg.Text = "";
         Ownership_Changed(this, EventArgs.Empty);
+        original = ReadForm();
         await LoadLogAsync();
     }
 
@@ -133,31 +171,49 @@ public partial class EquipmentTab : UserControl
         dtpRentalReturn.Checked ? DateOnly.FromDateTime(dtpRentalReturn.Value) : null, (string?)cboEquipmentStatus.SelectedItem ?? "",
         dtpNextMaintenance.Checked ? DateOnly.FromDateTime(dtpNextMaintenance.Value) : null);
 
-    void btnAddEquipment_Click(object sender, EventArgs e) { dgvEquipment.ClearSelection(); StartNew(); txtEquipmentName.Focus(); }
+    async void btnAddEquipment_Click(object sender, EventArgs e)
+    {
+        var page = new EquipmentTab(addOnly: true);
+        if (RecordForm.AddDialog(this, "Add Equipment", page, a => page.Added += a) is not { } newId) return;
+        editingId = null;
+        await LoadAsync(newId);
+        lblEquipmentMsg.Text = "Equipment added.";
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
 
     async void btnCancelEquipment_Click(object sender, EventArgs e)
     {
-        if (editingId is { } id && await EquipmentService.GetAsync(id) is { } eq) await StartEditAsync(eq); else StartNew();
+        if (addOnly) { FindForm()?.Close(); return; }
+        if (editingId is { } id && await EquipmentService.GetAsync(id) is { } eq) await StartEditAsync(eq);
     }
 
     async void btnSaveEquipment_Click(object sender, EventArgs e)
     {
         var input = ReadForm();
         if (EquipmentService.CheckInput(input) is { } problem) { lblEquipmentMsg.Text = problem; return; }
+        if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
+        if (editingId != null && original != null)
+        {
+            var answer = RecordForm.ConfirmSave(this, original.Name, original, input);
+            if (answer == SaveAnswer.NothingChanged) { lblEquipmentMsg.Text = "Nothing changed."; return; }
+            if (answer == SaveAnswer.No) { lblEquipmentMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
+        }
         btnSaveEquipment.Enabled = false;
         try
         {
             if (editingId is { } id)
             {
                 var error = await EquipmentService.UpdateAsync(id, input);
-                lblEquipmentMsg.Text = error ?? "Saved.";
-                if (error == null) { await LoadAsync(id); Changed?.Invoke(this, EventArgs.Empty); }
+                if (error != null) { lblEquipmentMsg.Text = error; return; }
+                editingId = null;   // reload the form from the saved record
+                await LoadAsync(id);
+                lblEquipmentMsg.Text = "Saved.";
+                Changed?.Invoke(this, EventArgs.Empty);
             }
             else
             {
                 var (newId, error) = await EquipmentService.CreateAsync(input);
-                lblEquipmentMsg.Text = error ?? "Equipment added.";
-                if (newId != null) { await LoadAsync(newId); Changed?.Invoke(this, EventArgs.Empty); }
+                if (newId is { } added) Added?.Invoke(added); else lblEquipmentMsg.Text = error;
             }
         }
         catch (Exception ex) { lblEquipmentMsg.Text = "Can't reach the database. " + ex.Message; }
@@ -170,7 +226,7 @@ public partial class EquipmentTab : UserControl
         if (MessageBox.Show(this, $"Delete \"{eq.Name}\"?", "Delete equipment", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
         var error = await EquipmentService.DeleteAsync(eq.EquipmentId);
         if (error != null) { MessageBox.Show(this, error, "Not deleted", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
-        StartNew();
+        editingId = null;
         await LoadAsync();
         Changed?.Invoke(this, EventArgs.Empty);
     }
@@ -180,6 +236,7 @@ public partial class EquipmentTab : UserControl
         if (editingId is not { } id) return;
         using var f = new MaintenanceEntryForm(id, txtEquipmentName.Text);
         if (f.ShowDialog(this) != DialogResult.OK) return;
+        editingId = null;   // reload the form too: the entry can move the next maintenance date
         await LoadAsync(id);
         Changed?.Invoke(this, EventArgs.Empty);
     }

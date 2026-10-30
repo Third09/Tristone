@@ -10,11 +10,20 @@ namespace Company.OfficeApp.Pages;
 /// </summary>
 public partial class ProjectsPage : UserControl
 {
-    int? editingProjectId;   // null = adding a new project
+    int? editingProjectId;   // null = nothing selected (or the "add only" pop-up)
+    ProjectInput? original;  // the form as loaded, to list what changed before saving
+    bool filling;            // true while the list reloads, so the grid's own selection changes are ignored
+    readonly bool addOnly;   // this copy is the Add Project pop-up (RecordForm)
     readonly LatestOnly loads = new();
 
-    public ProjectsPage()
+    /// <summary>The Add Project pop-up reports the new project's id here.</summary>
+    public event Action<int>? Added;
+
+    public ProjectsPage() : this(false) { }
+
+    public ProjectsPage(bool addOnly)
     {
+        this.addOnly = addOnly;
         InitializeComponent();
         dgvProjects.AutoGenerateColumns = false;
         colContractPrice.DefaultCellStyle.FormatProvider = ProjectService.Peso;
@@ -28,25 +37,39 @@ public partial class ProjectsPage : UserControl
         cboSector.Items.AddRange(ProjectSectors.All);
         cboProjectStatus.Items.AddRange(ProjectStatuses.All);
         Disposed += (_, _) => ppdProjectReport.Dispose();   // a dialog, not owned by the page's controls
+        if (addOnly)
+        {
+            RecordForm.ShowFormOnly(this, lblFormMode, lblDaysSpent, lblRevenue, lblExpensesToDate, lblProfitToDate, btnPrintProjectReport);
+            StartNew();
+            return;
+        }
         Responsive.FitGrid(this, dgvProjects);
         Responsive.OnTypingPause(txtProjectSearch, () => LoadProjectsAsync());
-        StartNew();
+        ShowNothingSelected();
     }
 
-    async void ProjectsPage_Load(object sender, EventArgs e) => await LoadProjectsAsync();
+    async void ProjectsPage_Load(object sender, EventArgs e) { if (!addOnly) await LoadProjectsAsync(); }
 
     async Task LoadProjectsAsync(int? selectProjectId = null)
     {
+        if (addOnly) return;   // the Add pop-up has no list (its hidden filters still fire on start-up)
         var ticket = loads.Start();
         using var busy = Responsive.Busy(this);
         string? status = cboStatusFilter.SelectedIndex > 0 ? (string)cboStatusFilter.SelectedItem! : null;
         string? sector = cboSectorFilter.SelectedIndex > 0 ? (string)cboSectorFilter.SelectedItem! : null;
         var rows = await ProjectService.ListAsync(txtProjectSearch.Text, status, sector);
         if (!loads.IsLatest(ticket)) return;   // a newer search already started
-        dgvProjects.DataSource = rows;
 
+        selectProjectId ??= editingProjectId;   // searching keeps the project being edited selected
+        filling = true;
+        dgvProjects.DataSource = rows;
+        dgvProjects.ClearSelection();           // never pick the first row by itself (RecordForm)
         if (selectProjectId is { } id)
             Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
+        filling = false;
+
+        if (Selected is not { } selected) ShowNothingSelected();
+        else if (selected.ProjectId != editingProjectId && await ProjectService.GetAsync(selected.ProjectId) is { } p) StartEdit(p);
         btnDeleteProject.Enabled = btnPrintProjectReport.Enabled = Selected != null;
     }
 
@@ -57,15 +80,25 @@ public partial class ProjectsPage : UserControl
 
     async void dgvProjects_SelectionChanged(object sender, EventArgs e)
     {
+        if (filling) return;
         btnDeleteProject.Enabled = btnPrintProjectReport.Enabled = Selected != null;
-        if (Selected is { } row && await ProjectService.GetAsync(row.ProjectId) is { } p) StartEdit(p);
+        if (Selected is not { } row) ShowNothingSelected();
+        else if (await ProjectService.GetAsync(row.ProjectId) is { } p) StartEdit(p);
     }
 
     // ----- form -----
 
+    void ShowNothingSelected()
+    {
+        StartNew();
+        lblFormMode.Text = "Click a project in the list to see or change it. To add one, click Add Project.";
+        RecordForm.SetEnabled(this, lblFormMode, false);
+    }
+
     void StartNew()
     {
         editingProjectId = null;
+        original = null;
         lblFormMode.Text = "New project";
         txtProjectName.Clear();
         txtProjectSite.Clear();
@@ -83,6 +116,7 @@ public partial class ProjectsPage : UserControl
 
     void StartEdit(Project p)
     {
+        RecordForm.SetEnabled(this, lblFormMode, true);
         editingProjectId = p.ProjectId;
         lblFormMode.Text = $"Editing: {p.ProjectName}";
         txtProjectName.Text = p.ProjectName;
@@ -96,6 +130,7 @@ public partial class ProjectsPage : UserControl
         cboProjectStatus.SelectedItem = p.Status;
         chkShowOnWebsite.Checked = p.ShowOnWebsite;
         lblProjectFormMsg.Text = "";
+        original = ReadForm();
         _ = ShowSummaryAsync(p);
     }
 
@@ -128,22 +163,33 @@ public partial class ProjectsPage : UserControl
         (string?)cboProjectStatus.SelectedItem ?? "",
         chkShowOnWebsite.Checked);
 
-    void btnAddProject_Click(object sender, EventArgs e)
+    async void btnAddProject_Click(object sender, EventArgs e)
     {
-        dgvProjects.ClearSelection();
-        StartNew();
-        txtProjectName.Focus();
+        var page = new ProjectsPage(addOnly: true);
+        if (RecordForm.AddDialog(this, "Add Project", page, a => page.Added += a) is not { } newId) return;
+        editingProjectId = null;
+        await LoadProjectsAsync(newId);
+        lblProjectFormMsg.Text = "Project added.";
     }
 
     async void btnCancelProject_Click(object sender, EventArgs e)
     {
-        if (editingProjectId is { } id && await ProjectService.GetAsync(id) is { } p) StartEdit(p); else StartNew();
+        if (addOnly) { FindForm()?.Close(); return; }
+        if (editingProjectId is { } id && await ProjectService.GetAsync(id) is { } p) StartEdit(p);
     }
 
     async void btnSaveProject_Click(object sender, EventArgs e)
     {
         var input = ReadForm();
         if (ProjectService.CheckInput(input) is { } problem) { lblProjectFormMsg.Text = problem; return; }
+        if (!addOnly && editingProjectId == null) return;   // the form is locked when nothing is selected
+
+        if (editingProjectId != null && original != null)
+        {
+            var answer = RecordForm.ConfirmSave(this, original.ProjectName, original, input);
+            if (answer == SaveAnswer.NothingChanged) { lblProjectFormMsg.Text = "Nothing changed."; return; }
+            if (answer == SaveAnswer.No) { lblProjectFormMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
+        }
 
         btnSaveProject.Enabled = false;
         try
@@ -151,14 +197,15 @@ public partial class ProjectsPage : UserControl
             if (editingProjectId is { } id)
             {
                 var error = await ProjectService.UpdateAsync(id, input);
-                lblProjectFormMsg.Text = error ?? "Saved.";
-                if (error == null) await LoadProjectsAsync(id);
+                if (error != null) { lblProjectFormMsg.Text = error; return; }
+                if (await ProjectService.GetAsync(id) is { } fresh) StartEdit(fresh);
+                await LoadProjectsAsync(id);
+                lblProjectFormMsg.Text = "Saved.";
             }
             else
             {
                 var (newId, error) = await ProjectService.CreateAsync(input);
-                lblProjectFormMsg.Text = error ?? "Project added.";
-                if (newId != null) await LoadProjectsAsync(newId);
+                if (newId is { } added) Added?.Invoke(added); else lblProjectFormMsg.Text = error;
             }
         }
         catch (Exception ex) { lblProjectFormMsg.Text = "Can't reach the database. " + ex.Message; }
@@ -176,7 +223,7 @@ public partial class ProjectsPage : UserControl
 
         var error = await ProjectService.DeleteAsync(row.ProjectId);
         if (error != null) { MessageBox.Show(this, error, "Not deleted", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
-        StartNew();
+        editingProjectId = null;
         await LoadProjectsAsync();
     }
 

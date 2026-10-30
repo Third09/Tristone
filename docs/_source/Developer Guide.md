@@ -152,7 +152,11 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 
 - Read a grid's selection from `SelectedRows`, not `CurrentRow` (after "Add", the grid still has a current row).
 - **Never let a grid select a row by itself.** After setting `DataSource`, call `ClearSelection()` (with a `filling` flag so `SelectionChanged` ignores the reload), then re-select only the record you mean. Otherwise the form silently edits the first row, and typing a "new" record overwrites it (bug found on Employees, 2026-10-30).
-- **Adding and editing are separate (Employees, the pattern for other pages):** Add opens a pop-up (`EmployeeEntryForm`); the page form only edits the clicked record, is locked when nothing is selected, and Save shows a Yes/No list of the changes first.
+- **Adding and editing are separate on every list page (`UI/RecordForm`):**
+  - Add opens a pop-up that is a second copy of the same page made with `new XPage(addOnly: true)`: `RecordForm.ShowFormOnly` hides the list (everything above the form's title label) and record-only parts, and `RecordForm.AddDialog` shows it until the page raises `Added(id)`. Each form exists once. The add-only copy never loads the list (its hidden filters fire on start-up).
+  - The page form only edits the clicked record; `RecordForm.SetEnabled` locks it when nothing is selected.
+  - Save snapshots `ReadForm()` when the record loads and calls `RecordForm.ConfirmSave(original, input, labels, privateFields)`, which lists the changes in a Yes/No message.
+  - Employees uses its own `EmployeeEntryForm` pop-up (built first, same behaviour).
 - The main window is borderless and maximized to the screen's working area (`FormBorderStyle = None`, `ControlBox = false`, `MaximizedBounds` set in the constructor), so it can't be resized, moved or closed by accident.
 - To clear a dropdown, set `SelectedIndex = -1`, not `Text = ""`. Clearing only the text keeps the old choice selected underneath, and picking it again doesn't register (bug fixed on the Materials form).
 - Control names follow the UI Elements Guide (`btn`, `txt`, `cbo`, `dgv`...).
