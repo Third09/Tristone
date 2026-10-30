@@ -66,7 +66,6 @@ public partial class EmployeesTab : UserControl
         if (Selected is { } row && await EmployeeService.GetAsync(row.EmployeeId) is { } emp) await StartEditAsync(emp);
     }
 
-    // ----- form -----
 
     void StartNew()
     {
