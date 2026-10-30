@@ -137,7 +137,7 @@ const children = [
   ...subcontractors.flatMap(screenBlock),
   new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: true, children: [new TextRun({ text: "Part 5: Receipts", font: FONT })] }),
   ...receipts.flatMap(screenBlock),
-  new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: true, children: [new TextRun({ text: "Part 6: Website Admin", font: FONT })] }),
+  new Paragraph({ heading: HeadingLevel.HEADING_1, pageBreakBefore: true, children: [new TextRun({ text: "Part 6: Website Admin (separate app)", font: FONT })] }),
   ...websiteAdmin.flatMap(screenBlock),
 ];
 

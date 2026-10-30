@@ -84,7 +84,7 @@ const shared = [
     form: "MainForm (Form)",
     opensFrom: "After a successful sign in.",
     whoSees: "Everyone. Sidebar buttons show or hide based on the user's Department and Level.",
-    note: "Every page in this guide (Dashboard, Website Admin, etc.) is a UserControl that loads inside the Main section (pnlContent). The window always fills the screen above the taskbar, with no title bar and no minimize / maximize / close buttons (FormBorderStyle = None, ControlBox = False), so it can't be resized, moved or closed by accident; Sign Out is the way out. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
+    note: "Every office-app page in this guide (Dashboard, Projects, etc.) is a UserControl that loads inside the Main section (pnlContent); Website Admin is a separate app (Part 6). The window always fills the screen above the taskbar, with no title bar and no minimize / maximize / close buttons (FormBorderStyle = None, ControlBox = False), so it can't be resized, moved or closed by accident; Sign Out is the way out. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
     groups: [
       { name: "Sidebar (left side)", rows: [
         ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds all sidebar buttons, top to bottom. Hidden buttons take no space. The open page's button is shown in bold (for now)."],
@@ -95,8 +95,6 @@ const shared = [
         ["Inventory button", "Button", "btnNavInventory", "Opens Inventory & Vendors. Admin, Inventory department."],
         ["Subcontractors button", "Button", "btnNavSubcontractors", "Opens Subcontractors. Admin, Subcontractor department."],
         ["Receipts button", "Button", "btnNavReceipts", "Opens Receipts. Admin, Receipts department."],
-        ["Website Admin button", "Button", "btnNavWebsite", "Opens Website Admin. Admin only."],
-        ["New inquiries badge", "Label", "lblWebsiteBadge", "Small number on the Website Admin button showing new website inquiries. Hidden when 0."],
         ["User Accounts button", "Button", "btnNavUsers", "Opens User Accounts (create logins, unlock, reset passwords). Admin only."],
         ["My Account button", "Button", "btnNavMyAccount", "Opens My Account. Everyone."],
         ["Sign Out button", "Button", "btnSignOut", "Signs out and returns to the Login Window. Everyone."],
@@ -203,11 +201,11 @@ const shared = [
 
 const websiteAdmin = [
   {
-    title: "Website Admin Page (main frame)",
-    form: "WebsiteAdminPage (UserControl)",
-    opensFrom: "Website Admin button in the sidebar.",
-    whoSees: "Admin only",
-    note: "The page has 6 tabs across the top of the Main section. Each tab is described below.",
+    title: "Website Admin App (main window)",
+    form: "Separate app (planned project Company.WebsiteAdmin), its main window",
+    opensFrom: "Its own shortcut, after signing in with a Website Admin account. It is not part of the office app.",
+    whoSees: "People with a Website Admin account (separate from the office app's logins)",
+    note: "A separate desktop app with its own accounts (owner decision 2026-10-30). Its main window has 6 tabs; each tab is described below. The tab layouts below were planned when it was still an office-app page and are refined when the app is built.",
     groups: [
       { name: "Main section", rows: [
         ["Tabs", "TabControl", "tabWebsiteAdmin", "6 tabs: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic."],
@@ -463,7 +461,7 @@ const projects = [
     form: "ProjectsPage (UserControl)",
     opensFrom: "Projects button in the sidebar.",
     whoSees: "Admin only",
-    note: "The one shared project list. Other departments only pick from it in dropdowns. Ticking \"Show on website\" makes the project appear in Website Admin > Website Projects.",
+    note: "The one shared project list. Other departments only pick from it in dropdowns. Ticking \"Show on website\" makes the project appear in the Website Admin app > Website Projects.",
     groups: [
       { name: "Find a project", rows: [
         ["Search box", "TextBox", "txtProjectSearch", "Search by project name, site or client."],
@@ -486,7 +484,7 @@ const projects = [
         ["Start date picker", "DateTimePicker", "dtpStartDate", "Project start date."],
         ["Target end date picker", "DateTimePicker (ShowCheckBox = True)", "dtpTargetEndDate", "Planned completion date. Optional: untick to leave it empty."],
         ["Status dropdown", "ComboBox", "cboProjectStatus", "Pending, Ongoing, Done, Cancelled."],
-        ["Show on website tick box", "CheckBox", "chkShowOnWebsite", "Sends the project to Website Admin for publishing."],
+        ["Show on website tick box", "CheckBox", "chkShowOnWebsite", "Sends the project to the Website Admin app for publishing."],
       ]},
       { name: "Project summary (read only, calculated by the app)", rows: [
         ["Days spent", "Label", "lblDaysSpent", "e.g. \"Day 45\", \"Starts in 10 days\", \"Finished in 120 days\" or \"Cancelled\"."],

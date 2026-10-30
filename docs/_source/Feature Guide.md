@@ -4,7 +4,7 @@ This guide explains **how each feature works and why**: what happens behind each
 
 The **User Manual** is the short, step-by-step version. Use this guide when you want to understand a feature, train someone new, or find out why the app said "no".
 
-> Parts not built yet (Attendance, Payroll, Cash Advances, Website Admin) are listed at the end. This guide grows as they are finished.
+> Parts not built yet (Attendance, Payroll, Cash Advances, the Website Admin app) are listed at the end. This guide grows as they are finished.
 
 # 1. The basics
 
@@ -25,7 +25,7 @@ The left sidebar only shows the pages your login may use, so different people se
 | Page | Admin | Supervisor | Employee |
 |---|---|---|---|
 | Dashboard | Yes (all or one department) | Yes, own department's numbers only | No |
-| Projects, User Accounts, Website Admin | Yes | No | No |
+| Projects, User Accounts | Yes | No | No |
 | Own department's page | Yes, all four | Yes | Yes |
 | My Account | Yes | Yes | Yes |
 
@@ -272,7 +272,7 @@ The Projects page, the project report and the Dashboard all use the same calcula
 
 A project can only be deleted while **nothing** is recorded against it (no material use, receipts, subcontractor jobs or change orders). After that, set it to **Cancelled**: it stays in history and reports, but drops out of active work.
 
-**Show on website** sends the project to Website Admin, where its photos and website details will be added *(coming soon)*.
+**Show on website** sends the project to the Website Admin app, where its photos and website details will be added *(coming soon)*.
 
 # 7. HR & Payroll: Employees
 
@@ -465,7 +465,7 @@ Expense & Receipt Report (per project), Weekly and Monthly Expense Summary. Repo
 - **Attendance:** fingerprint scans uploaded from the USB scanner (4 scans a day: in, break out, break in, out).
 - **Payroll:** pay worked out from validated attendance, late minutes, approved overtime and deductions; payslips printed or saved as PDF.
 - **Cash Advances:** recorded by HR, approved by the HR Supervisor, deducted a fixed amount per payday.
-- **Website Admin:** edit the public website, choose which projects show, and read Contact form messages.
+- **Website Admin app:** a separate program with its own accounts (not part of the office app) to edit the public website, choose which projects show, and read Contact form messages.
 
 # 12. Words used in this guide
 

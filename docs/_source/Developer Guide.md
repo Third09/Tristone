@@ -12,7 +12,7 @@ How the Tri-Stone Construction Services system is put together: the tools, the d
 | 3 | Inventory & Vendors | Built |
 | 4 | Subcontractors | Built |
 | 5 | Receipts | Built |
-| 6 | Website Admin | Not started |
+| 6 | Website Admin (a separate desktop app with its own accounts) | Not started |
 
 # Chapter 1: Setting up a development PC
 
@@ -116,7 +116,7 @@ Who sees what is decided in one class, `Services/Access.cs`:
 | Page | Admin | Supervisor | Employee |
 |---|---|---|---|
 | Dashboard | yes | own department's numbers | no |
-| Projects, Website Admin, User Accounts | yes | no | no |
+| Projects, User Accounts | yes | no | no |
 | HR & Payroll / Inventory / Subcontractors / Receipts | all | own department | own department |
 | My Account | yes | yes | yes |
 
@@ -235,5 +235,5 @@ Each part was tested with a small throwaway console program that runs real check
 # Coming next
 
 - HR & Payroll: Attendance, Payroll, Cash Advances
-- Website Admin, the API and the website Contact form
+- The Website Admin app (separate from the office app), the API and the website Contact form
 - Phase 6: the server and the installers

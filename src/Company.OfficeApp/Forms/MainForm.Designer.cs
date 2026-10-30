@@ -24,8 +24,7 @@ namespace Company.OfficeApp.Forms
             btnNavHr = new Button();
             btnNavInventory = new Button();
             btnNavSubcontractors = new Button();
-            btnNavReceipts = new Button();
-            btnNavWebsite = new Button();
+            btnNavReceipts = new Button();
             btnNavUsers = new Button();
             btnNavMyAccount = new Button();
             btnSignOut = new Button();
@@ -47,8 +46,7 @@ namespace Company.OfficeApp.Forms
             pnlSidebar.Controls.Add(btnNavHr);
             pnlSidebar.Controls.Add(btnNavInventory);
             pnlSidebar.Controls.Add(btnNavSubcontractors);
-            pnlSidebar.Controls.Add(btnNavReceipts);
-            pnlSidebar.Controls.Add(btnNavWebsite);
+            pnlSidebar.Controls.Add(btnNavReceipts);
             pnlSidebar.Controls.Add(btnNavUsers);
             pnlSidebar.Controls.Add(btnNavMyAccount);
             pnlSidebar.Controls.Add(btnSignOut);
@@ -106,14 +104,6 @@ namespace Company.OfficeApp.Forms
             btnNavReceipts.TabIndex = 5;
             btnNavReceipts.Text = "Receipts";
             btnNavReceipts.TextAlign = ContentAlignment.MiddleLeft;
-            //
-            // btnNavWebsite
-            //
-            btnNavWebsite.Name = "btnNavWebsite";
-            btnNavWebsite.Size = new Size(150, 30);
-            btnNavWebsite.TabIndex = 6;
-            btnNavWebsite.Text = "Website Admin";
-            btnNavWebsite.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnNavUsers
             //
@@ -223,8 +213,7 @@ namespace Company.OfficeApp.Forms
         private Button btnNavHr;
         private Button btnNavInventory;
         private Button btnNavSubcontractors;
-        private Button btnNavReceipts;
-        private Button btnNavWebsite;
+        private Button btnNavReceipts;
         private Button btnNavUsers;
         private Button btnNavMyAccount;
         private Button btnSignOut;

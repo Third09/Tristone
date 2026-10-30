@@ -187,7 +187,7 @@ A project's money counts when it is finished, so a period with no finished proje
 1. Click **Add Project**. The **Add Project** window opens.
 2. Fill in the **name**, **site / location**, **client** (optional), **sector**, **contract price**, **start date**, and the **target end date** (tick the box to set one).
 3. Choose the **status**: Pending, Ongoing, Done or Cancelled.
-4. Tick **Show on website** if it should appear on the public website. You add photos and details later in Website Admin.
+4. Tick **Show on website** if it should appear on the public website. You add photos and details later in the Website Admin app.
 5. Click **Save**.
 
 **Change a project:** click it in the list, change it, click **Save**, check the changes in the message and click **Yes**. When you set a project to **Done**, today's date is recorded as its completion date.
@@ -357,4 +357,4 @@ Expenses with no receipt (the tab title shows how many are waiting, e.g. *Needs 
 Choose the report (**Expense & Receipt Report**, **Weekly** or **Monthly Expense Summary**), the project (or All / Company Overhead) and the dates. Then **Preview**, **Print**, **Save as PDF** or **Export Excel**. Reports include approved expenses only.
 
 
-# 10. Website Admin *(coming soon)*
+# 10. Website Admin *(coming soon: a separate app with its own sign-in, not part of the office app)*

@@ -72,7 +72,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 
 **Roles and login (Part 0)**
 - One login for the whole app. Each account has a Level (Admin / Supervisor / Employee) and, except Admins, ONE Department (HR & Payroll, Inventory, Subcontractors, Receipts). Plan: 1 Employee + 1 Supervisor per department, several Admins (a second one asks, it doesn't block).
-- Sidebar by role (`Services/Access.cs`): Admin = everything; Supervisor = Dashboard (own department's numbers) + own department + My Account; Employee = own department + My Account. Projects, Website Admin, User Accounts = Admin only.
+- Sidebar by role (`Services/Access.cs`): Admin = everything; Supervisor = Dashboard (own department's numbers) + own department + My Account; Employee = own department + My Account. Projects, User Accounts = Admin only. (Website Admin is no longer in the office app.)
 - Only Admins create accounts and change passwords. Employees/Supervisors can't change their own password. Forgot Password = request to Admins (badge, "Password requests (N)" for now); Admin sets a new password and gives it in person (no temporary password, no forced change). Admins recover with a security question (set in My Account).
 - Lock after 5 wrong passwords (Admin unlocks). Statuses: Active / Locked / Disabled. "Still there?" popup after 5 minutes idle, auto sign-out after 60 s (`TRISTONE_IDLE_SECONDS` shortens it in Debug).
 - Each login belongs to one Active office employee (never site workers); name and department come from the employee. Administration staff only get Admin logins. Old accounts may stay unlinked.
@@ -91,7 +91,7 @@ Still to build: Attendance (one shared generic USB fingerprint scanner, 4 scans 
 
 **Receipts (Part 5)** Each receipt is Project or Company overhead; Employee uploads, Supervisor approves; no-receipt expenses are flagged "needs review" with a reason and approved by the Receipts Supervisor; change orders: Receipts Employee logs them, budget impact preview, Admin approves, then revenue and end date update; CO-001 numbering; printable form.
 
-**Website Admin (Part 6)** Tab inside the office app (Admin only); everything on the website editable; projects come from the Projects "Show on website" tick + website-only details/photos and per-field visibility; inquiries saved in the DB (New / Contacted / Closed + notes) and a copy emailed to the company Gmail (not set up yet).
+**Website Admin (Part 6)** **A separate desktop app** (owner decision 2026-10-30), not a page of the office app: its own WinForms project (planned `src/Company.WebsiteAdmin`) in the same solution, same PostgreSQL database, installed only where the website is managed. **Its own accounts**, separate from the office app's `users` (own table, same password/lock rules; first account added by hand like the first Admin). The office app's Website Admin sidebar button and `AppPage.WebsiteAdmin` were removed. Everything on the website editable; projects come from the Projects "Show on website" tick + website-only details/photos and per-field visibility; inquiries saved in the DB (New / Contacted / Closed + notes) and a copy emailed to the company Gmail (not set up yet).
 
 ## Status (as of 2026-10-27)
 
@@ -100,4 +100,4 @@ DB scripts applied: 001 login/security, 002 projects, 003 employees, 004 one log
 
 2026-10-27: UI Elements Guide synced to Parts 3-5 + Dashboard; Developer Guide shortened (187 -> 9 pages).
 
-Next: Attendance tab waits for the scanner's sample export file; then payroll/cash advances, Website Admin, then the API + website Contact form, then Phase 6 installers.
+Next: Attendance tab waits for the scanner's sample export file; then payroll/cash advances, the Website Admin app (separate), then the API + website Contact form, then Phase 6 installers.

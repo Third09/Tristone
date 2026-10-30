@@ -10,8 +10,7 @@ public enum AppPage
     HrPayroll,
     Inventory,
     Subcontractors,
-    Receipts,
-    WebsiteAdmin,
+    Receipts,
     UserAccounts,
     MyAccount,
 }
@@ -35,7 +34,7 @@ public static class Access
             AppPage.Subcontractors => user.Department == Departments.Subcontractors,
             AppPage.Receipts => user.Department == Departments.Receipts,
             AppPage.MyAccount => true,
-            _ => false,   // Projects, Website Admin, User Accounts: Admin only
+            _ => false,   // Projects, User Accounts: Admin only
         };
     }
 
@@ -70,8 +69,7 @@ public static class Access
 
     public static string Title(AppPage page) => page switch
     {
-        AppPage.HrPayroll => "HR & Payroll",
-        AppPage.WebsiteAdmin => "Website Admin",
+        AppPage.HrPayroll => "HR & Payroll",
         AppPage.UserAccounts => "User Accounts",
         AppPage.MyAccount => "My Account",
         _ => page.ToString(),

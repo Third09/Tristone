@@ -36,8 +36,7 @@ public partial class MainForm : Form
             [AppPage.HrPayroll] = btnNavHr,
             [AppPage.Inventory] = btnNavInventory,
             [AppPage.Subcontractors] = btnNavSubcontractors,
-            [AppPage.Receipts] = btnNavReceipts,
-            [AppPage.WebsiteAdmin] = btnNavWebsite,
+            [AppPage.Receipts] = btnNavReceipts,
             [AppPage.UserAccounts] = btnNavUsers,
             [AppPage.MyAccount] = btnNavMyAccount,
         };
