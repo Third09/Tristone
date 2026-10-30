@@ -136,7 +136,7 @@ public static partial class EmployeeService
 
         // A Supervisor/Employee login lives in its employee's department, so that department must stay a login department.
         var logins = await db.Users.Where(u => u.EmployeeId == employeeId).ToListAsync();
-        if (logins.FirstOrDefault(u => !u.IsAdmin) is { } login && !UserAdminService.DepartmentList.Contains(input.Department))
+        if (logins.FirstOrDefault(u => !UserLevels.HasNoDepartment(u.Level)) is { } login && !UserAdminService.DepartmentList.Contains(input.Department))
             return $"{e.FullName} has a {login.Level} login in {login.Department}. Change or turn off that login in User Accounts before moving them to {input.Department}.";
 
         var oldRate = await RateOn(db, employeeId, input.RateFrom);

@@ -31,7 +31,7 @@ public record EmployeeOption(int? EmployeeId, string FullName, string Department
 public static partial class UserAdminService
 {
     public static readonly string[] DepartmentList = [Departments.HrPayroll, Departments.Inventory, Departments.Subcontractors, Departments.Receipts];
-    public static readonly string[] LevelList = [UserLevels.Admin, UserLevels.Supervisor, UserLevels.Employee];
+    public static readonly string[] LevelList = [UserLevels.Admin, UserLevels.Supervisor, UserLevels.Employee, UserLevels.WebsiteAdmin];
 
     public static async Task<List<UserRow>> ListAsync(string search, string? status)
     {
@@ -74,9 +74,9 @@ public static partial class UserAdminService
         return null;
     }
 
-    /// <summary>The login's department: none for Admins, otherwise the employee's (must be a login department).</summary>
+    /// <summary>The login's department: none for Admins and Website Admins, otherwise the employee's (must be a login department).</summary>
     public static string? DepartmentFor(string level, string employeeDepartment) =>
-        level == UserLevels.Admin ? null : employeeDepartment;
+        UserLevels.HasNoDepartment(level) ? null : employeeDepartment;
 
     /// <summary>
     /// Works out the login's full name and department from the chosen employee and checks the employee rules.
@@ -88,9 +88,9 @@ public static partial class UserAdminService
         {
             // Only old accounts made before employees existed may stay unlinked.
             if (existing == null || existing.EmployeeId != null) return ("", null, "Choose the employee this login is for.");
-            if (input.Level != UserLevels.Admin && existing.Department == null)
+            if (!UserLevels.HasNoDepartment(input.Level) && existing.Department == null)
                 return ("", null, "Link this account to an employee to give it a department.");
-            return (existing.FullName, input.Level == UserLevels.Admin ? null : existing.Department, null);
+            return (existing.FullName, UserLevels.HasNoDepartment(input.Level) ? null : existing.Department, null);
         }
 
         var e = await db.Employees.FirstOrDefaultAsync(x => x.EmployeeId == employeeId);
@@ -99,8 +99,8 @@ public static partial class UserAdminService
         if (e.Status != EmployeeStatuses.Active) return ("", null, $"{e.FullName} is Inactive.");
         if (await db.Users.AnyAsync(u => u.EmployeeId == employeeId && u.UserId != (existing == null ? 0 : existing.UserId)))
             return ("", null, $"{e.FullName} already has a login.");
-        if (input.Level != UserLevels.Admin && !DepartmentList.Contains(e.Department))
-            return ("", null, $"{e.FullName} works in {e.Department}, which has no Supervisor or Employee logins. Choose level Admin, or change their department in HR & Payroll first.");
+        if (!UserLevels.HasNoDepartment(input.Level) && !DepartmentList.Contains(e.Department))
+            return ("", null, $"{e.FullName} works in {e.Department}, which has no Supervisor or Employee logins. Choose level Admin or Website Admin, or change their department in HR & Payroll first.");
 
         return (e.FullName, DepartmentFor(input.Level, e.Department), null);
     }

@@ -29,6 +29,12 @@ public class User
     [Column("updated_at")] public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
     [NotMapped] public bool IsAdmin => Level == UserLevels.Admin;
+
+    /// <summary>A Website Admin login opens the Website Admin app, not the office app (script 011).</summary>
+    [NotMapped] public bool IsWebsiteAdmin => Level == UserLevels.WebsiteAdmin;
+
+    /// <summary>May open the Website Admin app: Website Admins and office Admins.</summary>
+    [NotMapped] public bool CanOpenWebsiteAdmin => IsWebsiteAdmin || IsAdmin;
 }
 
 public static class UserLevels
@@ -36,6 +42,10 @@ public static class UserLevels
     public const string Admin = "Admin";
     public const string Supervisor = "Supervisor";
     public const string Employee = "Employee";
+    public const string WebsiteAdmin = "Website Admin";
+
+    /// <summary>Admins and Website Admins have no department (script 011).</summary>
+    public static bool HasNoDepartment(string level) => level is Admin or WebsiteAdmin;
 }
 
 public static class UserStatuses

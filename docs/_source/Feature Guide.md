@@ -4,7 +4,7 @@ This guide explains **how each feature works and why**: what happens behind each
 
 The **User Manual** is the short, step-by-step version. Use this guide when you want to understand a feature, train someone new, or find out why the app said "no".
 
-> Parts not built yet (Attendance, Payroll, Cash Advances, the Website Admin app) are listed at the end. This guide grows as they are finished.
+> Parts not built yet (Attendance, Payroll, Cash Advances, most Website Admin pages) are listed at the end. This guide grows as they are finished.
 
 # 1. The basics
 
@@ -17,8 +17,11 @@ Every login has one **Level**. Supervisors and Employees also have one **Departm
 | **Admin** | Runs the whole system. Sees every page and every department. Creates logins, sets passwords, approves change orders. |
 | **Supervisor** | Leads one department. Does everything an Employee does, plus **approves** the department's requests. Sees the Dashboard for their own department. |
 | **Employee** | Does the day-to-day work in one department: adds records and sends requests for approval. |
+| **Website Admin** | Manages the public website in the Website Admin screens. No department, no office pages. |
 
 Departments with their own page: **HR & Payroll**, **Inventory**, **Subcontractors**, **Receipts**.
+
+**One Sign In for everything.** Everyone opens **Tri-Stone** and signs in there. A Website Admin login opens the Website Admin screens; an Admin is asked which to open (office or Website Admin); everyone else gets the office app. There is one list of logins (User Accounts), so the same password rules, lock-out and sign-in history apply to all.
 
 The left sidebar only shows the pages your login may use, so different people see different sidebars. That's normal.
 
@@ -465,7 +468,7 @@ Expense & Receipt Report (per project), Weekly and Monthly Expense Summary. Repo
 - **Attendance:** fingerprint scans uploaded from the USB scanner (4 scans a day: in, break out, break in, out).
 - **Payroll:** pay worked out from validated attendance, late minutes, approved overtime and deductions; payslips printed or saved as PDF.
 - **Cash Advances:** recorded by HR, approved by the HR Supervisor, deducted a fixed amount per payday.
-- **Website Admin app:** a separate program with its own accounts (not part of the office app) to edit the public website, choose which projects show, and read Contact form messages. **Built so far:** its sign-in (same password and lock-out rules as the office app), its main window (a sidebar like the office app), and the **Accounts** page: only **main** accounts can create, change, unlock, turn off or set passwords for the other Website Admin accounts (you can't turn off yourself or remove your own main status). Also built: the **Inquiries** page: every Contact form message with New / Contacted / Closed and internal notes; any Website Admin account can follow them up; nothing is ever deleted.
+- **Website Admin:** screens separate from the office pages, to edit the public website, choose which projects show, and read Contact form messages. **Built so far:** its main window (a sidebar like the office app, same idle sign-out) and the **Inquiries** page: every Contact form message with New / Contacted / Closed and internal notes; Website Admins and Admins can follow them up; nothing is ever deleted. Website Admin logins are a Level in User Accounts (see 1.1); Tri-Stone opens these screens for them.
 
 # 12. Words used in this guide
 

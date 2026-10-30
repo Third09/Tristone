@@ -4,13 +4,14 @@ How to use the Tri-Stone office app, screen by screen. This manual grows as each
 
 # 1. Who can do what
 
-Every account has one **Level** and (except Admins) one **Department**. The left sidebar only shows the pages your account is allowed to use.
+Every account has one **Level** and (except Admins and Website Admins) one **Department**. The left sidebar only shows the pages your account is allowed to use.
 
 | Level | What they can do |
 |---|---|
 | **Admin** | Everything, in every department. Creates accounts and sets passwords. Approves change orders. |
 | **Supervisor** | Full access to their own department, plus approvals (material usage, cash advances, vouchers, receipts). Sees their department's numbers on the Dashboard. |
 | **Employee** | Day-to-day work in their own department: adds and edits records, submits requests for approval. |
+| **Website Admin** | Manages the public website in the Website Admin screens (Tri-Stone opens them at sign-in). No office pages. |
 
 Departments: **HR & Payroll**, **Inventory**, **Subcontractors**, **Receipts**.
 
@@ -36,9 +37,10 @@ The settings are saved on that computer only. To change them later, click **Data
 
 ## Signing in
 
-1. Type your **username** (capital letters don't matter) and **password**.
-2. Tick **Show password** if you want to check what you typed.
-3. Click **Sign In** (or press Enter).
+1. Open **Tri-Stone** (`Apps\Tri-Stone\TriStone.exe`, or its desktop shortcut). It's the one program for everyone.
+2. Type your **username** (capital letters don't matter) and **password**.
+3. Tick **Show password** if you want to check what you typed.
+4. Click **Sign In** (or press Enter). The office app opens. (Website Admin logins open the Website Admin screens; Admins are asked which one, see chapter 10.)
 
 If it doesn't work, the message under the password box tells you why:
 
@@ -119,7 +121,7 @@ First add the person in **HR & Payroll > Employees**. Only office staff get logi
 2. Pick the **Employee** from the list. Only office staff without a login are listed.
 3. A **username** is suggested (e.g. Juan Dela Cruz -> jdelacruz). Change it if you like: letters, numbers, dots, dashes or underscores, no spaces.
 4. Type a first password, or click **Generate**.
-5. Choose the **Level**. The **Department** fills in by itself from the employee (Admins have none).
+5. Choose the **Level** (Admin, Supervisor, Employee or Website Admin). The **Department** fills in by itself from the employee (Admins and Website Admins have none).
 6. Click **Save**. The window closes and the new account is selected. Give the username and password to the person in person.
 
 The login's name and department follow the employee record. If HR renames someone or moves them to another department, their login updates too.
@@ -357,30 +359,20 @@ Expenses with no receipt (the tab title shows how many are waiting, e.g. *Needs 
 Choose the report (**Expense & Receipt Report**, **Weekly** or **Monthly Expense Summary**), the project (or All / Company Overhead) and the dates. Then **Preview**, **Print**, **Save as PDF** or **Export Excel**. Reports include approved expenses only.
 
 
-# 10. Website Admin (separate app)
+# 10. Website Admin
 
-The public website is managed in a **separate program**, Tri-Stone Website Admin, not in the office app. It has **its own accounts**: your office login doesn't work there.
+The public website is managed in the **Website Admin** screens, separate from the office pages. Everyone signs in the same way, in **Tri-Stone**:
 
-**Signing in**
+1. Open **Tri-Stone** (`Apps\Tri-Stone\TriStone.exe`, or its desktop shortcut).
+2. Type your username and password and click **Sign In**.
+3. What opens depends on your login:
+   - **Website Admin** login: the Website Admin screens.
+   - **Admin**: a small window asks **Office App** or **Website Admin** (or **Sign Out**).
+   - Everyone else: the office app.
 
-1. Open **Tri-Stone Website Admin**.
-2. Type your Website Admin **username** and **password**, then click **Sign In**.
-3. The rules are the same as the office app: capital letters in the username don't matter, and 5 wrong passwords lock the account.
+**Website Admin logins** are made by an Admin in **User Accounts**, like any other login: pick the employee and choose the Level **Website Admin** (no department). Same rules as all logins: 5 wrong passwords lock it, and Forgot Password goes to the Admins.
 
-Forgot your password? Ask a main Website Admin account to set a new one.
-
-The main window looks like the office app: click a button in the **left sidebar** to open a page (the open one is in **bold**). The top shows the page name and who is signed in. Click **Sign Out** at the bottom of the sidebar to leave. Pages not finished yet say "coming next".
-
-**Accounts (main accounts only)**
-
-Only a **main** Website Admin account sees the **Accounts** button and can manage the other accounts.
-
-1. **Create Account** opens a window: type the full name and a username, click **Generate** (or type a first password), tick **Main account** only if this person should manage accounts too, and click **Save**. Give the username and password to the person in person.
-2. To change someone: click them in the list, change the name, username or main tick, click **Save**, check the changes in the message and click **Yes**.
-3. **Set New Password** gives a new password (click **Generate**, then **Copy**, then **Save**). It also unlocks a locked account.
-4. **Unlock** is for accounts locked after 5 wrong passwords. **Disable** turns an account off; **Enable** turns it back on.
-
-You can't turn off your own account or remove your own main status, and the last active main account is protected.
+The Website Admin window looks like the office app: click a button in the **left sidebar** to open a page (the open one is in **bold**). The top shows the page name and who is signed in. Click **Sign Out** at the bottom of the sidebar to go back to Sign In. Pages not finished yet say "coming next". After 5 minutes without activity, the same "Still there?" message appears.
 
 **Inquiries**
 

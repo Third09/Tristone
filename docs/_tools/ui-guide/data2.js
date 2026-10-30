@@ -270,7 +270,7 @@ const hrPayroll = [
         ["Username box", "TextBox", "txtNewUsername", "Login name: 3 to 50 letters, numbers, dots, dashes or underscores; no spaces. Suggested when an employee is picked, e.g. Juan Dela Cruz -> jdelacruz."],
         ["First password box", "TextBox", "txtNewUserPassword", "First password (new accounts only; greyed out when editing)."],
         ["Generate button", "Button", "btnGenerateUserPassword", "Fills in a random password."],
-        ["Level dropdown", "ComboBox (DropDownList)", "cboUserLevel", "Admin, Supervisor, Employee. Choosing Admin clears the department."],
+        ["Level dropdown", "ComboBox (DropDownList)", "cboUserLevel", "Admin, Supervisor, Employee, Website Admin. Admin and Website Admin have no department. A Website Admin login opens the Website Admin app (through Tri-Stone)."],
         ["Department (shown only)", "ComboBox (DropDownList, Enabled = False)", "cboUserDepartment", "Filled in from the employee; empty for Admins. Can't be picked."],
         ["Message", "Label", "lblUserFormMsg", "\"Account created...\", \"Saved.\" or what went wrong."],
         ["Save button", "Button", "btnSaveUser", "Lists the changes in a Yes/No message first (when editing). Also asks first if the department already has an active person at that level."],

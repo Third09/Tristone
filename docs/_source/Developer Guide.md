@@ -47,9 +47,9 @@ The website must never touch the database itself, which is why the API is a sepa
 2. Create `%APPDATA%\postgresql\pgpass.conf` with one line, `localhost:5432:*:postgres:YourPassword` (Notepad, **Save as type: All Files**). This lets the scripts log in without asking.
 3. Double-click `database\setup-database.cmd`. It creates `construction_db` and runs every script.
 4. Add the first Admin (section 2.3).
-5. Open `TriStone.slnx`, set **Company.OfficeApp** as the startup project and press **F5**. The first run asks for the database settings.
+5. Open `TriStone.slnx`, set **Company.Launcher** (Tri-Stone) as the startup project and press **F5**. The first run asks for the database settings.
 
-Every build puts the finished programs in one easy folder at the top of the project: `Apps\Office App\Company.OfficeApp.exe` and `Apps\Website Admin\Company.WebsiteAdmin.exe`. Double-click them there (or make desktop shortcuts to them). The folder is rebuilt every time and isn't saved in Git.
+Every build puts the finished programs in one easy folder at the top of the project. The one to open is **`Apps\Tri-Stone\TriStone.exe`**: it signs everyone in and opens the office app or the Website Admin app (chapter 10). Make a desktop shortcut to it. (`Apps\Office App\Company.OfficeApp.exe` still runs the office app alone.) The folder is rebuilt every time and isn't saved in Git.
 
 **Forgotten PostgreSQL password:** in `C:\Program Files\PostgreSQL\18\data\pg_hba.conf` change `scram-sha-256` to `trust`, restart the `postgresql-x64-18` service, run `ALTER USER postgres WITH PASSWORD '...';` in pgAdmin, then change it back and restart again.
 
@@ -70,9 +70,10 @@ The database is never built by clicking in pgAdmin. Every change is a numbered s
 | 005 | `app_settings`, materials, usage, vendors, quotes, purchases, deliveries, equipment, maintenance |
 | 006 | subcontractors, trades, jobs, stages, documents, progress, vouchers, payouts |
 | 007 | `receipts`, `change_orders` |
-| 008 | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts) |
-| 009 | `website_accounts.is_main`: main accounts manage the other Website Admin accounts |
+| 008 | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts; merged into `users` by 011) |
+| 009 | `website_accounts.is_main`: main accounts manage the other Website Admin accounts (removed by 011) |
 | 010 | `inquiries`: website Contact form messages and their follow-up |
+| 011 | One account list: the Website Admin level in `users`; website accounts from 008/009 moved in, their tables removed |
 
 ## 2.2 Conventions
 
@@ -220,40 +221,36 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 
 # Chapter 10: The Website Admin app (Part 6)
 
-## 10.1 A separate app
+## 10.1 Separate screens, one Sign In
 
-The public website is managed in its **own desktop app**, `src/Company.WebsiteAdmin`, not in the office app (owner decision, 30 Oct 2026). It is a second WinForms project in the same solution and uses the **same database**.
+The public website is managed in **separate screens**, not in the office app (owner decisions, 30 Oct 2026), but with **one account list** and **one Sign In** for everyone.
 
-- It **shares files with the office app** instead of copying them: `DbSettings`, `Db`, the Database Settings window, `Responsive` and `RecordForm` are linked in its `.csproj`. A change in one place updates both apps. Both read the same per-PC settings file, so a PC set up for one works for the other.
-- It has **its own accounts** (`website_accounts`, script 008), separate from the office app's `users`. An office login can't sign in here, and the other way round.
-- Same rules as the office app: usernames ignore capital letters, passwords are bcrypt hashes, 5 wrong passwords lock the account, and every attempt goes to `website_login_logs` with the PC name.
-- The main window is full screen with no title bar. It looks like the office app: a sidebar on the left (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, Accounts for main accounts, Sign Out), the page title and who is signed in at the top, and the chosen page in the middle. Pages are filled in one by one.
+- **Tri-Stone** (`src/Company.Launcher`, built to `Apps\Tri-Stone\TriStone.exe`) is the one program people open. It shows the office app's Sign In window, then opens the right app for the login:
 
-To run it: in Visual Studio, right-click **Company.WebsiteAdmin > Set as Startup Project**, then press **F5**. Or double-click `Apps\Website Admin\Company.WebsiteAdmin.exe` after a build.
+  | Login level | Opens |
+  |---|---|
+  | Website Admin | the Website Admin app |
+  | Admin | asks: Office App, Website Admin, or Sign Out (`AppChoiceForm`) |
+  | Supervisor, Employee | the office app |
 
-## 10.2 The first Website Admin account
+  After Sign Out (or the idle sign-out) it returns to Sign In.
+- `src/Company.WebsiteAdmin` is a **library** with the Website Admin screens. It references the office app, so it uses the same sign-in, session, database settings and screen helpers.
+- The main window is full screen with no title bar and looks like the office app: a sidebar on the left (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, Sign Out), the page title and who is signed in at the top, and the chosen page in the middle. Same "Still there?" idle check. Pages are filled in one by one.
+- The office app on its own (`Apps\Office App\Company.OfficeApp.exe`) refuses a Website Admin login and points to Tri-Stone.
 
-Like the first office Admin, it is added once in pgAdmin (**Tools > Query Tool** on `construction_db`):
+To run it from Visual Studio: right-click **Company.Launcher > Set as Startup Project**, then press **F5**.
 
-```sql
-INSERT INTO website_accounts (username, password_hash, full_name, is_main)
-VALUES ('YourUsername', crypt('YourPassword', gen_salt('bf', 11)), 'Your Full Name', TRUE);
-```
+## 10.2 Website Admin logins
 
-`TRUE` makes it a **main** account. (If an account was added before script 009, the oldest one became main automatically.)
+**Website Admin** is a **Level** in User Accounts, next to Admin, Supervisor and Employee (script 011). Office Admins create and manage these logins like any other: linked to an office employee (any office department, including Administration), and, like Admins, without a department. All the usual rules apply: password rules, lock after 5 wrong passwords, Forgot Password goes to the Admins, every sign-in in `login_logs`.
 
-## 10.3 Website Admin accounts
+`UserLevels.HasNoDepartment(level)` is true for Admin and Website Admin; `User.CanOpenWebsiteAdmin` is true for Website Admins and Admins, and every Website Admin service re-checks it.
 
-Only **main** accounts manage the others (owner decision, 30 Oct 2026), on the **Accounts** page, whose sidebar button only main accounts see. `Services/WebsiteAccounts` re-checks on every action that the signed-in account is an active main account.
+**History:** at first the Website Admin app had its own accounts (scripts 008 and 009, with "main" accounts managing the rest). Script 011 moved those accounts into `users` as Website Admins, keeping their passwords, sign-in history and inquiry follow-ups, and then removed the separate tables.
 
-- Create Account (pop-up, same pattern as the office app), change name / username / main, Set New Password (also unlocks), Unlock, Disable, Enable.
-- You can't turn off your own account or remove your own main status; the last active main account is protected.
-- Password and username rules live in one place, `Company.Shared/AccountRules`, used by both apps.
-- Password changes and unlocks are written to `website_login_logs` with who did it.
+## 10.3 Inquiries
 
-## 10.4 Inquiries
-
-Website Contact form messages land in `inquiries` (script 010); the API will add them later. Any signed-in Website Admin account can follow them up: status New / Contacted / Closed and internal notes (never shown on the website). Inquiries are never deleted, so nothing a client sent is lost. The database refuses an inquiry with neither an email nor a phone number. `Services/WebsiteInquiries` lists, counts and saves; the sidebar button shows "Inquiries (N new)".
+Website Contact form messages land in `inquiries` (script 010); the API will add them later. Website Admins and Admins can follow them up: status New / Contacted / Closed and internal notes (never shown on the website). Inquiries are never deleted, so nothing a client sent is lost. The database refuses an inquiry with neither an email nor a phone number. `Services/WebsiteInquiries` lists, counts and saves; the sidebar button shows "Inquiries (N new)".
 
 # Chapter 11: Testing
 
@@ -274,9 +271,12 @@ Each part was tested with a small throwaway console program that runs real check
 | Row re-select after saving (Projects, Materials, Employees) | 11 |
 | Add pop-ups, no auto-select, confirm before saving (Employees + 8 list pages) | 86 |
 | Website Admin app: sign-in, lock-out, main window | 16 |
-| Website Admin accounts (main only, pop-up, confirm, lock/unlock, password) | 22 |
+| Website Admin accounts (main only; replaced by script 011) | 22 |
 | Website Admin Inquiries | 18 |
 | Office tabs opened through the sidebar: nothing auto-selected | 10 |
+| Website Admin app sidebar | 9 |
+| One Sign In (Tri-Stone): routing by level, Admin choice, office app refusing Website Admin logins | 13 |
+| Website Admin level in User Accounts; who may follow up inquiries | 10 |
 
 **Not tested yet:** the "last active Admin" protection. It needs a separate test database; never disable the real Admin account to test it.
 

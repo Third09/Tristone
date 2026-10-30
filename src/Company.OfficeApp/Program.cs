@@ -25,6 +25,16 @@ namespace Company.OfficeApp
                     if (login.ShowDialog() != DialogResult.OK) return;   // Exit on the Login window
                 }
 
+                // Website Admin logins belong to the Website Admin app; the Tri-Stone launcher opens it for them.
+                if (Services.Session.CurrentUser is { IsWebsiteAdmin: true })
+                {
+                    Services.AuthService.SignOutAsync().GetAwaiter().GetResult();
+                    MessageBox.Show("This login is for the Website Admin app. Please open Tri-Stone (Apps\\Tri-Stone\\TriStone.exe) and sign in there.",
+                        "Website Admin login", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    notice = null;
+                    continue;
+                }
+
                 using var main = new MainForm();
                 Application.Run(main);
                 if (!main.SignedOut) return;                             // window closed with X

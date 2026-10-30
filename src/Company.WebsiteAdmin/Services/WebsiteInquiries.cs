@@ -1,4 +1,5 @@
 using Company.OfficeApp.Data;
+using Company.OfficeApp.Services;
 using Company.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,19 +13,20 @@ public record InquiryRow(int InquiryId, DateTime ReceivedAt, string FullName, st
 public record InquiryCounts(int New, int Contacted, int Closed);
 
 /// <summary>
-/// Website Admin > Inquiries: messages from the website Contact form. Any signed-in Website Admin account can follow
+/// Website Admin > Inquiries: messages from the website Contact form. Website Admins and office Admins can follow
 /// them up (status + internal notes). Inquiries are never deleted here, so nothing a client sent is lost.
 /// </summary>
 public static class WebsiteInquiries
 {
     public const int MaxNotesLength = 2000;
 
-    static string? RequireSignedIn() => WebsiteAuth.Current == null ? "Sign in to Website Admin first." : null;
+    /// <summary>Website Admins and office Admins may use the Website Admin app (re-checked here, not just on screen).</summary>
+    static string? RequireAccess() => Session.CurrentUser is { CanOpenWebsiteAdmin: true } ? null : "Only Website Admins and Admins can do this.";
 
     /// <summary>Newest first. <paramref name="status"/> null = all; dates are inclusive; search looks in name, email, phone and location.</summary>
     public static async Task<List<InquiryRow>> ListAsync(string? status, string search, DateOnly? from, DateOnly? to)
     {
-        if (RequireSignedIn() != null) return [];
+        if (RequireAccess() != null) return [];
         using var db = Db.Open();
         var q = db.Inquiries.AsNoTracking();
         if (status != null) q = q.Where(i => i.Status == status);
@@ -58,7 +60,7 @@ public static class WebsiteInquiries
     /// <summary>Saves the follow-up: status and internal notes. Null when saved, otherwise the reason.</summary>
     public static async Task<string?> UpdateAsync(int inquiryId, string status, string? notes)
     {
-        if (RequireSignedIn() is { } denied) return denied;
+        if (RequireAccess() is { } denied) return denied;
         if (!InquiryStatuses.All.Contains(status)) return "Choose a status.";
         notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
         if (notes?.Length > MaxNotesLength) return $"The notes are too long ({MaxNotesLength} characters at most).";
@@ -67,7 +69,7 @@ public static class WebsiteInquiries
         if (i == null) return "This inquiry no longer exists.";
         i.Status = status;
         i.Notes = notes;
-        i.UpdatedBy = WebsiteAuth.Current!.AccountId;
+        i.UpdatedBy = Session.CurrentUser!.UserId;
         i.UpdatedAt = DateTime.Now;
         await db.SaveChangesAsync();
         return null;

@@ -2,7 +2,7 @@
 
 A guide to understanding the Tri-Stone database: what a database is, how this one is built, what every table holds, how the tables connect, and how the Data Flow Diagram (DFD) relates to it. Read it from the start if you're new to databases; each chapter builds on the one before.
 
-> Everything here matches the real database (`construction_db`, PostgreSQL 18) as of scripts 001-010: **31 tables**.
+> Everything here matches the real database (`construction_db`, PostgreSQL 18) as of scripts 001-011: **29 tables**.
 
 # 1. What a database is
 
@@ -66,7 +66,7 @@ A **check** is a rule the database enforces on every save, even if the app had a
 | `projects` | `status` must be Pending, Ongoing, Done or Cancelled |
 | `projects` | `target_end_date` can't be before `start_date` |
 | `materials` | `stock_qty` can't go below 0 |
-| `users` | Admins have **no** department; everyone else **must** have one |
+| `users` | Admins and Website Admins have **no** department; everyone else **must** have one |
 | `employees` | Department **Site** must have pay schedule **Site**; every other department must be **Office** |
 | `receipts` | A **Project** receipt must have a project; an **Overhead** receipt must not |
 
@@ -107,9 +107,10 @@ The database is never built by clicking around in pgAdmin. Every change is a **n
 | `005_inventory.sql` | `app_settings`, `materials`, `material_usages`, `vendors`, `vendor_documents`, `quotes`, `purchases`, `deliveries`, `equipment`, `maintenance_logs` |
 | `006_subcontractors.sql` | `subcontractors`, `subcontractor_trades`, `sub_jobs`, `sub_job_stages`, `sub_job_documents`, `sub_progress`, `sub_vouchers`, `sub_payouts` |
 | `007_receipts.sql` | `receipts`, `change_orders` |
-| `008_website_accounts.sql` | `website_accounts`, `website_login_logs` (the separate Website Admin app's own accounts) |
-| `009_website_main_account.sql` | the `is_main` column on `website_accounts` (main accounts manage the others) |
+| `008_website_accounts.sql` | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts at first; removed by 011) |
+| `009_website_main_account.sql` | the `is_main` column on `website_accounts` (main accounts manage the others), removed by 011 |
 | `010_inquiries.sql` | `inquiries` (website Contact form messages) |
+| `011_merge_website_accounts.sql` | one account list: the Website Admin level in `users`; moves the website accounts in and drops their tables |
 
 **`setup-database.cmd`** (double-click) creates the database if it's missing, then runs every script that hasn't run yet. The table **`schema_versions`** remembers which scripts already ran, so each runs only **once**.
 
@@ -124,7 +125,7 @@ The database is never built by clicking around in pgAdmin. Every change is a **n
 +-------------------------------+          +------------------+
 | Tri-Stone app (WinForms)      |          | PostgreSQL       |
 |  Pages (screens)              |          |  construction_db |
-|    -> Services (the rules)    |  ---->   |   31 tables      |
+|    -> Services (the rules)    |  ---->   |   29 tables      |
 |      -> Entity Framework Core | network  |                  |
 |        (C# objects <-> rows)  |  <----   |                  |
 +-------------------------------+          +------------------+
@@ -151,7 +152,7 @@ Files are **not** stored inside the database. They're copied into a storage fold
 
 # 4. The whole map
 
-31 tables in 8 groups:
+29 tables in 8 groups:
 
 | Group | Tables |
 |---|---|
@@ -161,7 +162,7 @@ Files are **not** stored inside the database. They're copied into a storage fold
 | Inventory | `materials`, `material_usages`, `vendors`, `vendor_documents`, `quotes`, `purchases`, `deliveries`, `equipment`, `maintenance_logs` |
 | Subcontractors | `subcontractors`, `subcontractor_trades`, `sub_jobs`, `sub_job_stages`, `sub_job_documents`, `sub_progress`, `sub_vouchers`, `sub_payouts` |
 | Receipts | `receipts`, `change_orders` |
-| Website Admin app | `website_accounts`, `website_login_logs`, `inquiries` |
+| Website Admin | `inquiries` (Website Admin logins are rows in `users`) |
 | System | `app_settings`, `schema_versions` |
 
 **`projects` is the center.** Everything that costs or earns money for a project points to it:
@@ -189,8 +190,8 @@ Arrows point from the table that **stores the ID** to the table it **links to**.
 | `username` | Unique sign-in name |
 | `password_hash` | The password, **scrambled** with bcrypt. The real password is never stored, so nobody can read it, not even an Admin. |
 | `full_name` | Copied from the employee |
-| `level` | Admin / Supervisor / Employee |
-| `department` | HR & Payroll / Inventory / Subcontractors / Receipts; empty for Admins (check rule) |
+| `level` | Admin / Supervisor / Employee / Website Admin |
+| `department` | HR & Payroll / Inventory / Subcontractors / Receipts; empty for Admins and Website Admins (check rule) |
 | `status` | Active / Locked / Disabled |
 | `failed_login_count` | Wrong passwords in a row; 5 locks the account |
 | `security_question`, `security_answer_hash` | Admins' password recovery; the answer is scrambled like a password |
@@ -202,13 +203,13 @@ Arrows point from the table that **stores the ID** to the table it **links to**.
 
 One row per sign-in, sign-out, idle sign-out, failed attempt, lock, unlock, password change or password request: `user_id`, `username_tried` (even unknown names), `action`, `details`, `computer_name`, `logged_at`. The Dashboard's Log History reads this table.
 
-## website_accounts and website_login_logs: the Website Admin app's own sign-in
+## Website Admin logins
 
-The separate Website Admin app has its **own** accounts, not the office app's `users`. `website_accounts` holds `username` (unique ignoring capital letters, through a unique index on `LOWER(username)`), `password_hash` (bcrypt), `full_name`, `status` (Active / Locked / Disabled), `is_main` (a main account manages the others; script 009), `failed_login_count`, `last_login_at`. `website_login_logs` is its sign-in diary, built like `login_logs`. Nothing links the two account tables, so an office login can't sign in to the Website Admin app.
+There is **one** list of logins for both the office app and the Website Admin screens: `users`. A Website Admin is a row with `level` = Website Admin and no department (script 011). At first the Website Admin app had its own tables (`website_accounts`, `website_login_logs`, scripts 008 and 009); script 011 copied those accounts (with their passwords), their sign-in history and their inquiry follow-ups into `users`, `login_logs` and `inquiries`, then removed the old tables.
 
 ## inquiries: website Contact form messages
 
-`inquiry_id`, `received_at`, `full_name`, `email`, `phone`, `project_location`, `service_required` (optional), `message`, `status` (New / Contacted / Closed), `notes` (internal), `updated_by` (a Website Admin account), `updated_at`. Check rule: an email **or** a phone number must be given. Rows are never deleted.
+`inquiry_id`, `received_at`, `full_name`, `email`, `phone`, `project_location`, `service_required` (optional), `message`, `status` (New / Contacted / Closed), `notes` (internal), `updated_by` (the login in `users` who last changed it: a Website Admin or an Admin), `updated_at`. Check rule: an email **or** a phone number must be given. Rows are never deleted.
 
 ## password_requests
 

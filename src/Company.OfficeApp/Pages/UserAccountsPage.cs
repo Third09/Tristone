@@ -165,7 +165,7 @@ public partial class UserAccountsPage : UserControl
         string? dept = cboUserEmployee.SelectedItem switch
         {
             EmployeeOption { EmployeeId: not null } o => UserAdminService.DepartmentFor(level, o.Department),
-            _ => level == UserLevels.Admin ? null : unlinkedDepartment,
+            _ => UserLevels.HasNoDepartment(level) ? null : unlinkedDepartment,
         };
         cboUserDepartment.Items.Clear();
         if (dept != null) { cboUserDepartment.Items.Add(dept); cboUserDepartment.SelectedIndex = 0; }

@@ -24,7 +24,7 @@ public class Inquiry
     /// <summary>Internal follow-up notes; never shown on the website.</summary>
     [Column("notes")] public string? Notes { get; set; }
 
-    /// <summary>The Website Admin account that last changed the status or notes.</summary>
+    /// <summary>The login (users.user_id) that last changed the status or notes: a Website Admin or an Admin (script 011).</summary>
     [Column("updated_by")] public int? UpdatedBy { get; set; }
     [Column("updated_at")] public DateTime? UpdatedAt { get; set; }
 }

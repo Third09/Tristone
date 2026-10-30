@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tri-Stone: the one program staff open (owner decision 2026-10-30). It shows the Sign In window and then opens
+    the right app for the login: office staff -> office app, Website Admin -> Website Admin app, Admin -> asks which.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Company.OfficeApp\Company.OfficeApp.csproj" />
+    <ProjectReference Include="..\Company.WebsiteAdmin\Company.WebsiteAdmin.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>TriStone</AssemblyName>
+    <RootNamespace>Company.Launcher</RootNamespace>
+    <!-- Built program goes to an easy folder at the top of the project (Apps\Tri-Stone\TriStone.exe). -->
+    <OutputPath>$(MSBuildProjectDirectory)\..\..\Apps\Tri-Stone\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!-- ScottPlot (office Dashboard chart) brings an optional .NET Framework part; not used. -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+  </PropertyGroup>
+
+</Project>

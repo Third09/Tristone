@@ -147,7 +147,7 @@ public static class DashboardService
         }
         var rows = await q.OrderByDescending(x => x.l.LoggedAt).Take(max).ToListAsync();
         return rows.Select(x => new LogRow(x.l.LoggedAt, x.Name ?? $"(unknown: {x.Username})",
-            x.Level == UserLevels.Admin ? "Admin" : x.Dept ?? "", x.l.Action,
+            UserLevels.HasNoDepartment(x.Level) ? x.Level : x.Dept ?? "", x.l.Action,
             string.Join("  ", new[] { x.l.Details, x.l.ComputerName == null ? null : $"PC: {x.l.ComputerName}" }.Where(d => !string.IsNullOrEmpty(d))))).ToList();
     }
 }

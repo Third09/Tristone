@@ -17,6 +17,8 @@ namespace Company.WebsiteAdmin.Forms
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            tmrIdle = new System.Windows.Forms.Timer(components);
             pnlSidebar = new FlowLayoutPanel();
             btnNavPageContent = new Button();
             btnNavAnnouncements = new Button();
@@ -24,7 +26,6 @@ namespace Company.WebsiteAdmin.Forms
             btnNavDocumentVault = new Button();
             btnNavInquiries = new Button();
             btnNavWebsiteTraffic = new Button();
-            btnNavAccounts = new Button();
             btnSignOut = new Button();
             pnlTopBar = new Panel();
             lblPageTitle = new Label();
@@ -42,7 +43,6 @@ namespace Company.WebsiteAdmin.Forms
             pnlSidebar.Controls.Add(btnNavDocumentVault);
             pnlSidebar.Controls.Add(btnNavInquiries);
             pnlSidebar.Controls.Add(btnNavWebsiteTraffic);
-            pnlSidebar.Controls.Add(btnNavAccounts);
             pnlSidebar.Controls.Add(btnSignOut);
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.FlowDirection = FlowDirection.TopDown;
@@ -99,14 +99,6 @@ namespace Company.WebsiteAdmin.Forms
             btnNavWebsiteTraffic.Text = "Website Traffic";
             btnNavWebsiteTraffic.TextAlign = ContentAlignment.MiddleLeft;
             //
-            // btnNavAccounts
-            //
-            btnNavAccounts.Name = "btnNavAccounts";
-            btnNavAccounts.Size = new Size(150, 30);
-            btnNavAccounts.TabIndex = 6;
-            btnNavAccounts.Text = "Accounts";
-            btnNavAccounts.TextAlign = ContentAlignment.MiddleLeft;
-            //
             // btnSignOut
             //
             btnSignOut.Margin = new Padding(3, 20, 3, 3);
@@ -144,6 +136,11 @@ namespace Company.WebsiteAdmin.Forms
             pnlContent.Dock = DockStyle.Fill;
             pnlContent.Name = "pnlContent";
             //
+            // tmrIdle  (checks once a second for 5 minutes without activity, like the office app)
+            //
+            tmrIdle.Interval = 1000;
+            tmrIdle.Tick += tmrIdle_Tick;
+            //
             // MainForm
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -177,11 +174,11 @@ namespace Company.WebsiteAdmin.Forms
         private Button btnNavDocumentVault;
         private Button btnNavInquiries;
         private Button btnNavWebsiteTraffic;
-        private Button btnNavAccounts;
         private Button btnSignOut;
         private Panel pnlTopBar;
         private Label lblPageTitle;
         private Label lblUserName;
         private Panel pnlContent;
+        private System.Windows.Forms.Timer tmrIdle;
     }
 }
