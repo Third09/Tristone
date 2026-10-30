@@ -271,4 +271,9 @@ public partial class EmployeesTab : UserControl
         }
         catch (IOException ex) { MessageBox.Show(this, "Couldn't save the file. Is it open in Excel?\n" + ex.Message, "Export"); }
     }
+
+    private void lblFormMode_Click(object sender, EventArgs e)
+    {
+
+    }
 }

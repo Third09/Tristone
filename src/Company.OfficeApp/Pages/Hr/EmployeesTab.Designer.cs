@@ -24,6 +24,13 @@ namespace Company.OfficeApp.Pages.Hr
             lblScheduleFilter = new Label();
             cboPayScheduleFilter = new ComboBox();
             dgvEmployees = new DataGridView();
+            colName = new DataGridViewTextBoxColumn();
+            colPosition = new DataGridViewTextBoxColumn();
+            colDepartment = new DataGridViewTextBoxColumn();
+            colPaySchedule = new DataGridViewTextBoxColumn();
+            colCurrentRate = new DataGridViewTextBoxColumn();
+            colBiometricId = new DataGridViewTextBoxColumn();
+            colStatus = new DataGridViewTextBoxColumn();
             btnAddEmployee = new Button();
             btnMarkInactive = new Button();
             btnReactivateEmployee = new Button();
@@ -50,6 +57,8 @@ namespace Company.OfficeApp.Pages.Hr
             txtBiometricId = new TextBox();
             lblRateHistory = new Label();
             dgvRateHistory = new DataGridView();
+            colRateFrom = new DataGridViewTextBoxColumn();
+            colRateAmount = new DataGridViewTextBoxColumn();
             chkGovDeductions = new CheckBox();
             lblSssNo = new Label();
             txtSssNo = new TextBox();
@@ -62,15 +71,6 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeeFormMsg = new Label();
             btnSaveEmployee = new Button();
             btnCancelEmployee = new Button();
-            colName = new DataGridViewTextBoxColumn();
-            colPosition = new DataGridViewTextBoxColumn();
-            colDepartment = new DataGridViewTextBoxColumn();
-            colPaySchedule = new DataGridViewTextBoxColumn();
-            colCurrentRate = new DataGridViewTextBoxColumn();
-            colBiometricId = new DataGridViewTextBoxColumn();
-            colStatus = new DataGridViewTextBoxColumn();
-            colRateFrom = new DataGridViewTextBoxColumn();
-            colRateAmount = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvEmployees).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDailyRate).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvRateHistory).BeginInit();
@@ -81,6 +81,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblSearch.AutoSize = true;
             lblSearch.Location = new Point(12, 15);
             lblSearch.Name = "lblSearch";
+            lblSearch.Size = new Size(42, 15);
+            lblSearch.TabIndex = 0;
             lblSearch.Text = "Search";
             // 
             // txtEmployeeSearch
@@ -95,14 +97,16 @@ namespace Company.OfficeApp.Pages.Hr
             lblStatusFilter.AutoSize = true;
             lblStatusFilter.Location = new Point(256, 15);
             lblStatusFilter.Name = "lblStatusFilter";
+            lblStatusFilter.Size = new Size(39, 15);
+            lblStatusFilter.TabIndex = 1;
             lblStatusFilter.Text = "Status";
             // 
             // cboEmployeeStatusFilter
             // 
+            cboEmployeeStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEmployeeStatusFilter.Location = new Point(302, 12);
             cboEmployeeStatusFilter.Name = "cboEmployeeStatusFilter";
             cboEmployeeStatusFilter.Size = new Size(100, 23);
-            cboEmployeeStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEmployeeStatusFilter.TabIndex = 1;
             cboEmployeeStatusFilter.SelectedIndexChanged += Filter_Changed;
             // 
@@ -111,14 +115,16 @@ namespace Company.OfficeApp.Pages.Hr
             lblScheduleFilter.AutoSize = true;
             lblScheduleFilter.Location = new Point(416, 15);
             lblScheduleFilter.Name = "lblScheduleFilter";
+            lblScheduleFilter.Size = new Size(76, 15);
+            lblScheduleFilter.TabIndex = 2;
             lblScheduleFilter.Text = "Pay schedule";
             // 
             // cboPayScheduleFilter
             // 
+            cboPayScheduleFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPayScheduleFilter.Location = new Point(500, 12);
             cboPayScheduleFilter.Name = "cboPayScheduleFilter";
             cboPayScheduleFilter.Size = new Size(100, 23);
-            cboPayScheduleFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPayScheduleFilter.TabIndex = 2;
             cboPayScheduleFilter.SelectedIndexChanged += Filter_Changed;
             // 
@@ -128,50 +134,99 @@ namespace Company.OfficeApp.Pages.Hr
             dgvEmployees.AllowUserToDeleteRows = false;
             dgvEmployees.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvEmployees.Columns.AddRange(new DataGridViewColumn[] { colName, colPosition, colDepartment, colPaySchedule, colCurrentRate, colBiometricId, colStatus });
+            dgvEmployees.Location = new Point(12, 44);
             dgvEmployees.MultiSelect = false;
+            dgvEmployees.Name = "dgvEmployees";
             dgvEmployees.ReadOnly = true;
             dgvEmployees.RowHeadersVisible = false;
             dgvEmployees.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEmployees.Location = new Point(12, 44);
-            dgvEmployees.Name = "dgvEmployees";
             dgvEmployees.Size = new Size(930, 200);
             dgvEmployees.TabIndex = 3;
             dgvEmployees.SelectionChanged += dgvEmployees_SelectionChanged;
             // 
+            // colName
+            // 
+            colName.DataPropertyName = "FullName";
+            colName.HeaderText = "Name";
+            colName.Name = "colName";
+            colName.ReadOnly = true;
+            // 
+            // colPosition
+            // 
+            colPosition.DataPropertyName = "Position";
+            colPosition.HeaderText = "Position";
+            colPosition.Name = "colPosition";
+            colPosition.ReadOnly = true;
+            // 
+            // colDepartment
+            // 
+            colDepartment.DataPropertyName = "Department";
+            colDepartment.HeaderText = "Department";
+            colDepartment.Name = "colDepartment";
+            colDepartment.ReadOnly = true;
+            // 
+            // colPaySchedule
+            // 
+            colPaySchedule.DataPropertyName = "PaySchedule";
+            colPaySchedule.HeaderText = "Pay Schedule";
+            colPaySchedule.Name = "colPaySchedule";
+            colPaySchedule.ReadOnly = true;
+            // 
+            // colCurrentRate
+            // 
+            colCurrentRate.DataPropertyName = "CurrentRate";
+            colCurrentRate.HeaderText = "Daily Rate";
+            colCurrentRate.Name = "colCurrentRate";
+            colCurrentRate.ReadOnly = true;
+            // 
+            // colBiometricId
+            // 
+            colBiometricId.DataPropertyName = "BiometricId";
+            colBiometricId.HeaderText = "Biometric ID";
+            colBiometricId.Name = "colBiometricId";
+            colBiometricId.ReadOnly = true;
+            // 
+            // colStatus
+            // 
+            colStatus.DataPropertyName = "Status";
+            colStatus.HeaderText = "Status";
+            colStatus.Name = "colStatus";
+            colStatus.ReadOnly = true;
+            // 
             // btnAddEmployee
             // 
-            btnAddEmployee.Location = new Point(12, 252);
+            btnAddEmployee.Location = new Point(1005, 726);
             btnAddEmployee.Name = "btnAddEmployee";
             btnAddEmployee.Size = new Size(110, 28);
-            btnAddEmployee.Text = "Add Employee";
             btnAddEmployee.TabIndex = 4;
+            btnAddEmployee.Text = "Add Employee";
             btnAddEmployee.Click += btnAddEmployee_Click;
             // 
             // btnMarkInactive
             // 
-            btnMarkInactive.Location = new Point(128, 252);
+            btnMarkInactive.Location = new Point(9, 690);
             btnMarkInactive.Name = "btnMarkInactive";
             btnMarkInactive.Size = new Size(110, 28);
-            btnMarkInactive.Text = "Mark Inactive";
             btnMarkInactive.TabIndex = 5;
+            btnMarkInactive.Text = "Mark Inactive";
             btnMarkInactive.Click += btnMarkInactive_Click;
             // 
             // btnReactivateEmployee
             // 
-            btnReactivateEmployee.Location = new Point(244, 252);
+            btnReactivateEmployee.Location = new Point(120, 690);
             btnReactivateEmployee.Name = "btnReactivateEmployee";
-            btnReactivateEmployee.Size = new Size(100, 28);
-            btnReactivateEmployee.Text = "Reactivate";
+            btnReactivateEmployee.Size = new Size(110, 28);
             btnReactivateEmployee.TabIndex = 6;
+            btnReactivateEmployee.Text = "Reactivate";
             btnReactivateEmployee.Click += btnReactivateEmployee_Click;
             // 
             // btnExportEmployees
             // 
-            btnExportEmployees.Location = new Point(350, 252);
+            btnExportEmployees.Location = new Point(1116, 726);
             btnExportEmployees.Name = "btnExportEmployees";
-            btnExportEmployees.Size = new Size(90, 28);
-            btnExportEmployees.Text = "Export";
+            btnExportEmployees.Size = new Size(110, 28);
             btnExportEmployees.TabIndex = 7;
+            btnExportEmployees.Text = "Export";
             btnExportEmployees.Click += btnExportEmployees_Click;
             // 
             // lblFormMode
@@ -179,13 +234,18 @@ namespace Company.OfficeApp.Pages.Hr
             lblFormMode.AutoSize = true;
             lblFormMode.Location = new Point(12, 296);
             lblFormMode.Name = "lblFormMode";
-            lblFormMode.Text = "New employee";
+            lblFormMode.Size = new Size(106, 15);
+            lblFormMode.TabIndex = 8;
+            lblFormMode.Text = "Edit Employee Info";
+            lblFormMode.Click += lblFormMode_Click;
             // 
             // lblEmployeeName
             // 
             lblEmployeeName.AutoSize = true;
             lblEmployeeName.Location = new Point(12, 320);
             lblEmployeeName.Name = "lblEmployeeName";
+            lblEmployeeName.Size = new Size(59, 15);
+            lblEmployeeName.TabIndex = 9;
             lblEmployeeName.Text = "Full name";
             // 
             // txtEmployeeName
@@ -200,6 +260,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeeContact.AutoSize = true;
             lblEmployeeContact.Location = new Point(12, 368);
             lblEmployeeContact.Name = "lblEmployeeContact";
+            lblEmployeeContact.Size = new Size(94, 15);
+            lblEmployeeContact.TabIndex = 10;
             lblEmployeeContact.Text = "Contact number";
             // 
             // txtEmployeeContact
@@ -214,14 +276,16 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeeAddress.AutoSize = true;
             lblEmployeeAddress.Location = new Point(12, 416);
             lblEmployeeAddress.Name = "lblEmployeeAddress";
+            lblEmployeeAddress.Size = new Size(49, 15);
+            lblEmployeeAddress.TabIndex = 11;
             lblEmployeeAddress.Text = "Address";
             // 
             // txtEmployeeAddress
             // 
             txtEmployeeAddress.Location = new Point(12, 434);
+            txtEmployeeAddress.Multiline = true;
             txtEmployeeAddress.Name = "txtEmployeeAddress";
             txtEmployeeAddress.Size = new Size(300, 46);
-            txtEmployeeAddress.Multiline = true;
             txtEmployeeAddress.TabIndex = 10;
             // 
             // lblEmployeePosition
@@ -229,6 +293,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeePosition.AutoSize = true;
             lblEmployeePosition.Location = new Point(12, 488);
             lblEmployeePosition.Name = "lblEmployeePosition";
+            lblEmployeePosition.Size = new Size(168, 15);
+            lblEmployeePosition.TabIndex = 12;
             lblEmployeePosition.Text = "Position (e.g. Mason, HR Staff)";
             // 
             // txtEmployeePosition
@@ -243,14 +309,16 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeeDepartment.AutoSize = true;
             lblEmployeeDepartment.Location = new Point(12, 536);
             lblEmployeeDepartment.Name = "lblEmployeeDepartment";
+            lblEmployeeDepartment.Size = new Size(183, 15);
+            lblEmployeeDepartment.TabIndex = 13;
             lblEmployeeDepartment.Text = "Department (Site for site workers)";
             // 
             // cboEmployeeDepartment
             // 
+            cboEmployeeDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEmployeeDepartment.Location = new Point(12, 554);
             cboEmployeeDepartment.Name = "cboEmployeeDepartment";
             cboEmployeeDepartment.Size = new Size(200, 23);
-            cboEmployeeDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEmployeeDepartment.TabIndex = 12;
             cboEmployeeDepartment.SelectedIndexChanged += cboEmployeeDepartment_SelectedIndexChanged;
             // 
@@ -259,6 +327,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblPayScheduleValue.AutoSize = true;
             lblPayScheduleValue.Location = new Point(12, 584);
             lblPayScheduleValue.Name = "lblPayScheduleValue";
+            lblPayScheduleValue.Size = new Size(202, 15);
+            lblPayScheduleValue.TabIndex = 14;
             lblPayScheduleValue.Text = "Pay schedule: (choose a department)";
             // 
             // lblPayGrade
@@ -266,6 +336,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblPayGrade.AutoSize = true;
             lblPayGrade.Location = new Point(340, 320);
             lblPayGrade.Name = "lblPayGrade";
+            lblPayGrade.Size = new Size(114, 15);
+            lblPayGrade.TabIndex = 15;
             lblPayGrade.Text = "Pay grade (optional)";
             // 
             // txtPayGrade
@@ -280,30 +352,34 @@ namespace Company.OfficeApp.Pages.Hr
             lblDailyRate.AutoSize = true;
             lblDailyRate.Location = new Point(340, 368);
             lblDailyRate.Name = "lblDailyRate";
+            lblDailyRate.Size = new Size(97, 15);
+            lblDailyRate.TabIndex = 16;
             lblDailyRate.Text = "Daily rate (pesos)";
             // 
             // numDailyRate
             // 
+            numDailyRate.DecimalPlaces = 2;
             numDailyRate.Location = new Point(340, 386);
             numDailyRate.Name = "numDailyRate";
             numDailyRate.Size = new Size(140, 23);
-            numDailyRate.DecimalPlaces = 2;
-            numDailyRate.ThousandsSeparator = true;
             numDailyRate.TabIndex = 14;
+            numDailyRate.ThousandsSeparator = true;
             // 
             // lblRateEffective
             // 
             lblRateEffective.AutoSize = true;
             lblRateEffective.Location = new Point(340, 416);
             lblRateEffective.Name = "lblRateEffective";
+            lblRateEffective.Size = new Size(99, 15);
+            lblRateEffective.TabIndex = 17;
             lblRateEffective.Text = "Rate applies from";
             // 
             // dtpRateEffective
             // 
+            dtpRateEffective.Format = DateTimePickerFormat.Short;
             dtpRateEffective.Location = new Point(340, 434);
             dtpRateEffective.Name = "dtpRateEffective";
             dtpRateEffective.Size = new Size(140, 23);
-            dtpRateEffective.Format = DateTimePickerFormat.Short;
             dtpRateEffective.TabIndex = 15;
             // 
             // lblBiometricId
@@ -311,6 +387,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblBiometricId.AutoSize = true;
             lblBiometricId.Location = new Point(340, 464);
             lblBiometricId.Name = "lblBiometricId";
+            lblBiometricId.Size = new Size(173, 15);
+            lblBiometricId.TabIndex = 18;
             lblBiometricId.Text = "Biometric ID (from the scanner)";
             // 
             // txtBiometricId
@@ -325,6 +403,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblRateHistory.AutoSize = true;
             lblRateHistory.Location = new Point(340, 512);
             lblRateHistory.Name = "lblRateHistory";
+            lblRateHistory.Size = new Size(95, 15);
+            lblRateHistory.TabIndex = 19;
             lblRateHistory.Text = "Daily rate history";
             // 
             // dgvRateHistory
@@ -333,28 +413,45 @@ namespace Company.OfficeApp.Pages.Hr
             dgvRateHistory.AllowUserToDeleteRows = false;
             dgvRateHistory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvRateHistory.Columns.AddRange(new DataGridViewColumn[] { colRateFrom, colRateAmount });
+            dgvRateHistory.Location = new Point(340, 530);
             dgvRateHistory.MultiSelect = false;
+            dgvRateHistory.Name = "dgvRateHistory";
             dgvRateHistory.ReadOnly = true;
             dgvRateHistory.RowHeadersVisible = false;
             dgvRateHistory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvRateHistory.Location = new Point(340, 530);
-            dgvRateHistory.Name = "dgvRateHistory";
             dgvRateHistory.Size = new Size(280, 90);
             dgvRateHistory.TabIndex = 17;
+            // 
+            // colRateFrom
+            // 
+            colRateFrom.DataPropertyName = "EffectiveFrom";
+            colRateFrom.HeaderText = "Applies From";
+            colRateFrom.Name = "colRateFrom";
+            colRateFrom.ReadOnly = true;
+            // 
+            // colRateAmount
+            // 
+            colRateAmount.DataPropertyName = "DailyRate";
+            colRateAmount.HeaderText = "Daily Rate";
+            colRateAmount.Name = "colRateAmount";
+            colRateAmount.ReadOnly = true;
             // 
             // chkGovDeductions
             // 
             chkGovDeductions.AutoSize = true;
             chkGovDeductions.Location = new Point(650, 320);
             chkGovDeductions.Name = "chkGovDeductions";
-            chkGovDeductions.Text = "Government deductions (tax, SSS, PhilHealth, Pag-IBIG)";
+            chkGovDeductions.Size = new Size(318, 19);
             chkGovDeductions.TabIndex = 18;
+            chkGovDeductions.Text = "Government deductions (tax, SSS, PhilHealth, Pag-IBIG)";
             // 
             // lblSssNo
             // 
             lblSssNo.AutoSize = true;
             lblSssNo.Location = new Point(650, 348);
             lblSssNo.Name = "lblSssNo";
+            lblSssNo.Size = new Size(125, 15);
+            lblSssNo.TabIndex = 20;
             lblSssNo.Text = "SSS number (optional)";
             // 
             // txtSssNo
@@ -369,6 +466,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblPhilHealthNo.AutoSize = true;
             lblPhilHealthNo.Location = new Point(650, 396);
             lblPhilHealthNo.Name = "lblPhilHealthNo";
+            lblPhilHealthNo.Size = new Size(162, 15);
+            lblPhilHealthNo.TabIndex = 21;
             lblPhilHealthNo.Text = "PhilHealth number (optional)";
             // 
             // txtPhilHealthNo
@@ -383,6 +482,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblPagIbigNo.AutoSize = true;
             lblPagIbigNo.Location = new Point(650, 444);
             lblPagIbigNo.Name = "lblPagIbigNo";
+            lblPagIbigNo.Size = new Size(153, 15);
+            lblPagIbigNo.TabIndex = 22;
             lblPagIbigNo.Text = "Pag-IBIG number (optional)";
             // 
             // txtPagIbigNo
@@ -397,6 +498,8 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeeTin.AutoSize = true;
             lblEmployeeTin.Location = new Point(650, 492);
             lblEmployeeTin.Name = "lblEmployeeTin";
+            lblEmployeeTin.Size = new Size(80, 15);
+            lblEmployeeTin.TabIndex = 23;
             lblEmployeeTin.Text = "TIN (optional)";
             // 
             // txtEmployeeTin
@@ -411,81 +514,26 @@ namespace Company.OfficeApp.Pages.Hr
             lblEmployeeFormMsg.AutoSize = true;
             lblEmployeeFormMsg.Location = new Point(12, 634);
             lblEmployeeFormMsg.Name = "lblEmployeeFormMsg";
+            lblEmployeeFormMsg.Size = new Size(0, 15);
+            lblEmployeeFormMsg.TabIndex = 24;
             // 
             // btnSaveEmployee
             // 
-            btnSaveEmployee.Location = new Point(12, 656);
+            btnSaveEmployee.Location = new Point(9, 656);
             btnSaveEmployee.Name = "btnSaveEmployee";
-            btnSaveEmployee.Size = new Size(90, 28);
-            btnSaveEmployee.Text = "Save";
+            btnSaveEmployee.Size = new Size(109, 28);
             btnSaveEmployee.TabIndex = 23;
+            btnSaveEmployee.Text = "Save Edits";
             btnSaveEmployee.Click += btnSaveEmployee_Click;
             // 
             // btnCancelEmployee
             // 
-            btnCancelEmployee.Location = new Point(108, 656);
+            btnCancelEmployee.Location = new Point(120, 656);
             btnCancelEmployee.Name = "btnCancelEmployee";
-            btnCancelEmployee.Size = new Size(90, 28);
-            btnCancelEmployee.Text = "Cancel";
+            btnCancelEmployee.Size = new Size(110, 28);
             btnCancelEmployee.TabIndex = 24;
+            btnCancelEmployee.Text = "Cancel";
             btnCancelEmployee.Click += btnCancelEmployee_Click;
-            // 
-            // colName
-            // 
-            colName.DataPropertyName = "FullName";
-            colName.HeaderText = "Name";
-            colName.Name = "colName";
-            // 
-            // colPosition
-            // 
-            colPosition.DataPropertyName = "Position";
-            colPosition.HeaderText = "Position";
-            colPosition.Name = "colPosition";
-            // 
-            // colDepartment
-            // 
-            colDepartment.DataPropertyName = "Department";
-            colDepartment.HeaderText = "Department";
-            colDepartment.Name = "colDepartment";
-            // 
-            // colPaySchedule
-            // 
-            colPaySchedule.DataPropertyName = "PaySchedule";
-            colPaySchedule.HeaderText = "Pay Schedule";
-            colPaySchedule.Name = "colPaySchedule";
-            // 
-            // colCurrentRate
-            // 
-            colCurrentRate.DataPropertyName = "CurrentRate";
-            colCurrentRate.HeaderText = "Daily Rate";
-            colCurrentRate.Name = "colCurrentRate";
-            colCurrentRate.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2", NullValue = "-" };
-            // 
-            // colBiometricId
-            // 
-            colBiometricId.DataPropertyName = "BiometricId";
-            colBiometricId.HeaderText = "Biometric ID";
-            colBiometricId.Name = "colBiometricId";
-            // 
-            // colStatus
-            // 
-            colStatus.DataPropertyName = "Status";
-            colStatus.HeaderText = "Status";
-            colStatus.Name = "colStatus";
-            // 
-            // colRateFrom
-            // 
-            colRateFrom.DataPropertyName = "EffectiveFrom";
-            colRateFrom.HeaderText = "Applies From";
-            colRateFrom.Name = "colRateFrom";
-            colRateFrom.DefaultCellStyle = new DataGridViewCellStyle { Format = "MMM d, yyyy" };
-            // 
-            // colRateAmount
-            // 
-            colRateAmount.DataPropertyName = "DailyRate";
-            colRateAmount.HeaderText = "Daily Rate";
-            colRateAmount.Name = "colRateAmount";
-            colRateAmount.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2", NullValue = "-" };
             // 
             // EmployeesTab
             // 
@@ -538,7 +586,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(btnSaveEmployee);
             Controls.Add(btnCancelEmployee);
             Name = "EmployeesTab";
-            Size = new Size(960, 700);
+            Size = new Size(1258, 795);
             Load += EmployeesTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvEmployees).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDailyRate).EndInit();
