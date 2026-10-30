@@ -39,7 +39,7 @@ docs/_tools/                   guides/ (build-guides.cmd), ui-guide/ (data.js, d
 
 ## Build, database, test
 
-- Build: `dotnet build TriStone.slnx`. Run: set Company.OfficeApp as startup project, F5.
+- Build: `dotnet build TriStone.slnx`. Run: set Company.OfficeApp as startup project, F5. Built programs go to `Apps\Office App\Company.OfficeApp.exe` and `Apps\Website Admin\Company.WebsiteAdmin.exe` (OutputPath in each .csproj, owner request 2026-10-30; `Apps/` is git-ignored).
 - Database: PostgreSQL 18, database `construction_db`. Create/update: `database\setup-database.cmd`.
 - psql without a password prompt: put `localhost:5432:*:postgres:<password>` in `%APPDATA%\postgresql\pgpass.conf`, then `"C:\Program Files\PostgreSQL\18\bin\psql.exe" -w -h localhost -U postgres -d construction_db`. Never write the real password in files or Git.
 - First Admin is inserted by hand (Developer Guide chapter 6). On this project it's `ITmorilla` (Shem John Adrian P. Morilla). Not linked to an employee yet. Password is weak and must be changed before real use.

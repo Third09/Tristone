@@ -49,6 +49,8 @@ The website must never touch the database itself, which is why the API is a sepa
 4. Add the first Admin (section 2.3).
 5. Open `TriStone.slnx`, set **Company.OfficeApp** as the startup project and press **F5**. The first run asks for the database settings.
 
+Every build puts the finished programs in one easy folder at the top of the project: `Apps\Office App\Company.OfficeApp.exe` and `Apps\Website Admin\Company.WebsiteAdmin.exe`. Double-click them there (or make desktop shortcuts to them). The folder is rebuilt every time and isn't saved in Git.
+
 **Forgotten PostgreSQL password:** in `C:\Program Files\PostgreSQL\18\data\pg_hba.conf` change `scram-sha-256` to `trust`, restart the `postgresql-x64-18` service, run `ALTER USER postgres WITH PASSWORD '...';` in pgAdmin, then change it back and restart again.
 
 # Chapter 2: The database
@@ -227,7 +229,7 @@ The public website is managed in its **own desktop app**, `src/Company.WebsiteAd
 - Same rules as the office app: usernames ignore capital letters, passwords are bcrypt hashes, 5 wrong passwords lock the account, and every attempt goes to `website_login_logs` with the PC name.
 - The main window is full screen with no title bar. It looks like the office app: a sidebar on the left (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, Accounts for main accounts, Sign Out), the page title and who is signed in at the top, and the chosen page in the middle. Pages are filled in one by one.
 
-To run it: in Visual Studio, right-click **Company.WebsiteAdmin > Set as Startup Project**, then press **F5**.
+To run it: in Visual Studio, right-click **Company.WebsiteAdmin > Set as Startup Project**, then press **F5**. Or double-click `Apps\Website Admin\Company.WebsiteAdmin.exe` after a build.
 
 ## 10.2 The first Website Admin account
 

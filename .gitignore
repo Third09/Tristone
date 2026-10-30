@@ -21,3 +21,6 @@ installer/output/
 
 # Word lock files while a document is open
 ~$*.docx
+
+# Built programs (recreated by every build): Apps\Office App, Apps\Website Admin
+Apps/
