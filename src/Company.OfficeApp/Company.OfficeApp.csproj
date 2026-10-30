@@ -10,17 +10,13 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <!-- Part of Tri-Stone (Company.Launcher), the one program staff open: it signs people in and opens these office
+         screens or the Website Admin screens. Not started on its own (owner request 2026-10-30). -->
+    <OutputType>Library</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Sharp text and correct sizes on high-resolution laptop screens and when moving between monitors. -->
-    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
-    <!-- Built program goes to an easy folder at the top of the project (Apps\Office App), not bin\Debug\... -->
-    <OutputPath>$(MSBuildProjectDirectory)\..\..\Apps\Office App\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <!-- ScottPlot.WinForms also brings an optional OpenGL control built for .NET Framework (NU1701 warning).
          The normal FormsPlot used for the Dashboard chart doesn't use it. -->
     <NoWarn>$(NoWarn);NU1701</NoWarn>

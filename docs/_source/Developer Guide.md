@@ -49,7 +49,7 @@ The website must never touch the database itself, which is why the API is a sepa
 4. Add the first Admin (section 2.3).
 5. Open `TriStone.slnx`, set **Company.Launcher** (Tri-Stone) as the startup project and press **F5**. The first run asks for the database settings.
 
-Every build puts the finished programs in one easy folder at the top of the project. The one to open is **`Apps\Tri-Stone\TriStone.exe`**: it signs everyone in and opens the office app or the Website Admin app (chapter 10). Make a desktop shortcut to it. (`Apps\Office App\Company.OfficeApp.exe` still runs the office app alone.) The folder is rebuilt every time and isn't saved in Git.
+Every build puts the finished program in one easy folder at the top of the project: **`Apps\Tri-Stone\TriStone.exe`**, the **only** program. It signs everyone in and opens the office screens or the Website Admin screens (chapter 10). Make a desktop shortcut to it. The folder is rebuilt every time and isn't saved in Git.
 
 **Forgotten PostgreSQL password:** in `C:\Program Files\PostgreSQL\18\data\pg_hba.conf` change `scram-sha-256` to `trust`, restart the `postgresql-x64-18` service, run `ALTER USER postgres WITH PASSWORD '...';` in pgAdmin, then change it back and restart again.
 
@@ -236,7 +236,7 @@ The public website is managed in **separate screens**, not in the office app (ow
   After Sign Out (or the idle sign-out) it returns to Sign In.
 - `src/Company.WebsiteAdmin` is a **library** with the Website Admin screens. It references the office app, so it uses the same sign-in, session, database settings and screen helpers.
 - The main window is full screen with no title bar and looks like the office app: a sidebar on the left (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, Sign Out), the page title and who is signed in at the top, and the chosen page in the middle. Same "Still there?" idle check. Pages are filled in one by one.
-- The office app on its own (`Apps\Office App\Company.OfficeApp.exe`) refuses a Website Admin login and points to Tri-Stone.
+- `src/Company.OfficeApp` is a library too (no Program.cs): Tri-Stone is the only program, so nobody can open one app alone and get the wrong Sign In (owner request, 30 Oct 2026). In Visual Studio, **Company.Launcher** must be the startup project.
 
 To run it from Visual Studio: right-click **Company.Launcher > Set as Startup Project**, then press **F5**.
 
