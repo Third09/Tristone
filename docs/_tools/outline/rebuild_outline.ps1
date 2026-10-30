@@ -35,6 +35,7 @@ try {
   . "$PSScriptRoot\part0b.ps1"
   . "$PSScriptRoot\part_built.ps1"
   . "$PSScriptRoot\part_oct30.ps1"
+  . "$PSScriptRoot\part_attendance.ps1"
   $i = 0
   foreach ($p in $script:doc.Paragraphs) { $i++; $t = $p.Range.Text.Trim()
     if ($t) { "{0,3} {1,-10} L{2} {3}" -f $i, $p.Style.NameLocal, $(if ($p.Range.ListFormat.ListType) { $p.Range.ListFormat.ListLevelNumber } else { "-" }), $t.Substring(0, [Math]::Min(60, $t.Length)) } }

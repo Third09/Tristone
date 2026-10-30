@@ -36,6 +36,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SubPayout> SubPayouts => Set<SubPayout>();
     public DbSet<Receipt> Receipts => Set<Receipt>();
     public DbSet<ChangeOrder> ChangeOrders => Set<ChangeOrder>();
+    public DbSet<AttendanceImport> AttendanceImports => Set<AttendanceImport>();
+    public DbSet<AttendanceScan> AttendanceScans => Set<AttendanceScan>();
+    public DbSet<AttendanceDay> AttendanceDays => Set<AttendanceDay>();
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
@@ -87,5 +90,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<Receipt>().HasKey(r => r.ReceiptId);
         modelBuilder.Entity<ChangeOrder>().HasKey(c => c.ChangeOrderId);
+
+        modelBuilder.Entity<AttendanceImport>().HasKey(i => i.ImportId);
+        modelBuilder.Entity<AttendanceScan>().HasKey(s => s.ScanId);
+        modelBuilder.Entity<AttendanceDay>().HasKey(d => d.DayId);
     }
 }

@@ -17,10 +17,11 @@ public partial class HrPayrollPage : UserControl
         InitializeComponent();
 
         tabEmployees.Controls.Add(new EmployeesTab { Dock = DockStyle.Fill });
+        tabAttendance.Controls.Add(new AttendanceTab { Dock = DockStyle.Fill });
         tabHrEditHistory.Controls.Add(new EditHistoryTab(Departments.HrPayroll) { Dock = DockStyle.Fill });
 
         // Tabs not built yet show a note.
-        foreach (var tab in new[] { tabAttendance, tabPayroll, tabPayslipHistory, tabCashAdvances, tabHrSettings })
+        foreach (var tab in new[] { tabPayroll, tabPayslipHistory, tabCashAdvances, tabHrSettings })
             tab.Controls.Add(new Label { Text = $"{tab.Text}: not built yet.", AutoSize = true, Location = new Point(12, 12) });
 
         var me = Session.CurrentUser!;

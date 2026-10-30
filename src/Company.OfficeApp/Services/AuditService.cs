@@ -117,6 +117,8 @@ public static class AuditService
         "sub_vouchers" => "voucher",
         "sub_payouts" => "payout",
         "change_orders" => "change order",
+        "attendance_imports" => "scanner upload",
+        "attendance_days" => "attendance",
         _ => table.TrimEnd('s').Replace("_", " "),
     };
 }

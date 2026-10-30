@@ -208,7 +208,7 @@ Use the **Search** box (name, site or client) and the **Status** and **Sector** 
 
 # 6. HR & Payroll
 
-For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. *(So far Employees and Edit History are built.)*
+For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. *(So far Employees, Attendance and Edit History are built.)*
 
 ## Employees
 
@@ -246,6 +246,31 @@ Past payslips keep the old rate. The **Daily rate history** table lists every ra
 **When someone leaves:** click **Mark Inactive**. Their records stay, and if they have a login, it's turned off. **Reactivate** brings them back. An Admin then has to turn their login on again in User Accounts.
 
 Use **Search** (name or Biometric ID), the **Status** filter (Active by default) and the **Pay schedule** filter. **Export** saves the list to Excel.
+
+## Attendance
+
+The days of everyone with a **Biometric ID**, worked out from the fingerprint scanner.
+
+**Upload the scanner file**
+
+1. On the scanner, export the report to the USB stick and plug it into the PC.
+2. Click **Upload Scanner File** and choose the **All Report** file from the USB stick.
+3. The line next to the button says how many scans came in. Uploading the same file twice is safe: nothing is added twice.
+4. If someone's scanner ID isn't set as a Biometric ID in **Employees**, their scans are skipped and **View Rejected Rows** says who. Set the ID in Employees, then upload the file again.
+
+**Check the days**
+
+- Pick the dates, and **Show** (All, Late, Absent, Missing Scan, Overtime Waiting Approval, Fixed by HR). **Search** finds a name.
+- Rows in **light red** are Absent or Missing Scan. Rows in **light yellow** have overtime waiting.
+
+**Fix a missing scan**
+
+1. Select the day (or double-click it) and click **Fix Missing Scan**.
+2. Tick each time that is known and set it, type the **reason**, and click **Save**. Check the list of changes, then click **Yes**.
+
+**Overtime** (HR Supervisor and Admins): select a day with overtime waiting and click **Approve Overtime** or **Reject Overtime**. Only approved overtime is paid.
+
+**Export** saves the list to Excel.
 
 # 7. Inventory & Vendors
 

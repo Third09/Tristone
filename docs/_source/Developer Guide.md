@@ -199,7 +199,17 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
 
 **Built: Employees.** Office staff and site workers. The pay schedule follows the department: Site = weekly on Saturday, everyone else = the 15th and 30th. The daily rate is kept as a dated history (`employee_rates`), so past payslips keep the rate they were paid with. Biometric IDs are unique. Marking someone Inactive turns their login off; Reactivate doesn't turn it back on.
 
-**Still to build:** Attendance (waiting for the fingerprint scanner's sample export file), Payroll, Cash Advances, Payslips.
+**Built: Attendance** (script 012: `attendance_imports`, `attendance_scans`, `attendance_days`).
+
+- **The file:** the scanner's USB export "All Report.xls", sheet "Attendance Logs" (sample received 2026-10-30). `Services/ScannerFile` reads it with the ExcelDataReader package (old .xls, .xlsx and .csv): the date range in row 2 (day/month/year; the first weekday printed in the file settles it when both readings are possible), then one block per person (ID / Name / Dept. row, a day-number row, a weekday row, then the times under each day). Every hh:mm in a cell counts, so several scans in one cell are fine.
+- **Matching:** scanner ID = the employee's Biometric ID (leading zeros ignored). Unknown IDs are rejected with a message; they don't stop the rest.
+- **Storing:** every scan once (`UNIQUE (employee_id, scan_time)`), so uploading the same file again adds nothing.
+- **Rules** (`Services/AttendanceRules`): 8-5 Mon-Sat, on time until 8:15, late = minutes from 8:00 + minutes back from lunch after 1:00, early = minutes before 5:00, overtime = minutes after 5:00 from 30 minutes on, waiting for approval. Scans within 3 minutes count once. 4 scans fill in / break out / break in / out; fewer go to the nearest usual time (Missing Scan); Sunday scans = Rest Day Work (all of it waiting as overtime).
+- **Days** (`Services/AttendanceService`): after each upload every active employee with a Biometric ID gets a row per day in the file's range: from the scans, or Absent on a work day with none (only up to yesterday and from their first rate date). HR's fixes are never overwritten; approvals stay unless the overtime minutes change.
+- **Fix Scan:** HR sets the times with a required reason (Yes/No list of changes, Edit History). Overtime is approved by the HR Supervisor or an Admin.
+- Not yet: holidays (Settings tab) count as work days for now.
+
+**Still to build:** Payroll, Cash Advances, Payslips, Settings (holidays).
 
 # Chapter 7: Inventory & Vendors (Part 3)
 

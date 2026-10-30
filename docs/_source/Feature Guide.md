@@ -321,6 +321,41 @@ The number the fingerprint scanner gives the person. Optional; up to 20 letters,
 
 Off by default. Tick it only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional and are **never** shown in Edit History; only whether each is on file.
 
+# 7b. HR & Payroll: Attendance
+
+## 7b.1 Where the times come from
+
+There is one fingerprint scanner. Everyone scans **4 times a day**: in, break out (lunch), break in, out. HR exports the scanner's **All Report** file to a USB stick and uploads it. The scanner's ID number for a person must be typed as their **Biometric ID** in Employees, or their scans are skipped (the rejected rows say who).
+
+Uploading the same file again, or a file that overlaps an earlier one, is safe: each scan is stored once.
+
+## 7b.2 How a day is worked out
+
+| Rule | Example |
+|---|---|
+| Work day: Monday to Saturday, 8:00 AM to 5:00 PM, lunch 12-1 unpaid | |
+| On time until **8:15** | In at 8:14 = on time |
+| After 8:15, late counts **every minute from 8:00** | In at 8:20 = 20 minutes late |
+| Back from lunch after 1:00 also counts as late | Back 1:10 = 10 more minutes |
+| Leaving before 5:00 counts as **early** minutes | Out 4:30 = 30 minutes early |
+| Overtime = time after 5:00, from **30 minutes** on, paid only when approved | Out 6:45 = 1 h 45 min waiting for approval |
+| Two scans within 3 minutes count once | 8:01 and 8:02 = one scan |
+| Sunday scans = **Rest Day Work**, all of it waiting as overtime | |
+
+**Statuses:** Present, Late, **Missing Scan** (fewer than 4 scans), **Absent** (a work day with no scan), Rest Day Work. A day is only marked Absent up to yesterday, and not before the person's first daily-rate date.
+
+## 7b.3 Fixing a day
+
+If someone forgot to scan, HR clicks **Fix Missing Scan**, sets the known times and types the reason (e.g. *forgot to scan after lunch, confirmed by the foreman*). The day is worked out again from those times, marked **Fixed**, and the change is kept in Edit History. Uploading again never undoes a fix.
+
+## 7b.4 Overtime approval
+
+Overtime is never paid by itself. The **HR Supervisor** (or an Admin) approves or rejects each day's overtime. A decision stays after another upload, unless the overtime minutes change (then it waits again).
+
+## 7b.5 Not yet
+
+Holidays aren't set up yet (they come with the Settings tab), so a holiday with no scans shows as Absent for now. Payroll will use these days: only complete or fixed days are paid.
+
 # 8. Inventory & Vendors
 
 Employees record; the Inventory **Supervisor** (or an Admin) approves usage and purchases.

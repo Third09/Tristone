@@ -257,6 +257,25 @@ Rate on 2026-11-05 -> 650.00
 
 This is why old payslips never change when someone gets a raise.
 
+## Attendance (script 012)
+
+- **attendance_imports**: one row per uploaded scanner file: `file_name`, `period_from` / `period_to` (the range printed in the file), `scans_added`, `scans_skipped` (already there), `rows_rejected`, `problems` (why), `imported_by` → users.
+- **attendance_scans**: every fingerprint scan: `employee_id` → employees, `scan_time`, `import_id` → attendance_imports. **Unique per employee and time**, which is why uploading the same file twice adds nothing.
+- **attendance_days**: one row per employee per day, worked out from the scans: `time_in`, `break_out`, `break_in`, `time_out`, `late_minutes`, `early_minutes`, `ot_minutes`, `ot_status` (None / Waiting / Approved / Rejected), `status` (Present / Late / Missing Scan / Absent / Rest Day Work), and when HR fixed it by hand: `fix_reason`, `fixed_by`, `fixed_at`. Unique per employee and date.
+
+```sql
+-- Who was late in October, and by how much
+SELECT e.full_name, d.work_date, d.time_in, d.late_minutes
+FROM attendance_days d JOIN employees e ON e.employee_id = d.employee_id
+WHERE d.work_date BETWEEN '2026-10-01' AND '2026-10-31' AND d.late_minutes > 0
+ORDER BY d.work_date;
+
+-- Overtime still waiting for the HR Supervisor
+SELECT e.full_name, d.work_date, d.ot_minutes
+FROM attendance_days d JOIN employees e ON e.employee_id = d.employee_id
+WHERE d.ot_status = 'Waiting';
+```
+
 # 7. Inventory tables
 
 ```
@@ -407,7 +426,7 @@ A data store in the DFD is a **concept**; in the database it can be one table or
 | D1.2 Website Traffic Records | *Not built (website part)* |
 | D2.1 Employee Records | `employees`, `employee_rates` |
 | D2.2 User Accounts & Roles | `users` (all logins, including Website Admins), `login_logs`, `password_requests` |
-| D2.3 Attendance & Site Schedule Records | *Not built yet (Attendance)* |
+| D2.3 Attendance & Site Schedule Records | `attendance_imports`, `attendance_scans`, `attendance_days` |
 | D2.4 Tax Brackets & Statutory Tables | *Not built yet (Payroll)* |
 | D2.5 Payroll Records | *Not built yet (Payroll)* |
 | D3.1 Material Inventory | `materials`, `material_usages`, `deliveries` |
