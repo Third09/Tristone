@@ -1,556 +1,345 @@
 # Tri-Stone: Feature Guide
 
-This guide explains **how each feature works and why**: what happens behind each button, the rules the app follows, and what the messages mean. It is for the people who use the app every day.
+A functional specification of every built feature: who may use it, what the inputs and validations are, the state changes it causes, the calculations it performs and what it writes to the database. Table and column names refer to the **Database Guide**; class and method names to the **Developer Guide**. The **User Manual** has the step-by-step instructions.
 
-The **User Manual** is the short, step-by-step version. Use this guide when you want to understand a feature, train someone new, or find out why the app said "no".
+# 1. Cross-cutting rules
 
-> Parts not built yet (Attendance, Payroll, Cash Advances, most Website Admin pages) are listed at the end. This guide grows as they are finished.
+## 1.1 Access model
 
-# 1. The basics
+Each login (`users`) has a **Level** and, for Supervisor and Employee, one **Department** (HR & Payroll, Inventory, Subcontractors, Receipts). Admin and Website Admin have no department (database CHECK).
 
-## 1.1 Levels and departments
+| Page | Admin | Supervisor | Employee | Website Admin |
+|---|---|---|---|---|
+| Dashboard | all departments or one | own department, forced | — | — |
+| Projects, User Accounts | yes | — | — | — |
+| HR & Payroll / Inventory / Subcontractors / Receipts | all four | own | own | — |
+| HR > Settings, every Edit History tab | yes | own department | — | — |
+| My Account | yes | yes | yes | — |
+| Website Admin screens | yes (chosen at sign-in) | — | — | yes |
 
-Every login has one **Level**. Supervisors and Employees also have one **Department**.
+- The sidebar is built from `Access.CanSee`; services repeat the check (`Access.RequirePage`) before reading or writing, so hiding a button is never the only protection.
+- **Approver** = Admin, or the Supervisor of that department (`Access.IsApprover`). Approve / Reject / Finalize buttons are hidden from Employees, who see a note instead; the service re-checks with `RequireApprover`. Exception: change orders are approved by Admins only.
+- **Sign-in routing** (Tri-Stone): Website Admin → Website Admin app; Admin → choice of Office App / Website Admin / Sign Out; Supervisor / Employee → office app.
 
-| Level | What it is for |
+## 1.2 Approval states
+
+| Workflow | States | Counts toward totals when |
+|---|---|---|
+| Material usage | Waiting → Approved / Rejected | Approved (stock drops, cost to project) |
+| Quotes | Open → Selected / Not Selected | Selected creates a purchase |
+| Subcontractor vouchers | Waiting → Approved / Rejected → Paid | Paid (the payout row is the expense) |
+| Receipts | Waiting → Approved / Rejected | Approved |
+| Change orders | Waiting → Approved / Rejected (Admin) | Approved (revenue, end date) |
+| Overtime | None / Waiting → Approved / Rejected | Approved (paid by payroll) |
+| Cash advances | Waiting → Active / Rejected; Active → Paid Off | Active (deducted by payroll) |
+| Payroll runs | Draft → Final | Final (payslips issued, cash advances taken) |
+
+Every decision re-reads the current state in the same save; deciding twice returns "This ... is already Approved/Rejected/...".
+
+## 1.3 Audit trail
+
+Every add, edit and delete inserts an `audit_logs` row in the same transaction: user, department (which Edit History tab shows it; NULL = Admin-only records), table, record id and display name, action, and JSON snapshots of the old and new values. Edit History flattens the snapshots into one row per changed field, filterable by date range, person and record name, exportable to Excel.
+
+**Never logged:** passwords and their hashes, security answers, SSS / PhilHealth / Pag-IBIG numbers, TIN, bank account numbers. Snapshots store `*_on_file: true/false` instead.
+
+## 1.4 List pages: add vs. edit
+
+Applies to Projects, User Accounts, Employees, Materials, Vendors, Equipment, Subcontractors, Jobs, Change Orders, and in a simpler form to Attendance, Cash Advances, Payroll and Payslip History.
+
+- **No automatic selection.** After every load, search or filter, and when a hidden tab is first shown, the grid has no selected row (`RecordForm.NoAutoSelect`). Only an explicit click selects a record.
+- **Add** opens a pop-up containing only the form (`RecordForm.AddDialog`); saving there always inserts. The new record is then selected in the list.
+- **The page form is edit-only** and disabled until a row is clicked (`RecordForm.SetEnabled`).
+- **Save asks first:** a Yes/No message lists each changed field as `Label: old -> new` (private fields as "changed"). "No" saves nothing; no changes → "Nothing changed."
+- After a save the list reloads and re-selects the saved record (`Responsive.SelectRow`).
+
+## 1.5 Common behaviour
+
+- **Search boxes** run 300 ms after typing stops; a slower earlier search never overwrites a newer result (`LatestOnly` tickets).
+- **Export** writes the list as filtered to `.xlsx` with typed numbers and dates.
+- **Printing** uses a print preview; PDFs are produced with the Windows printer "Microsoft Print to PDF" (reports and payslips can save straight to a PDF file).
+- **Attachments:** PDF, JPG/JPEG, PNG, BMP, TIF/TIFF, DOC/DOCX, up to 25 MB. The file is copied into the storage folder (`<area>\yyyy\MM\<random>_<name>`), so later changes to the original don't matter. A stored file opens in its default Windows program.
+- **Delete** is allowed only while no other record references the row; otherwise the message names the history-keeping alternative (Cancelled, Inactive, Retired, Disabled, Reject).
+- **Main window:** borderless, fills the screen's working area, no minimize / maximize / close buttons; leaving is through Sign Out.
+
+# 2. Sign-in and session
+
+## 2.1 Sign In
+
+| Condition | Result | Logged (`login_logs`) |
+|---|---|---|
+| Unknown username | "Wrong username or password." | Failed Login, "Unknown username", the typed name |
+| Status Disabled | "This account is turned off. Please contact an Admin." | Failed Login, "Account disabled" |
+| Status Locked | "This account is locked after too many wrong passwords..." (even with the right password) | Failed Login, "Account locked" |
+| Wrong password | "Wrong username or password. n attempts left before the account locks." `failed_login_count + 1` | Failed Login, "Wrong password (n of 5)" |
+| 5th wrong password | Status → Locked | Account Locked |
+| Correct | Counter reset, `last_login_at` set, session started | Login (with PC name) |
+
+Usernames are matched case-insensitively; passwords are case-sensitive (bcrypt).
+
+## 2.2 Account status
+
+| Status | Entered by | Left by |
+|---|---|---|
+| Active | creation, Unlock, Enable, Set New Password | — |
+| Locked | 5 consecutive wrong passwords | Admin: Unlock or Set New Password (both reset the counter) |
+| Disabled | Admin: Disable; HR: employee marked Inactive | Admin: Enable (Reactivate in HR does **not** re-enable) |
+
+## 2.3 Passwords
+
+- Rule (`AccountRules.CheckNewPassword`): at least 8 characters, at least one letter and one number; confirmation must match.
+- **Generate:** 10 random characters including 2 digits, without look-alikes (0/O, 1/l/I).
+- **Forgot Password, Employees and Supervisors:** creates one Waiting `password_requests` row (a second request while one is waiting is not duplicated); works while Locked. Admins handle it with Set New Password (hash replaced, account unlocked, request Done, "Password Changed" logged) or Dismiss.
+- **Forgot Password, Admins:** security question; the answer is compared after trimming and lower-casing; after 10 wrong answers in total the route is blocked and another Admin must reset the password.
+- **My Account (Admins only):** change own password and set the security question; both require the current password; the new password must differ from the current one.
+
+## 2.4 Idle sign-out
+
+After 5 minutes without keyboard or mouse input, "Still there?" appears with a 60-second countdown. Stay Signed In resets the timer; Sign Out or no answer signs out (logged as Logout / Idle Sign Out) and the Sign In window states the reason. Same behaviour in the Website Admin app.
+
+# 3. User Accounts (Admin)
+
+- **Source of identity:** a login is created from an Active office employee without a login (never Site). Name and department are copied from the employee and kept in sync when HR changes them. One login per employee (service check + partial unique index).
+- **Level and department:** Admin / Website Admin → no department; Supervisor / Employee → the employee's department. Administration employees can only be Admin or Website Admin.
+- **Username:** 3-50 characters, letters, digits, `.`, `-`, `_`; unique ignoring case. Suggested as first initial + surname, keeping surname particles (de, dela, de los, san, sta).
+- **Same-role warning:** if the department already has an active login at that level, a confirmation is asked (not blocked).
+- **Self-protection:** no disabling or demoting your own account; the last active Admin can't be disabled or demoted; a linked login can't be unlinked.
+- Changes audited with department NULL (Admin-only history).
+
+# 4. Dashboard
+
+**Period:** This Month, This Quarter, This Year (each from its first day to today), All Time (from 2000-01-01), Custom.
+
+**Completed-contract method:** a project contributes revenue and all its expenses in the period in which it was set to Done (`completed_date`); running projects contribute nothing to the cards.
+
+| Card | Formula |
 |---|---|
-| **Admin** | Runs the whole system. Sees every page and every department. Creates logins, sets passwords, approves change orders. |
-| **Supervisor** | Leads one department. Does everything an Employee does, plus **approves** the department's requests. Sees the Dashboard for their own department. |
-| **Employee** | Does the day-to-day work in one department: adds records and sends requests for approval. |
-| **Website Admin** | Manages the public website in the Website Admin screens. No department, no office pages. |
+| Completed Projects | count of projects with status Done and `completed_date` in the period |
+| Gross Revenue | Σ over those projects of (contract price + approved change orders) |
+| Operational Expenses | Σ their expenses (approved material cost + approved project receipts + payouts) + approved overhead receipts dated in the period + equipment maintenance costs dated in the period |
+| Net Revenue | Gross Revenue − Operational Expenses |
 
-Departments with their own page: **HR & Payroll**, **Inventory**, **Subcontractors**, **Receipts**.
+**Department view** (Supervisors always, forced in the service; Admins optional): Expenses = Inventory: materials + repairs; Subcontractors: payouts; Receipts: project + overhead receipts; HR & Payroll: 0 (payroll is not included in the Dashboard). Revenue and Net are hidden.
 
-**One Sign In for everything.** Everyone opens **Tri-Stone** and signs in there. A Website Admin login opens the Website Admin screens; an Admin is asked which to open (office or Website Admin); everyone else gets the office app. There is one list of logins (User Accounts), so the same password rules, lock-out and sign-in history apply to all.
+**Status chart:** current count per status (Done, Ongoing, Cancelled, Pending), independent of the period. **Top projects:** projects not Cancelled that were active during the period (started by its end, not finished before its start), with revenue, expenses, profit and margin to date; default order profit descending; click a header to sort. **Log History** (Admin): `login_logs` filtered by Login/Logout, Failed Login (incl. lock/unlock), Password Change, Password Request, and by name or username; newest 2,000.
 
-The left sidebar only shows the pages your login may use, so different people see different sidebars. That's normal.
+# 5. Projects (Admin)
 
-| Page | Admin | Supervisor | Employee |
+- **Validation:** name and site required; sector from the list; contract price ≥ 0; target end and completion date not before the start (also database CHECKs).
+- **Automatic:** `completed_date` = today when status changes to Done, cleared when it changes away from Done.
+- **Money (to date):** Revenue = contract price + approved change orders. Expenses = approved material usage cost + approved Project receipts + subcontractor payouts. Profit = Revenue − Expenses. Payroll and equipment repairs are never project expenses.
+- **Days text:** "Day n" (running), "Starts in n days", "Finished in n days", "Cancelled".
+- **Delete:** only when no material usage, sub job, receipt or change order refers to the project; otherwise set it to Cancelled.
+- **Show on website:** marks the project for the Website Admin app.
+
+# 6. HR & Payroll
+
+## 6.1 Employees
+
+- **Departments → pay schedule:** Site → Site (weekly, Saturday); Administration, HR & Payroll, Inventory, Subcontractors, Receipts → Office (15th and 30th). Enforced by a database CHECK.
+- **Daily rate history:** each change with an "applies from" date adds an `employee_rates` row; the same date again corrects that row. Rate on a day = the latest row not after it. Limits: > ₱0 and ≤ ₱100,000.
+- **Biometric ID:** optional, up to 20 characters, unique (the message names who has it).
+- **Inactive:** the record stays; every linked login becomes Disabled. **Reactivate:** active again; logins stay Disabled until an Admin enables them. You can't mark yourself or the last active Admin's employee Inactive.
+- **Government deductions switch:** off by default; turns on SSS, PhilHealth, Pag-IBIG and tax in payroll. ID numbers are optional and never logged.
+
+## 6.2 Attendance: import
+
+- **Input:** the scanner's "All Report" export (.xls; .xlsx and .csv in the same layout also accepted), sheet "Attendance Logs". A file without that sheet is refused with "This file has no "Attendance Logs" sheet...".
+- **Parsing:** date range from the header (day/month/year; the first printed weekday resolves ambiguity); per person block: scanner ID, name, department, day-number row, weekday row, then every `hh:mm` under each day (several per cell allowed).
+- **Matching:** scanner ID = `employees.biometric_id`, leading zeros ignored (`0102` = `102`). People with scans but no matching employee are skipped and listed under **View Rejected Rows** with the reason.
+- **Idempotent:** a scan already stored for the same employee and minute is skipped; uploading the same or an overlapping file adds only new scans. The summary reads "Oct 1 - Oct 30, 2026: 312 scans imported, 5 already there, 1 row rejected".
+- **Make Scanner Employee File:** writes the scanner's own Employee Form for every Active employee with a numeric Biometric ID (sorted by ID): ID, name, department number (Site 1, Administration 3, HR & Payroll 4, Inventory 5, Subcontractors 6, Receipts 7), authority 0; schedule columns empty. Employees without a usable ID are listed as not included.
+
+## 6.3 Attendance: how a day is worked out
+
+Uses HR Settings (defaults: 8:00-17:00, break 12:00-13:00, grace 15 min, work days Mon-Sat, overtime minimum 30 min).
+
+1. Scans less than 3 minutes apart are merged (the first is kept).
+2. Slots: 4 or more scans → first = in, last = out, break out = nearest to 12:00 among the middle scans, break in = nearest to 13:00 after it. Fewer than 4 → each scan goes to the slot whose usual time is closest, keeping their order. On a non-work day, 2-3 scans → first = in, last = out.
+3. **Late** = (in − 8:00 if in > 8:15) + (break in − 13:00 if break in > 13:00). **Early** = 17:00 − out if out < 17:00. **Overtime** = out − 17:00 if ≥ 30 minutes, else 0.
+4. **Status:** fewer than 4 times → Missing Scan; else Late if late > 0; else Present. Non-work day with scans → Rest Day Work (overtime = worked minutes: out − in − break).
+5. A work day with no scans → Absent, but only before today, from the employee's first rate date, and not on a holiday.
+
+| Example | Result |
+|---|---|
+| 7:58 / 12:01 / 12:59 / 17:02 | Present |
+| 8:14 / 12:00 / 13:00 / 17:00 | Present (inside grace) |
+| 8:20 / 12:00 / 13:10 / 18:45 | Late 30 min, overtime 105 min Waiting |
+| 8:00 / 17:00 | Missing Scan |
+| 8:00 / 12:00 / 13:00 / 16:30 | Present, early 30 min |
+| Sunday 9:00 / 13:00 | Rest Day Work, 240 min Waiting |
+
+**Recomputation** happens after every upload (file range) and after HR Settings or holidays change (last 120 days). Days HR fixed and days inside a finalized payroll period are never recomputed.
+
+## 6.4 Attendance: fixing and overtime
+
+- **Fix Missing Scan** (any HR user): known times ticked and set, reason required, times strictly in order (in < break out < break in < out); the day is worked out again from those times, marked Fixed (`fix_reason`, who, when), and audited with before/after times. Refused for days in a finalized payroll.
+- **Overtime:** appears as Waiting; Approve / Reject by an approver; refused when not Waiting or when the day is in a finalized payroll. After a re-upload the decision stays unless the overtime minutes changed (then Waiting again).
+- **Highlighting:** Absent / Missing Scan light red; overtime Waiting light yellow. Filters: All, Late (late or early minutes), Absent, Missing Scan, Overtime Waiting Approval, Fixed by HR.
+
+## 6.5 Pay calendar
+
+| Group | Payday | Period |
+|---|---|---|
+| Office | 15th | 26th of the previous month – 10th |
+| Office | 30th; February: last day | 11th – 25th |
+| Site | Saturday | previous Saturday – Friday |
+
+A payday on a Sunday or holiday moves to the day before (repeatedly). Example: payday Sun 28 Feb 2027 → Sat 27 Feb.
+
+## 6.6 Payroll computation
+
+Per employee in the pay group (Active), per period:
+
+| Component | Formula |
+|---|---|
+| Paid days | days with status Present or Late, or fixed by HR and not Absent / Rest Day Work |
+| Basic pay | Σ daily rate on each paid day |
+| Holiday pay | daily rate for each Regular holiday on a work day in the period, from the employee's first rate date, up to today, that the employee didn't work |
+| Late deduction | Σ (late + early minutes) × daily rate of that day ÷ 480 |
+| Overtime pay | approved overtime minutes ÷ 60 × overtime rate (₱100) |
+| Gross pay | basic + holiday + overtime − late deduction (not below 0) |
+| Government | only with the employee's switch on (6.7) |
+| Cash advance | for each Active advance, oldest first: min(per payday, balance, pay left) |
+| Net pay | gross − government − cash advance (≥ 0) |
+
+**Worked example** (₱800/day, office, switch off): 11 paid days = ₱8,800; one Regular holiday = ₱800; 30 late minutes = −₱50; 2 h approved overtime = ₱200 → gross ₱9,750; cash advance ₱1,000 → net ₱8,750.
+
+**Draft / Final:**
+- Compute (any HR user) creates or rebuilds the Draft; can be repeated.
+- Warnings: unfixed Missing Scan days and Waiting overtime **block** Finalize; "period isn't over yet" and work days with no attendance at all are warnings only.
+- Finalize (approver, confirmation): recomputes, then in one transaction records the cash advance deductions, lowers balances (Paid Off at ₱0), and marks the run Final. A Final run can't be computed again, and its attendance days are locked.
+
+## 6.7 Government deductions
+
+For employees with the switch on, from a monthly basis = daily rate (on the period's last day) × work days per month (26). Share per payday: office ½, site 12/52.
+
+| Deduction | Default formula (2025 employee shares; editable in Settings) |
+|---|---|
+| SSS | 5% × salary credit, where credit = basis rounded to the nearest ₱500, kept within ₱5,000-₱35,000 |
+| PhilHealth | 2.5% × basis kept within ₱10,000-₱100,000 |
+| Pag-IBIG | 2% × min(basis, ₱10,000) |
+| Withholding tax | TRAIN yearly table on (period gross − the three above) × paydays per year (24 office, 52 site), divided back per payday |
+
+TRAIN yearly table (2023 onward): ≤ ₱250,000: 0; ≤ ₱400,000: 15% over ₱250,000; ≤ ₱800,000: ₱22,500 + 20% over ₱400,000; ≤ ₱2,000,000: ₱102,500 + 25%; ≤ ₱8,000,000: ₱402,500 + 30%; above: ₱2,202,500 + 35%.
+
+**Example** (₱1,000/day, office, gross ₱13,000): basis ₱26,000 → SSS ₱650, PhilHealth ₱325, Pag-IBIG ₱100; taxable ₱11,925 × 24 = ₱286,200 → yearly tax ₱5,430 → ₱226.25 per payday; net ₱11,698.75. Total government deductions are capped at the gross pay.
+
+## 6.8 Cash advances
+
+- **Record** (any HR user): Active employee, amount > 0, per payday > 0 and ≤ amount, date, reason required; saved Waiting with balance = amount.
+- **Approve / Reject:** approver, only while Waiting.
+- **Deduction:** only at payroll Finalize, oldest advance first, never more than the pay left; the rest carries over. Example: ₱5,000 at ₱2,000 per payday, pay left ₱1,500 → ₱1,500 taken, balance ₱3,500. Each deduction is listed with pay date, period and balance after; the payslip shows the balance left.
+
+## 6.9 Payslips and Payslip History
+
+One page per employee: period, pay date, daily rate, basic pay with days, holiday pay, overtime, late/undertime deduction, gross, government deductions (if on), cash advance with the balance left, net pay, received-by line. Print Payslips prints the whole run; Save as PDF writes one file. Payslip History lists only finalized payslips, filterable by payroll and name.
+
+## 6.10 HR Settings (approver)
+
+- Work start / end, break start / end, grace minutes, work days, overtime rate and minimum, work days per month, and all government rates and limits (6.7), with tax on/off.
+- Validation: end after start; break inside the work hours; grace 0-120; at least one work day; rates 0-50%; maxima not below minima.
+- Saving asks Yes/No with the changes, writes the `hr.*` settings, audits before/after, and recomputes the last 120 days of attendance (fixed and finalized days excepted).
+- **Holidays:** one per date; Regular (paid when not worked) or Special (no work, no pay). Adding or deleting recomputes attendance. Effects: no Absent on a holiday; payday moves back; Regular holiday pay in payroll. Working on a holiday is paid as a normal day.
+
+# 7. Inventory & Vendors
+
+## 7.1 Materials and stock
+
+- Create: unique name, category, unit, unit price ≥ 0, starting stock ≥ 0, minimum ≥ 0. After creation `stock_qty` can't be edited.
+- Stock changes only through approved usage (−) and deliveries (+), each in the same save as its record.
+- Low stock: stock < minimum → light red; stock = 0 → red; tab title "Materials (n low)".
+- Delete refused once usages, quotes or deliveries exist.
+
+## 7.2 Material usage
+
+- Record: project (not Cancelled), material, quantity > 0 and ≤ current stock, date, notes → Waiting.
+- Approve (approver): re-checks stock, `stock_qty −= quantity`, `cost = quantity × unit_price` at that moment (frozen), Approved. Example: 20 bags at ₱250 → ₱5,000 to the project, stock 100 → 80.
+- Reject: no stock or money effect. Project history lists the approved usage and its total cost.
+
+## 7.3 Price comparison, purchases and deliveries
+
+- Quotes per material from several vendors; open quotes listed first, cheapest first (highlighted).
+- Approve as Purchase (approver): the quote becomes Selected and a purchase is created (one per quote); the material's other Open quotes become Not Selected. Only Open quotes can be deleted.
+- Delivery (no approval): optional purchase (fills vendor, material, price), quantity, price, receipt number, and either a scan or "physical copy only" with the filed location (database CHECK). Effects: stock += quantity; material price = delivered price; the purchase shows delivered quantity. Delivery receipts appear in the Receipt Vault as Stock purchase.
+
+## 7.4 Equipment
+
+- Owned or Rented (Rented requires company, rate and unit: Day / Week / Month); status Available, Under Repair, Retired.
+- Maintenance due when `next_maintenance` ≤ today (light yellow; tab title "Equipment (n due)").
+- Log entries (Preventive / Repair, date, work, cost, done by) may set the next maintenance date. Costs are overhead (Dashboard by date).
+- Delete refused once logs exist (set Retired).
+
+## 7.5 Vendors
+
+Name (unique), contacts, address, bank name / account name / number, VAT or Non-VAT. Papers: Company Profile, Bank Details, Certificate of Registration, Other. Account number logged only as on file. Delete refused once quotes or deliveries exist.
+
+# 8. Subcontractors
+
+## 8.1 Directory
+
+Business name (unique), trade name, DTI/SEC, TIN, primary and secondary contacts, addresses, bank details, at least one trade, PCAB number / classification / expiry. PCAB expired → light red; expiring within 30 days → light yellow; tab title counts them. TIN and account number logged only as on file. Delete refused once jobs exist.
+
+## 8.2 Jobs
+
+- Subcontractor, project (not Cancelled), scope, contract amount > 0, start ≤ end, retention 0-99% (default 10), stages (default 30 / 40 / 30) totalling exactly 100%.
+- **Stage amount** = contract × % ÷ 100 rounded to centavos; the last stage takes the remainder so Σ stages = contract.
+- **Lock:** once any stage is reached or a voucher exists (not Rejected), subcontractor, project, amount, retention and stages can't change; scope and dates still can.
+- Progress updates: % 0-100, date not in the future, notes, optional file; the latest is the job's progress. Job status: Ongoing, Finished (100%), Paid in Full (payouts = contract).
+- Delete only without progress, papers or billing.
+
+## 8.3 Billing
+
+| Step | Who | Rule | Effect |
 |---|---|---|---|
-| Dashboard | Yes (all or one department) | Yes, own department's numbers only | No |
-| Projects, User Accounts | Yes | No | No |
-| Own department's page | Yes, all four | Yes | Yes |
-| My Account | Yes | Yes | Yes |
+| Mark Stage Reached | any | once | `reached_on` |
+| Prepare Voucher | any | stage reached, no live voucher | SV-nnnn, gross = stage amount, retention = gross × %, payable = gross − retention, Waiting |
+| Approve / Reject | approver | Waiting | Approved / Rejected (Rejected frees the stage for a new voucher) |
+| Record Payout | any | Approved; amount = payable; reference required for Bank Transfer and Check | `sub_payouts` row, voucher Paid; project expense |
+| Release Retention | any | latest progress 100% and every stage Paid; retention held > 0 | Retention voucher for the held amount, same approval and payout |
 
-Even if someone found a way to open a page they shouldn't, the app checks again before saving anything, so the rule can't be bypassed.
+Example (₱100,000, 10%): stages pay ₱27,000 + ₱36,000 + ₱27,000, then the retention voucher pays ₱10,000; total ₱100,000. The voucher prints with the subcontractor's bank details.
 
-## 1.2 Approvals: Waiting, Approved, Rejected
+# 9. Receipts & change orders
 
-Many things need two people: the **Employee** records it, the **Supervisor** (or an Admin) approves it. Until it is approved, it **doesn't count**: stock doesn't move, and money isn't added to any total.
+## 9.1 Receipts
 
-| Status | Meaning |
+- Fields: receipt number (unless no receipt), purchase date (not in the future), merchant, amount > 0, category, Project (with project) or Company overhead.
+- Copy, exactly one: scan; physical copy only + filed location; or no receipt + reason (database CHECK).
+- Waiting until an approver decides (one or several at once; all selected must be Waiting). Only Approved count: Project → that project's expenses; Overhead → Dashboard by date.
+- Edit only while Waiting or Rejected; saving returns it to Waiting. Approved receipts are locked.
+
+## 9.2 Needs Review
+
+No-receipt expenses, Waiting first; the tab title shows the waiting count. **Attach Receipt** adds the receipt number and copy later, clears the no-receipt flag and keeps the existing decision.
+
+## 9.3 Stock purchases
+
+Deliveries are listed in the vault as read-only "Stock purchase" rows (Approved, category Materials). They are never project expenses (the material's cost reaches a project when its usage is approved) and are not stored in `receipts`.
+
+## 9.4 Change orders
+
+- Fields: project (not Cancelled), date requested, description, cost change (±), days change (±), optional signed document. At least one change must be non-zero; the revised price can't go below ₱0. Numbered CO-001, CO-002... across all projects.
+- Budget preview: current price (contract + approved change orders) → revised; current target end → revised.
+- Approve / Reject: Admin only, while Waiting; editing only while Waiting. On approval: revenue += cost change; `target_end_date` += days change (if set), audited on the project too.
+
+## 9.5 Reports
+
+Expense & Receipt Report (every approved receipt in the range, by project / overhead / all), Weekly and Monthly Expense Summary (project vs. overhead totals per week starting Monday, or per month). Approved receipts only, stock purchases excluded. Preview, print, PDF, Excel.
+
+# 10. Website Admin
+
+- Opened from Tri-Stone by Website Admin logins (and by Admins who choose it); same idle sign-out; sidebar: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic (only Inquiries is built).
+- **Inquiries:** website Contact form messages (an email or a phone number is required by the database). Status New → Contacted → Closed and internal notes, saved with who and when after a Yes/No list of changes; never deleted; the sidebar shows "Inquiries (n new)"; Copy Email copies the address for replying from Gmail.
+
+# 11. Glossary
+
+| Term | Meaning in this system |
 |---|---|
-| **Waiting Approval** | Recorded, waiting for the Supervisor. Doesn't count yet. |
-| **Approved** | Counts from now on (stock, expenses, revenue). Usually can't be edited any more. |
-| **Rejected** | Doesn't count. Depending on the feature, it can be fixed and sent again, or a new one made. |
-
-Employees see a short note instead of the Approve and Reject buttons. That's on purpose.
-
-**Why two people?** It stops honest mistakes and makes every peso traceable to who recorded it and who approved it.
-
-## 1.3 Edit History
-
-Every add, edit and delete is recorded automatically: **who**, **when**, **what changed**, the **old value** and the **new value**. Each department has an **Edit History** tab (Supervisor and Admins only) showing its own changes. You can filter by date, person and record, and export to Excel.
-
-Private details are **never** written in the history: passwords, security answers, government ID numbers, TIN and bank account numbers. For those, the history only says "on file: yes/no" or "(changed)".
-
-## 1.4 Things that work the same everywhere
-
-- **The main window always fills the screen** (above the taskbar) and has no title bar or minimize / maximize / close buttons, so it can't be resized, moved or closed by accident. Leave with **Sign Out**.
-- **Search boxes** wait until you stop typing for a moment, then search. You don't need to press Enter.
-- **Click a row** in a list to load it into the form next to it. After **Save**, the same row stays highlighted.
-- **Add ...** buttons clear the form for a new record. **Cancel** throws away changes you haven't saved.
-- **Export** saves the list, exactly as filtered, as an Excel file with real numbers and dates.
-- **Print / Print Report / Print Voucher** opens a print preview. To make a PDF, choose the printer **Microsoft Print to PDF**.
-- **Attaching files** (scans, photos, papers): PDF, pictures (JPG, PNG, BMP, TIF) or Word, up to **25 MB** each. The app keeps its own copy, so moving or deleting your original later doesn't matter.
-- **Money** is shown in pesos, for example ₱1,250.00.
-- **Delete** is only allowed while nothing else depends on the record. Once it has history, use the "keep history" option instead (Cancelled, Inactive, Retired, Disabled). That way old reports stay correct.
-
-## 1.5 Adding vs. changing a record
-
-On every list page (Projects, User Accounts, Employees, Materials, Vendors, Equipment, Subcontractors, Jobs, Change Orders), adding and changing are kept **completely separate**, so one can never be mistaken for the other:
-
-- **Add / New / Create** opens a **separate window** with the form. Saving there always creates a **new** record; the window closes and the new record is selected in the list. Parts that only make sense for a saved record (papers, maintenance log, progress) are added afterwards on the page.
-- The form under the list is **only for changing** the record you clicked. Until you click one, it's empty and greyed out.
-- When a page opens, or you search or filter, the list **never selects anything by itself**.
-- **Save** first shows a message listing every change, for example *Unit price: 250 -> 275*. Nothing is saved until you click **Yes**. Government IDs, TIN and bank account numbers are listed only as "changed", never shown.
-- If nothing was changed, **Save** just says *Nothing changed.*
-
-**Why:** before this, a list selected its first row by itself, so the form was quietly editing that record. Typing a "new" one into it and clicking Save **overwrote** the existing record instead of adding a new one.
-
-# 2. Signing in and staying safe
-
-## 2.1 Signing in
-
-Open **Tri-Stone**, type your **username** and **password**, then **Sign In**. The same Sign In serves the office app and the Website Admin screens; your login decides which opens (see 1.1). Capital letters in the username don't matter (`JDelaCruz` = `jdelacruz`); in the password they **do**.
-
-Every sign-in, sign-out and failed attempt is recorded with the computer's name (Dashboard > Log History).
-
-## 2.2 Wrong passwords and locking
-
-- Each wrong password shows how many tries are left.
-- On the **5th** wrong password in a row, the account is **Locked**.
-- A locked account can't sign in, **even with the right password**, until an Admin clicks **Unlock** (or sets a new password, which also unlocks it).
-- A correct sign-in resets the counter to zero.
-
-**Why:** it stops someone from guessing passwords over and over.
-
-## 2.3 Account statuses
-
-| Status | Meaning | How it gets there | How it goes back |
-|---|---|---|---|
-| **Active** | Can sign in | Normal | |
-| **Locked** | Can't sign in | 5 wrong passwords | Admin: **Unlock** or **Set New Password** |
-| **Disabled** | Turned off | Admin: **Disable**, or HR marks the employee **Inactive** | Admin: **Enable** |
-
-## 2.4 Password rules
-
-Every new password, whoever sets it, must be:
-
-- at least **8 characters**,
-- with at least **one letter** and **one number**.
-
-Examples: `bodega2026` is OK. `password` is refused (no number). `12345678` is refused (no letter). `abc123` is refused (too short).
-
-## 2.5 Forgot password
-
-**Employees and Supervisors** can't reset their own password. **Forgot password?** sends a **request** to the Admins:
-
-- It works even if your account is locked.
-- Sending it twice doesn't create two requests.
-- An Admin sets a new password and gives it to you **in person**. That's on purpose: a new password should never travel by chat or email.
-
-**Admins** answer their own **security question** instead, then type a new password.
-
-- Capital letters and spaces at the ends of the answer don't matter (`Manila ` = `manila`).
-- After **10** wrong answers in total, the security question stops working for that Admin; another Admin must reset the password.
-- An Admin who never set a security question must ask another Admin.
-
-## 2.6 "Still there?" (idle sign-out)
-
-After **5 minutes** without touching the keyboard or mouse, a *"Still there?"* message appears with a **60-second** countdown. This works the same in the office app and the Website Admin screens.
-
-- **Stay Signed In:** keep working.
-- **Sign Out:** sign out now.
-- **No answer:** the app signs out by itself. The log says *Idle Sign Out*, and the Sign In window tells you why.
-
-**Why:** a computer left signed in is an open door to payroll, bank details and approvals.
-
-# 3. User Accounts (Admins)
-
-## 3.1 How logins are tied to employees
-
-A login always belongs to **one office employee** from **HR & Payroll > Employees**.
-
-- The login **takes the employee's name and department**. You don't type them.
-- If HR renames the employee or moves them to another department, the login updates by itself.
-- **Site workers never get logins.** They only use the fingerprint scanner.
-- Someone in the **Administration** department can only get an **Admin** login (Admins have no department).
-- **One login per employee.** The app and the database both refuse a second one.
-- Only **Active** employees who don't have a login yet appear in the list.
-
-So the order is always: **HR adds the employee first, then the Admin creates the login.**
-
-## 3.2 Creating a login
-
-1. Click **Create Account** and pick the **employee**.
-2. A **username** is suggested: first letter of the first name + surname. For example, Juan Dela Cruz becomes `jdelacruz`. Surname parts like *de, dela, de los, san, sta* are kept. You can change it.
-3. Type a **first password** or click **Generate** (see 3.3).
-4. Choose the **Level**. The **Department** fills in from the employee.
-5. Click **Save**, then give the username and password to the person **in person**.
-
-**Username rules:** 3 to 50 characters; only letters, numbers, dots, dashes and underscores; no spaces. It must be unique, ignoring capital letters, so `Juan` and `juan` can't both exist.
-
-**"Already has someone" question:** the plan is 1 Employee and 1 Supervisor per department. If the department already has an active person at that level, the app **asks** before saving. It doesn't block you, because a temporary replacement is sometimes needed.
-
-## 3.3 Typing a password vs. Generate
-
-**You can do either.** Both are checked against the same password rules (2.4).
-
-- **Type one yourself:** fine when you want something easy to read out loud. It still needs 8+ characters with a letter and a number.
-- **Generate:** the app makes a random 10-character password with 2 numbers. It leaves out look-alike characters (no `0`/`O`, no `1`/`l`/`I`), so it's easy to read out and type. It's harder to guess than one you'd make up.
-
-The password box is only used **when creating** a login. For an existing login it's greyed out; use **Set New Password** instead (3.4).
-
-**Tip:** Generate is the safer choice. Write the password on paper, hand it over, and have the person keep it private.
-
-## 3.4 The buttons for an existing login
-
-Click the login in the list first.
-
-| Button | What it does | Notes |
-|---|---|---|
-| **Set New Password** | Gives the person a new password | Also unlocks a locked account, resets the wrong-password counter, and closes their waiting password requests |
-| **Unlock** | Lets a locked account sign in again | Resets the wrong-password counter |
-| **Disable** | Turns the account off | Records are kept. Use it when someone leaves. |
-| **Enable** | Turns a disabled account back on | Resets the wrong-password counter |
-
-You can also change the **username**, **level** or which employee it's for, then **Save**.
-
-**Safety rules:**
-
-- You can't disable your own account or remove your own Admin level, so you can't lock yourself out by accident.
-- The **last active Admin** can't be disabled or demoted. There must always be someone who can manage accounts. Make another Admin first.
-- An account linked to an employee can't be unlinked.
-- If HR marks an employee **Inactive**, their login is turned **off**. If HR reactivates them, the login **stays off** until an Admin clicks **Enable**. That's on purpose: an Admin decides when access comes back.
-
-## 3.5 Password requests
-
-The **Password requests (N)** button at the top shows how many people are waiting. Open it, select the person, and click **Set New Password** (Generate, Copy, Save). **Dismiss** closes a request sent by mistake without changing anything.
-
-# 4. My Account
-
-Everyone can see their own name, username, department and level here.
-
-**Admins only:**
-
-- **Change password:** type the current password, then the new one twice. The new one must follow the password rules and be different from the current one.
-- **Security question:** pick or type a question, type the answer, and confirm with your current password. The answer is stored scrambled (like a password); nobody can read it, not even other Admins.
-
-Both ask for your **current password** first, so nobody can change them on a computer you left signed in.
-
-**Employees and Supervisors** can't change their password here. Ask an Admin.
-
-# 5. Dashboard
-
-For Admins (all departments) and Supervisors (own department only).
-
-## 5.1 How the money is counted
-
-The Dashboard uses the **completed-contract method**, the usual method for construction companies. A project's revenue **and all its expenses** count in the period when the project is **finished** (set to Done), not while it's running.
-
-**Example:** a project ran from March to June and was set to Done in June. On "This Month" in May it shows nothing. In June, all of its revenue and expenses appear at once.
-
-Company **overhead** (overhead receipts, equipment repairs, and payroll once built) counts by its own date, because it isn't tied to a project.
-
-| Card | How it's worked out |
-|---|---|
-| **Completed Projects** | Projects set to Done in the period |
-| **Gross Revenue** | Their contract prices + approved change orders |
-| **Operational Expenses** | Their expenses (approved material use + approved project receipts + subcontractor payouts) + overhead in the period |
-| **Net Revenue** | Gross Revenue minus Operational Expenses |
-
-The line under the cards shows where the expenses come from.
-
-## 5.2 Department view
-
-Supervisors always see their own department; Admins can choose one. A department view shows only that department's expenses:
-
-| Department | Expenses shown |
-|---|---|
-| Inventory | Materials used + equipment repairs |
-| Subcontractors | Payouts |
-| Receipts | Project + overhead receipts |
-| HR & Payroll | Payroll (once built) |
-
-Revenue and Net Revenue are company-wide, so they're hidden in a department view.
-
-## 5.3 The rest of the page
-
-- **Project status chart:** how many projects are Pending, Ongoing, Done and Cancelled **right now** (not affected by the period).
-- **Top performing projects:** projects active during the period, with revenue, expenses, profit and margin **so far**, highest profit first. Click a column title to sort.
-- **Log history** (Admins only): sign-ins, sign-outs, failed attempts, locks and unlocks, password changes and requests.
-
-# 6. Projects (Admins)
-
-The company's **one** project list. Inventory, Subcontractors and Receipts choose projects from it in dropdowns; they can't add their own.
-
-## 6.1 Fields and automatic values
-
-- **Required:** name, site/location, sector. The price can't be negative, and the target end date can't be before the start date.
-- **Completion date** is set automatically to **today** when the status becomes **Done**, and cleared if the project is reopened.
-- **Days** in the summary: "Day 45" while running, "Starts in 10 days" if it hasn't started, "Finished in 120 days" when done, or "Cancelled".
-
-## 6.2 The project's money
-
-- **Revenue** = contract price + **approved** change orders.
-- **Expenses to date** = **approved** material use + **approved** project receipts + subcontractor **payouts**.
-- **Profit to date** = Revenue - Expenses.
-
-Payroll and equipment repairs are **not** project expenses; they're company overhead. Stock purchases count when the material is **used** on a project, not when it's bought, so nothing is counted twice.
-
-The Projects page, the project report and the Dashboard all use the same calculation, so they always agree.
-
-## 6.3 Delete vs. Cancelled
-
-A project can only be deleted while **nothing** is recorded against it (no material use, receipts, subcontractor jobs or change orders). After that, set it to **Cancelled**: it stays in history and reports, but drops out of active work.
-
-**Show on website** sends the project to the Website Admin app, where its photos and website details will be added *(coming soon)*.
-
-# 7. HR & Payroll: Employees
-
-Everyone who works for the company: **office staff** and **site workers**.
-
-## 7.0 Adding vs. changing an employee
-
-Works like every list page (see 1.5): **Add Employee** opens its own window; the form under the list only changes the employee you clicked; **Save** lists the changes (for example *Daily rate: ₱600.00 -> ₱700.00 from 2 Nov 2026*) and waits for **Yes**.
-
-## 7.1 Departments and pay schedule
-
-The department decides the pay schedule automatically:
-
-| Department | Pay schedule |
-|---|---|
-| **Site** (site workers) | Weekly, every Saturday |
-| Administration, HR & Payroll, Inventory, Subcontractors, Receipts | Twice a month, the 15th and 30th |
-
-## 7.2 Daily rate history
-
-The daily rate is kept as a **history with start dates**, not overwritten. That way past payslips always keep the rate they were paid with.
-
-**Example:** Juan earns ₱600. HR gives him ₱650 starting next Monday:
-
-- Type **650** and set **Rate applies from** to next Monday, then **Save**.
-- Until Sunday he's still at ₱600; from Monday, ₱650. Both rows are in the **Daily rate history**.
-- If HR types ₱700 for the **same** start date later, that row is **corrected** instead of adding another.
-- Editing other details without touching the rate adds no new row.
-
-Rate limits: more than ₱0, at most ₱100,000 a day.
-
-## 7.3 Biometric ID
-
-The number the fingerprint scanner gives the person. Optional; up to 20 letters, numbers or dashes. **No two people can share one.** If you try, the message says who already has it. Attendance will match scans to employees by this number.
-
-## 7.4 Leaving and coming back
-
-- **Mark Inactive:** the person and all their records stay, and their login (if any) is turned **off**.
-- **Reactivate:** the employee is active again, but the login **stays off** until an Admin clicks **Enable** in User Accounts.
-- You can't mark yourself Inactive, or the last active Admin's employee record.
-
-## 7.5 Government deductions
-
-Off by default. Tick it only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional and are **never** shown in Edit History; only whether each is on file.
-
-# 7b. HR & Payroll: Attendance
-
-## 7b.1 Where the times come from
-
-There is one fingerprint scanner. Everyone scans **4 times a day**: in, break out (lunch), break in, out. HR exports the scanner's **All Report** file to a USB stick and uploads it. The scanner's ID number for a person must be typed as their **Biometric ID** in Employees, or their scans are skipped (the rejected rows say who).
-
-Uploading the same file again, or a file that overlaps an earlier one, is safe: each scan is stored once.
-
-**Sending the employee list to the scanner.** The scanner can load its employee list from a file on the USB stick, in its own *Employee Form* layout. **Make Scanner Employee File** fills that form with every **active** employee who has a numeric Biometric ID: ID, name, department and "employee" authority (scanner admins are set on the scanner). The scanner only knows numbered departments, so ours are sent as Site = 1, Administration = 3, HR & Payroll = 4, Inventory = 5, Subcontractors = 6, Receipts = 7. The schedule columns are left empty, like the scanner's own file, because the app works out late, absent and overtime itself. Fingerprints are still registered on the scanner, one person at a time.
-
-## 7b.2 How a day is worked out
-
-| Rule | Example |
-|---|---|
-| Work day: Monday to Saturday, 8:00 AM to 5:00 PM, lunch 12-1 unpaid | |
-| On time until **8:15** | In at 8:14 = on time |
-| After 8:15, late counts **every minute from 8:00** | In at 8:20 = 20 minutes late |
-| Back from lunch after 1:00 also counts as late | Back 1:10 = 10 more minutes |
-| Leaving before 5:00 counts as **early** minutes | Out 4:30 = 30 minutes early |
-| Overtime = time after 5:00, from **30 minutes** on, paid only when approved | Out 6:45 = 1 h 45 min waiting for approval |
-| Two scans within 3 minutes count once | 8:01 and 8:02 = one scan |
-| Sunday scans = **Rest Day Work**, all of it waiting as overtime | |
-
-**Statuses:** Present, Late, **Missing Scan** (fewer than 4 scans), **Absent** (a work day with no scan), Rest Day Work. A day is only marked Absent up to yesterday, and not before the person's first daily-rate date.
-
-## 7b.3 Fixing a day
-
-If someone forgot to scan, HR clicks **Fix Missing Scan**, sets the known times and types the reason (e.g. *forgot to scan after lunch, confirmed by the foreman*). The day is worked out again from those times, marked **Fixed**, and the change is kept in Edit History. Uploading again never undoes a fix.
-
-## 7b.4 Overtime approval
-
-Overtime is never paid by itself. The **HR Supervisor** (or an Admin) approves or rejects each day's overtime. A decision stays after another upload, unless the overtime minutes change (then it waits again).
-
-## 7b.5 Holidays
-
-Holidays are set in **Settings**. Nobody is marked absent on one. **Regular** holidays are paid even when not worked; **Special** holidays are no work, no pay. Working on a holiday is paid like a normal day.
-
-# 7c. HR & Payroll: Payroll, cash advances, payslips
-
-## 7c.1 When people are paid
-
-| Group | Payday | Covers |
-|---|---|---|
-| Office | the 15th | the 26th of last month to the 10th |
-| Office | the 30th (February: its last day) | the 11th to the 25th |
-| Site | every Saturday | Saturday to Friday before it |
-
-A payday on a Sunday or holiday moves to the day before. HR uses the days between the end of a period and payday to upload the scanner file, fix missing scans and approve overtime.
-
-## 7c.2 How pay is worked out
-
-| Part | Rule | Example (₱800 a day) |
-|---|---|---|
-| Basic pay | each paid day at that day's rate; paid = Present or Late, or fixed by HR | 11 days = ₱8,800 |
-| Missing Scan / Absent | not paid (fix a missing scan to pay it) | |
-| Regular holiday not worked | paid | +₱800 |
-| Late and early minutes | daily rate / 480 per minute | 30 min = −₱50 |
-| Overtime | approved hours x ₱100 | 2 h = +₱200 |
-| Gross pay | | ₱9,750 |
-| Government deductions | only if the employee's switch is on | |
-| Cash advance | its amount per payday, never more than what's left | −₱1,000 |
-| Net pay | never below zero | ₱8,750 |
-
-**Government deductions** (switch on): from a monthly basis of daily rate x 26. SSS 5% of the salary credit (₱5,000-₱35,000), PhilHealth 2.5% (basis kept between ₱10,000 and ₱100,000), Pag-IBIG 2% up to ₱10,000. Office pays half each payday, site 12/52 each week. Income tax uses the TRAIN yearly table (0% up to ₱250,000) on pay after those. These are the 2025 employee shares and can be changed in Settings; have the accountant check them.
-
-## 7c.3 Draft and Final
-
-**Compute Payroll** makes a draft: compute again as often as needed. **Finalize** (HR Supervisor or Admin) is refused while there are missing scans not fixed or overtime waiting. Finalizing computes once more, takes the cash advances, and locks it: those attendance days can't be changed, re-uploaded or fixed any more, so the payslips always match.
-
-## 7c.4 Cash advances
-
-The HR Employee records the amount, the deduction per payday, the date and the reason; the HR Supervisor approves. Each finalized payroll takes the per-payday amount until it's paid off. If the pay left is smaller, only that is taken and the rest carries over (pay never goes negative). Example: ₱5,000 at ₱2,000 per payday, pay left ₱1,500 → ₱1,500 taken, ₱3,500 still owed.
-
-# 8. Inventory & Vendors
-
-Employees record; the Inventory **Supervisor** (or an Admin) approves usage and purchases.
-
-## 8.1 Stock is never typed in
-
-After a material is added with its **starting stock**, the stock changes **only** by itself:
-
-- **down** when material usage is **approved**,
-- **up** when a **delivery** is recorded.
-
-**Why:** if anyone could type the stock, nobody could trust it. This way every unit can be traced to a delivery or a project.
-
-**Low stock:** a row turns **light red** below its minimum and **red** at zero. The tab title shows the count, for example *Materials (2 low)*.
-
-## 8.2 Material usage
-
-1. The Employee records what a project used. It waits.
-2. The Supervisor approves or rejects it.
-3. **On approval:** the stock drops, and the cost becomes that project's expense.
-
-The cost is **quantity × the material's price at the moment of approval**. Example: 20 bags approved at ₱250 = ₱5,000 added to the project. Using more than what's in stock is refused.
-
-## 8.3 Price comparison and purchases
-
-1. The Employee enters **quotes** from several vendors for the same material.
-2. The **cheapest open quote** is highlighted.
-3. The Supervisor picks one with **Approve as Purchase**. The **other open quotes** for that material close automatically.
-
-## 8.4 Deliveries
-
-- No approval needed, because the purchase was already approved.
-- Saving a delivery **adds the stock** and sets the material's price to the **delivered price**.
-- Every delivery needs its receipt: either a **scan**, or **Physical copy only** plus where the paper is filed (for example "Folder B, Oct 2026"). The app refuses a delivery with neither.
-- Delivery receipts automatically appear in **Receipts** as **Stock purchase**, read-only, so they're never counted twice.
-
-## 8.5 Equipment
-
-- Owned or rented. Rented needs the rental company and the rate.
-- When the **next maintenance** date arrives, the row turns **yellow** and the tab says *Equipment (N due)*.
-- **Add Log Entry** after maintenance or a repair; it can move the next maintenance date.
-- Repair costs are **company overhead**, not project expenses.
-- Equipment with history can't be deleted; set it to **Retired**.
-
-## 8.6 Vendors
-
-Supplier details, bank details, VAT status and papers (company profile, bank details, certificate of registration). Bank account numbers are kept out of Edit History. A vendor with history can't be deleted.
-
-# 9. Subcontractors
-
-Employees prepare; the Subcontractors **Supervisor** (or an Admin) approves vouchers.
-
-## 9.1 Jobs, stages and retention
-
-A **job** = subcontractor + project + scope + contract amount + dates + **retention %**.
-
-- **Payment stages** split the contract (default: Down payment 30%, Midway 40%, Completion 30%). They must add up to exactly **100%**. The last stage absorbs any rounding centavos, so the stages always add up to the contract exactly.
-- **Retention** (default 10%, can be 0) is held back from **every** payment until the job is finished and checked.
-
-**Example:** a ₱100,000 job, 10% retention:
-
-| Stage | Amount | Retention held | Paid now |
-|---|---|---|---|
-| Down payment 30% | ₱30,000 | ₱3,000 | ₱27,000 |
-| Midway 40% | ₱40,000 | ₱4,000 | ₱36,000 |
-| Completion 30% | ₱30,000 | ₱3,000 | ₱27,000 |
-| **Retention release** | | | **₱10,000** |
-
-Total paid: ₱100,000.
-
-## 9.2 The billing steps
-
-1. The Employee marks a stage **Reached**.
-2. The Employee clicks **Prepare Voucher** (numbered SV-0001, SV-0002...). It waits.
-3. The Supervisor **approves** or **rejects** it. A rejected voucher sends the stage back to "Reached", so a new one can be prepared.
-4. After paying, the **payout** is recorded for exactly the voucher's amount. Bank transfers and checks need a reference number.
-
-A voucher can't be prepared before its stage is reached, and a payout can't be recorded before approval or twice.
-
-## 9.3 Locking
-
-Once billing starts (a stage reached or a voucher made), the subcontractor, project, amount, retention and stages are **locked**. Only the scope and dates can still change. **Why:** money already paid must keep matching the job it was paid for.
-
-## 9.4 Retention release
-
-Only possible when the latest progress update says **100%** and **every stage is paid**. It gets its own voucher and approval, like a stage.
-
-## 9.5 Other rules
-
-- Payouts (including released retention) are the project's subcontractor expenses.
-- **PCAB license:** the row turns **yellow** within 30 days of expiry and **light red** once expired.
-- A subcontractor with jobs can't be deleted. A job can only be deleted while it has no progress, papers or billing.
-- TIN and bank account numbers are kept out of Edit History.
-
-# 10. Receipts & Change Orders
-
-Employees add receipts; the Receipts **Supervisor** (or an Admin) approves them. Change orders are approved by an **Admin only**.
-
-## 10.1 Project or overhead
-
-Every receipt is one of two kinds:
-
-- **Project expense:** belongs to one project and counts in that project's expenses.
-- **Company overhead:** rent, electricity, internet, office supplies and so on. Counts as overhead on the Dashboard.
-
-Only **approved** receipts count. Waiting or rejected ones can be fixed with **Edit**, which sends them back to Waiting. Approved ones are locked.
-
-## 10.2 The copy of the receipt
-
-Each receipt has exactly **one** kind of copy:
-
-| Copy | When to use | Required |
-|---|---|---|
-| **Scan** | Normal case | The attached file |
-| **Physical copy only** | Paper only, no scan | Where the paper is filed |
-| **No receipt at all** | Tricycle fare, small cash payments | A reason. Goes to **Needs Review** |
-
-## 10.3 Needs Review
-
-Expenses with no receipt wait here until the Supervisor decides. The tab title shows how many, for example *Needs Review (2)*. If the receipt turns up later, **Attach Receipt** moves it to the vault and **keeps** the decision already made.
-
-## 10.4 Stock purchases
-
-Delivery receipts from Inventory appear in the vault marked **Stock purchase**. They're read-only and are **not** project expenses; the material's cost reaches the project when it's **used** (8.2). That's how double counting is avoided.
-
-## 10.5 Change orders
-
-When a client asks for a change that costs more or less, or takes more or fewer days:
-
-1. The Receipts department logs it: project, date, description, **cost change** (+ or -) and **days change** (+ or -). It's numbered automatically (CO-001, CO-002...).
-2. The **budget impact** preview shows the contract price and end date now and after.
-3. Attach the client's **signed** document and **Submit**.
-4. An **Admin** approves or rejects it.
-
-**On approval:** the cost change is added to the project's **revenue**, and the days move its **target end date**, everywhere (Projects, report, Dashboard).
-
-**Rules:** a change order needs a cost change or a days change (or both), and the revised contract price can't go below ₱0.
-
-## 10.6 Reports
-
-Expense & Receipt Report (per project), Weekly and Monthly Expense Summary. Reports include **approved** expenses only. Print, save as PDF, or export to Excel.
-
-# 11. Coming soon
-
-- **Attendance:** fingerprint scans uploaded from the USB scanner (4 scans a day: in, break out, break in, out).
-- **Payroll:** pay worked out from validated attendance, late minutes, approved overtime and deductions; payslips printed or saved as PDF.
-- **Cash Advances:** recorded by HR, approved by the HR Supervisor, deducted a fixed amount per payday.
-- **Website Admin:** screens separate from the office pages, to edit the public website, choose which projects show, and read Contact form messages. **Built so far:** its main window (a sidebar like the office app, same idle sign-out) and the **Inquiries** page: every Contact form message with New / Contacted / Closed and internal notes; Website Admins and Admins can follow them up; nothing is ever deleted. Website Admin logins are a Level in User Accounts (see 1.1); Tri-Stone opens these screens for them.
-
-# 12. Words used in this guide
-
-| Word | Meaning |
-|---|---|
-| **Approve / Reject** | The Supervisor's (or Admin's) decision on a request. Only approved items count. |
-| **Overhead** | Company costs not tied to one project (rent, electricity, repairs, payroll). |
-| **Retention** | Part of each subcontractor payment held back until the job is finished and checked. |
-| **Change order (CO)** | A client-approved change to a project's price and/or end date. |
-| **Voucher (SV)** | The paper that authorizes a subcontractor payment. |
-| **Completed-contract method** | Counting a project's money when it's finished, not while it runs. |
-| **Edit History** | The automatic record of every change: who, when, old and new values. |
+| Approver | Admin, or the Supervisor of the department concerned |
+| Completed-contract method | A project's revenue and expenses are recognised in the period it is set to Done |
+| Overhead | Costs not tied to a project: overhead receipts, equipment repairs, payroll |
+| Retention | Percentage withheld from each subcontractor stage payment, released after completion |
+| Paid day | An attendance day that payroll pays: Present, Late, or fixed by HR |
+| Locked period | A pay period whose payroll is Final; its attendance can't change |
+| Stock purchase | A delivery's receipt shown in the Receipt Vault; never a project expense |
+| Edit History | The per-department view of `audit_logs` |
