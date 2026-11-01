@@ -74,7 +74,7 @@ public static class ChangeOrderService
 
     public static async Task<(int? Id, string? Error)> CreateAsync(CoInput i)
     {
-        if (Access.RequirePage(AppPage.Receipts) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Receipts) is { } denied) return (null, denied);
         if (CheckInput(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         var p = await db.Projects.FirstOrDefaultAsync(x => x.ProjectId == i.ProjectId);
@@ -92,7 +92,7 @@ public static class ChangeOrderService
     /// <summary>Only while waiting for the Admin.</summary>
     public static async Task<string?> UpdateAsync(int id, CoInput i)
     {
-        if (Access.RequirePage(AppPage.Receipts) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Receipts) is { } denied) return denied;
         if (CheckInput(i) is { } problem) return problem;
         using var db = Db.Open();
         var c = await db.ChangeOrders.FirstAsync(x => x.ChangeOrderId == id);
@@ -116,7 +116,7 @@ public static class ChangeOrderService
     /// <summary>Admin only. Revenue goes up/down by the cost change; the target end date moves by the days.</summary>
     public static async Task<string?> ApproveAsync(int id)
     {
-        if (Session.CurrentUser is not { IsAdmin: true }) return "Only an Admin can approve change orders.";
+        if (Access.RequireApprover(Departments.Receipts) is { } denied) return denied;
         using var db = Db.Open();
         var c = await db.ChangeOrders.FirstAsync(x => x.ChangeOrderId == id);
         if (c.Status != ApprovalStatuses.Waiting) return $"This change order is already {c.Status}.";
@@ -141,7 +141,7 @@ public static class ChangeOrderService
 
     public static async Task<string?> RejectAsync(int id)
     {
-        if (Session.CurrentUser is not { IsAdmin: true }) return "Only an Admin can reject change orders.";
+        if (Access.RequireApprover(Departments.Receipts) is { } denied) return denied;
         using var db = Db.Open();
         var c = await db.ChangeOrders.FirstAsync(x => x.ChangeOrderId == id);
         if (c.Status != ApprovalStatuses.Waiting) return $"This change order is already {c.Status}.";

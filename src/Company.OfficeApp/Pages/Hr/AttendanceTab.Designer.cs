@@ -214,7 +214,7 @@ namespace Company.OfficeApp.Pages.Hr
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(12, 558);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "The HR Supervisor or an Admin approves overtime.";
+            lblApproverNote.Text = "The HR Supervisor approves overtime.";
             // 
             // lblAttendanceMsg
             // 

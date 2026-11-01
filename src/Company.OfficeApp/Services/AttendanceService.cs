@@ -29,7 +29,7 @@ public record AttendanceRow(int DayId, int EmployeeId, DateOnly Date, string Nam
 /// (uploading the same file again adds nothing), then each employee's days are worked out with
 /// <see cref="AttendanceRules"/>: Present, Late, Missing Scan, Absent (a work day with no scans) or Rest Day Work.
 /// HR fixes missing scans by hand with a reason (kept in Edit History); overtime is paid only after the HR Supervisor
-/// (or an Admin) approves it. Scans are matched to employees by the Biometric ID set in Employees.
+/// approves it. Scans are matched to employees by the Biometric ID set in Employees.
 /// </summary>
 public static class AttendanceService
 {
@@ -43,7 +43,7 @@ public static class AttendanceService
 
     public static async Task<ImportResult> ImportAsync(string path)
     {
-        if (Access.RequirePage(AppPage.HrPayroll) is { } denied) throw new InvalidOperationException(denied);
+        if (Access.RequireEdit(AppPage.HrPayroll) is { } denied) throw new InvalidOperationException(denied);
         var file = ScannerFile.Read(path);   // FormatException with a plain message if it isn't a scanner file
         using var db = Db.Open();
 
@@ -222,7 +222,7 @@ public static class AttendanceService
     /// <summary>HR sets the day's times by hand (a forgotten scan). The reason and who did it are kept.</summary>
     public static async Task<string?> FixAsync(int dayId, TimeOnly? timeIn, TimeOnly? breakOut, TimeOnly? breakIn, TimeOnly? timeOut, string reason)
     {
-        if (Access.RequirePage(AppPage.HrPayroll) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.HrPayroll) is { } denied) return denied;
         if (CheckFix(timeIn, breakOut, breakIn, timeOut, reason) is { } problem) return problem;
         using var db = Db.Open();
         var d = await db.AttendanceDays.FirstAsync(x => x.DayId == dayId);

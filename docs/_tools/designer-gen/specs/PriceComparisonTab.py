@@ -34,7 +34,7 @@ CONTROLS = [
     ("DataGridView", "dgvQuotes", 12, 210, 930, 180, {}),
     ("Button", "btnDeleteQuote", 12, 398, 110, 28, {"Text": T("Delete Quote")}),
     ("Button", "btnApprovePurchase", 128, 398, 160, 28, {"Text": T("Approve as Purchase")}),
-    ("Label", "lblApproverNote", 300, 404, None, None, {"Text": T("Approve as Purchase: Inventory Supervisor or Admin only")}),
+    ("Label", "lblApproverNote", 300, 404, None, None, {"Text": T("Approve as Purchase: Inventory Supervisor only")}),
     # purchases
     ("Label", "lblPurchases", 12, 444, None, None, {"Text": T("Approved purchases")}),
     ("DataGridView", "dgvPurchases", 12, 464, 930, 180, {}),

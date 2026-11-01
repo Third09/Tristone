@@ -129,12 +129,14 @@ Who sees what is decided in one class, `Services/Access.cs`:
 
 | Page | Admin | Supervisor | Employee |
 |---|---|---|---|
-| Dashboard | yes | own department's numbers | no |
-| Projects, User Accounts | yes | no | no |
-| HR & Payroll / Inventory / Subcontractors / Receipts | all | own department | own department |
+| Dashboard | view | own department's numbers | no |
+| Projects | view | Receipts Supervisor edits | no |
+| User Accounts | edits | no | no |
+| HR & Payroll / Inventory / Subcontractors / Receipts | view all | own department: edit, approve, delete | own department: edit |
 | My Account | yes | yes | yes |
 
-Approve buttons use `Access.IsApprover(user, department)`: Admins plus that department's Supervisor.
+- `CanSee` (sidebar, `RequirePage` for reads), `CanEdit` (`RequireEdit`), `CanDelete` (`RequireDelete`: Supervisor; also Mark Inactive / Reactivate), `IsApprover` (`RequireApprover`: that department's Supervisor only, never Admins), `CanSeeHistory` (Edit History tabs: Admins + that Supervisor).
+- `Access.LockButtons(page, AppPage)` at the end of each page's constructor hides buttons by name: Export/Print/View/Open/Preview/Report/Zoom/Close/Cancel/Refresh and `...Pdf` stay; Approve/Reject/Finalize are left to the page (`IsApprover`); Delete/MarkInactive/Reactivate need `CanDelete`; any other button needs `CanEdit`. **Name new buttons by this rule.** When the user can't edit, it calls `RecordForm.MarkReadOnly`, so `RecordForm.SetEnabled` keeps the form fields locked.
 
 ## 3.4 Shared building blocks
 
@@ -213,7 +215,7 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 
 # Chapter 5: Projects and Dashboard (Part 1)
 
-## 5.1 Projects (`Pages/ProjectsPage`, `Services/ProjectService`, Admin only)
+## 5.1 Projects (`Pages/ProjectsPage`, `Services/ProjectService`, Receipts Supervisor edits, Admins view)
 
 - Grid: `ListAsync(search, status, sector)` with name, client, sector, status, contract price, revenue and expenses from `ProjectFinance.ForProjectsAsync` (one grouped query per source for all listed projects).
 - Form fields map 1:1 to `projects`. `CheckInput`: name and site required, price ≥ 0, target end not before start. When status becomes Done, `completed_date = today`; any other status clears it.
@@ -312,7 +314,7 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 | Receipt Entry (pop-up) | `CheckInput`, `CreateAsync`, `UpdateAsync`, `AttachLateReceiptAsync` | Same form for new, edit (Waiting/Rejected only; saving returns it to Waiting) and "attach a late receipt" (only the copy fields enabled; decision kept). |
 | Receipt Viewer (pop-up) | `ViewAsync` | Image scans in a zoomable `PictureBox` inside a scrolling `Panel` (loaded as a copy so the file isn't locked); PDF/Word open in their own program; one-page summary sheet (`ReceiptSheetPrint`). |
 | Needs Review | `NeedsReviewAsync`, `NeedsReviewCountAsync` | `no_receipt` rows, Waiting first. |
-| Change Orders | `ChangeOrderService.ListAsync`, `PreviewAsync`, `CreateAsync`, `UpdateAsync`, `ApproveAsync`, `RejectAsync`, `PrintDataAsync` | Budget preview = current price (contract + approved COs) → revised; end date ± days. Approve/Reject Admin only. CO-001 numbering. `ChangeOrderPrint` form for the client's signature. |
+| Change Orders | `ChangeOrderService.ListAsync`, `PreviewAsync`, `CreateAsync`, `UpdateAsync`, `ApproveAsync`, `RejectAsync`, `PrintDataAsync` | Budget preview = current price (contract + approved COs) → revised; end date ± days. Approve/Reject: Receipts Supervisor (`RequireApprover`). CO-001 numbering. `ChangeOrderPrint` form for the client's signature. |
 | Reports | `ReceiptReports.BuildAsync(type, project, from, to)` | Detailed list, weekly or monthly summary of approved receipts; `TableReport` pages them and `SaveAsPdf` prints to "Microsoft Print to PDF". |
 
 # Chapter 10: The Website Admin app (Part 6)

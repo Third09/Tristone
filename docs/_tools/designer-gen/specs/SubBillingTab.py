@@ -22,7 +22,7 @@ CONTROLS = [
     ("Button", "btnRejectVoucher", 410, 238, 110, 28, {"Text": T("Reject Voucher")}),
     ("Button", "btnPrintVoucher", 526, 238, 100, 28, {"Text": T("Print Voucher")}),
     ("Button", "btnReleaseRetention", 632, 238, 130, 28, {"Text": T("Release Retention")}),
-    ("Label", "lblApproverNote", 12, 272, None, None, {"Text": T("The Subcontractors Supervisor or an Admin approves vouchers.")}),
+    ("Label", "lblApproverNote", 12, 272, None, None, {"Text": T("The Subcontractors Supervisor approves vouchers.")}),
     ("Label", "lblPayoutTitle", 12, 300, None, None, {"Text": T("Record a payout (select an approved voucher above)")}),
     ("Label", "lblPayoutDate", 12, 322, None, None, {"Text": T("Date paid")}),
     ("DateTimePicker", "dtpPayoutDate", 12, 340, 125, 23, {"Format": "DateTimePickerFormat.Short"}),

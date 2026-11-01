@@ -20,7 +20,7 @@ CONTROLS = [
     ("Button", "btnPrintPayslips", 12, 498, 120, 28, {"Text": T("Print Payslips")}),
     ("Button", "btnSavePayslipsPdf", 138, 498, 150, 28, {"Text": T("Save Payslips as PDF")}),
     ("Button", "btnExportPayroll", 294, 498, 80, 28, {"Text": T("Export")}),
-    ("Label", "lblApproverNote", 12, 534, None, None, {"Text": T("The HR Supervisor or an Admin finalizes payroll.")}),
+    ("Label", "lblApproverNote", 12, 534, None, None, {"Text": T("The HR Supervisor finalizes payroll.")}),
     ("Label", "lblPayrollMsg", 12, 558, None, None, {"MaximumSize": "new Size(930, 0)"}),
 ]
 

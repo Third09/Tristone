@@ -8,9 +8,9 @@ Every account has one **Level** and (except Admins and Website Admins) one **Dep
 
 | Level | What they can do |
 |---|---|
-| **Admin** | Everything, in every department. Creates accounts and sets passwords. Approves change orders. |
-| **Supervisor** | Full access to their own department, plus approvals (material usage, cash advances, vouchers, receipts). Sees their department's numbers on the Dashboard. |
-| **Employee** | Day-to-day work in their own department: adds and edits records, submits requests for approval. |
+| **Admin** | Can **look at** every page and department, but can't change department records (the Add, Save, Delete and Approve buttons are hidden). Handles accounts: creates them, sets passwords, unlocks and disables them. |
+| **Supervisor** | Everything their Employee can do in their own department, plus **approving** (material usage, purchases, vouchers, receipts, cash advances, overtime, payroll) and **deleting**. Sees their department's numbers on the Dashboard. The **Receipts Supervisor** also manages Projects and approves change orders. |
+| **Employee** | Day-to-day work in their own department: adds and edits records, submits requests for approval. Can't approve or delete. |
 | **Website Admin** | Manages the public website in the Website Admin screens (Tri-Stone opens them at sign-in). No office pages. |
 
 Departments: **HR & Payroll**, **Inventory**, **Subcontractors**, **Receipts**.
@@ -208,7 +208,7 @@ Use the **Search** box (name, site or client) and the **Status** and **Sector** 
 
 # 6. HR & Payroll
 
-For Admins and the HR department. The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for Admins and the HR Supervisor. 
+For the HR department (Admins can only look). The page has 7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings and Edit History. **Settings** and **Edit History** are for the HR Supervisor (Admins can only look). 
 
 ## Employees
 
@@ -299,7 +299,7 @@ Every payslip of a finalized payroll. Search a name or pick a payroll, select a 
 2. The HR Supervisor selects it and clicks **Approve** (or **Reject**).
 3. From then on, every payday takes that amount until it's paid off. If a payslip is too small, the rest waits for the next payday. Select an advance to see the deductions taken so far.
 
-## Settings (Admins and HR Supervisor)
+## Settings (HR Supervisor; Admins can only look)
 
 - **Work schedule:** start and end, break, grace minutes (15 = on time until 8:15), work days, overtime per hour and from how many minutes.
 - **Government deductions:** the employee-share rates and limits for SSS, PhilHealth and Pag-IBIG, and income tax on or off. They apply only to employees whose **Government deductions** box is ticked in Employees. The defaults are the 2025 rates: check them with your accountant.
@@ -310,7 +310,7 @@ Every payslip of a finalized payroll. Search a name or pick a payroll, select a 
 
 # 7. Inventory & Vendors
 
-For Admins and the Inventory department. Approve buttons are for the **Inventory Supervisor** and Admins. Tabs: Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History (Supervisor and Admins).
+For the Inventory department (Admins can only look). Approve and Delete buttons are for the **Inventory Supervisor**. Tabs: Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History (Supervisor and Admins).
 
 ## Materials
 
@@ -352,7 +352,7 @@ Supplier details, bank details and VAT status. After saving a vendor, upload the
 
 # 8. Subcontractors
 
-For Admins and the Subcontractors department. Approve buttons are for the **Subcontractors Supervisor** and Admins. Tabs: Directory, Jobs & Progress, Billing & Payouts, Edit History (Supervisor and Admins).
+For the Subcontractors department (Admins can only look). Approve and Delete buttons are for the **Subcontractors Supervisor**. Tabs: Directory, Jobs & Progress, Billing & Payouts, Edit History (Supervisor and Admins).
 
 ## Directory
 
@@ -387,7 +387,7 @@ Payouts count as the project's expenses on the Projects page and Dashboard.
 
 # 9. Receipts & Change Orders
 
-For Admins and the Receipts department. Approve buttons for receipts are for the **Receipts Supervisor** and Admins; change orders are approved by an **Admin** only. Tabs: Receipt Vault, Needs Review, Change Orders, Reports, Edit History (Supervisor and Admins).
+For the Receipts department (Admins can only look). Approve and Delete buttons, including change order approval, are for the **Receipts Supervisor**. Tabs: Receipt Vault, Needs Review, Change Orders, Reports, Edit History (Supervisor and Admins).
 
 ## Receipt Vault
 

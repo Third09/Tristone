@@ -188,7 +188,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(12, 272);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "The Subcontractors Supervisor or an Admin approves vouchers.";
+            lblApproverNote.Text = "The Subcontractors Supervisor approves vouchers.";
             // 
             // lblPayoutTitle
             // 

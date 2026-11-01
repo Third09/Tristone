@@ -5,7 +5,7 @@ using Company.Shared.Models;
 namespace Company.OfficeApp.Pages.Receipts;
 
 /// <summary>
-/// Receipts > Needs Review: expenses with no receipt (they need a reason). The Receipts Supervisor (or an Admin)
+/// Receipts > Needs Review: expenses with no receipt (they need a reason). The Receipts Supervisor
 /// approves or rejects them; a receipt that turns up later can be attached, which clears the flag.
 /// Plain layout for now; control names match the UI Elements Guide (Part 5: Tab: Needs Review).
 /// </summary>

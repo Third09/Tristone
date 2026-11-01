@@ -12,7 +12,7 @@ CONTROLS = [
     ("Button", "btnApproveNoReceipt", 12, 348, 80, 28, {"Text": T("Approve")}),
     ("Button", "btnRejectNoReceipt", 98, 348, 70, 28, {"Text": T("Reject")}),
     ("Button", "btnAttachLateReceipt", 174, 348, 120, 28, {"Text": T("Attach Receipt")}),
-    ("Label", "lblApproverNote", 12, 384, None, None, {"Text": T("The Receipts Supervisor or an Admin approves these.")}),
+    ("Label", "lblApproverNote", 12, 384, None, None, {"Text": T("The Receipts Supervisor approves these.")}),
     ("Label", "lblReviewMsg", 12, 408, None, None, {}),
 ]
 

@@ -67,7 +67,7 @@ public static class ProjectService
     /// <summary>Returns (new id, null) or (null, error).</summary>
     public static async Task<(int? ProjectId, string? Error)> CreateAsync(ProjectInput input)
     {
-        if (RequireAdmin() is { } notAdmin) return (null, notAdmin);
+        if (Access.RequireEdit(AppPage.Projects) is { } denied) return (null, denied);
         if (CheckInput(input) is { } problem) return (null, problem);
 
         using var db = Db.Open();
@@ -76,21 +76,21 @@ public static class ProjectService
         db.Projects.Add(p);
         await db.SaveChangesAsync();
 
-        AuditService.Add(db, null, "projects", p.ProjectId, p.ProjectName, AuditActions.Added, null, Snapshot(p));
+        AuditService.Add(db, Departments.Receipts, "projects", p.ProjectId, p.ProjectName, AuditActions.Added, null, Snapshot(p));
         await db.SaveChangesAsync();
         return (p.ProjectId, null);
     }
 
     public static async Task<string?> UpdateAsync(int projectId, ProjectInput input)
     {
-        if (RequireAdmin() is { } notAdmin) return notAdmin;
+        if (Access.RequireEdit(AppPage.Projects) is { } denied) return denied;
         if (CheckInput(input) is { } problem) return problem;
 
         using var db = Db.Open();
         var p = await db.Projects.FirstAsync(x => x.ProjectId == projectId);
         var before = Snapshot(p);
         Apply(p, input);
-        AuditService.Add(db, null, "projects", p.ProjectId, p.ProjectName, AuditActions.Edited, before, Snapshot(p));
+        AuditService.Add(db, Departments.Receipts, "projects", p.ProjectId, p.ProjectName, AuditActions.Edited, before, Snapshot(p));
         await db.SaveChangesAsync();
         return null;
     }
@@ -101,14 +101,14 @@ public static class ProjectService
     /// </summary>
     public static async Task<string?> DeleteAsync(int projectId)
     {
-        if (RequireAdmin() is { } notAdmin) return notAdmin;
+        if (Access.RequireDelete(AppPage.Projects) is { } denied) return denied;
         using var db = Db.Open();
         var p = await db.Projects.FirstAsync(x => x.ProjectId == projectId);
 
         if (await CountLinkedRecordsAsync(projectId) > 0)
             return "This project already has records (receipts, materials or subcontractor jobs). Set its status to Cancelled instead.";
 
-        AuditService.Add(db, null, "projects", p.ProjectId, p.ProjectName, AuditActions.Deleted, Snapshot(p), null);
+        AuditService.Add(db, Departments.Receipts, "projects", p.ProjectId, p.ProjectName, AuditActions.Deleted, Snapshot(p), null);
         db.Projects.Remove(p);
         await db.SaveChangesAsync();
         return null;
@@ -179,6 +179,4 @@ public static class ProjectService
         show_on_website = p.ShowOnWebsite,
     };
 
-    static string? RequireAdmin() =>
-        Session.CurrentUser is { IsAdmin: true } ? null : "Only Admins can change projects.";
 }

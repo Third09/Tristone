@@ -26,8 +26,9 @@ public partial class ReceiptsPage : UserControl
         tabReceiptReports.Controls.Add(reports);
         tabRecEditHistory.Controls.Add(new EditHistoryTab(Departments.Receipts) { Dock = DockStyle.Fill });
 
-        if (!Access.IsApprover(Session.CurrentUser!, Departments.Receipts))
+        if (!Access.CanSeeHistory(Session.CurrentUser!, Departments.Receipts))
             tabReceipts.TabPages.Remove(tabRecEditHistory);
+        Access.LockButtons(this, AppPage.Receipts);
 
         vault.Changed += async (_, _) => { await review.LoadAsync(); await RefreshBadgeAsync(); };
         review.Changed += async (_, _) => { await vault.LoadAsync(); await RefreshBadgeAsync(); };

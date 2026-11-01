@@ -163,7 +163,7 @@ namespace Company.OfficeApp.Pages.Hr
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(12, 534);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "The HR Supervisor or an Admin finalizes payroll.";
+            lblApproverNote.Text = "The HR Supervisor finalizes payroll.";
             // 
             // lblPayrollMsg
             // 

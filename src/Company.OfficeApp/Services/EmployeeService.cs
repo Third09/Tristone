@@ -174,7 +174,7 @@ public static partial class EmployeeService
     /// <summary>The person left: Inactive, and any login of theirs is turned off. All records stay.</summary>
     public static async Task<string?> MarkInactiveAsync(int employeeId)
     {
-        if (RequireHr() is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.HrPayroll) is { } denied) return denied;
         using var db = Db.Open();
         var e = await db.Employees.FirstAsync(x => x.EmployeeId == employeeId);
         if (e.Status == EmployeeStatuses.Inactive) return "This employee is already Inactive.";
@@ -204,7 +204,7 @@ public static partial class EmployeeService
     /// <summary>Active again. Their login (if any) stays off until an Admin enables it in User Accounts.</summary>
     public static async Task<string?> ReactivateAsync(int employeeId)
     {
-        if (RequireHr() is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.HrPayroll) is { } denied) return denied;
         using var db = Db.Open();
         var e = await db.Employees.FirstAsync(x => x.EmployeeId == employeeId);
         if (e.Status == EmployeeStatuses.Active) return "This employee is already Active.";
@@ -217,8 +217,7 @@ public static partial class EmployeeService
         return null;
     }
 
-    static string? RequireHr() =>
-        Session.CurrentUser is { } u && Access.CanSee(u, AppPage.HrPayroll) ? null : "Only Admins and the HR department can change employees.";
+    static string? RequireHr() => Access.RequireEdit(AppPage.HrPayroll);
 
     static async Task<string?> BiometricTakenAsync(AppDbContext db, string? biometricId, int? exceptEmployeeId)
     {

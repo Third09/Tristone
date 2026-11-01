@@ -13,7 +13,7 @@ CONTROLS = [
     ("Button", "btnNewCashAdvance", 12, 272, 150, 28, {"Text": T("New Cash Advance")}),
     ("Button", "btnApproveCashAdvance", 168, 272, 90, 28, {"Text": T("Approve")}),
     ("Button", "btnRejectCashAdvance", 264, 272, 90, 28, {"Text": T("Reject")}),
-    ("Label", "lblApproverNote", 12, 308, None, None, {"Text": T("The HR Supervisor or an Admin approves cash advances.")}),
+    ("Label", "lblApproverNote", 12, 308, None, None, {"Text": T("The HR Supervisor approves cash advances.")}),
     ("Label", "lblCaMsg", 12, 332, None, None, {}),
     ("Label", "lblDeductions", 12, 360, None, None, {"Text": T("Deductions taken (selected cash advance)")}),
     ("DataGridView", "dgvCashAdvanceDeductions", 12, 380, 600, 200, {}),

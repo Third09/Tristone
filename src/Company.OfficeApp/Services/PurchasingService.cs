@@ -43,7 +43,7 @@ public record DeliveryRow(int DeliveryId, DateOnly DeliveredOn, string Vendor, s
 /// <summary>
 /// Inventory > Vendors, Price Comparison and Deliveries (Project Outline, Part 3).
 /// Price comparison: the Employee enters quotes from several vendors for the same material; the Supervisor
-/// (or an Admin) picks one, which becomes the approved purchase. Deliveries need no approval: stock goes up,
+/// picks one, which becomes the approved purchase. Deliveries need no approval: stock goes up,
 /// the material's price becomes the delivered price, and the receipt (scan or paper) is kept with it.
 /// </summary>
 public static class PurchasingService
@@ -77,7 +77,7 @@ public static class PurchasingService
 
     public static async Task<(int? Id, string? Error)> CreateVendorAsync(VendorInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (CheckVendor(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         if (await db.Vendors.AnyAsync(v => v.Name.ToLower() == i.Name.Trim().ToLower())) return (null, "A vendor with that name already exists.");
@@ -92,7 +92,7 @@ public static class PurchasingService
 
     public static async Task<string?> UpdateVendorAsync(int vendorId, VendorInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return denied;
         if (CheckVendor(i) is { } problem) return problem;
         using var db = Db.Open();
         var v = await db.Vendors.FirstAsync(x => x.VendorId == vendorId);
@@ -106,7 +106,7 @@ public static class PurchasingService
 
     public static async Task<string?> DeleteVendorAsync(int vendorId)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Inventory) is { } denied) return denied;
         using var db = Db.Open();
         var v = await db.Vendors.FirstAsync(x => x.VendorId == vendorId);
         if (await db.Quotes.AnyAsync(q => q.VendorId == vendorId) || await db.Deliveries.AnyAsync(d => d.VendorId == vendorId))
@@ -145,7 +145,7 @@ public static class PurchasingService
 
     public static async Task<string?> UploadDocumentAsync(int vendorId, string docType, string sourcePath)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return denied;
         if (!InventoryLists.VendorDocTypes.Contains(docType)) return "Choose the paper type.";
         if (FileStore.Check(sourcePath) is { } problem) return problem;
         var relative = await FileStore.SaveAsync(sourcePath, "vendors");
@@ -165,7 +165,7 @@ public static class PurchasingService
 
     public static async Task<string?> DeleteDocumentAsync(int documentId)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Inventory) is { } denied) return denied;
         using var db = Db.Open();
         var d = await db.VendorDocuments.FirstAsync(x => x.DocumentId == documentId);
         var vendorName = await db.Vendors.Where(v => v.VendorId == d.VendorId).Select(v => v.Name).FirstAsync();
@@ -200,7 +200,7 @@ public static class PurchasingService
 
     public static async Task<(int? Id, string? Error)> AddQuoteAsync(QuoteInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (CheckQuote(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         var q = new Quote
@@ -220,7 +220,7 @@ public static class PurchasingService
 
     public static async Task<string?> DeleteQuoteAsync(int quoteId)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Inventory) is { } denied) return denied;
         using var db = Db.Open();
         var q = await db.Quotes.FirstAsync(x => x.QuoteId == quoteId);
         if (q.Status != "Open") return "Only open quotes can be deleted.";
@@ -289,7 +289,7 @@ public static class PurchasingService
     /// <summary>Saves the delivery and its receipt, adds the stock, and updates the material's price.</summary>
     public static async Task<(int? Id, string? Error)> RecordDeliveryAsync(DeliveryInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (CheckDelivery(i) is { } problem) return (null, problem);
 
         string? stored = i.PhysicalOnly ? null : await FileStore.SaveAsync(i.ScanSourcePath!, "receipts");

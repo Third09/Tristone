@@ -26,7 +26,7 @@ CONTROLS = [
     ("Button", "btnApproveOvertime", 148, 522, 130, 28, {"Text": T("Approve Overtime")}),
     ("Button", "btnRejectOvertime", 284, 522, 120, 28, {"Text": T("Reject Overtime")}),
     ("Button", "btnExportAttendance", 410, 522, 80, 28, {"Text": T("Export")}),
-    ("Label", "lblApproverNote", 12, 558, None, None, {"Text": T("The HR Supervisor or an Admin approves overtime.")}),
+    ("Label", "lblApproverNote", 12, 558, None, None, {"Text": T("The HR Supervisor approves overtime.")}),
     ("Label", "lblAttendanceMsg", 12, 582, None, None, {}),
 ]
 

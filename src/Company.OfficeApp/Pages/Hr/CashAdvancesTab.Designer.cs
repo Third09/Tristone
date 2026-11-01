@@ -106,7 +106,7 @@ namespace Company.OfficeApp.Pages.Hr
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(12, 308);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "The HR Supervisor or an Admin approves cash advances.";
+            lblApproverNote.Text = "The HR Supervisor approves cash advances.";
             // 
             // lblCaMsg
             // 

@@ -28,7 +28,7 @@ CONTROLS = [
     ("Button", "btnRejectReceipt", 356, 426, 70, 28, {"Text": T("Reject")}),
     ("Button", "btnPrintSelectedReceipts", 432, 426, 110, 28, {"Text": T("Print Selected")}),
     ("Button", "btnExportReceipts", 548, 426, 80, 28, {"Text": T("Export")}),
-    ("Label", "lblApproverNote", 12, 462, None, None, {"Text": T("The Receipts Supervisor or an Admin approves receipts.")}),
+    ("Label", "lblApproverNote", 12, 462, None, None, {"Text": T("The Receipts Supervisor approves receipts.")}),
     ("Label", "lblVaultMsg", 12, 486, None, None, {}),
 ]
 

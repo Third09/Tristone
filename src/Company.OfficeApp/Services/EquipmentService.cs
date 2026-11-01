@@ -66,7 +66,7 @@ public static class EquipmentService
 
     public static async Task<(int? Id, string? Error)> CreateAsync(EquipmentInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (CheckInput(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         var e = new Equipment { CreatedBy = Session.CurrentUser!.UserId };
@@ -80,7 +80,7 @@ public static class EquipmentService
 
     public static async Task<string?> UpdateAsync(int equipmentId, EquipmentInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return denied;
         if (CheckInput(i) is { } problem) return problem;
         using var db = Db.Open();
         var e = await db.Equipment.FirstAsync(x => x.EquipmentId == equipmentId);
@@ -94,7 +94,7 @@ public static class EquipmentService
     /// <summary>Only equipment with no maintenance history; otherwise set it to Retired.</summary>
     public static async Task<string?> DeleteAsync(int equipmentId)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Inventory) is { } denied) return denied;
         using var db = Db.Open();
         var e = await db.Equipment.FirstAsync(x => x.EquipmentId == equipmentId);
         if (await db.MaintenanceLogs.AnyAsync(l => l.EquipmentId == equipmentId))
@@ -145,7 +145,7 @@ public static class EquipmentService
     /// <summary>Adds an entry; if a next maintenance date is given, the equipment's reminder moves to it.</summary>
     public static async Task<(int? Id, string? Error)> AddLogAsync(int equipmentId, MaintenanceInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (CheckLog(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         var e = await db.Equipment.FirstAsync(x => x.EquipmentId == equipmentId);
@@ -166,7 +166,7 @@ public static class EquipmentService
 
     public static async Task<string?> DeleteLogAsync(int logId)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Inventory) is { } denied) return denied;
         using var db = Db.Open();
         var l = await db.MaintenanceLogs.FirstAsync(x => x.LogId == logId);
         var name = await db.Equipment.Where(e => e.EquipmentId == l.EquipmentId).Select(e => e.Name).FirstAsync();

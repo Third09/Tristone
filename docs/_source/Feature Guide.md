@@ -8,17 +8,28 @@ A functional specification of every built feature: who may use it, what the inpu
 
 Each login (`users`) has a **Level** and, for Supervisor and Employee, one **Department** (HR & Payroll, Inventory, Subcontractors, Receipts). Admin and Website Admin have no department (database CHECK).
 
+Owner decision 2026-11-01: **Employees do the work, Supervisors confirm it, Admins watch.**
+
 | Page | Admin | Supervisor | Employee | Website Admin |
 |---|---|---|---|---|
-| Dashboard | all departments or one | own department, forced | — | — |
-| Projects, User Accounts | yes | — | — | — |
-| HR & Payroll / Inventory / Subcontractors / Receipts | all four | own | own | — |
-| HR > Settings, every Edit History tab | yes | own department | — | — |
-| My Account | yes | yes | yes | — |
-| Website Admin screens | yes (chosen at sign-in) | — | — | yes |
+| Dashboard | view: all departments or one | view: own department, forced | — | — |
+| Projects | view | Receipts Supervisor: add, edit, delete | — | — |
+| User Accounts | add, edit, unlock, disable, set passwords | — | — | — |
+| HR & Payroll / Inventory / Subcontractors / Receipts | view all four | own: add, edit, approve, delete | own: add, edit, submit | — |
+| HR > Settings, every Edit History tab | view | own department (HR Supervisor edits Settings) | — | — |
+| My Account | password + security question | view | view | — |
+| Website Admin screens | yes, can edit (chosen at sign-in) | — | — | yes |
 
-- The sidebar is built from `Access.CanSee`; services repeat the check (`Access.RequirePage`) before reading or writing, so hiding a button is never the only protection.
-- **Approver** = Admin, or the Supervisor of that department (`Access.IsApprover`). Approve / Reject / Finalize buttons are hidden from Employees, who see a note instead; the service re-checks with `RequireApprover`. Exception: change orders are approved by Admins only.
+| Action | Rule (`Services/Access.cs`) |
+|---|---|
+| See a page | `CanSee`: builds the sidebar; reads check `RequirePage` |
+| Add / edit / submit / upload / prepare | `CanEdit` = an Employee or Supervisor of that department (Projects: Receipts Supervisor; User Accounts: Admin). Services check `RequireEdit` |
+| Delete, Mark Inactive / Reactivate | `CanDelete` = that department's Supervisor (Projects: Receipts Supervisor; User Accounts: Admin). Services check `RequireDelete` |
+| Approve / Reject / Finalize, HR Settings | `IsApprover` = that department's Supervisor only. Change orders: Receipts Supervisor. Services check `RequireApprover` |
+
+- Admins never change department records: every page calls `Access.LockButtons`, which hides the buttons by name (Export, Print, View, Open, Preview, Report, Cancel stay), and record forms stay locked (`RecordForm.MarkReadOnly`). Message: "Admins can view this page but not change it."
+- Hiding a button is never the only protection: the services refuse the same actions.
+- Project changes are logged under the Receipts department, so they show in the Receipts Edit History (Receipts Supervisor and Admins).
 - **Sign-in routing** (Tri-Stone): Website Admin → Website Admin app; Admin → choice of Office App / Website Admin / Sign Out; Supervisor / Employee → office app.
 
 ## 1.2 Approval states
@@ -320,7 +331,7 @@ Deliveries are listed in the vault as read-only "Stock purchase" rows (Approved,
 
 - Fields: project (not Cancelled), date requested, description, cost change (±), days change (±), optional signed document. At least one change must be non-zero; the revised price can't go below ₱0. Numbered CO-001, CO-002... across all projects.
 - Budget preview: current price (contract + approved change orders) → revised; current target end → revised.
-- Approve / Reject: Admin only, while Waiting; editing only while Waiting. On approval: revenue += cost change; `target_end_date` += days change (if set), audited on the project too.
+- Approve / Reject: Receipts Supervisor only, while Waiting; editing only while Waiting. On approval: revenue += cost change; `target_end_date` += days change (if set), audited on the project too.
 
 ## 9.5 Reports
 
@@ -335,7 +346,7 @@ Expense & Receipt Report (every approved receipt in the range, by project / over
 
 | Term | Meaning in this system |
 |---|---|
-| Approver | Admin, or the Supervisor of the department concerned |
+| Approver | The Supervisor of the department concerned (never an Admin) |
 | Completed-contract method | A project's revenue and expenses are recognised in the period it is set to Done |
 | Overhead | Costs not tied to a project: overhead receipts, equipment repairs, payroll |
 | Retention | Percentage withheld from each subcontractor stage payment, released after completion |

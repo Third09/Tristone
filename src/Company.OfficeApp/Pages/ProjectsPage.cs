@@ -45,6 +45,7 @@ public partial class ProjectsPage : UserControl
             return;
         }
         Responsive.FitGrid(this, dgvProjects);
+        Access.LockButtons(this, AppPage.Projects);
         Responsive.OnTypingPause(txtProjectSearch, () => LoadProjectsAsync());
         ShowNothingSelected();
     }

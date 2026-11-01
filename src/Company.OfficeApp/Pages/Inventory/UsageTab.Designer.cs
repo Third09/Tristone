@@ -220,7 +220,7 @@ namespace Company.OfficeApp.Pages.Inventory
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(210, 402);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "Approve / Reject: Inventory Supervisor or Admin only";
+            lblApproverNote.Text = "Approve / Reject: Inventory Supervisor only";
             // 
             // lblHistoryTitle
             // 

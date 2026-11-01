@@ -19,7 +19,7 @@ public record PersonOption(int EmployeeId, string Name)
 
 /// <summary>
 /// HR & Payroll > Cash Advances (vale), Project Outline Part 2: the HR Employee records the amount, date, reason and
-/// how much to deduct per payday; the HR Supervisor (or an Admin) approves. Payroll then takes that amount every
+/// how much to deduct per payday; the HR Supervisor approves. Payroll then takes that amount every
 /// payday until it is paid off; when a payslip is too small the rest carries over, and pay never goes negative.
 /// </summary>
 public static class CashAdvanceService
@@ -60,7 +60,7 @@ public static class CashAdvanceService
     /// <summary>Saved as Waiting until the HR Supervisor approves.</summary>
     public static async Task<(int? Id, string? Error)> CreateAsync(CashAdvanceInput i)
     {
-        if (Access.RequirePage(AppPage.HrPayroll) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.HrPayroll) is { } denied) return (null, denied);
         if (CheckInput(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         var e = await db.Employees.FirstOrDefaultAsync(x => x.EmployeeId == i.EmployeeId);

@@ -33,7 +33,7 @@ public record VoucherPrintData(string VoucherNo, string Status, DateTime Prepare
 /// <summary>
 /// Subcontractors > Billing & Payouts (Project Outline, Part 4).
 /// Each stage pays (contract x stage %) minus the retention %. The Employee marks a stage reached and prepares
-/// the voucher; the Supervisor (or an Admin) approves it; then the payout is recorded (the voucher's exact amount).
+/// the voucher; the Supervisor approves it; then the payout is recorded (the voucher's exact amount).
 /// The retention held is released by its own voucher once the job is 100% done and every stage is paid.
 /// Payouts are project expenses (<see cref="ProjectFinance"/>).
 /// </summary>
@@ -105,7 +105,7 @@ public static class SubBillingService
 
     public static async Task<string?> MarkStageReachedAsync(int stageId, DateOnly reachedOn)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return denied;
         using var db = Db.Open();
         var s = await db.SubJobStages.FirstAsync(x => x.StageId == stageId);
         if (s.ReachedOn != null) return "This stage is already marked as reached.";
@@ -121,7 +121,7 @@ public static class SubBillingService
     /// <summary>The Employee prepares the voucher for a reached stage; it waits for the Supervisor.</summary>
     public static async Task<(int? Id, string? Error)> PrepareVoucherAsync(int stageId)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return (null, denied);
         using var db = Db.Open();
         var s = await db.SubJobStages.FirstAsync(x => x.StageId == stageId);
         if (s.ReachedOn == null) return (null, "Mark the stage as reached first.");
@@ -140,7 +140,7 @@ public static class SubBillingService
     /// </summary>
     public static async Task<(int? Id, string? Error)> PrepareRetentionVoucherAsync(int jobId)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return (null, denied);
         var billing = await GetAsync(jobId);
         if (billing.PercentDone < 100) return (null, "The job isn't 100% done yet. Add a progress update first.");
         if (billing.Stages.Any(s => s.Status != VoucherStatuses.Paid)) return (null, "Every stage must be paid before the retention is released.");
@@ -190,7 +190,7 @@ public static class SubBillingService
     /// <summary>Records the payment of an approved voucher. It counts as the project's expense.</summary>
     public static async Task<string?> RecordPayoutAsync(int voucherId, DateOnly paidOn, decimal amount, string? referenceNo, string method)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return denied;
         if (!SubLists.PayoutMethods.Contains(method)) return "Choose how it was paid.";
         if (method != "Cash" && string.IsNullOrWhiteSpace(referenceNo)) return "Type the bank or check reference number.";
         using var db = Db.Open();

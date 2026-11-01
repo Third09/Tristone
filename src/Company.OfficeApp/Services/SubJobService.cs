@@ -94,7 +94,7 @@ public static class SubJobService
 
     public static async Task<(int? Id, string? Error)> CreateAsync(JobInput i)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return (null, denied);
         if (CheckInput(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         var p = await db.Projects.FirstOrDefaultAsync(x => x.ProjectId == i.ProjectId);
@@ -111,7 +111,7 @@ public static class SubJobService
 
     public static async Task<string?> UpdateAsync(int jobId, JobInput i)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return denied;
         if (CheckInput(i) is { } problem) return problem;
         using var db = Db.Open();
         var j = await db.SubJobs.FirstAsync(x => x.JobId == jobId);
@@ -138,7 +138,7 @@ public static class SubJobService
     /// <summary>Only a job with no progress, papers or billing yet (e.g. entered by mistake).</summary>
     public static async Task<string?> DeleteAsync(int jobId)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Subcontractors) is { } denied) return denied;
         using var db = Db.Open();
         var j = await db.SubJobs.FirstAsync(x => x.JobId == jobId);
         if (await IsLockedAsync(db, jobId) || await db.SubProgress.AnyAsync(p => p.JobId == jobId) || await db.SubJobDocuments.AnyAsync(d => d.JobId == jobId))
@@ -188,7 +188,7 @@ public static class SubJobService
 
     public static async Task<string?> UploadDocumentAsync(int jobId, string sourcePath)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return denied;
         if (FileStore.Check(sourcePath) is { } problem) return problem;
         var relative = await FileStore.SaveAsync(sourcePath, "subcontractors");
         using var db = Db.Open();
@@ -220,7 +220,7 @@ public static class SubJobService
     /// <summary>Saves a progress update (% completed on a date), with an optional photo or document.</summary>
     public static async Task<string?> AddProgressAsync(int jobId, decimal percent, DateOnly date, string? notes, string? sourcePath)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return denied;
         if (percent < 0 || percent > 100) return "The % completed must be from 0 to 100.";
         if (date > DateOnly.FromDateTime(DateTime.Today)) return "The date can't be in the future.";
         if (sourcePath != null && FileStore.Check(sourcePath) is { } problem) return problem;

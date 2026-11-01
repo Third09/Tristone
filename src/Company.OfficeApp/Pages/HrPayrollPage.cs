@@ -29,10 +29,11 @@ public partial class HrPayrollPage : UserControl
         tabHrPayroll.SelectedIndexChanged += async (_, _) => { if (tabHrPayroll.SelectedTab == tabPayslipHistory && payslips.IsHandleCreated) await payslips.ReloadAsync(); };
 
         var me = Session.CurrentUser!;
-        if (!me.IsAdmin && me.Level != UserLevels.Supervisor)
+        if (!Access.CanSeeHistory(me, Departments.HrPayroll))
         {
             tabHrPayroll.TabPages.Remove(tabHrSettings);
             tabHrPayroll.TabPages.Remove(tabHrEditHistory);
         }
+        Access.LockButtons(this, AppPage.HrPayroll);
     }
 }

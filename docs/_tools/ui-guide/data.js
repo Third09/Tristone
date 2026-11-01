@@ -90,7 +90,7 @@ const shared = [
         ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds all sidebar buttons, top to bottom. Hidden buttons take no space. The open page's button is shown in bold (for now)."],
         ["Small logo", "PictureBox", "picSidebarLogo", "Company logo at the top of the sidebar."],
         ["Dashboard button", "Button", "btnNavDashboard", "Opens Dashboard. Admin, Supervisors."],
-        ["Projects button", "Button", "btnNavProjects", "Opens Projects. Admin only."],
+        ["Projects button", "Button", "btnNavProjects", "Opens Projects. Admins (view only) and the Receipts Supervisor."],
         ["HR & Payroll button", "Button", "btnNavHr", "Opens HR & Payroll. Admin, HR department."],
         ["Inventory button", "Button", "btnNavInventory", "Opens Inventory & Vendors. Admin, Inventory department."],
         ["Subcontractors button", "Button", "btnNavSubcontractors", "Opens Subcontractors. Admin, Subcontractor department."],
@@ -494,7 +494,7 @@ const projects = [
     title: "Projects Page",
     form: "ProjectsPage (UserControl)",
     opensFrom: "Projects button in the sidebar.",
-    whoSees: "Admin only",
+    whoSees: "Receipts Supervisor (add, edit, delete); Admins view only (Add, Save and Delete are hidden). Changes show in the Receipts Edit History.",
     note: "The one shared project list. Other departments only pick from it in dropdowns. Ticking \"Show on website\" makes the project appear in the Website Admin app > Website Projects.",
     groups: [
       { name: "Find a project", rows: [

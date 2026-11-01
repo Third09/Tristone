@@ -7,7 +7,7 @@ function editHistoryTab(part, tabControl, prefix) {
     title: `Tab: Edit History (${part})`,
     form: `TabPage: tab${prefix}EditHistory`,
     opensFrom: `${part} page > Edit History tab.`,
-    whoSees: `Admin and the ${part} Supervisor`,
+    whoSees: `The ${part} Supervisor; Admins view only`,
     note: "Read only. Every add, edit and delete in this department is recorded automatically. One shared control (EditHistoryTab) is used in every department, so the control names are the same everywhere.",
     groups: [
       { name: "Filters", rows: [
@@ -30,7 +30,7 @@ const hrPayroll = [
     title: "HR & Payroll Page (main frame)",
     form: "HrPayrollPage (UserControl)",
     opensFrom: "HR & Payroll button in the sidebar.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     note: "The page has 7 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the HR Employee.",
     groups: [
       { name: "Main section", rows: [
@@ -42,7 +42,7 @@ const hrPayroll = [
     title: "Tab: Employees",
     form: "TabPage: tabEmployees",
     opensFrom: "HR & Payroll > Employees tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     note: "Holds office staff (who have logins) and site workers (no login). Logins are made separately in User Accounts. The form on this tab only edits the employee clicked in the list (empty and greyed out until then; the list never selects anyone by itself). Adding uses the Add Employee window.",
     groups: [
       { name: "Find an employee", rows: [
@@ -91,7 +91,7 @@ const hrPayroll = [
     title: "Add Employee Window",
     form: "EmployeeEntryForm (Form, pop-up)",
     opensFrom: "Add Employee button in the Employees tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     note: "Same fields as the Employees tab form (without the rate history). Saving always creates a new employee, then the window closes and the new person is selected in the list.",
     groups: [
       { name: "Main section", rows: [
@@ -108,7 +108,7 @@ const hrPayroll = [
     title: "Tab: Attendance",
     form: "TabPage: tabAttendance",
     opensFrom: "HR & Payroll > Attendance tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     groups: [
       { name: "Upload the scanner file", rows: [
         ["Upload Scanner File button", "Button", "btnUploadBiometrics", "Choose the \"All Report\" file exported from the scanner (USB). Uploading the same file again adds nothing."],
@@ -141,7 +141,7 @@ const hrPayroll = [
     title: "Fix Scan Window",
     form: "FixScanForm (Form, pop-up)",
     opensFrom: "Fix Missing Scan button in the Attendance tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     groups: [
       { name: "Main section", rows: [
         ["Employee and date", "Label", "lblFixEmployeeDate", "Whose day is being fixed, e.g. \"Juan, Monday, October 5, 2026 (Missing Scan)\"."],
@@ -161,7 +161,7 @@ const hrPayroll = [
     title: "Tab: Payroll",
     form: "TabPage: tabPayroll",
     opensFrom: "HR & Payroll > Payroll tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor (Finalize: HR Supervisor and Admin)",
+    whoSees: "HR Employee and HR Supervisor; Admins view only (Finalize: HR Supervisor only)",
     note: "Site workers: weekly, paid Saturday (Saturday to Friday). Office staff: paid the 15th (covers 26th to 10th) and the 30th (covers 11th to 25th).",
     groups: [
       { name: "Choose the payroll", rows: [
@@ -170,7 +170,7 @@ const hrPayroll = [
         ["Status", "Label", "lblPayrollStatus", "\"Not computed yet\", \"Draft (computed ...)\" or \"Final (...)\"."],
         ["Warnings", "Label", "lblPayrollWarnings", "e.g. \"1 missing scan not fixed yet (Attendance tab).\" Missing scans and overtime waiting block Finalize."],
         ["Compute Payroll button", "Button", "btnComputePayroll", "Works out everyone's pay for the period (a draft; can be done again)."],
-        ["Finalize Payroll button", "Button", "btnFinalizePayroll", "Asks to confirm, computes once more, takes the cash advances and locks the payroll. HR Supervisor / Admin only."],
+        ["Finalize Payroll button", "Button", "btnFinalizePayroll", "Asks to confirm, computes once more, takes the cash advances and locks the payroll. HR Supervisor only."],
       ]},
       { name: "Results", rows: [
         ["Payroll table", "DataGridView", "dgvPayroll", "Columns: Name, Days Paid, Gross Pay, Late Deduction, Overtime Pay, Cash Advance, Gov. Deductions, Net Pay. Double-click shows that payslip."],
@@ -187,7 +187,7 @@ const hrPayroll = [
     title: "Tab: Payslip History",
     form: "TabPage: tabPayslipHistory",
     opensFrom: "HR & Payroll > Payslip History tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     note: "Only payslips of finalized payrolls.",
     groups: [
       { name: "Main section", rows: [
@@ -205,7 +205,7 @@ const hrPayroll = [
     title: "Tab: Cash Advances",
     form: "TabPage: tabCashAdvances",
     opensFrom: "HR & Payroll > Cash Advances tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     note: "The HR Employee records; the HR Supervisor approves. Approved advances are deducted automatically every payday until paid off.",
     groups: [
       { name: "List", rows: [
@@ -224,7 +224,7 @@ const hrPayroll = [
     title: "New Cash Advance Window",
     form: "CashAdvanceEntryForm (Form, pop-up)",
     opensFrom: "New Cash Advance button in the Cash Advances tab.",
-    whoSees: "Admin, HR Employee, HR Supervisor",
+    whoSees: "HR Employee and HR Supervisor; Admins view only",
     groups: [
       { name: "Main section", rows: [
         ["Employee dropdown", "ComboBox", "cboCaEmployee", "Who is borrowing (active employees)."],
@@ -242,7 +242,7 @@ const hrPayroll = [
     title: "Tab: Settings",
     form: "TabPage: tabHrSettings",
     opensFrom: "HR & Payroll > Settings tab.",
-    whoSees: "Admin and HR Supervisor",
+    whoSees: "HR Supervisor; Admins view only",
     groups: [
       { name: "Work schedule", rows: [
         ["Work start picker", "DateTimePicker (time, ShowUpDown = True)", "dtpWorkStart", "Default 8:00 AM."],
@@ -321,7 +321,7 @@ const inventory = [
     title: "Inventory & Vendors Page (main frame)",
     form: "InventoryPage (UserControl)",
     opensFrom: "Inventory button in the sidebar.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     note: "The page has 7 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the Inventory Employee.",
     groups: [
       { name: "Main section", rows: [
@@ -334,7 +334,7 @@ const inventory = [
     title: "Tab: Materials",
     form: "TabPage: tabMaterials",
     opensFrom: "Inventory > Materials tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     groups: [
       { name: "Find a material", rows: [
         ["Search box", "TextBox", "txtMaterialSearch", "Search by material name."],
@@ -365,7 +365,7 @@ const inventory = [
     title: "Tab: Material Usage",
     form: "TabPage: tabMaterialUsage",
     opensFrom: "Inventory > Material Usage tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     note: "The Employee records what was used on a project; the Supervisor approves. Only then does stock go down and the cost go to the project.",
     groups: [
       { name: "Record usage", rows: [
@@ -398,7 +398,7 @@ const inventory = [
     title: "Tab: Deliveries",
     form: "TabPage: tabDeliveries",
     opensFrom: "Inventory > Deliveries tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     note: "No approval needed (the purchase was approved in Price Comparison). Saving adds the stock and sends the receipt to the Receipts vault as \"Stock purchase\".",
     groups: [
       { name: "Record a delivery", rows: [
@@ -433,7 +433,7 @@ const inventory = [
     title: "Tab: Equipment",
     form: "TabPage: tabEquipment",
     opensFrom: "Inventory > Equipment tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     groups: [
       { name: "Find equipment", rows: [
         ["Search box", "TextBox", "txtEquipmentSearch", "Search by name."],
@@ -473,7 +473,7 @@ const inventory = [
     title: "Maintenance Entry Window",
     form: "MaintenanceEntryForm (Form, pop-up)",
     opensFrom: "Add Log Entry button in the Equipment tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     note: "Costs here count as company-wide overhead.",
     groups: [
       { name: "Main section", rows: [
@@ -493,7 +493,7 @@ const inventory = [
     title: "Tab: Vendors",
     form: "TabPage: tabVendors",
     opensFrom: "Inventory > Vendors tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     groups: [
       { name: "Find a vendor", rows: [
         ["Search box", "TextBox", "txtVendorSearch", "Search by vendor name."],
@@ -534,7 +534,7 @@ const inventory = [
     title: "Tab: Price Comparison",
     form: "TabPage: tabPriceComparison",
     opensFrom: "Inventory > Price Comparison tab.",
-    whoSees: "Admin, Inventory Employee, Inventory Supervisor",
+    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
     note: "The Employee enters quotes from several vendors for the same item; the Supervisor picks one, which becomes the approved purchase.",
     groups: [
       { name: "Add a quote", rows: [
@@ -568,7 +568,7 @@ const subcontractors = [
     title: "Subcontractors Page (main frame)",
     form: "SubcontractorsPage (UserControl)",
     opensFrom: "Subcontractors button in the sidebar.",
-    whoSees: "Admin, Subcontractor Employee, Subcontractor Supervisor",
+    whoSees: "Subcontractor Employee and Subcontractor Supervisor; Admins view only",
     note: "The page has 4 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the Subcontractor Employee.",
     groups: [
       { name: "Main section", rows: [
@@ -580,7 +580,7 @@ const subcontractors = [
     title: "Tab: Directory",
     form: "TabPage: tabSubDirectory",
     opensFrom: "Subcontractors > Directory tab.",
-    whoSees: "Admin, Subcontractor Employee, Subcontractor Supervisor",
+    whoSees: "Subcontractor Employee and Subcontractor Supervisor; Admins view only",
     groups: [
       { name: "Find a subcontractor", rows: [
         ["Search box", "TextBox", "txtSubSearch", "Search by business or trade name."],
@@ -635,7 +635,7 @@ const subcontractors = [
     title: "Tab: Jobs & Progress",
     form: "TabPage: tabSubJobs",
     opensFrom: "Subcontractors > Jobs & Progress tab.",
-    whoSees: "Admin, Subcontractor Employee, Subcontractor Supervisor",
+    whoSees: "Subcontractor Employee and Subcontractor Supervisor; Admins view only",
     groups: [
       { name: "Find a job", rows: [
         ["Project filter", "ComboBox", "cboJobProjectFilter", "All, or one project."],
@@ -688,7 +688,7 @@ const subcontractors = [
     title: "Tab: Billing & Payouts",
     form: "TabPage: tabSubBilling",
     opensFrom: "Subcontractors > Billing & Payouts tab.",
-    whoSees: "Admin, Subcontractor Employee, Subcontractor Supervisor",
+    whoSees: "Subcontractor Employee and Subcontractor Supervisor; Admins view only",
     note: "The Employee marks a stage reached and prepares the voucher; the Supervisor approves before payment. Payouts count as project expenses.",
     groups: [
       { name: "Choose a job", rows: [
@@ -732,7 +732,7 @@ const receipts = [
     title: "Receipts Page (main frame)",
     form: "ReceiptsPage (UserControl)",
     opensFrom: "Receipts button in the sidebar.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only",
     note: "The page has 5 tabs across the top of the Main section. Buttons marked \"Supervisor only\" or \"Admin only\" are hidden for others.",
     groups: [
       { name: "Main section", rows: [
@@ -745,7 +745,7 @@ const receipts = [
     title: "Tab: Receipt Vault",
     form: "TabPage: tabReceiptVault",
     opensFrom: "Receipts > Receipt Vault tab.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only",
     groups: [
       { name: "Filters", rows: [
         ["Project dropdown", "ComboBox", "cboReceiptProject", "All, Company Overhead, or one project."],
@@ -774,7 +774,7 @@ const receipts = [
     title: "Receipt Entry Window",
     form: "ReceiptEntryForm (Form, pop-up)",
     opensFrom: "Add Receipt or Edit buttons in the Receipt Vault.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only",
     groups: [
       { name: "Receipt details", rows: [
         ["Receipt number box", "TextBox", "txtReceiptNo", "Number on the receipt."],
@@ -809,7 +809,7 @@ const receipts = [
     title: "Receipt Viewer Window",
     form: "ReceiptViewerForm (Form, pop-up)",
     opensFrom: "Open button (or double-click) in the Receipt Vault.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only",
     groups: [
       { name: "Main section", rows: [
         ["Scan area", "Panel (AutoScroll = True)", "pnlScan", "Holds the scan; scrolls when zoomed in."],
@@ -828,7 +828,7 @@ const receipts = [
     title: "Tab: Needs Review",
     form: "TabPage: tabNeedsReview",
     opensFrom: "Receipts > Needs Review tab.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only",
     note: "Expenses with no receipt. They do not count as expenses until the Receipts Supervisor approves.",
     groups: [
       { name: "Main section", rows: [
@@ -846,17 +846,17 @@ const receipts = [
     title: "Tab: Change Orders",
     form: "TabPage: tabChangeOrders",
     opensFrom: "Receipts > Change Orders tab.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor (approve / reject: Admin only)",
-    note: "Once Admin approves, the project's revenue and end date update everywhere.",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only (approve / reject: Receipts Supervisor only)",
+    note: "Once the Receipts Supervisor approves, the project's revenue and end date update everywhere.",
     groups: [
       { name: "List", rows: [
         ["Project filter", "ComboBox", "cboCoProjectFilter", "All, or one project."],
         ["Change orders table", "DataGridView", "dgvChangeOrders", "Columns: CO No., Project, Date, Cost Change, Days Change, Status."],
         ["New Change Order button", "Button", "btnNewChangeOrder", "Opens the New Change Order window (the same form, without the list)."],
-        ["Approve button", "Button", "btnApproveCo", "Approves the selected change order. Admin only."],
-        ["Reject button", "Button", "btnRejectCo", "Rejects the selected change order. Admin only."],
+        ["Approve button", "Button", "btnApproveCo", "Approves the selected change order. Receipts Supervisor only."],
+        ["Reject button", "Button", "btnRejectCo", "Rejects the selected change order. Receipts Supervisor only."],
         ["Print Form button", "Button", "btnPrintCo", "Prints the change order form for the client to sign (or saves as PDF)."],
-        ["Admin note", "Label", "lblAdminNote", "Shown to non-Admins instead of the approve buttons."],
+        ["Admin note", "Label", "lblAdminNote", "\"The Receipts Supervisor approves change orders.\" Shown to everyone else instead of the approve buttons."],
       ]},
       { name: "Change order form", rows: [
         ["CO number", "Label", "lblCoNumber", "Given automatically, e.g. \"CO-003\". Shows a hint to click a change order when none is selected (the form is greyed out until then)."],
@@ -868,8 +868,8 @@ const receipts = [
         ["Attach Signed Document button", "Button", "btnAttachCoDoc", "Attach the client's signed document (scan)."],
         ["View button", "Button", "btnViewCoDoc", "Opens the attached signed document."],
         ["Attached file name", "Label", "lblCoDocFile", "Name of the attached file."],
-        ["Submit button", "Button", "btnSubmitCo", "Saves it and sends it to Admin for approval. When editing a waiting one, lists the changes in a Yes/No message first."],
-        ["Message", "Label", "lblCoMsg", "\"Submitted. It waits for an Admin's approval.\" or what went wrong."],
+        ["Submit button", "Button", "btnSubmitCo", "Saves it and sends it to the Receipts Supervisor for approval. When editing a waiting one, lists the changes in a Yes/No message first."],
+        ["Message", "Label", "lblCoMsg", "\"Submitted. It waits for the Receipts Supervisor's approval.\" or what went wrong."],
         ["Cancel button", "Button", "btnCancelCo", "Throws away unsaved edits."],
       ]},
       { name: "Budget impact preview (read only)", rows: [
@@ -889,7 +889,7 @@ const receipts = [
     title: "Tab: Reports",
     form: "TabPage: tabReceiptReports",
     opensFrom: "Receipts > Reports tab.",
-    whoSees: "Admin, Receipts Employee, Receipts Supervisor",
+    whoSees: "Receipts Employee and Receipts Supervisor; Admins view only",
     groups: [
       { name: "Main section", rows: [
         ["Report type dropdown", "ComboBox", "cboReportType", "Expense & Receipt Report (per project), Weekly Expense Summary, Monthly Expense Summary."],

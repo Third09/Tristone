@@ -30,8 +30,9 @@ public partial class InventoryPage : UserControl
         tabPriceComparison.Controls.Add(prices);
         tabInvEditHistory.Controls.Add(new EditHistoryTab(Departments.Inventory) { Dock = DockStyle.Fill });
 
-        if (!Access.IsApprover(Session.CurrentUser!, Departments.Inventory))
+        if (!Access.CanSeeHistory(Session.CurrentUser!, Departments.Inventory))
             tabInventory.TabPages.Remove(tabInvEditHistory);
+        Access.LockButtons(this, AppPage.Inventory);
 
         // A change in one tab refreshes the tabs that show the same data.
         materials.Changed += async (_, _) => { await usage.ReloadListsAsync(); await prices.ReloadListsAsync(); await deliveries.ReloadListsAsync(); await RefreshAlertsAsync(); };

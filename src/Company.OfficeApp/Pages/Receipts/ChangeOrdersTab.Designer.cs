@@ -131,7 +131,7 @@ namespace Company.OfficeApp.Pages.Receipts
             lblAdminNote.AutoSize = true;
             lblAdminNote.Location = new Point(12, 256);
             lblAdminNote.Name = "lblAdminNote";
-            lblAdminNote.Text = "An Admin approves change orders.";
+            lblAdminNote.Text = "The Receipts Supervisor approves change orders.";
             // 
             // lblCoNumber
             // 

@@ -32,7 +32,7 @@ public record ReceiptView(string? ReceiptNo, DateOnly Date, string Merchant, dec
 
 /// <summary>
 /// Receipts > Receipt Vault and Needs Review (Project Outline, Part 5). Each receipt is a Project expense or
-/// Company overhead; the Receipts Employee uploads, the Receipts Supervisor (or an Admin) approves, and only
+/// Company overhead; the Receipts Employee uploads, the Receipts Supervisor approves, and only
 /// approved ones count. No receipt at all = "Needs Review" with a reason until approved; attaching a receipt
 /// later clears the flag. Delivery receipts show as "Stock purchase" and are not counted again
 /// (materials count when used on a project).
@@ -134,7 +134,7 @@ public static class ReceiptService
 
     public static async Task<(int? Id, string? Error)> CreateAsync(ReceiptInput i)
     {
-        if (Access.RequirePage(AppPage.Receipts) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Receipts) is { } denied) return (null, denied);
         if (CheckInput(i, false) is { } problem) return (null, problem);
         using var db = Db.Open();
         if (await ProjectProblemAsync(db, i) is { } bad) return (null, bad);
@@ -150,7 +150,7 @@ public static class ReceiptService
     /// <summary>Only while waiting or rejected; saving sends it back for approval.</summary>
     public static async Task<string?> UpdateAsync(int receiptId, ReceiptInput i)
     {
-        if (Access.RequirePage(AppPage.Receipts) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Receipts) is { } denied) return denied;
         using var db = Db.Open();
         var r = await db.Receipts.FirstAsync(x => x.ReceiptId == receiptId);
         if (r.Status == ApprovalStatuses.Approved) return "This receipt is already approved, so it can't be changed.";
@@ -190,7 +190,7 @@ public static class ReceiptService
     /// <summary>A receipt that turned up later for a no-receipt expense: clears the Needs Review flag.</summary>
     public static async Task<string?> AttachLateReceiptAsync(int receiptId, string receiptNo, string? scanPath, bool physicalOnly, string? filedLocation)
     {
-        if (Access.RequirePage(AppPage.Receipts) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Receipts) is { } denied) return denied;
         using var db = Db.Open();
         var r = await db.Receipts.FirstAsync(x => x.ReceiptId == receiptId);
         if (!r.NoReceipt) return "This expense already has a receipt.";

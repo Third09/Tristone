@@ -78,7 +78,7 @@ public static class SubcontractorService
 
     public static async Task<(int? Id, string? Error)> CreateAsync(SubInput i)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return (null, denied);
         if (CheckInput(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         if (await db.Subcontractors.AnyAsync(x => x.BusinessName.ToLower() == i.BusinessName.Trim().ToLower()))
@@ -95,7 +95,7 @@ public static class SubcontractorService
 
     public static async Task<string?> UpdateAsync(int subcontractorId, SubInput i)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Subcontractors) is { } denied) return denied;
         if (CheckInput(i) is { } problem) return problem;
         using var db = Db.Open();
         var s = await db.Subcontractors.FirstAsync(x => x.SubcontractorId == subcontractorId);
@@ -113,7 +113,7 @@ public static class SubcontractorService
 
     public static async Task<string?> DeleteAsync(int subcontractorId)
     {
-        if (Access.RequirePage(AppPage.Subcontractors) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Subcontractors) is { } denied) return denied;
         using var db = Db.Open();
         var s = await db.Subcontractors.FirstAsync(x => x.SubcontractorId == subcontractorId);
         if (await db.SubJobs.AnyAsync(j => j.SubcontractorId == subcontractorId))

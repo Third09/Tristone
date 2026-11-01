@@ -28,7 +28,7 @@ public record ProjectOption(int ProjectId, string Name)
 /// <summary>
 /// Inventory > Materials and Material Usage (Project Outline, Part 3).
 /// Stock only changes through approved usage (down) and deliveries (up), never by typing it in.
-/// Usage: the Inventory Employee records it; the Inventory Supervisor (or an Admin) approves; then the stock
+/// Usage: the Inventory Employee records it; the Inventory Supervisor approves; then the stock
 /// goes down and quantity x the material's current price becomes that project's material expense.
 /// </summary>
 public static class MaterialService
@@ -67,7 +67,7 @@ public static class MaterialService
 
     public static async Task<(int? Id, string? Error)> CreateAsync(MaterialInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (CheckInput(i) is { } problem) return (null, problem);
         using var db = Db.Open();
         if (await db.Materials.AnyAsync(m => m.Name.ToLower() == i.Name.Trim().ToLower())) return (null, "A material with that name already exists.");
@@ -87,7 +87,7 @@ public static class MaterialService
     /// <summary>Edits name, category, unit, price and minimum. The stock itself is not edited here.</summary>
     public static async Task<string?> UpdateAsync(int materialId, MaterialInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return denied;
         if (CheckInput(i) is { } problem) return problem;
         using var db = Db.Open();
         var m = await db.Materials.FirstAsync(x => x.MaterialId == materialId);
@@ -104,7 +104,7 @@ public static class MaterialService
 
     public static async Task<string?> DeleteAsync(int materialId)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return denied;
+        if (Access.RequireDelete(AppPage.Inventory) is { } denied) return denied;
         using var db = Db.Open();
         var m = await db.Materials.FirstAsync(x => x.MaterialId == materialId);
         if (await db.MaterialUsages.AnyAsync(u => u.MaterialId == materialId) || await db.Quotes.AnyAsync(q => q.MaterialId == materialId)
@@ -134,7 +134,7 @@ public static class MaterialService
 
     public static async Task<(int? Id, string? Error)> SubmitUsageAsync(UsageInput i)
     {
-        if (Access.RequirePage(AppPage.Inventory) is { } denied) return (null, denied);
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
         if (i.Quantity <= 0) return (null, "Type how many were used.");
         using var db = Db.Open();
         var m = await db.Materials.FirstOrDefaultAsync(x => x.MaterialId == i.MaterialId);

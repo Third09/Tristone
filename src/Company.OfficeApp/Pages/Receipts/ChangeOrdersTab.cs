@@ -30,9 +30,9 @@ public partial class ChangeOrdersTab : UserControl
         dgvChangeOrders.AutoGenerateColumns = false;
         RecordForm.NoAutoSelect(dgvChangeOrders, on => filling = on, RestoreSelection);
         colCost.DefaultCellStyle.FormatProvider = ProjectService.Peso;
-        bool admin = Session.CurrentUser!.IsAdmin;
-        btnApproveCo.Visible = btnRejectCo.Visible = admin;
-        lblAdminNote.Visible = !admin;
+        bool approver = Access.IsApprover(Session.CurrentUser!, Departments.Receipts);
+        btnApproveCo.Visible = btnRejectCo.Visible = approver;
+        lblAdminNote.Visible = !approver;
         if (addOnly) { RecordForm.ShowFormOnly(this, lblCoNumber); return; }
         Responsive.FitGrid(this, dgvChangeOrders);
     }
@@ -201,7 +201,7 @@ public partial class ChangeOrdersTab : UserControl
         if (RecordForm.AddDialog(this, "New Change Order", page, a => page.Added += a) is not { } newId) return;
         editingId = null;
         await LoadAsync(newId);
-        lblCoMsg.Text = "Submitted. It waits for an Admin's approval.";
+        lblCoMsg.Text = "Submitted. It waits for the Receipts Supervisor's approval.";
     }
 
     async void btnCancelCo_Click(object sender, EventArgs e)
@@ -249,7 +249,7 @@ public partial class ChangeOrdersTab : UserControl
                 if (error != null) { lblCoMsg.Text = error; return; }
                 editingId = null;   // reload the form from the saved change order
                 await LoadAsync(id);
-                lblCoMsg.Text = "Saved. It waits for an Admin's approval.";
+                lblCoMsg.Text = "Saved. It waits for the Receipts Supervisor's approval.";
             }
             else
             {

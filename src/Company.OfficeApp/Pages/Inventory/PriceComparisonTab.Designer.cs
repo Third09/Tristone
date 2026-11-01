@@ -254,7 +254,7 @@ namespace Company.OfficeApp.Pages.Inventory
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(300, 404);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "Approve as Purchase: Inventory Supervisor or Admin only";
+            lblApproverNote.Text = "Approve as Purchase: Inventory Supervisor only";
             // 
             // lblPurchases
             // 

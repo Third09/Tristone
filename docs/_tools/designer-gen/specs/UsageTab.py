@@ -29,7 +29,7 @@ CONTROLS = [
     ("DataGridView", "dgvUsageRequests", 12, 188, 930, 200, {}),
     ("Button", "btnApproveUsage", 12, 396, 90, 28, {"Text": T("Approve")}),
     ("Button", "btnRejectUsage", 108, 396, 90, 28, {"Text": T("Reject")}),
-    ("Label", "lblApproverNote", 210, 402, None, None, {"Text": T("Approve / Reject: Inventory Supervisor or Admin only")}),
+    ("Label", "lblApproverNote", 210, 402, None, None, {"Text": T("Approve / Reject: Inventory Supervisor only")}),
     # project history (bottom)
     ("Label", "lblHistoryTitle", 12, 440, None, None, {"Text": T("Project material history (approved only)")}),
     ("ComboBox", "cboHistoryProject", 12, 460, 240, 23, DDL),

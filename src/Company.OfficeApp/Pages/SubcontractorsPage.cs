@@ -24,8 +24,9 @@ public partial class SubcontractorsPage : UserControl
         tabSubBilling.Controls.Add(billing);
         tabSubEditHistory.Controls.Add(new EditHistoryTab(Departments.Subcontractors) { Dock = DockStyle.Fill });
 
-        if (!Access.IsApprover(Session.CurrentUser!, Departments.Subcontractors))
+        if (!Access.CanSeeHistory(Session.CurrentUser!, Departments.Subcontractors))
             tabSubcontractors.TabPages.Remove(tabSubEditHistory);
+        Access.LockButtons(this, AppPage.Subcontractors);
 
         // A change in one tab refreshes the tabs that show the same data.
         directory.Changed += async (_, _) => { await jobs.ReloadListsAsync(); await billing.ReloadJobsAsync(); await RefreshAlertsAsync(); };

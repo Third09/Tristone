@@ -106,7 +106,7 @@ public static class PayrollService
     /// <summary>Computes (or computes again) the Draft payroll for the period.</summary>
     public static async Task<string?> ComputeAsync(PayPeriod period)
     {
-        if (Access.RequirePage(AppPage.HrPayroll) is { } denied) return denied;
+        if (Access.RequireEdit(AppPage.HrPayroll) is { } denied) return denied;
         using var db = Db.Open();
         var run = await db.PayrollRuns.FirstOrDefaultAsync(r => r.PayGroup == period.Group && r.PeriodFrom == period.From);
         if (run?.Status == PayrollStatuses.Final) return "This payroll is already finalized.";

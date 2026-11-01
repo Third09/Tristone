@@ -108,7 +108,7 @@ public partial class AttendanceTab : UserControl
 
     void dgvAttendance_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
     {
-        if (e.RowIndex >= 0) btnFixScan_Click(this, EventArgs.Empty);
+        if (e.RowIndex >= 0 && btnFixScan.Visible) btnFixScan_Click(this, EventArgs.Empty);   // hidden for Admins (view only)
     }
 
     async void btnUploadBiometrics_Click(object sender, EventArgs e)

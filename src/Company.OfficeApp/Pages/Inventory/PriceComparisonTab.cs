@@ -6,7 +6,7 @@ namespace Company.OfficeApp.Pages.Inventory;
 
 /// <summary>
 /// Inventory > Price Comparison: quotes from several vendors for the same material, the cheapest highlighted;
-/// the Supervisor (or an Admin) approves one, which becomes the approved purchase. Approved purchases are
+/// the Supervisor approves one, which becomes the approved purchase. Approved purchases are
 /// listed below with how much has been delivered.
 /// Plain layout for now; control names match the UI Elements Guide (Part 3: Tab: Price Comparison).
 /// </summary>

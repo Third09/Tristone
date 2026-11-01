@@ -90,7 +90,7 @@ namespace Company.OfficeApp.Pages.Receipts
             lblApproverNote.AutoSize = true;
             lblApproverNote.Location = new Point(12, 384);
             lblApproverNote.Name = "lblApproverNote";
-            lblApproverNote.Text = "The Receipts Supervisor or an Admin approves these.";
+            lblApproverNote.Text = "The Receipts Supervisor approves these.";
             // 
             // lblReviewMsg
             // 

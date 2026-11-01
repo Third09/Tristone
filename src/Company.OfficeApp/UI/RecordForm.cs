@@ -33,11 +33,28 @@ public static partial class RecordForm
         };
     }
 
-    /// <summary>Locks or unlocks the form: every control from <paramref name="formTop"/> down, except that title itself.</summary>
+    /// <summary>
+    /// Locks or unlocks the form: every control from <paramref name="formTop"/> down, except that title itself.
+    /// On a view-only page (<see cref="MarkReadOnly"/>) the fields stay locked; only its buttons follow
+    /// <paramref name="on"/> (the ones left visible are View/Open/Print).
+    /// </summary>
     public static void SetEnabled(Control page, Control formTop, bool on)
     {
+        bool readOnly = IsReadOnly(page);
         foreach (Control c in page.Controls)
-            if (c != formTop && c.Top >= formTop.Top) c.Enabled = on;
+            if (c != formTop && c.Top >= formTop.Top) c.Enabled = on && (!readOnly || c is Button);
+    }
+
+    static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, object> readOnlyRoots = new();
+
+    /// <summary>Marks a page (and everything inside it) as view-only for the signed-in user (Access.LockButtons).</summary>
+    public static void MarkReadOnly(Control root) => readOnlyRoots.AddOrUpdate(root, true);
+
+    public static bool IsReadOnly(Control c)
+    {
+        for (var x = c; x != null; x = x.Parent)
+            if (readOnlyRoots.TryGetValue(x, out _)) return true;
+        return false;
     }
 
     /// <summary>

@@ -117,7 +117,7 @@ public partial class EmployeesTab : UserControl
     async Task StartEditAsync(Employee e)
     {
         editing = e;
-        foreach (var c in FormInputs) c.Enabled = true;
+        foreach (var c in FormInputs) c.Enabled = !RecordForm.IsReadOnly(this);   // Admins only view
         lblFormMode.Text = $"Editing: {e.FullName}";
         txtEmployeeName.Text = e.FullName;
         txtEmployeeContact.Text = e.ContactNumber ?? "";
