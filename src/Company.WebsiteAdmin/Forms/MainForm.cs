@@ -1,3 +1,4 @@
+using Company.OfficeApp.UI;
 using Company.OfficeApp.Forms;
 using Company.OfficeApp.Services;
 using Company.WebsiteAdmin.Pages;
@@ -94,7 +95,10 @@ public partial class MainForm : Form
 
         lblPageTitle.Text = Title(page);
         foreach (var (p, b) in navButtons)
+        {
             b.Font = p == page ? NavFontOpen : Font;   // bold = the page that's open
+            Theme.SetActiveNav(b, p == page);   // and orange (UI/Theme)
+        }
     }
 
     ContactUsPage ContactUs()

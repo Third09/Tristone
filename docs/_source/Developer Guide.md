@@ -142,6 +142,8 @@ Who sees what is decided in one class, `Services/Access.cs`:
 
 Every new page should reuse these instead of writing its own:
 
+- `UI/Theme` (the look, like a CSS file): Figma colors as constants; `Theme.Enable()` (Launcher `Main`) styles every window when it opens and every control added later; buttons by name prefix (`KindOf`: Main orange, Danger red, Publish green, Nav sidebar); `SetActiveNav` marks the open page. Only colors/borders/flat style change, never sizes. A color, font or back color set in the designer is kept (`ShouldSerialize` check).
+
 | Piece | What it does |
 |---|---|
 | `AuditService.Add` | Writes a row to `audit_logs` for every add, edit and delete. Shown in each department's **Edit History** tab (`Pages/Shared/EditHistoryTab`). Never log passwords, hashes, security answers, government ID numbers or bank account numbers. |

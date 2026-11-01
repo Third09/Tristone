@@ -1,3 +1,4 @@
+using Company.OfficeApp.UI;
 using Company.OfficeApp.Pages;
 using Company.OfficeApp.Services;
 
@@ -36,7 +37,8 @@ public partial class MainForm : Form
             [AppPage.HrPayroll] = btnNavHr,
             [AppPage.Inventory] = btnNavInventory,
             [AppPage.Subcontractors] = btnNavSubcontractors,
-            [AppPage.Receipts] = btnNavReceipts,
+            [AppPage.Receipts] = btnNavReceipts,
+
             [AppPage.UserAccounts] = btnNavUsers,
             [AppPage.MyAccount] = btnNavMyAccount,
         };
@@ -86,7 +88,10 @@ public partial class MainForm : Form
 
         lblPageTitle.Text = Access.Title(page);
         foreach (var (p, b) in navButtons)
+        {
             b.Font = p == page ? navFontOpen : Font;   // bold = the page that's open
+            Theme.SetActiveNav(b, p == page);   // and orange (UI/Theme)
+        }
     }
 
     Font? openFont;

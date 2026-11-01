@@ -1,6 +1,7 @@
 using Company.OfficeApp.Data;
 using Company.OfficeApp.Forms;
 using Company.OfficeApp.Services;
+using Company.OfficeApp.UI;
 
 namespace Company.Launcher;
 
@@ -15,6 +16,7 @@ internal static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
+        Theme.Enable();   // the app's look (UI/Theme.cs), applied to every window
 
         if (!EnsureDatabase()) return;
         Db.WarmUpInBackground();
