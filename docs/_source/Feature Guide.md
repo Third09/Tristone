@@ -339,8 +339,48 @@ Expense & Receipt Report (every approved receipt in the range, by project / over
 
 # 10. Website Admin
 
-- Opened from Tri-Stone by Website Admin logins (and by Admins who choose it); same idle sign-out; sidebar: Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic (only Inquiries is built).
-- **Inquiries:** website Contact form messages (an email or a phone number is required by the database). Status New → Contacted → Closed and internal notes, saved with who and when after a Yes/No list of changes; never deleted; the sidebar shows "Inquiries (n new)"; Copy Email copies the address for replying from Gmail.
+Owner decisions 2026-11-01, following the Figma design "CCMS SUPERSYSTEM". Who: Website Admin logins and Admins (Admins may edit here). Every change is audited under the department "Website".
+
+## 10.1 Layout, saving and publishing
+
+- Sidebar: Home, Projects, Services, About Us, Contact Us ("(n new)" inquiries), Log out. Top bar: page title, signed-in user, **Publish Website**, last published (date and who).
+- **Save Changes** stores edits in the database only; the live website does not change. **Publish Website** (Yes/No) takes a snapshot of everything saved and makes it the live version (`website_publishes`). Unsaved edits on the open page are not included (the message says so).
+- Leaving a page or logging out with unsaved edits asks first. Discard Changes reloads the saved version.
+- Pictures: JPEG or PNG, 8 MB at most each; stored in the shared files folder.
+
+## 10.2 Home
+
+| Field | Rule |
+|---|---|
+| Hero background image | optional; Choose / Remove Picture |
+| Main headline | required, 150 characters max (counter shown) |
+| Subheadline | 300 characters max |
+
+## 10.3 Projects
+
+- Featured projects come from the office Projects list: only projects ticked "Show on website" that aren't featured yet can be added. Title, location and category (= sector) come from the office project and are changed there.
+- Per project: short description (100 max, Save Changes), Move Up / Move Down (website order), Unpublish / Publish (hidden ones stay listed), Delete (from the website only, with its photos; the office project stays).
+- Photos: up to 10 per project, uploaded immediately with a progress bar; files over 8 MB, of another type or over the limit are listed as "not uploaded" while the others go through. Order with Up/Down; Showcase Yes/No decides which are in the website carousel; Remove asks first.
+
+## 10.4 Services
+
+- Fields: name of service (fixed list: Residential Construction, Commercial Construction, Repairs and Home Extension), category (the project sectors), location (typed, 100 max), short description (100 max), picture. The card's icon is fixed by the service.
+- Add New Service (pop-up), edit (Yes/No list of changes), Move Up/Down, Unpublish/Publish, Delete (asks first). The same service may appear more than once (e.g. different locations).
+
+## 10.5 About Us
+
+Three fixed sections: About Tri-Stone, Our Principles, Our Mission and Vision. Each: picture, heading (typed, required, 100 max) and description (2000 max); section 3 has Our Vision and Our Mission (1000 max each) instead. One section is edited at a time; switching with unsaved edits asks first.
+
+## 10.6 Contact Us
+
+- KPIs: Total inquiries, Pending (New), Website visits this month (our own free counter: the website reports each visit to the API; visits while the office server is off are not counted).
+- Inquiries are forwarded to: an email address (validated), editable by Website Admins and Admins, with a Yes/No check.
+- Company details shown on the website: address, phone, email (validated), footer line; Save Details lists the changes.
+- Inquiries list: search (name, email, phone, location), status, From / To, Reset Filter, Export to Excel; New ones in bold. Double-click (or Open Inquiry) opens the inquiry: details and message, Copy Email (reply from Gmail), status New → Contacted → Closed and internal notes, saved after a Yes/No list. Never deleted. An email or a phone number is required by the database.
+
+## 10.7 Not done yet (needs the website side)
+
+The live website does not read these yet: the website files need labels on each editable text and picture, the Publish rebuild, the visit report and the Contact form changes (3 fixed services + Other, optional Project Location). The owner is asking the website's developer first.
 
 # 11. Glossary
 

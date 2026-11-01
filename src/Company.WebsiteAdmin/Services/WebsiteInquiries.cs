@@ -20,8 +20,18 @@ public static class WebsiteInquiries
 {
     public const int MaxNotesLength = 2000;
 
-    /// <summary>Website Admins and office Admins may use the Website Admin app (re-checked here, not just on screen).</summary>
-    static string? RequireAccess() => Session.CurrentUser is { CanOpenWebsiteAdmin: true } ? null : "Only Website Admins and Admins can do this.";
+    static string? RequireAccess() => WebsiteAccess.Require();
+
+    /// <summary>
+    /// Website Traffic: page visits counted this month (the free counter; owner decision 2026-11-01). The website
+    /// reports each visit to the API, which writes website_visits; visits while the office server is off aren't counted.
+    /// </summary>
+    public static async Task<int> VisitsThisMonthAsync()
+    {
+        using var db = Db.Open();
+        var start = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+        return await db.WebsiteVisits.CountAsync(v => v.VisitedAt >= start);
+    }
 
     /// <summary>Newest first. <paramref name="status"/> null = all; dates are inclusive; search looks in name, email, phone and location.</summary>
     public static async Task<List<InquiryRow>> ListAsync(string? status, string search, DateOnly? from, DateOnly? to)

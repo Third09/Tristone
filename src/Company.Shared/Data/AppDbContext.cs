@@ -45,6 +45,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Payslip> Payslips => Set<Payslip>();
     public DbSet<CashAdvanceDeduction> CashAdvanceDeductions => Set<CashAdvanceDeduction>();
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
+    public DbSet<WebsiteContent> WebsiteContent => Set<WebsiteContent>();
+    public DbSet<WebsiteProject> WebsiteProjects => Set<WebsiteProject>();
+    public DbSet<WebsiteProjectPhoto> WebsiteProjectPhotos => Set<WebsiteProjectPhoto>();
+    public DbSet<WebsiteService> WebsiteServices => Set<WebsiteService>();
+    public DbSet<WebsitePublish> WebsitePublishes => Set<WebsitePublish>();
+    public DbSet<WebsiteVisit> WebsiteVisits => Set<WebsiteVisit>();
 
     /// <summary>Creates a context for a plain Npgsql connection string.</summary>
     public static AppDbContext Create(string connectionString) =>
@@ -65,6 +71,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.Entity<User>().HasKey(u => u.UserId);
         modelBuilder.Entity<Inquiry>().HasKey(i => i.InquiryId);
+        modelBuilder.Entity<WebsiteContent>().HasKey(c => c.ContentKey);
+        modelBuilder.Entity<WebsiteProject>().HasKey(p => p.WebProjectId);
+        modelBuilder.Entity<WebsiteProjectPhoto>().HasKey(p => p.PhotoId);
+        modelBuilder.Entity<WebsiteService>().HasKey(s => s.WebServiceId);
+        modelBuilder.Entity<WebsitePublish>().HasKey(p => p.PublishId);
+        modelBuilder.Entity<WebsiteVisit>().HasKey(v => v.VisitId);
         modelBuilder.Entity<LoginLog>().HasKey(l => l.LogId);
         modelBuilder.Entity<PasswordRequest>().HasKey(r => r.RequestId);
         modelBuilder.Entity<AuditLog>().HasKey(a => a.AuditId);

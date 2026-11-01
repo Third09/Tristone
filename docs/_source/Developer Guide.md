@@ -323,15 +323,38 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 
 `src/Company.Launcher` (Tri-Stone, `Apps\Tri-Stone\TriStone.exe`) is the only executable. It shows the office Sign In, then opens a main window by level: Website Admin → `Company.WebsiteAdmin/Forms/MainForm`; Admin → `AppChoiceForm` (Office App / Website Admin / Sign Out); others → the office `MainForm`. After Sign Out it returns to Sign In. `Company.OfficeApp` and `Company.WebsiteAdmin` are class libraries with no `Program.cs`; in Visual Studio, **Company.Launcher** must be the startup project.
 
-The Website Admin main window copies the office layout: sidebar (Page Content, Announcements, Website Projects, Document Vault, Inquiries, Website Traffic, Sign Out), title bar text, the same idle check. Pages not built yet show a placeholder.
+The Website Admin main window copies the office layout: sidebar (Home, Projects, Services, About Us, Contact Us, Log out; from the Figma design, owner decisions 2026-11-01), the page title, who is signed in, **Publish Website** with the last publish, and the same idle check. Every editor implements `IWebsiteEditor.HasUnsavedChanges`; `MainForm` asks before leaving a page with unsaved edits, before Log out, and warns on Publish that unsaved edits are not included.
 
 ## 10.2 Logins
 
 Website Admin is a level in `users` (script 011), created in User Accounts like any other login, without a department. `User.CanOpenWebsiteAdmin` (Website Admin or Admin) is re-checked by every Website Admin service.
 
-## 10.3 Inquiries (`Pages/InquiriesTab`, `Services/WebsiteInquiries`)
+## 10.3 Saving and publishing (`Services/WebsiteContentService`, `PublishService`, `WebsiteAccess`, `WebsiteImages`)
 
-`ListAsync(status, search, from, to)` (newest first, New rows in bold), `CountsAsync` for "Inquiries (N new)" on the sidebar, `UpdateAsync(id, status, notes)` with the Yes/No list of changes. Copy Email puts the address on the clipboard for replying from Gmail. Rows are never deleted.
+- **Save Changes** writes the database only (not live). **Publish Website** (`PublishService.PublishAsync`) builds a JSON snapshot of everything saved: all `website_content` items except the recipient email, visible featured projects in order with their showcase photo paths, visible services. It inserts it into `website_publishes`. The live site will be built from the latest snapshot (Netlify rebuild, with the API piece).
+- `WebsiteAccess.Require()` = Website Admin or Admin (`User.CanOpenWebsiteAdmin`), re-checked by every service. Edit History department: `"Website"`.
+- `WebsiteImages`: JPEG/PNG, 8 MB max, stored with `FileStore` under `website\yyyy\MM`; `LoadAsync` reads into memory so files are not locked.
+- `WebsiteContentService.SaveAsync(what, texts, newImages)`: validates the length limits (`MaxLength`), required items (headline, headings, recipient email) and emails; writes only changed keys; one audit row listing the changed keys (pictures by file name).
+
+## 10.4 Home (`Pages/HomeEditorPage`) and About Us (`Pages/AboutEditorPage`)
+
+Single-item editors over `website_content`: Home = `home.hero_image`, `home.headline` (150), `home.subheadline` (300). About Us = three fixed sections chosen with buttons; each has `about.N.image` and `about.N.heading` (100) plus `about.1.text` / `about.2.text` (2000) or, for section 3, `about.3.vision` / `about.3.mission` (1000). A picked picture is only stored on Save; Remove Picture clears it. Save lists the changes (`RecordForm.ConfirmSave`); Discard Changes reloads.
+
+## 10.5 Projects (`Pages/ProjectsEditorPage`, `AddWebProjectForm`, `Services/WebProjectService`)
+
+- Featured projects (`website_projects`) are office projects with `show_on_website`; name, site and sector are read from `projects` (one list). Add New Project = pop-up listing projects not featured yet (`ChoicesAsync`).
+- Per project: short description (100), Move Up/Down (`sort_order`, renumbered 1..n by `Ordering.Move`), Unpublish/Publish (`is_visible`), Delete (removes it and its photo rows from the website only; the stored files stay in the files folder).
+- Photos (`website_project_photos`): up to 10, uploaded one by one with a progress bar (`AddPhotosAsync` returns how many were added and why the others were refused, so one bad file doesn't stop the rest), order, Showcase on/off (carousel), Remove. Photos save immediately; only the description uses Save Changes.
+
+## 10.6 Services (`Pages/ServicesEditorPage`, `Services/WebServiceService`)
+
+`website_services`: service name from the fixed list `WebsiteServiceNames` (3, also a database CHECK), category = `ProjectSectors`, typed location (100), short description (100), one picture, order, visible. Standard list page: Add opens the same page as a pop-up (`addOnly`), the form is locked until a row is clicked, Save lists changes.
+
+## 10.7 Contact Us (`Pages/ContactUsPage`, `InquiryForm`, `Services/WebsiteInquiries`)
+
+- KPIs: total inquiries, pending (New), **website visits this month** (`VisitsThisMonthAsync` counts `website_visits`, the free counter the API will fill; owner chose it over Netlify Analytics, which costs money).
+- Recipient email (`inquiry.recipient_email`, Website Admins and Admins) and company details (`contact.address`, `contact.phone`, `contact.email`, `contact.copyright`), each with its own Save.
+- Inquiries: search, status, From/To, Reset Filter, Export to Excel; New rows in bold. Double-click or Open Inquiry opens `InquiryForm`: details, message, Copy Email, status (New / Contacted / Closed) and notes, saved after a Yes/No list. Rows are never deleted. The sidebar's Contact Us button shows "(N new)".
 
 # Chapter 11: Testing
 
@@ -354,11 +377,13 @@ Each part is tested with a throwaway console program (net10.0-windows, reference
 | Attendance (rules, scanner file, fix, overtime) | 32 |
 | Make Scanner Employee File | 9 |
 | HR Settings, Cash Advances, Payroll, Payslip History | 47 |
+| Access levels (Admin view-only, Employee / Supervisor) | 38 |
+| Website Admin editors (Home, Projects, Services, About Us, Contact Us, Publish) | 43 |
 
 **Not tested yet:** the "last active Admin" protection (needs a separate test database), the scanner employee file on the real scanner, and payroll on real attendance (both under "Check at home").
 
 # Coming next
 
-- Website Admin app: Page Content, Announcements, Website Projects, Document Vault, Website Traffic
+- The website side of Website Admin (needs the friend's OK): labels on the website's texts and pictures, the Publish rebuild, the visit counter, Contact form changes
 - The API and the website Contact form
 - Phase 6: the server and the installers

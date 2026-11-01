@@ -435,16 +435,49 @@ The public website is managed in the **Website Admin** screens, separate from th
 
 **Website Admin logins** are made by an Admin in **User Accounts**, like any other login: pick the employee and choose the Level **Website Admin** (no department). Same rules as all logins: 5 wrong passwords lock it, and Forgot Password goes to the Admins.
 
-The Website Admin window looks like the office app: click a button in the **left sidebar** to open a page (the open one is in **bold**). The top shows the page name and who is signed in. Click **Sign Out** at the bottom of the sidebar to go back to Sign In. Pages not finished yet say "coming next". After 5 minutes without activity, the same "Still there?" message appears.
+The Website Admin window looks like the office app: click a button in the **left sidebar** to open a page (the open one is in **bold**): **Home**, **Projects**, **Services**, **About Us**, **Contact Us**. **Log out** is at the bottom. After 5 minutes without activity, the same "Still there?" message appears.
 
-**Inquiries**
+**Save Changes and Publish Website**
 
-Messages from the website Contact form. The **Inquiries** button in the sidebar shows how many are new, e.g. *Inquiries (3 new)*; new ones are in **bold** in the list.
+- **Save Changes** (on each page) keeps your edits. The live website does **not** change yet.
+- **Publish Website** (top right) puts **everything saved** on the live website. Under it you see when it was last published and by whom.
+- Leaving a page with unsaved edits asks first. **Discard Changes** brings back the saved version.
+- Pictures must be **JPEG or PNG**, **8 MB** at most.
 
-1. Use **Status**, **Search** (name, email, phone or location) and **From** / **To** to find messages. **Refresh** loads the newest.
-2. Click an inquiry to read it: name, contact number, email, project location, service and the message.
-3. **Copy Email**, then paste it in Gmail to reply.
-4. Set the **Status** (New, Contacted, Closed) and write **Notes** (only you and other Website Admins see them), then click **Save**, check the changes and click **Yes**.
-5. **Export** saves the list to Excel.
+**Home**
+
+1. **Choose Picture...** for the big top picture (or **Remove Picture**).
+2. Type the **Main headline** (up to 150 characters) and the **Subheadline** (up to 300). The counter shows how many you used.
+3. Click **Save Changes**, check the list of changes and click **Yes**. Then **Publish Website** when ready.
+
+**Projects**
+
+The projects come from the office **Projects** page: an Admin or the Receipts Supervisor ticks **Show on website** there first.
+
+1. **Add New Project**: pick the project, type a short description (up to 100 characters), click **Add**.
+2. Click a project in the list to edit it. Change the description and click **Save Changes**.
+3. **Add Photos...**: pick up to 10 pictures (you can pick several at once). A bar shows the upload; any picture that couldn't be uploaded is listed with the reason.
+4. Click a photo to see it. **Up** / **Down** set the order; **Add to Showcase** / **Remove from Showcase** choose which photos the website carousel shows; **Remove** deletes the photo.
+5. **Move Up** / **Move Down** set the order of the projects on the website. **Unpublish** hides a project (Publish shows it again). **Delete** removes it from the website only.
+
+**Services**
+
+1. **Add New Service**: choose the service (Residential Construction, Commercial Construction or Repairs and Home Extension), the category, type the location and a short description, choose a picture, click **Add Service**.
+2. Click a service to edit it, then **Save Changes**. **Move Up** / **Move Down**, **Unpublish** and **Delete** work like on Projects.
+
+**About Us**
+
+1. Click the section: **1. About Tri-Stone**, **2. Our Principles** or **3. Our Mission and Vision**.
+2. Change the picture, the heading and the text (section 3 has **Our Vision** and **Our Mission**).
+3. **Save Changes**.
+
+**Contact Us**
+
+The top shows **Total inquiries**, **Pending (New)** and **Website visits this month**.
+
+- **Inquiries are forwarded to**: the email that receives the website's inquiries. Change it and click **Save Email**.
+- **Company details**: the address, phone, email and footer line shown on the website. Click **Save Details**, then **Publish Website**.
+- The list shows the inquiries from the website's Contact form (new ones in **bold**). Search, pick a **Status** or tick **From** / **To** dates; **Reset Filter** clears them; **Export to Excel** saves the list.
+- **Double-click** an inquiry (or click it and **Open Inquiry**) to read it. **Copy Email**, then paste it in Gmail to reply. Set the **Status** (New, Contacted, Closed), write **Notes** (only for you and the other Website Admins), click **Save**, check the changes and click **Yes**.
 
 Inquiries are never deleted; close them instead.

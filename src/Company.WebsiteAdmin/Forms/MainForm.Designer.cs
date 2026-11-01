@@ -20,16 +20,17 @@ namespace Company.WebsiteAdmin.Forms
             components = new System.ComponentModel.Container();
             tmrIdle = new System.Windows.Forms.Timer(components);
             pnlSidebar = new FlowLayoutPanel();
-            btnNavPageContent = new Button();
-            btnNavAnnouncements = new Button();
-            btnNavWebsiteProjects = new Button();
-            btnNavDocumentVault = new Button();
-            btnNavInquiries = new Button();
-            btnNavWebsiteTraffic = new Button();
+            btnNavHome = new Button();
+            btnNavProjects = new Button();
+            btnNavServices = new Button();
+            btnNavAboutUs = new Button();
+            btnNavContactUs = new Button();
             btnSignOut = new Button();
             pnlTopBar = new Panel();
             lblPageTitle = new Label();
             lblUserName = new Label();
+            btnPublishWebsite = new Button();
+            lblLastPublished = new Label();
             pnlContent = new Panel();
             pnlSidebar.SuspendLayout();
             pnlTopBar.SuspendLayout();
@@ -37,12 +38,11 @@ namespace Company.WebsiteAdmin.Forms
             //
             // pnlSidebar  (left side; hidden buttons take no space)
             //
-            pnlSidebar.Controls.Add(btnNavPageContent);
-            pnlSidebar.Controls.Add(btnNavAnnouncements);
-            pnlSidebar.Controls.Add(btnNavWebsiteProjects);
-            pnlSidebar.Controls.Add(btnNavDocumentVault);
-            pnlSidebar.Controls.Add(btnNavInquiries);
-            pnlSidebar.Controls.Add(btnNavWebsiteTraffic);
+            pnlSidebar.Controls.Add(btnNavHome);
+            pnlSidebar.Controls.Add(btnNavProjects);
+            pnlSidebar.Controls.Add(btnNavServices);
+            pnlSidebar.Controls.Add(btnNavAboutUs);
+            pnlSidebar.Controls.Add(btnNavContactUs);
             pnlSidebar.Controls.Add(btnSignOut);
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.FlowDirection = FlowDirection.TopDown;
@@ -51,61 +51,53 @@ namespace Company.WebsiteAdmin.Forms
             pnlSidebar.Size = new Size(170, 640);
             pnlSidebar.WrapContents = false;
             //
-            // btnNavPageContent
+            // btnNavHome
             //
-            btnNavPageContent.Name = "btnNavPageContent";
-            btnNavPageContent.Size = new Size(150, 30);
-            btnNavPageContent.TabIndex = 0;
-            btnNavPageContent.Text = "Page Content";
-            btnNavPageContent.TextAlign = ContentAlignment.MiddleLeft;
+            btnNavHome.Name = "btnNavHome";
+            btnNavHome.Size = new Size(150, 30);
+            btnNavHome.TabIndex = 0;
+            btnNavHome.Text = "Home";
+            btnNavHome.TextAlign = ContentAlignment.MiddleLeft;
             //
-            // btnNavAnnouncements
+            // btnNavProjects
             //
-            btnNavAnnouncements.Name = "btnNavAnnouncements";
-            btnNavAnnouncements.Size = new Size(150, 30);
-            btnNavAnnouncements.TabIndex = 1;
-            btnNavAnnouncements.Text = "Announcements";
-            btnNavAnnouncements.TextAlign = ContentAlignment.MiddleLeft;
+            btnNavProjects.Name = "btnNavProjects";
+            btnNavProjects.Size = new Size(150, 30);
+            btnNavProjects.TabIndex = 1;
+            btnNavProjects.Text = "Projects";
+            btnNavProjects.TextAlign = ContentAlignment.MiddleLeft;
             //
-            // btnNavWebsiteProjects
+            // btnNavServices
             //
-            btnNavWebsiteProjects.Name = "btnNavWebsiteProjects";
-            btnNavWebsiteProjects.Size = new Size(150, 30);
-            btnNavWebsiteProjects.TabIndex = 2;
-            btnNavWebsiteProjects.Text = "Website Projects";
-            btnNavWebsiteProjects.TextAlign = ContentAlignment.MiddleLeft;
+            btnNavServices.Name = "btnNavServices";
+            btnNavServices.Size = new Size(150, 30);
+            btnNavServices.TabIndex = 2;
+            btnNavServices.Text = "Services";
+            btnNavServices.TextAlign = ContentAlignment.MiddleLeft;
             //
-            // btnNavDocumentVault
+            // btnNavAboutUs
             //
-            btnNavDocumentVault.Name = "btnNavDocumentVault";
-            btnNavDocumentVault.Size = new Size(150, 30);
-            btnNavDocumentVault.TabIndex = 3;
-            btnNavDocumentVault.Text = "Document Vault";
-            btnNavDocumentVault.TextAlign = ContentAlignment.MiddleLeft;
+            btnNavAboutUs.Name = "btnNavAboutUs";
+            btnNavAboutUs.Size = new Size(150, 30);
+            btnNavAboutUs.TabIndex = 3;
+            btnNavAboutUs.Text = "About Us";
+            btnNavAboutUs.TextAlign = ContentAlignment.MiddleLeft;
             //
-            // btnNavInquiries
+            // btnNavContactUs
             //
-            btnNavInquiries.Name = "btnNavInquiries";
-            btnNavInquiries.Size = new Size(150, 30);
-            btnNavInquiries.TabIndex = 4;
-            btnNavInquiries.Text = "Inquiries";
-            btnNavInquiries.TextAlign = ContentAlignment.MiddleLeft;
-            //
-            // btnNavWebsiteTraffic
-            //
-            btnNavWebsiteTraffic.Name = "btnNavWebsiteTraffic";
-            btnNavWebsiteTraffic.Size = new Size(150, 30);
-            btnNavWebsiteTraffic.TabIndex = 5;
-            btnNavWebsiteTraffic.Text = "Website Traffic";
-            btnNavWebsiteTraffic.TextAlign = ContentAlignment.MiddleLeft;
+            btnNavContactUs.Name = "btnNavContactUs";
+            btnNavContactUs.Size = new Size(150, 30);
+            btnNavContactUs.TabIndex = 4;
+            btnNavContactUs.Text = "Contact Us";
+            btnNavContactUs.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnSignOut
             //
             btnSignOut.Margin = new Padding(3, 20, 3, 3);
             btnSignOut.Name = "btnSignOut";
             btnSignOut.Size = new Size(150, 30);
-            btnSignOut.TabIndex = 7;
-            btnSignOut.Text = "Sign Out";
+            btnSignOut.TabIndex = 5;
+            btnSignOut.Text = "Log out";
             btnSignOut.TextAlign = ContentAlignment.MiddleLeft;
             btnSignOut.Click += btnSignOut_Click;
             //
@@ -113,6 +105,8 @@ namespace Company.WebsiteAdmin.Forms
             //
             pnlTopBar.Controls.Add(lblPageTitle);
             pnlTopBar.Controls.Add(lblUserName);
+            pnlTopBar.Controls.Add(btnPublishWebsite);
+            pnlTopBar.Controls.Add(lblLastPublished);
             pnlTopBar.Dock = DockStyle.Top;
             pnlTopBar.Name = "pnlTopBar";
             pnlTopBar.Size = new Size(830, 56);
@@ -130,6 +124,25 @@ namespace Company.WebsiteAdmin.Forms
             lblUserName.Location = new Point(12, 30);
             lblUserName.Name = "lblUserName";
             lblUserName.Text = "Signed in:";
+            //
+            // btnPublishWebsite  (puts every saved change on the live website)
+            //
+            btnPublishWebsite.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPublishWebsite.Location = new Point(690, 6);
+            btnPublishWebsite.Name = "btnPublishWebsite";
+            btnPublishWebsite.Size = new Size(130, 28);
+            btnPublishWebsite.TabIndex = 6;
+            btnPublishWebsite.Text = "Publish Website";
+            btnPublishWebsite.Click += btnPublishWebsite_Click;
+            //
+            // lblLastPublished
+            //
+            lblLastPublished.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblLastPublished.Location = new Point(420, 36);
+            lblLastPublished.Name = "lblLastPublished";
+            lblLastPublished.Size = new Size(400, 18);
+            lblLastPublished.Text = "Last published: -";
+            lblLastPublished.TextAlign = ContentAlignment.TopRight;
             //
             // pnlContent  (the chosen page loads here)
             //
@@ -168,16 +181,17 @@ namespace Company.WebsiteAdmin.Forms
         #endregion
 
         private FlowLayoutPanel pnlSidebar;
-        private Button btnNavPageContent;
-        private Button btnNavAnnouncements;
-        private Button btnNavWebsiteProjects;
-        private Button btnNavDocumentVault;
-        private Button btnNavInquiries;
-        private Button btnNavWebsiteTraffic;
+        private Button btnNavHome;
+        private Button btnNavProjects;
+        private Button btnNavServices;
+        private Button btnNavAboutUs;
+        private Button btnNavContactUs;
         private Button btnSignOut;
         private Panel pnlTopBar;
         private Label lblPageTitle;
         private Label lblUserName;
+        private Button btnPublishWebsite;
+        private Label lblLastPublished;
         private Panel pnlContent;
         private System.Windows.Forms.Timer tmrIdle;
     }

@@ -10,7 +10,7 @@ How `construction_db` is designed, how it is built and changed, how the applicat
  Windows PC (x5 at deployment)                                   Server (localhost while building; 192.168.1.50 later)
 +-------------------------------------------+                  +------------------------------------+
 | TriStone.exe (Company.Launcher)           |                  | PostgreSQL 18                      |
-|  Company.OfficeApp / Company.WebsiteAdmin |   TCP 5432       |  construction_db (37 tables)       |
+|  Company.OfficeApp / Company.WebsiteAdmin |   TCP 5432       |  construction_db (43 tables)       |
 |   Pages (WinForms UserControls)           | ---------------> |                                    |
 |    -> Services (rules, permission checks) |   Npgsql         | Shared folder (scans, photos)      |
 |      -> AppDbContext (EF Core 10, Npgsql) | <--------------- |  path in app_settings              |
@@ -59,6 +59,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 011_merge_website_accounts | adds the Website Admin level to `users` (new CHECK rules), copies website accounts with their hashes into `users`, their sign-ins into `login_logs`, re-points `inquiries.updated_by` to `users`, then drops `website_accounts` and `website_login_logs` |
 | 012_attendance | `attendance_imports`, `attendance_scans`, `attendance_days` |
 | 013_payroll | `holidays`, `cash_advances`, `payroll_runs`, `payslips`, `cash_advance_deductions` |
+| 014_website_content | `website_content` (seeded from the current website text), `website_projects`, `website_project_photos`, `website_services` (seeded with the 3 service cards), `website_publishes`, `website_visits` |
 
 ## 2.3 Design conventions
 
@@ -258,11 +259,15 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 
 - A receipt counts as an expense only when `status = 'Approved'`; Project receipts go to the project, Overhead ones to the Dashboard. `no_receipt` rows are listed in Needs Review; attaching a receipt later clears the flag and keeps the decision.
 - **Stock purchases** are not copied into `receipts`: the Receipt Vault unions `deliveries` into its list (marked "Stock purchase"), so they're stored once and never counted as project expenses (materials count when used).
-- **Change orders:** approving (Admin) adds `cost_change` to revenue through `ProjectFinance` and moves `projects.target_end_date` by `days_change` in the same save.
+- **Change orders:** approving (Receipts Supervisor) adds `cost_change` to revenue through `ProjectFinance` and moves `projects.target_end_date` by `days_change` in the same save.
 
 ## 4.9 Website and settings
 
 - `inquiries`: New → Contacted → Closed, internal `notes`, never deleted. The website will insert rows through the API.
+- `website_content` (key/value, one row per text or picture): `home.hero_image`, `home.headline`, `home.subheadline`, `about.N.image` / `about.N.heading` (N = 1..3), `about.1.text`, `about.2.text`, `about.3.vision`, `about.3.mission`, `contact.address`, `contact.phone`, `contact.email`, `contact.copyright`, `inquiry.recipient_email`. Pictures are stored as paths relative to the files folder. `updated_by/at` = last Save.
+- `website_projects`: one row per featured office project (`project_id` UNIQUE → `projects`), `sort_order`, `is_visible`, `short_description`. Its photos (`website_project_photos`, ON DELETE CASCADE) have `sort_order` and `is_showcase`; the 10-photo limit is checked by the app.
+- `website_services`: `service_name` CHECK (the 3 fixed services), `sector` CHECK (the project sectors), `location`, `short_description`, `image_path`, `sort_order`, `is_visible`.
+- `website_publishes`: each Publish Website stores a `jsonb` snapshot of everything saved; the live site is built from the newest row. `website_visits`: one row per page visit (the free Website Traffic counter; written by the API later).
 - `app_settings` (key/value): `file_storage_path`; `hr.work_start`, `hr.work_end`, `hr.break_start`, `hr.break_end` (HH:mm), `hr.grace_minutes`, `hr.work_days` (0 = Sunday ... 6 = Saturday, comma-separated), `hr.ot_rate`, `hr.ot_minimum_minutes`, `hr.work_days_per_month`, `hr.sss_rate`, `hr.sss_min_credit`, `hr.sss_max_credit`, `hr.philhealth_rate`, `hr.philhealth_floor`, `hr.philhealth_ceiling`, `hr.pagibig_rate`, `hr.pagibig_cap`, `hr.withholding_tax`. A missing key means "use the default in the code" (`HrSettings.Default`).
 
 # 5. Pages and the data they use
@@ -294,7 +299,11 @@ R = reads, W = writes. Every write also inserts into `audit_logs`, except sign-i
 | Receipts > Change Orders | `ChangeOrderService` | `change_orders`, `projects` | `change_orders`, `projects.target_end_date` |
 | Receipts > Reports | `ReceiptReports` | `receipts`, `projects` | — |
 | Every Edit History tab | `AuditService` | `audit_logs`, `users` | — |
-| Website Admin > Inquiries | `WebsiteInquiries` | `inquiries` | `inquiries.status/notes/updated_by/updated_at` |
+| Website Admin > Home / About Us | `WebsiteContentService` | `website_content` | `website_content` |
+| Website Admin > Projects | `WebProjectService` | `website_projects`, `website_project_photos`, `projects` | `website_projects`, `website_project_photos` |
+| Website Admin > Services | `WebServiceService` | `website_services` | the same |
+| Website Admin > Contact Us | `WebsiteInquiries`, `WebsiteContentService` | `inquiries`, `website_visits`, `website_content` | `inquiries.status/notes/updated_by/updated_at`, `website_content` (contact details, recipient) |
+| Publish Website (top bar) | `PublishService` | all `website_*` tables | `website_publishes` |
 
 # 6. The DFD and the real tables
 
@@ -304,7 +313,7 @@ The Data Flow Diagram (`docs\diagrams\Desktop_App_DFD.drawio`) names data stores
 |---|---|
 | D1 Central Database | `construction_db` |
 | D1.1 Project & Financial Records | `projects` + the money tables (4.2) |
-| D1.2 Website Traffic Records | not built yet (Website Admin) |
+| D1.2 Website Traffic Records | `website_visits` (filled by the API later) |
 | D2.1 Employee Records | `employees`, `employee_rates` |
 | D2.2 User Accounts & Roles | `users`, `login_logs`, `password_requests` |
 | D2.3 Attendance & Site Schedule Records | `attendance_imports`, `attendance_scans`, `attendance_days` |
@@ -393,7 +402,7 @@ Back up the file storage folder together with the database: the tables only hold
 
 <!-- schema:start -->
 
-Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 37 tables. Types: `int` = 32-bit integer (`serial` = auto-numbered), `numeric(p,s)` = exact decimal, `timestamp` = date and time without time zone, `time` = time of day. "Null" = may be empty.
+Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 43 tables. Types: `int` = 32-bit integer (`serial` = auto-numbered), `numeric(p,s)` = exact decimal, `timestamp` = date and time without time zone, `time` = time of day. "Null" = may be empty.
 
 ## Login, accounts and history (scripts 001, 004, 011)
 
@@ -1192,7 +1201,7 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 37 tables
 - **Check** `change_orders_status_check`: `CHECK ((status IN ('Waiting', 'Approved', 'Rejected')))`
 - **Index** `ix_change_orders_project`: `project_id WHERE (status = 'Approved')`
 
-## Website (010)
+## Website (010, 014)
 
 ### inquiries
 
@@ -1217,6 +1226,99 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 37 tables
 - **Check** `inquiries_status_check`: `CHECK ((status IN ('New', 'Contacted', 'Closed')))`
 - **Index** `ix_inquiries_received`: `(received_at DESC)`
 - **Index** `ix_inquiries_status`: `status`
+
+### website_content
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `content_key` | varchar(60) |  |  |
+| `value` | varchar(4000) | yes |  |
+| `updated_by` | int | yes |  |
+| `updated_at` | timestamp | yes |  |
+
+- **Primary key** `website_content_pkey`: `PRIMARY KEY content_key`
+- **Foreign key** `website_content_updated_by_fkey`: `FOREIGN KEY updated_by REFERENCES users(user_id)`
+
+### website_projects
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `web_project_id` | serial |  |  |
+| `project_id` | int |  |  |
+| `sort_order` | int |  | 0 |
+| `is_visible` | boolean |  | true |
+| `short_description` | varchar(100) | yes |  |
+| `created_by` | int | yes |  |
+| `created_at` | timestamp |  | now() |
+| `updated_at` | timestamp | yes |  |
+
+- **Primary key** `website_projects_pkey`: `PRIMARY KEY web_project_id`
+- **Unique** `website_projects_project_id_key`: `UNIQUE project_id`
+- **Foreign key** `website_projects_created_by_fkey`: `FOREIGN KEY created_by REFERENCES users(user_id)`
+- **Foreign key** `website_projects_project_id_fkey`: `FOREIGN KEY project_id REFERENCES projects(project_id)`
+
+### website_project_photos
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `photo_id` | serial |  |  |
+| `web_project_id` | int |  |  |
+| `file_path` | varchar(500) |  |  |
+| `file_name` | varchar(255) |  |  |
+| `size_bytes` | bigint |  |  |
+| `sort_order` | int |  | 0 |
+| `is_showcase` | boolean |  | true |
+| `uploaded_by` | int | yes |  |
+| `uploaded_at` | timestamp |  | now() |
+
+- **Primary key** `website_project_photos_pkey`: `PRIMARY KEY photo_id`
+- **Foreign key** `website_project_photos_uploaded_by_fkey`: `FOREIGN KEY uploaded_by REFERENCES users(user_id)`
+- **Foreign key** `website_project_photos_web_project_id_fkey`: `FOREIGN KEY web_project_id REFERENCES website_projects(web_project_id) ON DELETE CASCADE`
+- **Index** `ix_website_project_photos_project`: `(web_project_id, sort_order)`
+
+### website_services
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `web_service_id` | serial |  |  |
+| `service_name` | varchar(60) |  |  |
+| `sector` | varchar(30) |  |  |
+| `location` | varchar(100) | yes |  |
+| `short_description` | varchar(100) | yes |  |
+| `image_path` | varchar(500) | yes |  |
+| `sort_order` | int |  | 0 |
+| `is_visible` | boolean |  | true |
+| `created_by` | int | yes |  |
+| `created_at` | timestamp |  | now() |
+| `updated_at` | timestamp | yes |  |
+
+- **Primary key** `website_services_pkey`: `PRIMARY KEY web_service_id`
+- **Foreign key** `website_services_created_by_fkey`: `FOREIGN KEY created_by REFERENCES users(user_id)`
+- **Check** `website_services_sector_check`: `CHECK ((sector IN ('Residential', 'Commercial', 'Industrial', 'Repairs / Renovations')))`
+- **Check** `website_services_service_name_check`: `CHECK ((service_name IN ('Residential Construction', 'Commercial Construction', 'Repairs and Home Extension')))`
+
+### website_publishes
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `publish_id` | serial |  |  |
+| `published_at` | timestamp |  | now() |
+| `published_by` | int | yes |  |
+| `content` | jsonb |  |  |
+
+- **Primary key** `website_publishes_pkey`: `PRIMARY KEY publish_id`
+- **Foreign key** `website_publishes_published_by_fkey`: `FOREIGN KEY published_by REFERENCES users(user_id)`
+
+### website_visits
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `visit_id` | serial |  |  |
+| `visited_at` | timestamp |  | now() |
+| `page` | varchar(100) | yes |  |
+
+- **Primary key** `website_visits_pkey`: `PRIMARY KEY visit_id`
+- **Index** `ix_website_visits_time`: `visited_at`
 
 ## System
 
