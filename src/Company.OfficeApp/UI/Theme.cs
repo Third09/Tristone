@@ -234,29 +234,97 @@ public static class Theme
         TextRenderer.DrawText(e.Graphics, b.Text, b.Font, new Rectangle(x, 0, b.Width - x - (left ? 8 : 0), b.Height), fore, flags);
     }
 
+    public static readonly Color GridLine = ColorTranslator.FromHtml("#E4E7EC");      // table cell lines
+    public static readonly Color GridFrame = ColorTranslator.FromHtml("#D0D5DD");     // the border around a table
+    public static readonly Color GridHeader = ColorTranslator.FromHtml("#F2F4F7");    // table header row
+    public static readonly Color GridStripe = ColorTranslator.FromHtml("#FAFAFB");    // every other row
+    public static readonly Color GridEmpty = ColorTranslator.FromHtml("#F7F8FA");     // below the last row
+
+    /// <summary>
+    /// Tables (owner request 2026-11-01: "have grid, show where it starts and ends"): lines between every cell, a
+    /// framed header, every other row shaded, a gray area under the last row, a border around the whole table
+    /// (drawn on its parent, just outside it) and "No records to show" when it's empty.
+    /// </summary>
     static void StyleGrid(DataGridView g)
     {
         g.BorderStyle = BorderStyle.None;
-        g.BackgroundColor = Page;
-        g.GridColor = Line;
-        g.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        g.BackgroundColor = GridEmpty;
+        g.GridColor = GridLine;
+        g.CellBorderStyle = DataGridViewCellBorderStyle.Single;
         g.EnableHeadersVisualStyles = false;
-        g.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+        g.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
         g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
         g.ColumnHeadersHeight = HeaderHeight;
         var h = g.ColumnHeadersDefaultCellStyle;
-        h.BackColor = HeaderBack;
-        h.ForeColor = TextMuted;
-        h.SelectionBackColor = HeaderBack;
-        h.SelectionForeColor = TextMuted;
+        h.BackColor = GridHeader;
+        h.ForeColor = Text;
+        h.SelectionBackColor = GridHeader;
+        h.SelectionForeColor = Text;
         h.Font = new Font(g.Font, FontStyle.Bold);
         h.Padding = new Padding(6, 0, 6, 0);
         var d = g.DefaultCellStyle;
         if (IsDefault(d.ForeColor, SystemColors.ControlText)) d.ForeColor = Text;
+        if (IsDefault(d.BackColor, SystemColors.Window)) d.BackColor = Color.White;
         d.SelectionBackColor = OrangeLight;
         d.SelectionForeColor = Text;
         d.Padding = new Padding(6, 0, 6, 0);
+        if (IsDefault(g.AlternatingRowsDefaultCellStyle.BackColor)) g.AlternatingRowsDefaultCellStyle.BackColor = GridStripe;
         g.RowTemplate.Height = RowHeight;
         foreach (DataGridViewRow r in g.Rows) r.Height = RowHeight;   // rows already loaded
+
+        g.Paint += PaintEmptyNote;
+        g.RowsAdded += (_, _) => g.Invalidate();
+        g.RowsRemoved += (_, _) => g.Invalidate();
+        g.DataBindingComplete += (_, _) => g.Invalidate();
+        FrameOnParent(g);
+    }
+
+    static void PaintEmptyNote(object? sender, PaintEventArgs e)
+    {
+        var g = (DataGridView)sender!;
+        if (g.Rows.Count > 0 || g.Columns.Count == 0) return;
+        var top = g.ColumnHeadersVisible ? g.ColumnHeadersHeight : 0;
+        TextRenderer.DrawText(e.Graphics, "No records to show", g.Font, new Rectangle(0, top + 16, g.Width, 24), TextMuted,
+                              TextFormatFlags.HorizontalCenter);
+    }
+
+    /// <summary>Draws a border just outside the table on its parent, and keeps it there when the table moves or grows.</summary>
+    static void FrameOnParent(DataGridView g)
+    {
+        Control? parent = null;
+        void Draw(object? s, PaintEventArgs e)
+        {
+            if (!g.Visible) return;
+            var r = g.Bounds;
+            r.Inflate(1, 1);
+            r.Width -= 1; r.Height -= 1;
+            using var pen = new Pen(GridFrame);
+            e.Graphics.DrawRectangle(pen, r);
+        }
+        void Hook()
+        {
+            if (parent != null) parent.Paint -= Draw;
+            parent = g.Parent;
+            if (parent != null) { parent.Paint += Draw; parent.Invalidate(); }
+        }
+        g.ParentChanged += (_, _) => Hook();
+        g.LocationChanged += (_, _) => parent?.Invalidate();
+        g.SizeChanged += (_, _) => parent?.Invalidate();
+        g.VisibleChanged += (_, _) => parent?.Invalidate();
+        Hook();
+    }
+
+    /// <summary>A choice button that is "on" (e.g. the open About Us section): light orange with an orange border.</summary>
+    public static void SetSelected(Button b, bool selected)
+    {
+        Round(b);
+        b.FlatStyle = FlatStyle.Flat;
+        b.UseVisualStyleBackColor = false;
+        b.BackColor = selected ? OrangeLight : Color.White;
+        b.ForeColor = Text;
+        b.FlatAppearance.BorderColor = selected ? Orange : Border;
+        b.FlatAppearance.BorderSize = 1;
+        b.FlatAppearance.MouseOverBackColor = selected ? OrangeLight : Hover;
+        b.Invalidate();
     }
 }

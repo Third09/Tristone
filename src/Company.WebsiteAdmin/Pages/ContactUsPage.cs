@@ -41,7 +41,14 @@ public partial class ContactUsPage : UserControl, IWebsiteEditor
         txtCompanyPhone.MaxLength = WebsiteContentService.MaxLength(WebsiteKeys.Phone);
         txtCompanyEmail.MaxLength = WebsiteContentService.MaxLength(WebsiteKeys.Email);
         txtCopyright.MaxLength = WebsiteContentService.MaxLength(WebsiteKeys.Copyright);
-        Responsive.FitGrid(this, dgvInquiries);
+        // Figma layout: cards on a light gray page; smaller windows scroll.
+        BackColor = pnlGap1.BackColor = pnlGap2.BackColor = pnlKpis.BackColor = Theme.Canvas;
+        pnlKpiGap1.BackColor = pnlKpiGap2.BackColor = pnlKpiGap3.BackColor = Theme.Canvas;
+        Padding = new Padding(24, 8, 24, 24);
+        AutoScrollMinSize = new Size(1100, 920);
+        foreach (var l in new[] { lblTotalNote, lblPendingNote, lblVisitsNote, lblRecipientNote, lblInquiriesSub, lblInquiryCount, lblContactSettingsMsg })
+            l.ForeColor = Theme.TextMuted;
+        lblPendingInquiries.ForeColor = Theme.Orange;
         Responsive.OnTypingPause(txtInquirySearch, () => LoadInquiriesAsync());
     }
 
@@ -144,9 +151,9 @@ public partial class ContactUsPage : UserControl, IWebsiteEditor
             var visits = await WebsiteInquiries.VisitsThisMonthAsync();
             if (!loads.IsLatest(ticket)) return;
 
-            lblTotalInquiries.Text = $"Total inquiries: {counts.New + counts.Contacted + counts.Closed}";
-            lblPendingInquiries.Text = $"Pending (New): {counts.New}";
-            lblWebsiteVisits.Text = $"Website visits this month: {visits:#,##0}";
+            lblTotalInquiries.Text = $"{counts.New + counts.Contacted + counts.Closed:#,##0}";
+            lblPendingInquiries.Text = $"{counts.New:#,##0}";
+            lblWebsiteVisits.Text = $"{visits:#,##0}";
             filling = true;
             dgvInquiries.DataSource = rows;
             dgvInquiries.ClearSelection();   // never pick the first row by itself

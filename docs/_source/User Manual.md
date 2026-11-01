@@ -456,13 +456,13 @@ The projects come from the office **Projects** page: an Admin or the Receipts Su
 
 1. **Add New Project**: pick the project, type a short description (up to 100 characters), click **Add**.
 2. Click a project in the list to edit it. Change the description and click **Save Changes**.
-3. **Add Photos...**: pick up to 10 pictures (you can pick several at once). A bar shows the upload; any picture that couldn't be uploaded is listed with the reason.
+3. Click the dashed **Project Images** box (or drop pictures on it) to add up to 10 photos; you can pick several at once. A bar shows the upload; any picture that couldn't be uploaded is listed with the reason.
 4. Click a photo to see it. **Up** / **Down** set the order; **Add to Showcase** / **Remove from Showcase** choose which photos the website carousel shows; **Remove** deletes the photo.
 5. **Move Up** / **Move Down** set the order of the projects on the website. **Unpublish** hides a project (Publish shows it again). **Delete** removes it from the website only.
 
 **Services**
 
-1. **Add New Service**: choose the service (Residential Construction, Commercial Construction or Repairs and Home Extension), the category, type the location and a short description, choose a picture, click **Add Service**.
+1. **Add New Service**: click the picture box (or drop a picture on it), choose the service (Residential Construction, Commercial Construction or Repairs and Home Extension) and the category, type the location and a short description, click **Add Service**. The **Live Preview** shows the card as the website will.
 2. Click a service to edit it, then **Save Changes**. **Move Up** / **Move Down**, **Unpublish** and **Delete** work like on Projects.
 
 **About Us**

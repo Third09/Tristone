@@ -1,36 +1,66 @@
-# Spec for src/Company.WebsiteAdmin/Pages/ProjectsEditorPage.Designer.cs (Figma "ADMIN PROJECTS" + uploading UI)
+# Spec for src/Company.WebsiteAdmin/Pages/ProjectsEditorPage.Designer.cs (Figma "ADMIN PROJECTS" + uploading UI, redone 2026-11-01)
+# Layout (docked, top to bottom): featured projects list card, Project Images card, Project Information card, save bar.
 NAMESPACE = "Company.WebsiteAdmin.Pages"
 CLASS = "ProjectsEditorPage"
-SIZE = (960, 720)
+SIZE = (1240, 1000)
 LOAD_EVENT = "ProjectsEditorPage_Load"
-PIC = {"SizeMode": "PictureBoxSizeMode.Zoom", "BorderStyle": "BorderStyle.FixedSingle"}
+CARD = "Company.OfficeApp.UI.Card"
+FRAME = "Company.OfficeApp.UI.InputFrame"
+SECTION = 'new Font("Segoe UI", 14F)'
+FIELD = 'new Font("Segoe UI Semibold", 10F)'
+INPUT = 'new Font("Segoe UI", 10.5F)'
+BTN = 'new Font("Segoe UI", 10F)'
+TR = "AnchorStyles.Top | AnchorStyles.Right"
+TLR = "AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right"
+TOP = "DockStyle.Top"
 
 CONTROLS = [
-    ("Label", "lblProjectsHint", 12, 12, None, None, {"Text": T("Featured projects come from the office Projects list (ticked \"Show on website\"). The website shows them in this order.")}),
-    ("DataGridView", "dgvWebProjects", 12, 36, 930, 170, {}),
-    ("Button", "btnAddWebProject", 12, 214, 130, 28, {"Text": T("Add New Project")}),
-    ("Button", "btnMoveProjectUp", 148, 214, 80, 28, {"Text": T("Move Up")}),
-    ("Button", "btnMoveProjectDown", 234, 214, 90, 28, {"Text": T("Move Down")}),
-    ("Button", "btnHideShowProject", 330, 214, 110, 28, {"Text": T("Unpublish")}),
-    ("Button", "btnDeleteWebProject", 446, 214, 90, 28, {"Text": T("Delete")}),
-    ("Label", "lblSlotTitle", 12, 256, None, None, {"Text": T("Click a project in the list to edit it.")}),
-    ("Label", "lblProjectInfo", 12, 278, None, None, {"Text": T("Location: -    Category: -")}),
-    ("Label", "lblProjectDesc", 12, 302, None, None, {"Text": T("Project short description")}),
-    ("Label", "lblProjectDescCount", 380, 302, None, None, {"Text": T("0/100")}),
-    ("TextBox", "txtProjectDesc", 12, 320, 420, 23, {}),
-    ("Button", "btnSaveWebProject", 12, 352, 120, 28, {"Text": T("Save Changes")}),
-    ("Button", "btnDiscardWebProject", 138, 352, 130, 28, {"Text": T("Discard Changes")}),
-    ("Label", "lblWebProjectMsg", 12, 388, None, None, {"MaximumSize": "new Size(420, 0)"}),
-    ("Label", "lblPhotos", 460, 256, None, None, {"Text": T("Project photos (up to 10, JPEG or PNG, 8 MB each). Showcase = shown in the website carousel.")}),
-    ("DataGridView", "dgvPhotos", 460, 278, 300, 200, {}),
-    ("PictureBox", "picPhotoPreview", 772, 278, 170, 128, PIC),
-    ("Button", "btnAddPhotos", 460, 486, 100, 28, {"Text": T("Add Photos...")}),
-    ("Button", "btnRemovePhoto", 566, 486, 80, 28, {"Text": T("Remove")}),
-    ("Button", "btnPhotoUp", 652, 486, 50, 28, {"Text": T("Up")}),
-    ("Button", "btnPhotoDown", 708, 486, 52, 28, {"Text": T("Down")}),
-    ("Button", "btnToggleShowcase", 772, 412, 170, 28, {"Text": T("Showcase: Yes / No")}),
-    ("ProgressBar", "prgUpload", 460, 522, 300, 18, {"Visible": "false"}),
-    ("Label", "lblUploadStatus", 460, 546, None, None, {"MaximumSize": "new Size(480, 0)"}),
+    # docked parts: Fill first, then the bottom bar, then the top cards from the bottom up
+    (CARD, "cardProjectInfo", 24, 698, 1192, 170, {"Dock": "DockStyle.Fill", "Padding": "new Padding(24)"}),
+    ("Panel", "pnlProjectsFooter", 24, 888, 1192, 92, {"Dock": "DockStyle.Bottom", "Padding": "new Padding(0, 20, 0, 0)"}),
+    ("Panel", "pnlGap2", 24, 678, 1192, 20, {"Dock": TOP}),
+    (CARD, "cardPhotos", 24, 340, 1192, 338, {"Dock": TOP, "Padding": "new Padding(24)"}),
+    ("Panel", "pnlGap1", 24, 320, 1192, 20, {"Dock": TOP}),
+    (CARD, "cardProjectsList", 24, 8, 1192, 312, {"Dock": TOP, "Padding": "new Padding(24)"}),
+
+    # featured projects list
+    ("Label", "lblProjectsTitle", 24, 18, None, None, {"PARENT": "cardProjectsList", "Font": SECTION, "Text": T("Featured Projects Slots")}),
+    ("Label", "lblProjectsHint", 24, 48, None, None, {"PARENT": "cardProjectsList", "Text": T("From the office Projects list (ticked \"Show on website\"). The website shows them in this order.")}),
+    ("Button", "btnAddWebProject", 978, 18, 190, 40, {"PARENT": "cardProjectsList", "Anchor": TR, "Font": BTN, "Text": T("Add New Project")}),
+    ("DataGridView", "dgvWebProjects", 24, 78, 1144, 160, {"PARENT": "cardProjectsList", "Anchor": TLR}),
+    ("Button", "btnMoveProjectUp", 24, 252, 110, 36, {"PARENT": "cardProjectsList", "Text": T("Move Up")}),
+    ("Button", "btnMoveProjectDown", 142, 252, 110, 36, {"PARENT": "cardProjectsList", "Text": T("Move Down")}),
+    ("Button", "btnHideShowProject", 260, 252, 130, 36, {"PARENT": "cardProjectsList", "Text": T("Unpublish")}),
+    ("Button", "btnDeleteWebProject", 398, 252, 110, 36, {"PARENT": "cardProjectsList", "Text": T("Delete")}),
+
+    # project images
+    ("Label", "lblPhotosTitle", 24, 18, None, None, {"PARENT": "cardPhotos", "Font": SECTION, "Text": T("Project Images")}),
+    ("Label", "lblPhotos", 24, 48, None, None, {"PARENT": "cardPhotos", "Text": T("Up to 10 photos, JPEG or PNG, 8 MB each.")}),
+    ("Company.OfficeApp.UI.DropZone", "dzPhotos", 24, 78, 430, 200, {"PARENT": "cardPhotos"}),
+    ("ProgressBar", "prgUpload", 24, 286, 430, 8, {"PARENT": "cardPhotos", "Visible": "false"}),
+    ("Label", "lblUploadStatus", 24, 298, 430, 32, {"PARENT": "cardPhotos"}),
+    ("Label", "lblShowcaseTitle", 478, 18, None, None, {"PARENT": "cardPhotos", "Font": SECTION, "Text": T("Showcase Images")}),
+    ("Label", "lblShowcaseHint", 478, 48, None, None, {"PARENT": "cardPhotos", "Text": T("Select and arrange the images shown in the project carousel.")}),
+    ("DataGridView", "dgvPhotos", 478, 78, 400, 236, {"PARENT": "cardPhotos", "Anchor": TLR}),
+    ("PictureBox", "picPhotoPreview", 898, 78, 270, 150, {"PARENT": "cardPhotos", "Anchor": TR, "SizeMode": "PictureBoxSizeMode.Zoom"}),
+    ("Button", "btnToggleShowcase", 898, 236, 270, 36, {"PARENT": "cardPhotos", "Anchor": TR, "Text": T("Add to Showcase")}),
+    ("Button", "btnPhotoUp", 898, 278, 80, 36, {"PARENT": "cardPhotos", "Anchor": TR, "Text": T("Up")}),
+    ("Button", "btnPhotoDown", 984, 278, 86, 36, {"PARENT": "cardPhotos", "Anchor": TR, "Text": T("Down")}),
+    ("Button", "btnRemovePhoto", 1076, 278, 92, 36, {"PARENT": "cardPhotos", "Anchor": TR, "Text": T("Remove")}),
+
+    # project information
+    ("Label", "lblSlotTitle", 24, 18, None, None, {"PARENT": "cardProjectInfo", "Font": SECTION, "Text": T("Project Information")}),
+    ("Label", "lblProjectInfo", 24, 50, None, None, {"PARENT": "cardProjectInfo", "Text": T("Click a project in the list to edit it.")}),
+    ("Label", "lblProjectDesc", 24, 80, None, None, {"PARENT": "cardProjectInfo", "Font": FIELD, "Text": T("Project Short Description")}),
+    ("Label", "lblProjectDescCount", 1068, 80, 100, 20, {"PARENT": "cardProjectInfo", "Anchor": TR, "TextAlign": "ContentAlignment.MiddleRight", "Text": T("0/100")}),
+    (FRAME, "frmProjectDesc", 24, 104, 1144, 44, {"PARENT": "cardProjectInfo", "Anchor": TLR}),
+    ("TextBox", "txtProjectDesc", 12, 11, 1120, 23, {"PARENT": "frmProjectDesc", "BorderStyle": "BorderStyle.None", "Font": INPUT}),
+
+    # save bar
+    (CARD, "cardProjectsSave", 0, 20, 1192, 72, {"PARENT": "pnlProjectsFooter", "Dock": "DockStyle.Fill", "Padding": "new Padding(16)"}),
+    ("Label", "lblWebProjectMsg", 24, 16, 800, 40, {"PARENT": "cardProjectsSave", "Anchor": TLR, "TextAlign": "ContentAlignment.MiddleLeft"}),
+    ("Button", "btnDiscardWebProject", 866, 16, 150, 40, {"PARENT": "cardProjectsSave", "Anchor": TR, "Font": BTN, "Text": T("Discard Changes")}),
+    ("Button", "btnSaveWebProject", 1026, 16, 150, 40, {"PARENT": "cardProjectsSave", "Anchor": TR, "Font": BTN, "Text": T("Save Changes")}),
 ]
 
 GRID_COLUMNS = {
@@ -61,7 +91,6 @@ EVENTS = {
     "btnSaveWebProject": [("Click", "btnSaveWebProject_Click")],
     "btnDiscardWebProject": [("Click", "btnDiscardWebProject_Click")],
     "dgvPhotos": [("SelectionChanged", "dgvPhotos_SelectionChanged")],
-    "btnAddPhotos": [("Click", "btnAddPhotos_Click")],
     "btnRemovePhoto": [("Click", "btnRemovePhoto_Click")],
     "btnPhotoUp": [("Click", "btnPhotoUp_Click")],
     "btnPhotoDown": [("Click", "btnPhotoDown_Click")],

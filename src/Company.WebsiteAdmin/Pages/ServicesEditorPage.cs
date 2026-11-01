@@ -1,14 +1,16 @@
+using System.Drawing.Drawing2D;
 using Company.OfficeApp.UI;
 using Company.Shared.Models;
 using Company.WebsiteAdmin.Services;
+using static Company.OfficeApp.UI.StatusBox;
 
 namespace Company.WebsiteAdmin.Pages;
 
 /// <summary>
 /// Website Admin > Services (Figma "admin services"): the service cards. The name comes from the 3 fixed services,
 /// the category from the office sectors; location and description are typed; one picture per card.
-/// List page pattern (RecordForm): Add opens this page as a pop-up (<c>addOnly</c>), the form is locked until a row
-/// is clicked, Save lists the changes.
+/// List page pattern (RecordForm): Add opens this page as a pop-up (<c>addOnly</c>: only the form and the save bar),
+/// the form is locked until a row is clicked, Save lists the changes. A Live Preview draws the card as the website shows it.
 /// </summary>
 public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 {
@@ -19,7 +21,8 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     WebServiceRow? showingRow;
     ServiceForm? original;
     string? storedImage, newImage;
-    bool filling;
+    Image? picture;
+    bool filling, loading;
     readonly LatestOnly loads = new();
 
     /// <summary>Raised by the Add pop-up with the new service's id.</summary>
@@ -31,20 +34,32 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     {
         this.addOnly = addOnly;
         InitializeComponent();
+        BackColor = pnlGap1.BackColor = pnlServicesSide.BackColor = pnlSideGap.BackColor = pnlServicesFooter.BackColor = Theme.Canvas;
+        Padding = new Padding(24, 8, 24, 24);
+        foreach (var l in new[] { lblServicesHint, lblServiceImageName, lblServiceDescCount, lblServiceMsg }) l.ForeColor = Theme.TextMuted;
         dgvWebServices.AutoGenerateColumns = false;
         RecordForm.NoAutoSelect(dgvWebServices, on => filling = on, RestoreSelection);
         cboServiceName.Items.AddRange(WebsiteServiceNames.All);
         cboServiceSector.Items.AddRange(ProjectSectors.All);
         txtServiceLocation.MaxLength = WebServiceService.MaxLocation;
         EditorUi.Counter(txtServiceDesc, lblServiceDescCount, WebServiceService.MaxDescription);
-        Disposed += (_, _) => picServiceImage.Image?.Dispose();
+        dzService.BrowseRequested += async (_, _) => { if (EditorUi.PickPicture(this) is { } path) await UsePictureAsync(path); };
+        dzService.FilesDropped += async files =>
+        {
+            if (WebsiteImages.Check(files[0]) is { } problem) Say(StatusKind.Error, "Picture not used", problem);
+            else await UsePictureAsync(files[0]);
+        };
+        pnlServicePreview.Paint += PaintPreview;
+        Disposed += (_, _) => picture?.Dispose();
         if (addOnly)
         {
-            RecordForm.ShowFormOnly(this, lblFormMode);
+            // The pop-up: just the form and its save bar.
+            cardServicesList.Visible = pnlGap1.Visible = pnlServicesSide.Visible = false;
+            Size = new Size(800, 680);
             StartNew();
             return;
         }
-        Responsive.FitGrid(this, dgvWebServices);
+        AutoScrollMinSize = new Size(1100, 940);
         ShowNothingSelected();
     }
 
@@ -54,6 +69,13 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 
     WebServiceRow? Selected => dgvWebServices.SelectedRows.Count > 0 ? dgvWebServices.SelectedRows[0].DataBoundItem as WebServiceRow : null;
 
+    /// <summary>Messages: the coloured box on the right (the pop-up has none) and a short line in the save bar.</summary>
+    void Say(StatusKind kind, string title, string text)
+    {
+        if (!addOnly) statusService.Show(kind, title, text);
+        lblServiceMsg.Text = kind == StatusKind.None ? "" : $"{title}. {text}";
+    }
+
     async Task LoadAsync(int? selectId = null)
     {
         if (addOnly) return;
@@ -61,7 +83,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         using var busy = Responsive.Busy(this);
         List<WebServiceRow> rows;
         try { rows = await WebServiceService.ListAsync(); }
-        catch (Exception ex) { lblServiceMsg.Text = "Can't reach the database. " + ex.Message; return; }
+        catch (Exception ex) { Say(StatusKind.Error, "Can't reach the database", ex.Message); return; }
         if (!loads.IsLatest(ticket)) return;
 
         selectId ??= editingId;
@@ -88,16 +110,24 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         if (Selected is { } s) await ShowAsync(s); else ShowNothingSelected();
     }
 
+    void SetFormEnabled(bool on)
+    {
+        RecordForm.SetEnabled(cardServiceForm, lblFormMode, on);
+        btnSaveWebService.Enabled = btnCancelWebService.Enabled = on;
+        btnMoveServiceUp.Enabled = btnMoveServiceDown.Enabled = btnHideShowService.Enabled = btnDeleteWebService.Enabled = on && !addOnly;
+    }
+
     void ClearForm()
     {
+        loading = true;
         cboServiceName.SelectedIndex = -1;
         cboServiceSector.SelectedIndex = -1;
         txtServiceLocation.Clear();
         txtServiceDesc.Clear();
         storedImage = newImage = null;
-        EditorUi.ShowPicture(picServiceImage, null);
-        lblServiceImageName.Text = "";
-        lblServiceMsg.Text = "";
+        SetPicture(null);
+        loading = false;
+        Say(StatusKind.None, "", "");
     }
 
     void ShowNothingSelected()
@@ -106,16 +136,17 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         showingRow = null;
         original = null;
         ClearForm();
-        lblFormMode.Text = "Click a service in the list to edit it.";
-        RecordForm.SetEnabled(this, lblFormMode, false);
-        btnMoveServiceUp.Enabled = btnMoveServiceDown.Enabled = btnHideShowService.Enabled = btnDeleteWebService.Enabled = false;
+        lblFormMode.Text = "Service Image";
+        lblServiceImageName.Text = "Click a service in the list to edit it.";
+        SetFormEnabled(false);
     }
 
     void StartNew()
     {
         editingId = null;
         ClearForm();
-        lblFormMode.Text = "New service";
+        lblFormMode.Text = "New Service";
+        lblServiceImageName.Text = "Click the box or drop a picture on it.";
         btnSaveWebService.Text = "Add Service";
         btnCancelWebService.Text = "Cancel";
     }
@@ -123,11 +154,11 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     async Task ShowAsync(WebServiceRow row)
     {
         if (await WebServiceService.GetAsync(row.WebServiceId) is not { } s) { ShowNothingSelected(); return; }
-        RecordForm.SetEnabled(this, lblFormMode, true);
-        btnMoveServiceUp.Enabled = btnMoveServiceDown.Enabled = btnHideShowService.Enabled = btnDeleteWebService.Enabled = true;
+        SetFormEnabled(true);
+        loading = true;
         editingId = s.WebServiceId;
         showingRow = row;
-        lblFormMode.Text = $"Slot #{row.Slot}: {s.ServiceName}{(s.Location == null ? "" : " - " + s.Location)} ({row.Shown} on the website)";
+        lblFormMode.Text = $"Service Image - Slot {row.Slot}";
         btnHideShowService.Text = s.IsVisible ? "Unpublish" : "Publish";
         cboServiceName.SelectedItem = s.ServiceName;
         cboServiceSector.SelectedItem = s.Sector;
@@ -135,8 +166,9 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         txtServiceDesc.Text = s.ShortDescription ?? "";
         storedImage = s.ImagePath;
         newImage = null;
-        await ShowImageAsync();
-        lblServiceMsg.Text = "";
+        SetPicture(await WebsiteImages.LoadAsync(storedImage));
+        loading = false;
+        Say(StatusKind.None, "", "");
         original = ReadForm();
     }
 
@@ -145,23 +177,59 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     ServiceForm ReadForm() => new((string?)cboServiceName.SelectedItem ?? "", (string?)cboServiceSector.SelectedItem ?? "",
                                   txtServiceLocation.Text.Trim(), txtServiceDesc.Text.Trim(), PictureName);
 
-    async Task ShowImageAsync()
+    void SetPicture(Image? image)
     {
-        EditorUi.ShowPicture(picServiceImage, await WebsiteImages.LoadAsync(storedImage, newImage));
-        lblServiceImageName.Text = PictureName == "(none)" ? "No picture yet." : PictureName;
+        var old = picture;
+        picture = image;
+        dzService.Image = image;
+        old?.Dispose();
+        lblServiceImageName.Text = image == null ? "No picture yet. Click the box or drop a picture on it." : PictureName + "   (click the picture to change it)";
+        pnlServicePreview.Invalidate();
     }
 
-    async void btnChooseServiceImage_Click(object sender, EventArgs e)
+    async Task UsePictureAsync(string path)
     {
-        if (EditorUi.PickPicture(this) is not { } path) return;
         newImage = path;
-        await ShowImageAsync();
-        if (editingId != null) lblServiceMsg.Text = EditorUi.Unsaved;
+        SetPicture(await WebsiteImages.LoadAsync(null, path));
+        Field_Changed(null, EventArgs.Empty);
     }
 
-    void txtServiceDesc_TextChanged(object sender, EventArgs e)
+    void Field_Changed(object? sender, EventArgs e)
     {
-        if (editingId != null && original != null) lblServiceMsg.Text = HasUnsavedChanges ? EditorUi.Unsaved : "";
+        pnlServicePreview.Invalidate();
+        if (loading || editingId == null || original == null) return;
+        if (HasUnsavedChanges) Say(StatusKind.Info, "Unsaved Changes", "Remember to save your changes to keep your website content updated.");
+        else Say(StatusKind.None, "", "");
+    }
+
+    /// <summary>The service card as the website shows it: picture on top, then the name, description and where.</summary>
+    void PaintPreview(object? sender, PaintEventArgs e)
+    {
+        var g = e.Graphics;
+        var r = pnlServicePreview.ClientRectangle;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.Clear(cardServicePreview.BackColor);
+        if (editingId == null) return;
+        var box = new Rectangle(0, 0, r.Width - 1, r.Height - 1);
+        using var path = Rounded.Path(box, 8);
+        using (var pen = new Pen(Theme.Line)) g.DrawPath(pen, path);
+        var pic = new Rectangle(1, 1, r.Width - 2, 140);
+        g.SetClip(path);
+        if (picture != null)
+        {
+            float scale = Math.Max((float)pic.Width / picture.Width, (float)pic.Height / picture.Height);
+            int w = (int)(picture.Width * scale), h = (int)(picture.Height * scale);
+            g.SetClip(pic, CombineMode.Intersect);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(picture, pic.X + (pic.Width - w) / 2, pic.Y + (pic.Height - h) / 2, w, h);
+        }
+        else using (var gray = new SolidBrush(Theme.GridEmpty)) g.FillRectangle(gray, pic);
+        g.ResetClip();
+        using var head = new Font("Segoe UI", 11f, FontStyle.Bold);
+        TextRenderer.DrawText(g, (string?)cboServiceName.SelectedItem ?? "", head, new Rectangle(14, 150, r.Width - 28, 24), Theme.Text, TextFormatFlags.EndEllipsis);
+        TextRenderer.DrawText(g, txtServiceDesc.Text, Font, new Rectangle(14, 176, r.Width - 28, 40), Theme.TextMuted, TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
+        var where = string.Join("  ·  ", new[] { (string?)cboServiceSector.SelectedItem, txtServiceLocation.Text.Trim() }.Where(x => !string.IsNullOrEmpty(x)));
+        TextRenderer.DrawText(g, where, Font, new Rectangle(14, 220, r.Width - 28, 20), Theme.Orange, TextFormatFlags.EndEllipsis);
     }
 
     async void btnAddWebService_Click(object sender, EventArgs e)
@@ -170,7 +238,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         if (RecordForm.AddDialog(this, "Add New Service", page, a => page.Added += a) is not { } newId) return;
         editingId = null;
         await LoadAsync(newId);
-        lblServiceMsg.Text = "Service added. Click Publish Website to put it on the live site.";
+        Say(StatusKind.Success, "Service added", "Click Publish Website to put it on the live site.");
     }
 
     async void btnSaveWebService_Click(object sender, EventArgs e)
@@ -181,8 +249,8 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         if (editingId != null && original != null)
         {
             var answer = RecordForm.ConfirmSave(this, original.Service, original, form);
-            if (answer == SaveAnswer.NothingChanged) { lblServiceMsg.Text = "Nothing changed."; return; }
-            if (answer == SaveAnswer.No) { lblServiceMsg.Text = "Not saved. Click Discard Changes to undo your changes."; return; }
+            if (answer == SaveAnswer.NothingChanged) { Say(StatusKind.Info, "Nothing changed", "There is nothing new to save."); return; }
+            if (answer == SaveAnswer.No) { Say(StatusKind.Info, "Not saved", "Click Discard Changes to undo your changes."); return; }
         }
         btnSaveWebService.Enabled = false;
         try
@@ -190,18 +258,18 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
             if (editingId is { } id)
             {
                 var error = await WebServiceService.UpdateAsync(id, input, newImage);
-                if (error != null) { lblServiceMsg.Text = "Unable to save changes: " + error; return; }
+                if (error != null) { Say(StatusKind.Error, "Unable to Save Changes", error); return; }
                 editingId = null;   // reload the form from the saved record
                 await LoadAsync(id);
-                lblServiceMsg.Text = "Changes saved successfully. Click Publish Website to put them on the live site.";
+                Say(StatusKind.Success, "Changes Saved Successfully", "Click Publish Website to put them on the live site.");
             }
             else
             {
                 var (newId, error) = await WebServiceService.CreateAsync(input, newImage);
-                if (newId is { } added) Added?.Invoke(added); else lblServiceMsg.Text = error;
+                if (newId is { } added) Added?.Invoke(added); else Say(StatusKind.Error, "Not added", error ?? "");
             }
         }
-        catch (Exception ex) { lblServiceMsg.Text = "Unable to save changes. Please try again. " + ex.Message; }
+        catch (Exception ex) { Say(StatusKind.Error, "Unable to Save Changes", "Please try again. " + ex.Message); }
         finally { btnSaveWebService.Enabled = true; }
     }
 
@@ -217,23 +285,22 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         try
         {
             var error = await action(id);
-            if (error != null) { lblServiceMsg.Text = error; return; }
+            if (error != null) { Say(StatusKind.Error, "Not done", error); return; }
             editingId = null;
             await LoadAsync(id);
-            lblServiceMsg.Text = done;
+            Say(StatusKind.Success, done, "Click Publish Website to update the live site.");
         }
-        catch (Exception ex) { lblServiceMsg.Text = "Can't reach the database. " + ex.Message; }
+        catch (Exception ex) { Say(StatusKind.Error, "Can't reach the database", ex.Message); }
     }
 
-    async void btnMoveServiceUp_Click(object sender, EventArgs e) => await RunAsync(id => WebServiceService.MoveAsync(id, -1), "Moved up.");
-    async void btnMoveServiceDown_Click(object sender, EventArgs e) => await RunAsync(id => WebServiceService.MoveAsync(id, +1), "Moved down.");
+    async void btnMoveServiceUp_Click(object sender, EventArgs e) => await RunAsync(id => WebServiceService.MoveAsync(id, -1), "Moved up");
+    async void btnMoveServiceDown_Click(object sender, EventArgs e) => await RunAsync(id => WebServiceService.MoveAsync(id, +1), "Moved down");
 
     async void btnHideShowService_Click(object sender, EventArgs e)
     {
         if (showingRow is not { } r) return;
         bool show = r.Shown != "Visible";
-        await RunAsync(id => WebServiceService.SetVisibleAsync(id, show),
-                       show ? "Shown again. Click Publish Website to update the live site." : "Hidden. Click Publish Website to update the live site.");
+        await RunAsync(id => WebServiceService.SetVisibleAsync(id, show), show ? "Shown again" : "Hidden");
     }
 
     async void btnDeleteWebService_Click(object sender, EventArgs e)
@@ -244,11 +311,11 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         try
         {
             var error = await WebServiceService.DeleteAsync(id);
-            if (error != null) { lblServiceMsg.Text = error; return; }
+            if (error != null) { Say(StatusKind.Error, "Not deleted", error); return; }
             editingId = null;
             await LoadAsync();
-            lblServiceMsg.Text = "Service deleted.";
+            Say(StatusKind.Success, "Service deleted", "Click Publish Website to update the live site.");
         }
-        catch (Exception ex) { lblServiceMsg.Text = "Can't reach the database. " + ex.Message; }
+        catch (Exception ex) { Say(StatusKind.Error, "Can't reach the database", ex.Message); }
     }
 }

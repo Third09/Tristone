@@ -27,7 +27,15 @@ public partial class ProjectsEditorPage : UserControl, IWebsiteEditor
         RecordForm.NoAutoSelect(dgvPhotos, on => fillingPhotos = on, () => { fillingPhotos = true; dgvPhotos.ClearSelection(); fillingPhotos = false; ShowPhoto(); });
         EditorUi.Counter(txtProjectDesc, lblProjectDescCount, WebProjectService.MaxDescription);
         Disposed += (_, _) => picPhotoPreview.Image?.Dispose();
-        Responsive.FitGrid(this, dgvWebProjects);
+        // Figma layout: cards on a light gray page; smaller windows scroll.
+        BackColor = pnlGap1.BackColor = pnlGap2.BackColor = pnlProjectsFooter.BackColor = Theme.Canvas;
+        Padding = new Padding(24, 8, 24, 24);
+        AutoScrollMinSize = new Size(1100, 980);
+        foreach (var l in new[] { lblProjectsHint, lblPhotos, lblShowcaseHint, lblProjectInfo, lblProjectDescCount, lblUploadStatus, lblWebProjectMsg })
+            l.ForeColor = Theme.TextMuted;
+        dzPhotos.Hint = "JPEG, PNG up to 8MB, 10 photos";
+        dzPhotos.BrowseRequested += (_, _) => BrowsePhotos();
+        dzPhotos.FilesDropped += async files => await UploadAsync(files);
         ShowNothingSelected();
     }
 
@@ -75,8 +83,8 @@ public partial class ProjectsEditorPage : UserControl, IWebsiteEditor
     {
         showing = null;
         original = null;
-        lblSlotTitle.Text = "Click a project in the list to edit it.";
-        lblProjectInfo.Text = "Location: -    Category: -";
+        lblSlotTitle.Text = "Project Information";
+        lblProjectInfo.Text = "Click a project in the list to edit it.";
         txtProjectDesc.Clear();
         dgvPhotos.DataSource = null;
         EditorUi.ShowPicture(picPhotoPreview, null);
@@ -85,15 +93,15 @@ public partial class ProjectsEditorPage : UserControl, IWebsiteEditor
     }
 
     Control[] FormControls => [btnMoveProjectUp, btnMoveProjectDown, btnHideShowProject, btnDeleteWebProject, txtProjectDesc,
-                               btnSaveWebProject, btnDiscardWebProject, dgvPhotos, btnAddPhotos, btnRemovePhoto, btnPhotoUp,
+                               btnSaveWebProject, btnDiscardWebProject, dgvPhotos, dzPhotos, btnRemovePhoto, btnPhotoUp,
                                btnPhotoDown, btnToggleShowcase];
 
     async Task ShowAsync(WebProjectRow r)
     {
         foreach (var c in FormControls) c.Enabled = true;
         showing = r;
-        lblSlotTitle.Text = $"Slot #{r.Slot}: {r.ProjectName} ({r.Shown} on the website)";
-        lblProjectInfo.Text = $"Location: {r.Location}    Category: {r.Sector}    (change these in the office app's Projects page)";
+        lblSlotTitle.Text = $"Slot #{r.Slot}: {r.ProjectName} - {r.Location}";
+        lblProjectInfo.Text = $"{r.Shown} on the website    Category: {r.Sector}    (name, location and category are changed in the office app's Projects page)";
         btnHideShowProject.Text = r.Shown == "Visible" ? "Unpublish" : "Publish";
         txtProjectDesc.Text = r.ShortDescription ?? "";
         original = ReadForm();
@@ -192,7 +200,7 @@ public partial class ProjectsEditorPage : UserControl, IWebsiteEditor
         dgvPhotos.ClearSelection();
         if (selectPhotoId is { } id) Responsive.SelectRow(dgvPhotos, (PhotoRow p) => p.PhotoId == id);
         fillingPhotos = false;
-        lblPhotos.Text = $"Project photos: {photos.Count} of {WebProjectService.MaxPhotos} (JPEG or PNG, 8 MB each). Showcase = shown in the website carousel.";
+        lblPhotos.Text = $"{photos.Count} of {WebProjectService.MaxPhotos} photos uploaded (JPEG or PNG, 8 MB each).";
         ShowPhoto();
     }
 
@@ -206,16 +214,22 @@ public partial class ProjectsEditorPage : UserControl, IWebsiteEditor
 
     void dgvPhotos_SelectionChanged(object sender, EventArgs e) { if (!fillingPhotos) ShowPhoto(); }
 
-    async void btnAddPhotos_Click(object sender, EventArgs e)
+    async void BrowsePhotos()
     {
-        if (showing is not { } s) return;
+        if (showing == null) return;
         using var dlg = new OpenFileDialog { Filter = WebsiteImages.Filter, Multiselect = true, Title = "Choose photos" };
         if (dlg.ShowDialog(this) != DialogResult.OK) return;
-        var files = dlg.FileNames;
+        await UploadAsync(dlg.FileNames);
+    }
+
+    /// <summary>Uploads pictures (browsed or dropped on the box) with the progress bar; reports the ones that failed.</summary>
+    async Task UploadAsync(string[] files)
+    {
+        if (showing is not { } s) return;
         prgUpload.Maximum = files.Length;
         prgUpload.Value = 0;
         prgUpload.Visible = true;
-        btnAddPhotos.Enabled = false;
+        dzPhotos.Enabled = false;
         try
         {
             var progress = new Progress<int>(n =>
@@ -230,7 +244,7 @@ public partial class ProjectsEditorPage : UserControl, IWebsiteEditor
             await RefreshPhotoCountAsync();
         }
         catch (Exception ex) { lblUploadStatus.Text = "Upload failed. Please retry. " + ex.Message; }
-        finally { prgUpload.Visible = false; btnAddPhotos.Enabled = true; }
+        finally { prgUpload.Visible = false; dzPhotos.Enabled = showing != null; }
     }
 
     /// <summary>The list's Photos column after adding or removing photos (keeps the form as it is).</summary>
