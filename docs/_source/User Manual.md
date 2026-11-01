@@ -446,7 +446,7 @@ The Website Admin window looks like the office app: click a button in the **left
 
 **Home**
 
-1. **Choose Picture...** for the big top picture (or **Remove Picture**).
+1. Click the dashed box (or drag a picture onto it) for the big top picture. **Remove Picture** clears it. The **Live Preview** on the right shows how the top of the website will look.
 2. Type the **Main headline** (up to 150 characters) and the **Subheadline** (up to 300). The counter shows how many you used.
 3. Click **Save Changes**, check the list of changes and click **Yes**. Then **Publish Website** when ready.
 

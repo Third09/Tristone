@@ -27,6 +27,8 @@
   <ItemGroup>
     <!-- The fingerprint scanner's own "Employee Form" (blank), filled by ScannerEmployeeFile. -->
     <EmbeddedResource Include="Resources\ScannerEmployeeForm.xls" />
+    <EmbeddedResource Include="Resources\logo-dark.png" />
+    <EmbeddedResource Include="Resources\logo-white.png" />
   </ItemGroup>
 
 </Project>

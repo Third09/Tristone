@@ -20,6 +20,7 @@ namespace Company.WebsiteAdmin.Forms
             components = new System.ComponentModel.Container();
             tmrIdle = new System.Windows.Forms.Timer(components);
             pnlSidebar = new FlowLayoutPanel();
+            picLogo = new PictureBox();
             btnNavHome = new Button();
             btnNavProjects = new Button();
             btnNavServices = new Button();
@@ -33,11 +34,13 @@ namespace Company.WebsiteAdmin.Forms
             lblLastPublished = new Label();
             pnlContent = new Panel();
             pnlSidebar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
             pnlTopBar.SuspendLayout();
             SuspendLayout();
             //
             // pnlSidebar  (left side; hidden buttons take no space)
             //
+            pnlSidebar.Controls.Add(picLogo);
             pnlSidebar.Controls.Add(btnNavHome);
             pnlSidebar.Controls.Add(btnNavProjects);
             pnlSidebar.Controls.Add(btnNavServices);
@@ -47,55 +50,74 @@ namespace Company.WebsiteAdmin.Forms
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.FlowDirection = FlowDirection.TopDown;
             pnlSidebar.Name = "pnlSidebar";
-            pnlSidebar.Padding = new Padding(6);
-            pnlSidebar.Size = new Size(170, 640);
+            pnlSidebar.Padding = new Padding(16, 20, 16, 16);
+            pnlSidebar.Size = new Size(250, 640);
             pnlSidebar.WrapContents = false;
+            //
+            // picLogo  (Tri-Stone logo; the picture is set in code from Resources\logo-dark.png)
+            //
+            picLogo.Margin = new Padding(4, 0, 0, 24);
+            picLogo.Name = "picLogo";
+            picLogo.Size = new Size(200, 56);
+            picLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            picLogo.TabStop = false;
             //
             // btnNavHome
             //
+            btnNavHome.Margin = new Padding(0, 0, 0, 6);
             btnNavHome.Name = "btnNavHome";
-            btnNavHome.Size = new Size(150, 30);
+            btnNavHome.Font = new Font("Segoe UI", 10.5F);
+            btnNavHome.Size = new Size(218, 44);
             btnNavHome.TabIndex = 0;
             btnNavHome.Text = "Home";
             btnNavHome.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnNavProjects
             //
+            btnNavProjects.Margin = new Padding(0, 0, 0, 6);
             btnNavProjects.Name = "btnNavProjects";
-            btnNavProjects.Size = new Size(150, 30);
+            btnNavProjects.Font = new Font("Segoe UI", 10.5F);
+            btnNavProjects.Size = new Size(218, 44);
             btnNavProjects.TabIndex = 1;
             btnNavProjects.Text = "Projects";
             btnNavProjects.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnNavServices
             //
+            btnNavServices.Margin = new Padding(0, 0, 0, 6);
             btnNavServices.Name = "btnNavServices";
-            btnNavServices.Size = new Size(150, 30);
+            btnNavServices.Font = new Font("Segoe UI", 10.5F);
+            btnNavServices.Size = new Size(218, 44);
             btnNavServices.TabIndex = 2;
             btnNavServices.Text = "Services";
             btnNavServices.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnNavAboutUs
             //
+            btnNavAboutUs.Margin = new Padding(0, 0, 0, 6);
             btnNavAboutUs.Name = "btnNavAboutUs";
-            btnNavAboutUs.Size = new Size(150, 30);
+            btnNavAboutUs.Font = new Font("Segoe UI", 10.5F);
+            btnNavAboutUs.Size = new Size(218, 44);
             btnNavAboutUs.TabIndex = 3;
             btnNavAboutUs.Text = "About Us";
             btnNavAboutUs.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnNavContactUs
             //
+            btnNavContactUs.Margin = new Padding(0, 0, 0, 6);
             btnNavContactUs.Name = "btnNavContactUs";
-            btnNavContactUs.Size = new Size(150, 30);
+            btnNavContactUs.Font = new Font("Segoe UI", 10.5F);
+            btnNavContactUs.Size = new Size(218, 44);
             btnNavContactUs.TabIndex = 4;
             btnNavContactUs.Text = "Contact Us";
             btnNavContactUs.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnSignOut
             //
-            btnSignOut.Margin = new Padding(3, 20, 3, 3);
+            btnSignOut.Margin = new Padding(0, 24, 0, 0);
             btnSignOut.Name = "btnSignOut";
-            btnSignOut.Size = new Size(150, 30);
+            btnSignOut.Font = new Font("Segoe UI", 10.5F);
+            btnSignOut.Size = new Size(218, 44);
             btnSignOut.TabIndex = 5;
             btnSignOut.Text = "Log out";
             btnSignOut.TextAlign = ContentAlignment.MiddleLeft;
@@ -109,28 +131,30 @@ namespace Company.WebsiteAdmin.Forms
             pnlTopBar.Controls.Add(lblLastPublished);
             pnlTopBar.Dock = DockStyle.Top;
             pnlTopBar.Name = "pnlTopBar";
-            pnlTopBar.Size = new Size(830, 56);
+            pnlTopBar.Size = new Size(830, 92);
             //
             // lblPageTitle
             //
             lblPageTitle.AutoSize = true;
-            lblPageTitle.Location = new Point(12, 8);
+            lblPageTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblPageTitle.Location = new Point(24, 10);
             lblPageTitle.Name = "lblPageTitle";
             lblPageTitle.Text = "Page title";
             //
             // lblUserName
             //
             lblUserName.AutoSize = true;
-            lblUserName.Location = new Point(12, 30);
+            lblUserName.Location = new Point(26, 52);
             lblUserName.Name = "lblUserName";
             lblUserName.Text = "Signed in:";
             //
             // btnPublishWebsite  (puts every saved change on the live website)
             //
             btnPublishWebsite.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnPublishWebsite.Location = new Point(690, 6);
+            btnPublishWebsite.Location = new Point(650, 18);
             btnPublishWebsite.Name = "btnPublishWebsite";
-            btnPublishWebsite.Size = new Size(130, 28);
+            btnPublishWebsite.Font = new Font("Segoe UI", 10F);
+            btnPublishWebsite.Size = new Size(170, 40);
             btnPublishWebsite.TabIndex = 6;
             btnPublishWebsite.Text = "Publish Website";
             btnPublishWebsite.Click += btnPublishWebsite_Click;
@@ -138,7 +162,7 @@ namespace Company.WebsiteAdmin.Forms
             // lblLastPublished
             //
             lblLastPublished.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblLastPublished.Location = new Point(420, 36);
+            lblLastPublished.Location = new Point(420, 64);
             lblLastPublished.Name = "lblLastPublished";
             lblLastPublished.Size = new Size(400, 18);
             lblLastPublished.Text = "Last published: -";
@@ -172,6 +196,7 @@ namespace Company.WebsiteAdmin.Forms
             Text = "Tri-Stone Website Admin";
             FormClosing += MainForm_FormClosing;
             Load += MainForm_Load;
+            ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             pnlSidebar.ResumeLayout(false);
             pnlTopBar.ResumeLayout(false);
             pnlTopBar.PerformLayout();
@@ -181,6 +206,7 @@ namespace Company.WebsiteAdmin.Forms
         #endregion
 
         private FlowLayoutPanel pnlSidebar;
+        private PictureBox picLogo;
         private Button btnNavHome;
         private Button btnNavProjects;
         private Button btnNavServices;

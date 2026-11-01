@@ -46,6 +46,11 @@ public partial class MainForm : Form
             [WebPage.ContactUs] = btnNavContactUs,
         };
         foreach (var (page, button) in navButtons) button.Click += (_, _) => ShowPage(page);
+        Theme.StyleMainWindow(picLogo,
+        [
+            (btnNavHome, ""), (btnNavProjects, ""), (btnNavServices, ""), (btnNavAboutUs, ""),
+            (btnNavContactUs, ""), (btnSignOut, ""),
+        ], lblUserName, lblLastPublished);
     }
 
     async void MainForm_Load(object sender, EventArgs e)

@@ -47,6 +47,12 @@ public partial class MainForm : Form
         lblUserName.Text = u.FullName;
         lblUserRole.Text = u.IsAdmin ? "Admin" : $"{u.Department} - {u.Level}";
         btnNotifications.Visible = u.IsAdmin;
+        Theme.StyleMainWindow(picLogo,
+        [
+            (btnNavDashboard, ""), (btnNavProjects, ""), (btnNavHr, ""), (btnNavInventory, ""),
+            (btnNavSubcontractors, ""), (btnNavReceipts, ""), (btnNavUsers, ""), (btnNavMyAccount, ""),
+            (btnSignOut, ""),
+        ], lblUserName, lblUserRole);
 
         foreach (var (page, button) in navButtons)
         {

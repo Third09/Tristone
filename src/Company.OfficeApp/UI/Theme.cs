@@ -9,8 +9,9 @@ namespace Company.OfficeApp.UI;
 /// (pages loaded into the main window, pop-ups). Change a color here and every screen follows.
 ///
 /// Rules:
-/// - Only the look changes (colors, borders, flat buttons, table style). Sizes and positions stay as designed,
-///   and the font stays the same size, so no layout moves.
+/// - Only the look changes (colors, borders, rounded flat buttons, table style). Sizes and positions stay as
+///   designed, and the font stays the same size, so no layout moves. Screens redone like the Figma also use the
+///   themed controls in ThemeControls.cs (Card, InputFrame, DropZone, StatusBox) and set their own sizes.
 /// - Anything set by hand in the Visual Studio designer wins: a BackColor / ForeColor / Font that isn't the
 ///   Windows default is left alone (like an inline style beating CSS).
 /// - Buttons are styled by NAME (the same names the UI Elements Guide uses): see <see cref="KindOf"/>.
@@ -31,6 +32,30 @@ public static class Theme
     public static readonly Color Line = ColorTranslator.FromHtml("#EAECF0");         // table lines
     public static readonly Color HeaderBack = ColorTranslator.FromHtml("#F9FAFB");   // table headers
     public static readonly Color Hover = ColorTranslator.FromHtml("#F2F4F7");        // plain buttons under the mouse
+    public static readonly Color Canvas = ColorTranslator.FromHtml("#F7F8FA");       // behind the white cards on redone pages
+
+    public const int ButtonRadius = 8;
+
+    static Image? logo;
+
+    /// <summary>The Tri-Stone logo for white backgrounds (Resources\logo-dark.png, made from the owner's white logo).</summary>
+    public static Image Logo => logo ??= LoadImage("logo-dark.png");
+
+    static Image LoadImage(string file)
+    {
+        var asm = typeof(Theme).Assembly;
+        var name = asm.GetManifestResourceNames().Single(n => n.EndsWith("." + file));
+        using var stream = asm.GetManifestResourceStream(name)!;
+        return Image.FromStream(stream);
+    }
+
+    /// <summary>The main windows' sidebar and top bar: logo, icons, muted signed-in line.</summary>
+    public static void StyleMainWindow(PictureBox logoBox, IEnumerable<(Button Button, string Glyph)> nav, params Label[] muted)
+    {
+        logoBox.Image = Logo;
+        foreach (var (b, glyph) in nav) SetIcon(b, glyph);
+        foreach (var l in muted) l.ForeColor = TextMuted;
+    }
 
     public const int RowHeight = 30;
     public const int HeaderHeight = 34;
@@ -120,6 +145,7 @@ public static class Theme
 
     static void StyleButton(Button b)
     {
+        Round(b);
         if (b.FlatStyle == FlatStyle.Flat && KindOf(b) == ButtonKind.Nav) return;   // already set by SetActiveNav
         // A button the owner coloured in the designer keeps its colours.
         bool custom = SetByHand(b, "BackColor") || SetByHand(b, "ForeColor");
@@ -149,6 +175,7 @@ public static class Theme
     /// <summary>The sidebar button of the open page: orange with white text (others plain). Called by the main windows.</summary>
     public static void SetActiveNav(Button b, bool active)
     {
+        Round(b);
         b.FlatStyle = FlatStyle.Flat;
         b.FlatAppearance.BorderSize = 0;
         b.UseVisualStyleBackColor = false;
@@ -156,6 +183,55 @@ public static class Theme
         b.BackColor = active ? Orange : Page;
         b.ForeColor = active ? Color.White : Text;
         b.FlatAppearance.MouseOverBackColor = active ? OrangeDark : OrangeLight;
+    }
+
+    static readonly ConditionalWeakTable<Button, object> rounded = new();
+    static readonly ConditionalWeakTable<Button, string> icons = new();
+
+    /// <summary>Puts a small icon (a Segoe MDL2 Assets glyph, e.g. "" = house) before the button's text.</summary>
+    public static void SetIcon(Button b, string glyph)
+    {
+        icons.AddOrUpdate(b, glyph);
+        b.Invalidate();
+    }
+
+    /// <summary>Draws the button ourselves: rounded corners, hover colour, optional icon (WinForms can't round on its own).</summary>
+    static void Round(Button b)
+    {
+        if (rounded.TryGetValue(b, out _)) return;
+        rounded.Add(b, true);
+        b.Paint += PaintButton;
+        b.MouseEnter += (_, _) => b.Invalidate();
+        b.MouseLeave += (_, _) => b.Invalidate();
+        b.EnabledChanged += (_, _) => b.Invalidate();
+    }
+
+    static Color Blend(Color a, Color b, float t) =>
+        Color.FromArgb((int)(a.R + (b.R - a.R) * t), (int)(a.G + (b.G - a.G) * t), (int)(a.B + (b.B - a.B) * t));
+
+    static void PaintButton(object? sender, PaintEventArgs e)
+    {
+        var b = (Button)sender!;
+        bool hover = b.Enabled && b.ClientRectangle.Contains(b.PointToClient(Cursor.Position));
+        var back = hover && !b.FlatAppearance.MouseOverBackColor.IsEmpty ? b.FlatAppearance.MouseOverBackColor : b.BackColor;
+        var fore = b.ForeColor;
+        var border = b.FlatAppearance.BorderColor.IsEmpty ? back : b.FlatAppearance.BorderColor;
+        if (!b.Enabled) { back = Blend(back, Color.White, 0.55f); fore = Blend(fore, Color.White, 0.5f); border = Blend(border, Color.White, 0.5f); }
+        Rounded.Box(e.Graphics, b, back, border, ButtonRadius, b.FlatAppearance.BorderSize);
+
+        bool left = b.TextAlign is ContentAlignment.MiddleLeft or ContentAlignment.TopLeft or ContentAlignment.BottomLeft;
+        int x = left ? 14 : 0;
+        if (icons.TryGetValue(b, out var glyph))
+        {
+            using var f = new Font("Segoe MDL2 Assets", b.Font.Size + 1.5f);
+            TextRenderer.DrawText(e.Graphics, glyph, f, new Rectangle(14, 0, 26, b.Height), fore,
+                                  TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoPadding);
+            x = 46;
+            left = true;
+        }
+        var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis |
+                    (left ? TextFormatFlags.Left : TextFormatFlags.HorizontalCenter);
+        TextRenderer.DrawText(e.Graphics, b.Text, b.Font, new Rectangle(x, 0, b.Width - x - (left ? 8 : 0), b.Height), fore, flags);
     }
 
     static void StyleGrid(DataGridView g)
