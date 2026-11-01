@@ -38,29 +38,29 @@ namespace Company.WebsiteAdmin.Pages
             // lblInqName
             // 
             lblInqName.AutoSize = true;
-            lblInqName.Location = new Point(12, 12);
+            lblInqName.Location = new Point(38, 32);
             lblInqName.Name = "lblInqName";
             lblInqName.Text = "Name: -";
             // 
             // lblInqContact
             // 
             lblInqContact.AutoSize = true;
-            lblInqContact.Location = new Point(12, 34);
+            lblInqContact.Location = new Point(38, 61);
             lblInqContact.Name = "lblInqContact";
             lblInqContact.Text = "Contact number: -";
             // 
             // lblInqEmail
             // 
             lblInqEmail.AutoSize = true;
-            lblInqEmail.Location = new Point(12, 56);
+            lblInqEmail.Location = new Point(38, 90);
             lblInqEmail.Name = "lblInqEmail";
             lblInqEmail.Text = "Email: -";
             // 
             // btnCopyEmail
             // 
-            btnCopyEmail.Location = new Point(430, 50);
+            btnCopyEmail.Location = new Point(518, 82);
             btnCopyEmail.Name = "btnCopyEmail";
-            btnCopyEmail.Size = new Size(118, 27);
+            btnCopyEmail.Size = new Size(136, 36);
             btnCopyEmail.Text = "Copy Email";
             btnCopyEmail.TabIndex = 0;
             btnCopyEmail.Click += btnCopyEmail_Click;
@@ -68,36 +68,36 @@ namespace Company.WebsiteAdmin.Pages
             // lblInqLocation
             // 
             lblInqLocation.AutoSize = true;
-            lblInqLocation.Location = new Point(12, 78);
+            lblInqLocation.Location = new Point(38, 119);
             lblInqLocation.Name = "lblInqLocation";
             lblInqLocation.Text = "Project location: -";
             // 
             // lblInqService
             // 
             lblInqService.AutoSize = true;
-            lblInqService.Location = new Point(12, 100);
+            lblInqService.Location = new Point(38, 148);
             lblInqService.Name = "lblInqService";
             lblInqService.Text = "Service required: -";
             // 
             // lblInqReceived
             // 
             lblInqReceived.AutoSize = true;
-            lblInqReceived.Location = new Point(12, 122);
+            lblInqReceived.Location = new Point(38, 177);
             lblInqReceived.Name = "lblInqReceived";
             lblInqReceived.Text = "Received: -";
             // 
             // lblInqMessage
             // 
             lblInqMessage.AutoSize = true;
-            lblInqMessage.Location = new Point(12, 148);
+            lblInqMessage.Location = new Point(38, 211);
             lblInqMessage.Name = "lblInqMessage";
             lblInqMessage.Text = "Message";
             // 
             // txtInqMessage
             // 
-            txtInqMessage.Location = new Point(12, 166);
+            txtInqMessage.Location = new Point(38, 235);
             txtInqMessage.Name = "txtInqMessage";
-            txtInqMessage.Size = new Size(536, 120);
+            txtInqMessage.Size = new Size(616, 158);
             txtInqMessage.Multiline = true;
             txtInqMessage.ReadOnly = true;
             txtInqMessage.ScrollBars = ScrollBars.Vertical;
@@ -106,30 +106,30 @@ namespace Company.WebsiteAdmin.Pages
             // lblInquiryStatus
             // 
             lblInquiryStatus.AutoSize = true;
-            lblInquiryStatus.Location = new Point(12, 298);
+            lblInquiryStatus.Location = new Point(38, 409);
             lblInquiryStatus.Name = "lblInquiryStatus";
             lblInquiryStatus.Text = "Status";
             // 
             // cboInquiryStatus
             // 
-            cboInquiryStatus.Location = new Point(12, 316);
+            cboInquiryStatus.Location = new Point(38, 433);
             cboInquiryStatus.Name = "cboInquiryStatus";
-            cboInquiryStatus.Size = new Size(160, 23);
+            cboInquiryStatus.Size = new Size(184, 23);
             cboInquiryStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cboInquiryStatus.TabIndex = 2;
             // 
             // lblInquiryNotes
             // 
             lblInquiryNotes.AutoSize = true;
-            lblInquiryNotes.Location = new Point(12, 346);
+            lblInquiryNotes.Location = new Point(38, 473);
             lblInquiryNotes.Name = "lblInquiryNotes";
             lblInquiryNotes.Text = "Internal notes (never shown on the website)";
             // 
             // txtInquiryNotes
             // 
-            txtInquiryNotes.Location = new Point(12, 364);
+            txtInquiryNotes.Location = new Point(38, 496);
             txtInquiryNotes.Name = "txtInquiryNotes";
-            txtInquiryNotes.Size = new Size(536, 90);
+            txtInquiryNotes.Size = new Size(616, 119);
             txtInquiryNotes.Multiline = true;
             txtInquiryNotes.ScrollBars = ScrollBars.Vertical;
             txtInquiryNotes.TabIndex = 3;
@@ -137,24 +137,24 @@ namespace Company.WebsiteAdmin.Pages
             // lblInquiryMsg
             // 
             lblInquiryMsg.AutoSize = true;
-            lblInquiryMsg.Location = new Point(12, 460);
+            lblInquiryMsg.Location = new Point(38, 623);
             lblInquiryMsg.Name = "lblInquiryMsg";
             lblInquiryMsg.MaximumSize = new Size(330, 0);
             // 
             // btnSaveInquiry
             // 
-            btnSaveInquiry.Location = new Point(362, 482);
+            btnSaveInquiry.Location = new Point(440, 652);
             btnSaveInquiry.Name = "btnSaveInquiry";
-            btnSaveInquiry.Size = new Size(90, 28);
+            btnSaveInquiry.Size = new Size(103, 36);
             btnSaveInquiry.Text = "Save";
             btnSaveInquiry.TabIndex = 4;
             btnSaveInquiry.Click += btnSaveInquiry_Click;
             // 
             // btnCloseInquiry
             // 
-            btnCloseInquiry.Location = new Point(458, 482);
+            btnCloseInquiry.Location = new Point(551, 652);
             btnCloseInquiry.Name = "btnCloseInquiry";
-            btnCloseInquiry.Size = new Size(90, 28);
+            btnCloseInquiry.Size = new Size(103, 36);
             btnCloseInquiry.Text = "Close";
             btnCloseInquiry.DialogResult = DialogResult.Cancel;
             btnCloseInquiry.TabIndex = 5;
@@ -163,7 +163,7 @@ namespace Company.WebsiteAdmin.Pages
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(560, 520);
+            ClientSize = new Size(692, 718);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

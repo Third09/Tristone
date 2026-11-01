@@ -2,6 +2,7 @@
 NAMESPACE = "Company.OfficeApp.Pages.Receipts"
 CLASS = "ReceiptEntryForm"
 FORM = True
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (520, 560)
 LOAD_EVENT = "ReceiptEntryForm_Load"
 

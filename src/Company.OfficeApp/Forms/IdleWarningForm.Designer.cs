@@ -15,6 +15,7 @@ namespace Company.OfficeApp.Forms
 
         #region Windows Form Designer generated code
 
+        // ROOMY layout applied (docs/_tools/designer-gen/roomy_designer.py)
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
@@ -28,31 +29,31 @@ namespace Company.OfficeApp.Forms
             // lblIdleMessage
             //
             lblIdleMessage.AutoSize = true;
-            lblIdleMessage.Location = new Point(12, 12);
+            lblIdleMessage.Location = new Point(38, 32);
             lblIdleMessage.Name = "lblIdleMessage";
             lblIdleMessage.Text = "Still there? You will be signed out soon.";
             //
             // lblCountdown
             //
             lblCountdown.AutoSize = true;
-            lblCountdown.Location = new Point(12, 36);
+            lblCountdown.Location = new Point(38, 64);
             lblCountdown.Name = "lblCountdown";
             lblCountdown.Text = "Signing out in 60 seconds.";
             //
             // btnStaySignedIn
             //
-            btnStaySignedIn.Location = new Point(12, 66);
+            btnStaySignedIn.Location = new Point(38, 103);
             btnStaySignedIn.Name = "btnStaySignedIn";
-            btnStaySignedIn.Size = new Size(120, 28);
+            btnStaySignedIn.Size = new Size(138, 36);
             btnStaySignedIn.TabIndex = 0;
             btnStaySignedIn.Text = "Stay Signed In";
             btnStaySignedIn.Click += btnStaySignedIn_Click;
             //
             // btnIdleSignOut
             //
-            btnIdleSignOut.Location = new Point(138, 66);
+            btnIdleSignOut.Location = new Point(183, 103);
             btnIdleSignOut.Name = "btnIdleSignOut";
-            btnIdleSignOut.Size = new Size(90, 28);
+            btnIdleSignOut.Size = new Size(103, 36);
             btnIdleSignOut.TabIndex = 1;
             btnIdleSignOut.Text = "Sign Out";
             btnIdleSignOut.Click += btnIdleSignOut_Click;
@@ -67,7 +68,7 @@ namespace Company.OfficeApp.Forms
             AcceptButton = btnStaySignedIn;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(300, 108);
+            ClientSize = new Size(393, 175);
             ControlBox = false;
             Controls.Add(lblIdleMessage);
             Controls.Add(lblCountdown);

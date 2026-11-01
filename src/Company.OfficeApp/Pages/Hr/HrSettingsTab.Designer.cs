@@ -89,22 +89,22 @@ namespace Company.OfficeApp.Pages.Hr
             // lblWorkSchedule
             // 
             lblWorkSchedule.AutoSize = true;
-            lblWorkSchedule.Location = new Point(12, 12);
+            lblWorkSchedule.Location = new Point(38, 32);
             lblWorkSchedule.Name = "lblWorkSchedule";
             lblWorkSchedule.Text = "Work schedule";
             // 
             // lblWorkStart
             // 
             lblWorkStart.AutoSize = true;
-            lblWorkStart.Location = new Point(12, 40);
+            lblWorkStart.Location = new Point(38, 69);
             lblWorkStart.Name = "lblWorkStart";
             lblWorkStart.Text = "Work start";
             // 
             // dtpWorkStart
             // 
-            dtpWorkStart.Location = new Point(140, 36);
+            dtpWorkStart.Location = new Point(185, 64);
             dtpWorkStart.Name = "dtpWorkStart";
-            dtpWorkStart.Size = new Size(110, 23);
+            dtpWorkStart.Size = new Size(126, 23);
             dtpWorkStart.Format = DateTimePickerFormat.Custom;
             dtpWorkStart.CustomFormat = "h:mm tt";
             dtpWorkStart.ShowUpDown = true;
@@ -113,15 +113,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblWorkEnd
             // 
             lblWorkEnd.AutoSize = true;
-            lblWorkEnd.Location = new Point(12, 70);
+            lblWorkEnd.Location = new Point(38, 108);
             lblWorkEnd.Name = "lblWorkEnd";
             lblWorkEnd.Text = "Work end";
             // 
             // dtpWorkEnd
             // 
-            dtpWorkEnd.Location = new Point(140, 66);
+            dtpWorkEnd.Location = new Point(185, 103);
             dtpWorkEnd.Name = "dtpWorkEnd";
-            dtpWorkEnd.Size = new Size(110, 23);
+            dtpWorkEnd.Size = new Size(126, 23);
             dtpWorkEnd.Format = DateTimePickerFormat.Custom;
             dtpWorkEnd.CustomFormat = "h:mm tt";
             dtpWorkEnd.ShowUpDown = true;
@@ -130,15 +130,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblBreakStart
             // 
             lblBreakStart.AutoSize = true;
-            lblBreakStart.Location = new Point(12, 100);
+            lblBreakStart.Location = new Point(38, 148);
             lblBreakStart.Name = "lblBreakStart";
             lblBreakStart.Text = "Break start";
             // 
             // dtpBreakStart
             // 
-            dtpBreakStart.Location = new Point(140, 96);
+            dtpBreakStart.Location = new Point(185, 143);
             dtpBreakStart.Name = "dtpBreakStart";
-            dtpBreakStart.Size = new Size(110, 23);
+            dtpBreakStart.Size = new Size(126, 23);
             dtpBreakStart.Format = DateTimePickerFormat.Custom;
             dtpBreakStart.CustomFormat = "h:mm tt";
             dtpBreakStart.ShowUpDown = true;
@@ -147,15 +147,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblBreakEnd
             // 
             lblBreakEnd.AutoSize = true;
-            lblBreakEnd.Location = new Point(12, 130);
+            lblBreakEnd.Location = new Point(38, 188);
             lblBreakEnd.Name = "lblBreakEnd";
             lblBreakEnd.Text = "Break end";
             // 
             // dtpBreakEnd
             // 
-            dtpBreakEnd.Location = new Point(140, 126);
+            dtpBreakEnd.Location = new Point(185, 182);
             dtpBreakEnd.Name = "dtpBreakEnd";
-            dtpBreakEnd.Size = new Size(110, 23);
+            dtpBreakEnd.Size = new Size(126, 23);
             dtpBreakEnd.Format = DateTimePickerFormat.Custom;
             dtpBreakEnd.CustomFormat = "h:mm tt";
             dtpBreakEnd.ShowUpDown = true;
@@ -164,45 +164,45 @@ namespace Company.OfficeApp.Pages.Hr
             // lblGraceMinutes
             // 
             lblGraceMinutes.AutoSize = true;
-            lblGraceMinutes.Location = new Point(12, 160);
+            lblGraceMinutes.Location = new Point(38, 227);
             lblGraceMinutes.Name = "lblGraceMinutes";
             lblGraceMinutes.Text = "Grace minutes";
             // 
             // numGraceMinutes
             // 
-            numGraceMinutes.Location = new Point(140, 156);
+            numGraceMinutes.Location = new Point(185, 222);
             numGraceMinutes.Name = "numGraceMinutes";
-            numGraceMinutes.Size = new Size(70, 23);
+            numGraceMinutes.Size = new Size(80, 23);
             numGraceMinutes.Maximum = 120m;
             numGraceMinutes.TabIndex = 4;
             // 
             // lblWorkDays
             // 
             lblWorkDays.AutoSize = true;
-            lblWorkDays.Location = new Point(12, 190);
+            lblWorkDays.Location = new Point(38, 267);
             lblWorkDays.Name = "lblWorkDays";
             lblWorkDays.Text = "Work days";
             // 
             // clbWorkDays
             // 
-            clbWorkDays.Location = new Point(140, 186);
+            clbWorkDays.Location = new Point(185, 262);
             clbWorkDays.Name = "clbWorkDays";
-            clbWorkDays.Size = new Size(140, 130);
+            clbWorkDays.Size = new Size(161, 172);
             clbWorkDays.CheckOnClick = true;
             clbWorkDays.TabIndex = 5;
             // 
             // lblOvertimeRate
             // 
             lblOvertimeRate.AutoSize = true;
-            lblOvertimeRate.Location = new Point(12, 326);
+            lblOvertimeRate.Location = new Point(38, 446);
             lblOvertimeRate.Name = "lblOvertimeRate";
             lblOvertimeRate.Text = "Overtime per hour";
             // 
             // numOvertimeRate
             // 
-            numOvertimeRate.Location = new Point(140, 322);
+            numOvertimeRate.Location = new Point(185, 441);
             numOvertimeRate.Name = "numOvertimeRate";
-            numOvertimeRate.Size = new Size(100, 23);
+            numOvertimeRate.Size = new Size(115, 23);
             numOvertimeRate.DecimalPlaces = 2;
             numOvertimeRate.ThousandsSeparator = true;
             numOvertimeRate.Maximum = 99999999m;
@@ -211,37 +211,38 @@ namespace Company.OfficeApp.Pages.Hr
             // lblOtMinimum
             // 
             lblOtMinimum.AutoSize = true;
-            lblOtMinimum.Location = new Point(12, 356);
+            lblOtMinimum.Location = new Point(38, 486);
             lblOtMinimum.Name = "lblOtMinimum";
             lblOtMinimum.Text = "Overtime from (min)";
             // 
             // numOtMinimum
             // 
-            numOtMinimum.Location = new Point(140, 352);
+            numOtMinimum.Location = new Point(185, 481);
             numOtMinimum.Name = "numOtMinimum";
-            numOtMinimum.Size = new Size(70, 23);
+            numOtMinimum.Size = new Size(80, 23);
             numOtMinimum.Maximum = 240m;
             numOtMinimum.TabIndex = 7;
             // 
             // lblGovTitle
             // 
             lblGovTitle.AutoSize = true;
-            lblGovTitle.Location = new Point(320, 12);
+            lblGovTitle.Location = new Point(392, 32);
             lblGovTitle.Name = "lblGovTitle";
             lblGovTitle.Text = "Government deductions (only for employees with the switch on)";
+            lblGovTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblWorkDaysPerMonth
             // 
             lblWorkDaysPerMonth.AutoSize = true;
-            lblWorkDaysPerMonth.Location = new Point(320, 40);
+            lblWorkDaysPerMonth.Location = new Point(392, 69);
             lblWorkDaysPerMonth.Name = "lblWorkDaysPerMonth";
             lblWorkDaysPerMonth.Text = "Work days per month";
             // 
             // numWorkDaysPerMonth
             // 
-            numWorkDaysPerMonth.Location = new Point(520, 36);
+            numWorkDaysPerMonth.Location = new Point(622, 64);
             numWorkDaysPerMonth.Name = "numWorkDaysPerMonth";
-            numWorkDaysPerMonth.Size = new Size(70, 23);
+            numWorkDaysPerMonth.Size = new Size(80, 23);
             numWorkDaysPerMonth.Minimum = 1m;
             numWorkDaysPerMonth.Maximum = 31m;
             numWorkDaysPerMonth.Value = 26m;
@@ -250,15 +251,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblSssRate
             // 
             lblSssRate.AutoSize = true;
-            lblSssRate.Location = new Point(320, 70);
+            lblSssRate.Location = new Point(392, 108);
             lblSssRate.Name = "lblSssRate";
             lblSssRate.Text = "SSS employee share %";
             // 
             // numSssRate
             // 
-            numSssRate.Location = new Point(520, 66);
+            numSssRate.Location = new Point(622, 103);
             numSssRate.Name = "numSssRate";
-            numSssRate.Size = new Size(70, 23);
+            numSssRate.Size = new Size(80, 23);
             numSssRate.DecimalPlaces = 2;
             numSssRate.Maximum = 50m;
             numSssRate.TabIndex = 9;
@@ -266,15 +267,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblSssMin
             // 
             lblSssMin.AutoSize = true;
-            lblSssMin.Location = new Point(320, 100);
+            lblSssMin.Location = new Point(392, 148);
             lblSssMin.Name = "lblSssMin";
             lblSssMin.Text = "SSS salary credit, minimum";
             // 
             // numSssMin
             // 
-            numSssMin.Location = new Point(520, 96);
+            numSssMin.Location = new Point(622, 143);
             numSssMin.Name = "numSssMin";
-            numSssMin.Size = new Size(100, 23);
+            numSssMin.Size = new Size(115, 23);
             numSssMin.DecimalPlaces = 2;
             numSssMin.ThousandsSeparator = true;
             numSssMin.Maximum = 99999999m;
@@ -283,15 +284,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblSssMax
             // 
             lblSssMax.AutoSize = true;
-            lblSssMax.Location = new Point(320, 130);
+            lblSssMax.Location = new Point(392, 188);
             lblSssMax.Name = "lblSssMax";
             lblSssMax.Text = "SSS salary credit, maximum";
             // 
             // numSssMax
             // 
-            numSssMax.Location = new Point(520, 126);
+            numSssMax.Location = new Point(622, 182);
             numSssMax.Name = "numSssMax";
-            numSssMax.Size = new Size(100, 23);
+            numSssMax.Size = new Size(115, 23);
             numSssMax.DecimalPlaces = 2;
             numSssMax.ThousandsSeparator = true;
             numSssMax.Maximum = 99999999m;
@@ -300,15 +301,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPhilHealthRate
             // 
             lblPhilHealthRate.AutoSize = true;
-            lblPhilHealthRate.Location = new Point(320, 160);
+            lblPhilHealthRate.Location = new Point(392, 227);
             lblPhilHealthRate.Name = "lblPhilHealthRate";
             lblPhilHealthRate.Text = "PhilHealth employee share %";
             // 
             // numPhilHealthRate
             // 
-            numPhilHealthRate.Location = new Point(520, 156);
+            numPhilHealthRate.Location = new Point(622, 222);
             numPhilHealthRate.Name = "numPhilHealthRate";
-            numPhilHealthRate.Size = new Size(70, 23);
+            numPhilHealthRate.Size = new Size(80, 23);
             numPhilHealthRate.DecimalPlaces = 2;
             numPhilHealthRate.Maximum = 50m;
             numPhilHealthRate.TabIndex = 12;
@@ -316,15 +317,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPhilHealthFloor
             // 
             lblPhilHealthFloor.AutoSize = true;
-            lblPhilHealthFloor.Location = new Point(320, 190);
+            lblPhilHealthFloor.Location = new Point(392, 267);
             lblPhilHealthFloor.Name = "lblPhilHealthFloor";
             lblPhilHealthFloor.Text = "PhilHealth salary floor";
             // 
             // numPhilHealthFloor
             // 
-            numPhilHealthFloor.Location = new Point(520, 186);
+            numPhilHealthFloor.Location = new Point(622, 262);
             numPhilHealthFloor.Name = "numPhilHealthFloor";
-            numPhilHealthFloor.Size = new Size(100, 23);
+            numPhilHealthFloor.Size = new Size(115, 23);
             numPhilHealthFloor.DecimalPlaces = 2;
             numPhilHealthFloor.ThousandsSeparator = true;
             numPhilHealthFloor.Maximum = 99999999m;
@@ -333,15 +334,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPhilHealthCeiling
             // 
             lblPhilHealthCeiling.AutoSize = true;
-            lblPhilHealthCeiling.Location = new Point(320, 220);
+            lblPhilHealthCeiling.Location = new Point(392, 306);
             lblPhilHealthCeiling.Name = "lblPhilHealthCeiling";
             lblPhilHealthCeiling.Text = "PhilHealth salary ceiling";
             // 
             // numPhilHealthCeiling
             // 
-            numPhilHealthCeiling.Location = new Point(520, 216);
+            numPhilHealthCeiling.Location = new Point(622, 301);
             numPhilHealthCeiling.Name = "numPhilHealthCeiling";
-            numPhilHealthCeiling.Size = new Size(100, 23);
+            numPhilHealthCeiling.Size = new Size(115, 23);
             numPhilHealthCeiling.DecimalPlaces = 2;
             numPhilHealthCeiling.ThousandsSeparator = true;
             numPhilHealthCeiling.Maximum = 99999999m;
@@ -350,15 +351,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPagIbigRate
             // 
             lblPagIbigRate.AutoSize = true;
-            lblPagIbigRate.Location = new Point(320, 250);
+            lblPagIbigRate.Location = new Point(392, 346);
             lblPagIbigRate.Name = "lblPagIbigRate";
             lblPagIbigRate.Text = "Pag-IBIG employee share %";
             // 
             // numPagIbigRate
             // 
-            numPagIbigRate.Location = new Point(520, 246);
+            numPagIbigRate.Location = new Point(622, 341);
             numPagIbigRate.Name = "numPagIbigRate";
-            numPagIbigRate.Size = new Size(70, 23);
+            numPagIbigRate.Size = new Size(80, 23);
             numPagIbigRate.DecimalPlaces = 2;
             numPagIbigRate.Maximum = 50m;
             numPagIbigRate.TabIndex = 15;
@@ -366,15 +367,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPagIbigCap
             // 
             lblPagIbigCap.AutoSize = true;
-            lblPagIbigCap.Location = new Point(320, 280);
+            lblPagIbigCap.Location = new Point(392, 386);
             lblPagIbigCap.Name = "lblPagIbigCap";
             lblPagIbigCap.Text = "Pag-IBIG salary cap";
             // 
             // numPagIbigCap
             // 
-            numPagIbigCap.Location = new Point(520, 276);
+            numPagIbigCap.Location = new Point(622, 380);
             numPagIbigCap.Name = "numPagIbigCap";
-            numPagIbigCap.Size = new Size(100, 23);
+            numPagIbigCap.Size = new Size(115, 23);
             numPagIbigCap.DecimalPlaces = 2;
             numPagIbigCap.ThousandsSeparator = true;
             numPagIbigCap.Maximum = 99999999m;
@@ -383,7 +384,7 @@ namespace Company.OfficeApp.Pages.Hr
             // chkWithholdingTax
             // 
             chkWithholdingTax.AutoSize = true;
-            chkWithholdingTax.Location = new Point(320, 310);
+            chkWithholdingTax.Location = new Point(392, 425);
             chkWithholdingTax.Name = "chkWithholdingTax";
             chkWithholdingTax.Text = "Withhold income tax (TRAIN table)";
             chkWithholdingTax.TabIndex = 17;
@@ -391,7 +392,7 @@ namespace Company.OfficeApp.Pages.Hr
             // lblGovNote
             // 
             lblGovNote.AutoSize = true;
-            lblGovNote.Location = new Point(320, 338);
+            lblGovNote.Location = new Point(392, 462);
             lblGovNote.Name = "lblGovNote";
             lblGovNote.Text = "Defaults are the 2025 employee shares. Check them with your accountant and change them here when the government updates them.";
             lblGovNote.MaximumSize = new Size(400, 0);
@@ -399,15 +400,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblSettingsMsg
             // 
             lblSettingsMsg.AutoSize = true;
-            lblSettingsMsg.Location = new Point(12, 392);
+            lblSettingsMsg.Location = new Point(38, 533);
             lblSettingsMsg.Name = "lblSettingsMsg";
             lblSettingsMsg.MaximumSize = new Size(900, 0);
             // 
             // btnSaveHrSettings
             // 
-            btnSaveHrSettings.Location = new Point(12, 414);
+            btnSaveHrSettings.Location = new Point(38, 562);
             btnSaveHrSettings.Name = "btnSaveHrSettings";
-            btnSaveHrSettings.Size = new Size(120, 28);
+            btnSaveHrSettings.Size = new Size(138, 36);
             btnSaveHrSettings.Text = "Save Settings";
             btnSaveHrSettings.TabIndex = 18;
             btnSaveHrSettings.Click += btnSaveHrSettings_Click;
@@ -415,7 +416,7 @@ namespace Company.OfficeApp.Pages.Hr
             // lblHolidays
             // 
             lblHolidays.AutoSize = true;
-            lblHolidays.Location = new Point(12, 460);
+            lblHolidays.Location = new Point(38, 623);
             lblHolidays.Name = "lblHolidays";
             lblHolidays.Text = "Holidays (no one is marked absent; paydays move to the day before)";
             // 
@@ -429,70 +430,70 @@ namespace Company.OfficeApp.Pages.Hr
             dgvHolidays.ReadOnly = true;
             dgvHolidays.RowHeadersVisible = false;
             dgvHolidays.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvHolidays.Location = new Point(12, 482);
+            dgvHolidays.Location = new Point(38, 652);
             dgvHolidays.Name = "dgvHolidays";
-            dgvHolidays.Size = new Size(420, 140);
+            dgvHolidays.Size = new Size(483, 185);
             dgvHolidays.TabIndex = 19;
             dgvHolidays.SelectionChanged += dgvHolidays_SelectionChanged;
             // 
             // lblHolidayDate
             // 
             lblHolidayDate.AutoSize = true;
-            lblHolidayDate.Location = new Point(450, 482);
+            lblHolidayDate.Location = new Point(542, 652);
             lblHolidayDate.Name = "lblHolidayDate";
             lblHolidayDate.Text = "Date";
             // 
             // dtpHolidayDate
             // 
-            dtpHolidayDate.Location = new Point(450, 500);
+            dtpHolidayDate.Location = new Point(542, 676);
             dtpHolidayDate.Name = "dtpHolidayDate";
-            dtpHolidayDate.Size = new Size(120, 23);
+            dtpHolidayDate.Size = new Size(138, 23);
             dtpHolidayDate.Format = DateTimePickerFormat.Short;
             dtpHolidayDate.TabIndex = 20;
             // 
             // lblHolidayName
             // 
             lblHolidayName.AutoSize = true;
-            lblHolidayName.Location = new Point(450, 530);
+            lblHolidayName.Location = new Point(542, 716);
             lblHolidayName.Name = "lblHolidayName";
             lblHolidayName.Text = "Name";
             // 
             // txtHolidayName
             // 
-            txtHolidayName.Location = new Point(450, 548);
+            txtHolidayName.Location = new Point(542, 739);
             txtHolidayName.Name = "txtHolidayName";
-            txtHolidayName.Size = new Size(200, 23);
+            txtHolidayName.Size = new Size(230, 23);
             txtHolidayName.TabIndex = 21;
             // 
             // lblHolidayKind
             // 
             lblHolidayKind.AutoSize = true;
-            lblHolidayKind.Location = new Point(450, 578);
+            lblHolidayKind.Location = new Point(542, 779);
             lblHolidayKind.Name = "lblHolidayKind";
             lblHolidayKind.Text = "Kind";
             // 
             // cboHolidayKind
             // 
-            cboHolidayKind.Location = new Point(450, 596);
+            cboHolidayKind.Location = new Point(542, 803);
             cboHolidayKind.Name = "cboHolidayKind";
-            cboHolidayKind.Size = new Size(120, 23);
+            cboHolidayKind.Size = new Size(138, 23);
             cboHolidayKind.DropDownStyle = ComboBoxStyle.DropDownList;
             cboHolidayKind.TabIndex = 22;
             // 
             // btnAddHoliday
             // 
-            btnAddHoliday.Location = new Point(670, 546);
+            btnAddHoliday.Location = new Point(794, 737);
             btnAddHoliday.Name = "btnAddHoliday";
-            btnAddHoliday.Size = new Size(110, 28);
+            btnAddHoliday.Size = new Size(126, 36);
             btnAddHoliday.Text = "Add Holiday";
             btnAddHoliday.TabIndex = 23;
             btnAddHoliday.Click += btnAddHoliday_Click;
             // 
             // btnDeleteHoliday
             // 
-            btnDeleteHoliday.Location = new Point(670, 580);
+            btnDeleteHoliday.Location = new Point(794, 782);
             btnDeleteHoliday.Name = "btnDeleteHoliday";
-            btnDeleteHoliday.Size = new Size(110, 28);
+            btnDeleteHoliday.Size = new Size(126, 36);
             btnDeleteHoliday.Text = "Delete Holiday";
             btnDeleteHoliday.TabIndex = 24;
             btnDeleteHoliday.Click += btnDeleteHoliday_Click;
@@ -500,7 +501,7 @@ namespace Company.OfficeApp.Pages.Hr
             // lblHolidayMsg
             // 
             lblHolidayMsg.AutoSize = true;
-            lblHolidayMsg.Location = new Point(12, 630);
+            lblHolidayMsg.Location = new Point(38, 848);
             lblHolidayMsg.Name = "lblHolidayMsg";
             // 
             // colHolidayDate
@@ -579,7 +580,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(btnDeleteHoliday);
             Controls.Add(lblHolidayMsg);
             Name = "HrSettingsTab";
-            Size = new Size(960, 660);
+            Size = new Size(1152, 903);
             Load += HrSettingsTab_Load;
             ((System.ComponentModel.ISupportInitialize)numGraceMinutes).EndInit();
             ((System.ComponentModel.ISupportInitialize)numOvertimeRate).EndInit();

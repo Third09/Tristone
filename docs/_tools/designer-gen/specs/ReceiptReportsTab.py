@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Receipts/ReceiptReportsTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Receipts"
 CLASS = "ReceiptReportsTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 200)
 LOAD_EVENT = "ReceiptReportsTab_Load"
 

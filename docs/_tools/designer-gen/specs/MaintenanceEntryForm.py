@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Inventory/MaintenanceEntryForm.Designer.cs (a Form; window settings are in code)
 NAMESPACE = "Company.OfficeApp.Pages.Inventory"
 CLASS = "MaintenanceEntryForm"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (420, 384)
 FORM = True
 

@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Hr/HrSettingsTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "HrSettingsTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 660)
 LOAD_EVENT = "HrSettingsTab_Load"
 TIME = {"Format": "DateTimePickerFormat.Custom", "CustomFormat": T("h:mm tt"), "ShowUpDown": "true"}

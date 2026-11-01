@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Hr/PayslipHistoryTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "PayslipHistoryTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 520)
 LOAD_EVENT = "PayslipHistoryTab_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'

@@ -3,8 +3,8 @@ using Company.OfficeApp.Services;
 namespace Company.OfficeApp.Forms;
 
 /// <summary>
-/// First screen. Plain layout for now; styled later from the Figma design.
-/// Control names match the UI Elements Guide (Part A: Login Window).
+/// First screen, laid out like the Figma "ADMIN LOGIN" (2026-11-01): logo, title, a card with the fields and a dark
+/// Sign In button. Control names match the UI Elements Guide (Part A: Login Window).
 /// </summary>
 public partial class LoginForm : Form
 {
@@ -12,6 +12,13 @@ public partial class LoginForm : Form
     public LoginForm(string? notice = null)
     {
         InitializeComponent();
+        Text = "Tri-Stone - Sign In";
+        StartPosition = FormStartPosition.CenterScreen;
+        AcceptButton = btnSignIn;
+        BackColor = Color.White;
+        picLogo.Image = UI.Theme.Logo;
+        lblSubtitle.ForeColor = UI.Theme.TextMuted;
+        btnSignIn.FlatAppearance.MouseOverBackColor = Color.FromArgb(55, 55, 55);
         lblError.Text = notice ?? "";
     }
 

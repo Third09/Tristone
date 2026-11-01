@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/DashboardPage.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages"
 CLASS = "DashboardPage"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 756)
 LOAD_EVENT = "DashboardPage_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'

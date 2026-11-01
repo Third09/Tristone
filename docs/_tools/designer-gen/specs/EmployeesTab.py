@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Hr/EmployeesTab.Designer.cs  (T, DDL, TB come from gen_designer.py)
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "EmployeesTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 700)
 LOAD_EVENT = "EmployeesTab_Load"
 

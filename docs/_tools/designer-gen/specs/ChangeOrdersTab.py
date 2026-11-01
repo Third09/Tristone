@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Receipts/ChangeOrdersTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Receipts"
 CLASS = "ChangeOrdersTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 650)
 LOAD_EVENT = "ChangeOrdersTab_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'
@@ -14,7 +15,7 @@ CONTROLS = [
     ("Button", "btnApproveCo", 158, 222, 80, 28, {"Text": T("Approve")}),
     ("Button", "btnRejectCo", 244, 222, 70, 28, {"Text": T("Reject")}),
     ("Button", "btnPrintCo", 320, 222, 90, 28, {"Text": T("Print Form")}),
-    ("Label", "lblAdminNote", 12, 256, None, None, {"Text": T("An Admin approves change orders.")}),
+    ("Label", "lblAdminNote", 12, 256, None, None, {"Text": T("The Receipts Supervisor approves change orders.")}),
     ("Label", "lblCoNumber", 12, 282, None, None, {"Text": T("CO-001 (new)")}),
     ("Label", "lblCoProject", 12, 306, None, None, {"Text": T("Project")}),
     ("ComboBox", "cboCoProject", 12, 324, 280, 23, DDL),

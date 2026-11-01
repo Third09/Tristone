@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Shared/EditHistoryTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Shared"
 CLASS = "EditHistoryTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 520)
 LOAD_EVENT = "EditHistoryTab_Load"
 

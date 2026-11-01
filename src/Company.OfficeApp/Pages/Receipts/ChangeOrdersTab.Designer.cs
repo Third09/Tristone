@@ -61,15 +61,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblCoProjectFilter
             // 
             lblCoProjectFilter.AutoSize = true;
-            lblCoProjectFilter.Location = new Point(12, 15);
+            lblCoProjectFilter.Location = new Point(38, 36);
             lblCoProjectFilter.Name = "lblCoProjectFilter";
             lblCoProjectFilter.Text = "Project";
             // 
             // cboCoProjectFilter
             // 
-            cboCoProjectFilter.Location = new Point(62, 12);
+            cboCoProjectFilter.Location = new Point(95, 32);
             cboCoProjectFilter.Name = "cboCoProjectFilter";
-            cboCoProjectFilter.Size = new Size(240, 23);
+            cboCoProjectFilter.Size = new Size(276, 23);
             cboCoProjectFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboCoProjectFilter.TabIndex = 0;
             cboCoProjectFilter.SelectedIndexChanged += Filter_Changed;
@@ -84,44 +84,44 @@ namespace Company.OfficeApp.Pages.Receipts
             dgvChangeOrders.ReadOnly = true;
             dgvChangeOrders.RowHeadersVisible = false;
             dgvChangeOrders.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvChangeOrders.Location = new Point(12, 44);
+            dgvChangeOrders.Location = new Point(38, 74);
             dgvChangeOrders.Name = "dgvChangeOrders";
-            dgvChangeOrders.Size = new Size(930, 170);
+            dgvChangeOrders.Size = new Size(1070, 224);
             dgvChangeOrders.TabIndex = 1;
             dgvChangeOrders.SelectionChanged += dgvChangeOrders_SelectionChanged;
             // 
             // btnNewChangeOrder
             // 
-            btnNewChangeOrder.Location = new Point(12, 222);
+            btnNewChangeOrder.Location = new Point(38, 309);
             btnNewChangeOrder.Name = "btnNewChangeOrder";
-            btnNewChangeOrder.Size = new Size(140, 28);
+            btnNewChangeOrder.Size = new Size(161, 36);
             btnNewChangeOrder.Text = "New Change Order";
             btnNewChangeOrder.TabIndex = 2;
             btnNewChangeOrder.Click += btnNewChangeOrder_Click;
             // 
             // btnApproveCo
             // 
-            btnApproveCo.Location = new Point(158, 222);
+            btnApproveCo.Location = new Point(206, 309);
             btnApproveCo.Name = "btnApproveCo";
-            btnApproveCo.Size = new Size(80, 28);
+            btnApproveCo.Size = new Size(92, 36);
             btnApproveCo.Text = "Approve";
             btnApproveCo.TabIndex = 3;
             btnApproveCo.Click += btnApproveCo_Click;
             // 
             // btnRejectCo
             // 
-            btnRejectCo.Location = new Point(244, 222);
+            btnRejectCo.Location = new Point(305, 309);
             btnRejectCo.Name = "btnRejectCo";
-            btnRejectCo.Size = new Size(70, 28);
+            btnRejectCo.Size = new Size(80, 36);
             btnRejectCo.Text = "Reject";
             btnRejectCo.TabIndex = 4;
             btnRejectCo.Click += btnRejectCo_Click;
             // 
             // btnPrintCo
             // 
-            btnPrintCo.Location = new Point(320, 222);
+            btnPrintCo.Location = new Point(392, 309);
             btnPrintCo.Name = "btnPrintCo";
-            btnPrintCo.Size = new Size(90, 28);
+            btnPrintCo.Size = new Size(103, 36);
             btnPrintCo.Text = "Print Form";
             btnPrintCo.TabIndex = 5;
             btnPrintCo.Click += btnPrintCo_Click;
@@ -129,29 +129,29 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblAdminNote
             // 
             lblAdminNote.AutoSize = true;
-            lblAdminNote.Location = new Point(12, 256);
+            lblAdminNote.Location = new Point(38, 354);
             lblAdminNote.Name = "lblAdminNote";
             lblAdminNote.Text = "The Receipts Supervisor approves change orders.";
             // 
             // lblCoNumber
             // 
             lblCoNumber.AutoSize = true;
-            lblCoNumber.Location = new Point(12, 282);
+            lblCoNumber.Location = new Point(38, 388);
             lblCoNumber.Name = "lblCoNumber";
             lblCoNumber.Text = "CO-001 (new)";
             // 
             // lblCoProject
             // 
             lblCoProject.AutoSize = true;
-            lblCoProject.Location = new Point(12, 306);
+            lblCoProject.Location = new Point(38, 420);
             lblCoProject.Name = "lblCoProject";
             lblCoProject.Text = "Project";
             // 
             // cboCoProject
             // 
-            cboCoProject.Location = new Point(12, 324);
+            cboCoProject.Location = new Point(38, 444);
             cboCoProject.Name = "cboCoProject";
-            cboCoProject.Size = new Size(280, 23);
+            cboCoProject.Size = new Size(322, 23);
             cboCoProject.DropDownStyle = ComboBoxStyle.DropDownList;
             cboCoProject.TabIndex = 6;
             cboCoProject.SelectedIndexChanged += Impact_Changed;
@@ -159,30 +159,30 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblCoDate
             // 
             lblCoDate.AutoSize = true;
-            lblCoDate.Location = new Point(12, 354);
+            lblCoDate.Location = new Point(38, 483);
             lblCoDate.Name = "lblCoDate";
             lblCoDate.Text = "Date requested";
             // 
             // dtpCoDate
             // 
-            dtpCoDate.Location = new Point(12, 372);
+            dtpCoDate.Location = new Point(38, 507);
             dtpCoDate.Name = "dtpCoDate";
-            dtpCoDate.Size = new Size(125, 23);
+            dtpCoDate.Size = new Size(144, 23);
             dtpCoDate.Format = DateTimePickerFormat.Short;
             dtpCoDate.TabIndex = 7;
             // 
             // lblCoDescription
             // 
             lblCoDescription.AutoSize = true;
-            lblCoDescription.Location = new Point(12, 402);
+            lblCoDescription.Location = new Point(38, 547);
             lblCoDescription.Name = "lblCoDescription";
             lblCoDescription.Text = "What the client wants changed";
             // 
             // txtCoDescription
             // 
-            txtCoDescription.Location = new Point(12, 420);
+            txtCoDescription.Location = new Point(38, 570);
             txtCoDescription.Name = "txtCoDescription";
-            txtCoDescription.Size = new Size(280, 70);
+            txtCoDescription.Size = new Size(322, 92);
             txtCoDescription.Multiline = true;
             txtCoDescription.ScrollBars = ScrollBars.Vertical;
             txtCoDescription.TabIndex = 8;
@@ -190,15 +190,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblCoCostChange
             // 
             lblCoCostChange.AutoSize = true;
-            lblCoCostChange.Location = new Point(12, 498);
+            lblCoCostChange.Location = new Point(38, 673);
             lblCoCostChange.Name = "lblCoCostChange";
             lblCoCostChange.Text = "Cost change (+ or -)";
             // 
             // numCoCostChange
             // 
-            numCoCostChange.Location = new Point(12, 516);
+            numCoCostChange.Location = new Point(38, 697);
             numCoCostChange.Name = "numCoCostChange";
-            numCoCostChange.Size = new Size(140, 23);
+            numCoCostChange.Size = new Size(161, 23);
             numCoCostChange.DecimalPlaces = 2;
             numCoCostChange.ThousandsSeparator = true;
             numCoCostChange.Maximum = 999999999999m;
@@ -209,15 +209,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblCoDaysChange
             // 
             lblCoDaysChange.AutoSize = true;
-            lblCoDaysChange.Location = new Point(162, 498);
+            lblCoDaysChange.Location = new Point(210, 673);
             lblCoDaysChange.Name = "lblCoDaysChange";
             lblCoDaysChange.Text = "Days change (+ or -)";
             // 
             // numCoDaysChange
             // 
-            numCoDaysChange.Location = new Point(162, 516);
+            numCoDaysChange.Location = new Point(210, 697);
             numCoDaysChange.Name = "numCoDaysChange";
-            numCoDaysChange.Size = new Size(90, 23);
+            numCoDaysChange.Size = new Size(103, 23);
             numCoDaysChange.Maximum = 3650m;
             numCoDaysChange.Minimum = -3650m;
             numCoDaysChange.TabIndex = 10;
@@ -225,18 +225,18 @@ namespace Company.OfficeApp.Pages.Receipts
             // 
             // btnAttachCoDoc
             // 
-            btnAttachCoDoc.Location = new Point(12, 548);
+            btnAttachCoDoc.Location = new Point(38, 739);
             btnAttachCoDoc.Name = "btnAttachCoDoc";
-            btnAttachCoDoc.Size = new Size(170, 28);
+            btnAttachCoDoc.Size = new Size(195, 36);
             btnAttachCoDoc.Text = "Attach Signed Document";
             btnAttachCoDoc.TabIndex = 11;
             btnAttachCoDoc.Click += btnAttachCoDoc_Click;
             // 
             // btnViewCoDoc
             // 
-            btnViewCoDoc.Location = new Point(188, 548);
+            btnViewCoDoc.Location = new Point(240, 739);
             btnViewCoDoc.Name = "btnViewCoDoc";
-            btnViewCoDoc.Size = new Size(70, 28);
+            btnViewCoDoc.Size = new Size(80, 36);
             btnViewCoDoc.Text = "View";
             btnViewCoDoc.TabIndex = 12;
             btnViewCoDoc.Click += btnViewCoDoc_Click;
@@ -244,30 +244,30 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblCoDocFile
             // 
             lblCoDocFile.AutoSize = true;
-            lblCoDocFile.Location = new Point(264, 554);
+            lblCoDocFile.Location = new Point(328, 747);
             lblCoDocFile.Name = "lblCoDocFile";
             lblCoDocFile.Text = "";
             // 
             // lblCoMsg
             // 
             lblCoMsg.AutoSize = true;
-            lblCoMsg.Location = new Point(12, 584);
+            lblCoMsg.Location = new Point(38, 787);
             lblCoMsg.Name = "lblCoMsg";
             // 
             // btnSubmitCo
             // 
-            btnSubmitCo.Location = new Point(12, 606);
+            btnSubmitCo.Location = new Point(38, 816);
             btnSubmitCo.Name = "btnSubmitCo";
-            btnSubmitCo.Size = new Size(90, 28);
+            btnSubmitCo.Size = new Size(103, 36);
             btnSubmitCo.Text = "Submit";
             btnSubmitCo.TabIndex = 13;
             btnSubmitCo.Click += btnSubmitCo_Click;
             // 
             // btnCancelCo
             // 
-            btnCancelCo.Location = new Point(108, 606);
+            btnCancelCo.Location = new Point(148, 816);
             btnCancelCo.Name = "btnCancelCo";
-            btnCancelCo.Size = new Size(90, 28);
+            btnCancelCo.Size = new Size(103, 36);
             btnCancelCo.Text = "Cancel";
             btnCancelCo.TabIndex = 14;
             btnCancelCo.Click += btnCancelCo_Click;
@@ -275,35 +275,36 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblCoImpactTitle
             // 
             lblCoImpactTitle.AutoSize = true;
-            lblCoImpactTitle.Location = new Point(340, 306);
+            lblCoImpactTitle.Location = new Point(415, 420);
             lblCoImpactTitle.Name = "lblCoImpactTitle";
             lblCoImpactTitle.Text = "Budget impact if approved";
+            lblCoImpactTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblCoOriginalPrice
             // 
             lblCoOriginalPrice.AutoSize = true;
-            lblCoOriginalPrice.Location = new Point(340, 330);
+            lblCoOriginalPrice.Location = new Point(415, 452);
             lblCoOriginalPrice.Name = "lblCoOriginalPrice";
             lblCoOriginalPrice.Text = "Contract price now: -";
             // 
             // lblCoRevisedPrice
             // 
             lblCoRevisedPrice.AutoSize = true;
-            lblCoRevisedPrice.Location = new Point(340, 354);
+            lblCoRevisedPrice.Location = new Point(415, 483);
             lblCoRevisedPrice.Name = "lblCoRevisedPrice";
             lblCoRevisedPrice.Text = "Revised contract price: -";
             // 
             // lblCoOriginalEnd
             // 
             lblCoOriginalEnd.AutoSize = true;
-            lblCoOriginalEnd.Location = new Point(340, 378);
+            lblCoOriginalEnd.Location = new Point(415, 515);
             lblCoOriginalEnd.Name = "lblCoOriginalEnd";
             lblCoOriginalEnd.Text = "Target end date now: -";
             // 
             // lblCoRevisedEnd
             // 
             lblCoRevisedEnd.AutoSize = true;
-            lblCoRevisedEnd.Location = new Point(340, 402);
+            lblCoRevisedEnd.Location = new Point(415, 547);
             lblCoRevisedEnd.Name = "lblCoRevisedEnd";
             lblCoRevisedEnd.Text = "Revised end date: -";
             // 
@@ -381,7 +382,7 @@ namespace Company.OfficeApp.Pages.Receipts
             Controls.Add(lblCoOriginalEnd);
             Controls.Add(lblCoRevisedEnd);
             Name = "ChangeOrdersTab";
-            Size = new Size(960, 650);
+            Size = new Size(1152, 890);
             Load += ChangeOrdersTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvChangeOrders).EndInit();
             ((System.ComponentModel.ISupportInitialize)numCoCostChange).EndInit();

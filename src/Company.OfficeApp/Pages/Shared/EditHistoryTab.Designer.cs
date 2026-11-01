@@ -41,15 +41,15 @@ namespace Company.OfficeApp.Pages.Shared
             // lblHistFrom
             // 
             lblHistFrom.AutoSize = true;
-            lblHistFrom.Location = new Point(12, 15);
+            lblHistFrom.Location = new Point(38, 36);
             lblHistFrom.Name = "lblHistFrom";
             lblHistFrom.Text = "From";
             // 
             // dtpHistFrom
             // 
-            dtpHistFrom.Location = new Point(52, 12);
+            dtpHistFrom.Location = new Point(84, 32);
             dtpHistFrom.Name = "dtpHistFrom";
-            dtpHistFrom.Size = new Size(120, 23);
+            dtpHistFrom.Size = new Size(138, 23);
             dtpHistFrom.Format = DateTimePickerFormat.Short;
             dtpHistFrom.TabIndex = 0;
             dtpHistFrom.ValueChanged += Filter_Changed;
@@ -57,15 +57,15 @@ namespace Company.OfficeApp.Pages.Shared
             // lblHistTo
             // 
             lblHistTo.AutoSize = true;
-            lblHistTo.Location = new Point(184, 15);
+            lblHistTo.Location = new Point(236, 36);
             lblHistTo.Name = "lblHistTo";
             lblHistTo.Text = "To";
             // 
             // dtpHistTo
             // 
-            dtpHistTo.Location = new Point(210, 12);
+            dtpHistTo.Location = new Point(265, 32);
             dtpHistTo.Name = "dtpHistTo";
-            dtpHistTo.Size = new Size(120, 23);
+            dtpHistTo.Size = new Size(138, 23);
             dtpHistTo.Format = DateTimePickerFormat.Short;
             dtpHistTo.TabIndex = 1;
             dtpHistTo.ValueChanged += Filter_Changed;
@@ -73,15 +73,15 @@ namespace Company.OfficeApp.Pages.Shared
             // lblHistUser
             // 
             lblHistUser.AutoSize = true;
-            lblHistUser.Location = new Point(344, 15);
+            lblHistUser.Location = new Point(420, 36);
             lblHistUser.Name = "lblHistUser";
             lblHistUser.Text = "Person";
             // 
             // cboHistUser
             // 
-            cboHistUser.Location = new Point(394, 12);
+            cboHistUser.Location = new Point(477, 32);
             cboHistUser.Name = "cboHistUser";
-            cboHistUser.Size = new Size(180, 23);
+            cboHistUser.Size = new Size(207, 23);
             cboHistUser.DropDownStyle = ComboBoxStyle.DropDownList;
             cboHistUser.TabIndex = 2;
             cboHistUser.SelectedIndexChanged += Filter_Changed;
@@ -89,15 +89,15 @@ namespace Company.OfficeApp.Pages.Shared
             // lblHistSearch
             // 
             lblHistSearch.AutoSize = true;
-            lblHistSearch.Location = new Point(588, 15);
+            lblHistSearch.Location = new Point(700, 36);
             lblHistSearch.Name = "lblHistSearch";
             lblHistSearch.Text = "Search record";
             // 
             // txtHistSearch
             // 
-            txtHistSearch.Location = new Point(676, 12);
+            txtHistSearch.Location = new Point(801, 32);
             txtHistSearch.Name = "txtHistSearch";
-            txtHistSearch.Size = new Size(160, 23);
+            txtHistSearch.Size = new Size(184, 23);
             txtHistSearch.TabIndex = 3;
             // 
             // dgvEditHistory
@@ -110,23 +110,23 @@ namespace Company.OfficeApp.Pages.Shared
             dgvEditHistory.ReadOnly = true;
             dgvEditHistory.RowHeadersVisible = false;
             dgvEditHistory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEditHistory.Location = new Point(12, 44);
+            dgvEditHistory.Location = new Point(38, 74);
             dgvEditHistory.Name = "dgvEditHistory";
-            dgvEditHistory.Size = new Size(930, 420);
+            dgvEditHistory.Size = new Size(1070, 554);
             dgvEditHistory.TabIndex = 4;
             // 
             // lblHistCount
             // 
             lblHistCount.AutoSize = true;
-            lblHistCount.Location = new Point(12, 476);
+            lblHistCount.Location = new Point(38, 644);
             lblHistCount.Name = "lblHistCount";
             lblHistCount.Text = "0 changes";
             // 
             // btnExportHistory
             // 
-            btnExportHistory.Location = new Point(852, 472);
+            btnExportHistory.Location = new Point(1004, 639);
             btnExportHistory.Name = "btnExportHistory";
-            btnExportHistory.Size = new Size(90, 28);
+            btnExportHistory.Size = new Size(103, 36);
             btnExportHistory.Text = "Export";
             btnExportHistory.TabIndex = 5;
             btnExportHistory.Click += btnExportHistory_Click;
@@ -191,7 +191,7 @@ namespace Company.OfficeApp.Pages.Shared
             Controls.Add(lblHistCount);
             Controls.Add(btnExportHistory);
             Name = "EditHistoryTab";
-            Size = new Size(960, 520);
+            Size = new Size(1152, 718);
             Load += EditHistoryTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvEditHistory).EndInit();
             ResumeLayout(false);

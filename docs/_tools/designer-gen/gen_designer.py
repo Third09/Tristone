@@ -5,6 +5,7 @@ The output is normal designer code: Visual Studio's designer opens and edits it 
 Usage:  python gen_designer.py <spec.py> <output .Designer.cs>
 A spec file defines: NAMESPACE, CLASS, SIZE, CONTROLS, GRID_COLUMNS, EVENTS, LOAD_EVENT (and FORM = True for a pop-up window).
 A control can sit inside a Panel with {"PARENT": "pnlName"} in its extras.
+ROOMY = True in a spec spreads the screen out (owner request 2026-11-01, "fix the spacings"): see roomy() below.
 """
 import runpy
 import sys
@@ -18,6 +19,34 @@ def T(s):
 DDL = {"DropDownStyle": "ComboBoxStyle.DropDownList"}
 TB = "DataGridViewTextBoxColumn"
 NEEDS_INIT = ("DataGridView", "NumericUpDown", "PictureBox")
+
+
+# ---- ROOMY layout: the same screen with more space, taller buttons and bigger section titles ----
+SX, SY = 1.15, 1.32            # more room across and down
+OX, OY = 24, 16                # a margin around the page (top-level controls only)
+TALL = ("DataGridView", "PictureBox", "Panel", "ListBox", "CheckedListBox", "TreeView", "TabControl")
+TITLES = ("lblFormMode",)      # section titles get a bigger font
+SECTION_FONT = 'new Font("Segoe UI Semibold", 11.5F)'
+
+
+def roomy(size, controls):
+    out = []
+    for t, n, x, y, cw, ch, extras in controls:
+        nested = "PARENT" in extras
+        x2 = round(x * SX) + (0 if nested else OX)
+        y2 = round(y * SY) + (0 if nested else OY)
+        if cw is not None:
+            cw = round(cw * SX)
+            multiline = extras.get("Multiline") == "true"
+            if t == "Button":
+                ch = max(36, ch)
+            elif t in TALL or multiline or t.endswith("Card"):
+                ch = round(ch * SY)
+        extras = dict(extras)
+        if t == "Label" and (n in TITLES or n.endswith("Title")) and "Font" not in extras:
+            extras["Font"] = SECTION_FONT
+        out.append((t, n, x2, y2, cw, ch, extras))
+    return (round(size[0] * SX) + 2 * OX, round(size[1] * SY) + 2 * OY), out
 
 
 def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_form=False):
@@ -141,7 +170,10 @@ def generate(ns, cls, size, controls, grid_columns, events, load_event=None, is_
 
 if __name__ == "__main__":
     spec = runpy.run_path(sys.argv[1], init_globals={"T": T, "DDL": DDL, "TB": TB})
-    code = generate(spec["NAMESPACE"], spec["CLASS"], spec["SIZE"], spec["CONTROLS"],
+    size, controls = spec["SIZE"], spec["CONTROLS"]
+    if spec.get("ROOMY"):
+        size, controls = roomy(size, controls)
+    code = generate(spec["NAMESPACE"], spec["CLASS"], size, controls,
                     spec.get("GRID_COLUMNS", {}), spec.get("EVENTS", {}), spec.get("LOAD_EVENT"), spec.get("FORM", False))
     with open(sys.argv[2], "w", encoding="utf-8") as f:
         f.write(code)

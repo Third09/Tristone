@@ -38,29 +38,29 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPayslipSearch
             // 
             lblPayslipSearch.AutoSize = true;
-            lblPayslipSearch.Location = new Point(12, 15);
+            lblPayslipSearch.Location = new Point(38, 36);
             lblPayslipSearch.Name = "lblPayslipSearch";
             lblPayslipSearch.Text = "Search";
             // 
             // txtPayslipSearch
             // 
-            txtPayslipSearch.Location = new Point(62, 12);
+            txtPayslipSearch.Location = new Point(95, 32);
             txtPayslipSearch.Name = "txtPayslipSearch";
-            txtPayslipSearch.Size = new Size(200, 23);
+            txtPayslipSearch.Size = new Size(230, 23);
             txtPayslipSearch.TabIndex = 0;
             // 
             // lblPayslipPeriod
             // 
             lblPayslipPeriod.AutoSize = true;
-            lblPayslipPeriod.Location = new Point(274, 15);
+            lblPayslipPeriod.Location = new Point(339, 36);
             lblPayslipPeriod.Name = "lblPayslipPeriod";
             lblPayslipPeriod.Text = "Payroll";
             // 
             // cboPayslipPeriod
             // 
-            cboPayslipPeriod.Location = new Point(330, 12);
+            cboPayslipPeriod.Location = new Point(403, 32);
             cboPayslipPeriod.Name = "cboPayslipPeriod";
-            cboPayslipPeriod.Size = new Size(400, 23);
+            cboPayslipPeriod.Size = new Size(460, 23);
             cboPayslipPeriod.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPayslipPeriod.TabIndex = 1;
             cboPayslipPeriod.SelectedIndexChanged += Filter_Changed;
@@ -75,36 +75,36 @@ namespace Company.OfficeApp.Pages.Hr
             dgvPayslipHistory.ReadOnly = true;
             dgvPayslipHistory.RowHeadersVisible = false;
             dgvPayslipHistory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPayslipHistory.Location = new Point(12, 44);
+            dgvPayslipHistory.Location = new Point(38, 74);
             dgvPayslipHistory.Name = "dgvPayslipHistory";
-            dgvPayslipHistory.Size = new Size(930, 380);
+            dgvPayslipHistory.Size = new Size(1070, 502);
             dgvPayslipHistory.TabIndex = 2;
             dgvPayslipHistory.SelectionChanged += dgvPayslipHistory_SelectionChanged;
             dgvPayslipHistory.CellDoubleClick += dgvPayslipHistory_CellDoubleClick;
             // 
             // btnViewPayslip
             // 
-            btnViewPayslip.Location = new Point(12, 432);
+            btnViewPayslip.Location = new Point(38, 586);
             btnViewPayslip.Name = "btnViewPayslip";
-            btnViewPayslip.Size = new Size(80, 28);
+            btnViewPayslip.Size = new Size(92, 36);
             btnViewPayslip.Text = "View";
             btnViewPayslip.TabIndex = 3;
             btnViewPayslip.Click += btnViewPayslip_Click;
             // 
             // btnPrintPayslip
             // 
-            btnPrintPayslip.Location = new Point(98, 432);
+            btnPrintPayslip.Location = new Point(137, 586);
             btnPrintPayslip.Name = "btnPrintPayslip";
-            btnPrintPayslip.Size = new Size(80, 28);
+            btnPrintPayslip.Size = new Size(92, 36);
             btnPrintPayslip.Text = "Print";
             btnPrintPayslip.TabIndex = 4;
             btnPrintPayslip.Click += btnPrintPayslip_Click;
             // 
             // btnSavePayslipPdf
             // 
-            btnSavePayslipPdf.Location = new Point(184, 432);
+            btnSavePayslipPdf.Location = new Point(236, 586);
             btnSavePayslipPdf.Name = "btnSavePayslipPdf";
-            btnSavePayslipPdf.Size = new Size(110, 28);
+            btnSavePayslipPdf.Size = new Size(126, 36);
             btnSavePayslipPdf.Text = "Save as PDF";
             btnSavePayslipPdf.TabIndex = 5;
             btnSavePayslipPdf.Click += btnSavePayslipPdf_Click;
@@ -112,7 +112,7 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPayslipMsg
             // 
             lblPayslipMsg.AutoSize = true;
-            lblPayslipMsg.Location = new Point(12, 468);
+            lblPayslipMsg.Location = new Point(38, 634);
             lblPayslipMsg.Name = "lblPayslipMsg";
             lblPayslipMsg.MaximumSize = new Size(930, 0);
             // 
@@ -170,7 +170,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(btnSavePayslipPdf);
             Controls.Add(lblPayslipMsg);
             Name = "PayslipHistoryTab";
-            Size = new Size(960, 520);
+            Size = new Size(1152, 718);
             Load += PayslipHistoryTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvPayslipHistory).EndInit();
             ResumeLayout(false);

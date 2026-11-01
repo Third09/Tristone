@@ -30,60 +30,60 @@ namespace Company.WebsiteAdmin.Pages
             // lblChooseProject
             // 
             lblChooseProject.AutoSize = true;
-            lblChooseProject.Location = new Point(12, 12);
+            lblChooseProject.Location = new Point(38, 32);
             lblChooseProject.Name = "lblChooseProject";
             lblChooseProject.Text = "Project (from the office Projects list, ticked \"Show on website\")";
             // 
             // cboProjectChoice
             // 
-            cboProjectChoice.Location = new Point(12, 32);
+            cboProjectChoice.Location = new Point(38, 58);
             cboProjectChoice.Name = "cboProjectChoice";
-            cboProjectChoice.Size = new Size(436, 23);
+            cboProjectChoice.Size = new Size(501, 23);
             cboProjectChoice.DropDownStyle = ComboBoxStyle.DropDownList;
             cboProjectChoice.TabIndex = 0;
             // 
             // lblNewProjectDesc
             // 
             lblNewProjectDesc.AutoSize = true;
-            lblNewProjectDesc.Location = new Point(12, 66);
+            lblNewProjectDesc.Location = new Point(38, 103);
             lblNewProjectDesc.Name = "lblNewProjectDesc";
             lblNewProjectDesc.Text = "Project short description";
             // 
             // lblNewProjectDescCount
             // 
             lblNewProjectDescCount.AutoSize = true;
-            lblNewProjectDescCount.Location = new Point(396, 66);
+            lblNewProjectDescCount.Location = new Point(479, 103);
             lblNewProjectDescCount.Name = "lblNewProjectDescCount";
             lblNewProjectDescCount.Text = "0/100";
             // 
             // txtNewProjectDesc
             // 
-            txtNewProjectDesc.Location = new Point(12, 84);
+            txtNewProjectDesc.Location = new Point(38, 127);
             txtNewProjectDesc.Name = "txtNewProjectDesc";
-            txtNewProjectDesc.Size = new Size(436, 23);
+            txtNewProjectDesc.Size = new Size(501, 23);
             txtNewProjectDesc.TabIndex = 1;
             // 
             // lblAddProjectMsg
             // 
             lblAddProjectMsg.AutoSize = true;
-            lblAddProjectMsg.Location = new Point(12, 116);
+            lblAddProjectMsg.Location = new Point(38, 169);
             lblAddProjectMsg.Name = "lblAddProjectMsg";
             lblAddProjectMsg.MaximumSize = new Size(436, 0);
             // 
             // btnAddProjectOk
             // 
-            btnAddProjectOk.Location = new Point(262, 190);
+            btnAddProjectOk.Location = new Point(325, 267);
             btnAddProjectOk.Name = "btnAddProjectOk";
-            btnAddProjectOk.Size = new Size(90, 28);
+            btnAddProjectOk.Size = new Size(103, 36);
             btnAddProjectOk.Text = "Add";
             btnAddProjectOk.TabIndex = 2;
             btnAddProjectOk.Click += btnAddProjectOk_Click;
             // 
             // btnCancelAddProject
             // 
-            btnCancelAddProject.Location = new Point(358, 190);
+            btnCancelAddProject.Location = new Point(436, 267);
             btnCancelAddProject.Name = "btnCancelAddProject";
-            btnCancelAddProject.Size = new Size(90, 28);
+            btnCancelAddProject.Size = new Size(103, 36);
             btnCancelAddProject.Text = "Cancel";
             btnCancelAddProject.DialogResult = DialogResult.Cancel;
             btnCancelAddProject.TabIndex = 3;
@@ -92,7 +92,7 @@ namespace Company.WebsiteAdmin.Pages
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(460, 230);
+            ClientSize = new Size(577, 336);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

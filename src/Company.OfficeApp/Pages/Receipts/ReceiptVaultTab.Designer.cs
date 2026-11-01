@@ -56,15 +56,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptProject
             // 
             lblReceiptProject.AutoSize = true;
-            lblReceiptProject.Location = new Point(12, 15);
+            lblReceiptProject.Location = new Point(38, 36);
             lblReceiptProject.Name = "lblReceiptProject";
             lblReceiptProject.Text = "Project";
             // 
             // cboReceiptProject
             // 
-            cboReceiptProject.Location = new Point(80, 12);
+            cboReceiptProject.Location = new Point(116, 32);
             cboReceiptProject.Name = "cboReceiptProject";
-            cboReceiptProject.Size = new Size(220, 23);
+            cboReceiptProject.Size = new Size(253, 23);
             cboReceiptProject.DropDownStyle = ComboBoxStyle.DropDownList;
             cboReceiptProject.TabIndex = 0;
             cboReceiptProject.SelectedIndexChanged += Filter_Changed;
@@ -72,15 +72,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptFrom
             // 
             lblReceiptFrom.AutoSize = true;
-            lblReceiptFrom.Location = new Point(312, 15);
+            lblReceiptFrom.Location = new Point(383, 36);
             lblReceiptFrom.Name = "lblReceiptFrom";
             lblReceiptFrom.Text = "From";
             // 
             // dtpReceiptFrom
             // 
-            dtpReceiptFrom.Location = new Point(352, 12);
+            dtpReceiptFrom.Location = new Point(429, 32);
             dtpReceiptFrom.Name = "dtpReceiptFrom";
-            dtpReceiptFrom.Size = new Size(115, 23);
+            dtpReceiptFrom.Size = new Size(132, 23);
             dtpReceiptFrom.Format = DateTimePickerFormat.Short;
             dtpReceiptFrom.TabIndex = 1;
             dtpReceiptFrom.ValueChanged += Filter_Changed;
@@ -88,15 +88,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptTo
             // 
             lblReceiptTo.AutoSize = true;
-            lblReceiptTo.Location = new Point(477, 15);
+            lblReceiptTo.Location = new Point(573, 36);
             lblReceiptTo.Name = "lblReceiptTo";
             lblReceiptTo.Text = "To";
             // 
             // dtpReceiptTo
             // 
-            dtpReceiptTo.Location = new Point(503, 12);
+            dtpReceiptTo.Location = new Point(602, 32);
             dtpReceiptTo.Name = "dtpReceiptTo";
-            dtpReceiptTo.Size = new Size(115, 23);
+            dtpReceiptTo.Size = new Size(132, 23);
             dtpReceiptTo.Format = DateTimePickerFormat.Short;
             dtpReceiptTo.TabIndex = 2;
             dtpReceiptTo.ValueChanged += Filter_Changed;
@@ -104,15 +104,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptCategory
             // 
             lblReceiptCategory.AutoSize = true;
-            lblReceiptCategory.Location = new Point(12, 45);
+            lblReceiptCategory.Location = new Point(38, 75);
             lblReceiptCategory.Name = "lblReceiptCategory";
             lblReceiptCategory.Text = "Category";
             // 
             // cboReceiptCategoryFilter
             // 
-            cboReceiptCategoryFilter.Location = new Point(80, 42);
+            cboReceiptCategoryFilter.Location = new Point(116, 71);
             cboReceiptCategoryFilter.Name = "cboReceiptCategoryFilter";
-            cboReceiptCategoryFilter.Size = new Size(150, 23);
+            cboReceiptCategoryFilter.Size = new Size(172, 23);
             cboReceiptCategoryFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboReceiptCategoryFilter.TabIndex = 3;
             cboReceiptCategoryFilter.SelectedIndexChanged += Filter_Changed;
@@ -120,15 +120,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptStatus
             // 
             lblReceiptStatus.AutoSize = true;
-            lblReceiptStatus.Location = new Point(242, 45);
+            lblReceiptStatus.Location = new Point(302, 75);
             lblReceiptStatus.Name = "lblReceiptStatus";
             lblReceiptStatus.Text = "Status";
             // 
             // cboReceiptStatusFilter
             // 
-            cboReceiptStatusFilter.Location = new Point(290, 42);
+            cboReceiptStatusFilter.Location = new Point(358, 71);
             cboReceiptStatusFilter.Name = "cboReceiptStatusFilter";
-            cboReceiptStatusFilter.Size = new Size(140, 23);
+            cboReceiptStatusFilter.Size = new Size(161, 23);
             cboReceiptStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboReceiptStatusFilter.TabIndex = 4;
             cboReceiptStatusFilter.SelectedIndexChanged += Filter_Changed;
@@ -136,15 +136,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptSearch
             // 
             lblReceiptSearch.AutoSize = true;
-            lblReceiptSearch.Location = new Point(442, 45);
+            lblReceiptSearch.Location = new Point(532, 75);
             lblReceiptSearch.Name = "lblReceiptSearch";
             lblReceiptSearch.Text = "Search";
             // 
             // txtReceiptSearch
             // 
-            txtReceiptSearch.Location = new Point(492, 42);
+            txtReceiptSearch.Location = new Point(590, 71);
             txtReceiptSearch.Name = "txtReceiptSearch";
-            txtReceiptSearch.Size = new Size(200, 23);
+            txtReceiptSearch.Size = new Size(230, 23);
             txtReceiptSearch.TabIndex = 5;
             // 
             // dgvReceipts
@@ -157,9 +157,9 @@ namespace Company.OfficeApp.Pages.Receipts
             dgvReceipts.ReadOnly = true;
             dgvReceipts.RowHeadersVisible = false;
             dgvReceipts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvReceipts.Location = new Point(12, 74);
+            dgvReceipts.Location = new Point(38, 114);
             dgvReceipts.Name = "dgvReceipts";
-            dgvReceipts.Size = new Size(930, 320);
+            dgvReceipts.Size = new Size(1070, 422);
             dgvReceipts.MultiSelect = true;
             dgvReceipts.TabIndex = 6;
             dgvReceipts.SelectionChanged += dgvReceipts_SelectionChanged;
@@ -168,69 +168,69 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptsTotal
             // 
             lblReceiptsTotal.AutoSize = true;
-            lblReceiptsTotal.Location = new Point(12, 402);
+            lblReceiptsTotal.Location = new Point(38, 547);
             lblReceiptsTotal.Name = "lblReceiptsTotal";
             lblReceiptsTotal.Text = "";
             // 
             // btnAddReceipt
             // 
-            btnAddReceipt.Location = new Point(12, 426);
+            btnAddReceipt.Location = new Point(38, 578);
             btnAddReceipt.Name = "btnAddReceipt";
-            btnAddReceipt.Size = new Size(100, 28);
+            btnAddReceipt.Size = new Size(115, 36);
             btnAddReceipt.Text = "Add Receipt";
             btnAddReceipt.TabIndex = 7;
             btnAddReceipt.Click += btnAddReceipt_Click;
             // 
             // btnOpenReceipt
             // 
-            btnOpenReceipt.Location = new Point(118, 426);
+            btnOpenReceipt.Location = new Point(160, 578);
             btnOpenReceipt.Name = "btnOpenReceipt";
-            btnOpenReceipt.Size = new Size(70, 28);
+            btnOpenReceipt.Size = new Size(80, 36);
             btnOpenReceipt.Text = "Open";
             btnOpenReceipt.TabIndex = 8;
             btnOpenReceipt.Click += btnOpenReceipt_Click;
             // 
             // btnEditReceipt
             // 
-            btnEditReceipt.Location = new Point(194, 426);
+            btnEditReceipt.Location = new Point(247, 578);
             btnEditReceipt.Name = "btnEditReceipt";
-            btnEditReceipt.Size = new Size(70, 28);
+            btnEditReceipt.Size = new Size(80, 36);
             btnEditReceipt.Text = "Edit";
             btnEditReceipt.TabIndex = 9;
             btnEditReceipt.Click += btnEditReceipt_Click;
             // 
             // btnApproveReceipt
             // 
-            btnApproveReceipt.Location = new Point(270, 426);
+            btnApproveReceipt.Location = new Point(334, 578);
             btnApproveReceipt.Name = "btnApproveReceipt";
-            btnApproveReceipt.Size = new Size(80, 28);
+            btnApproveReceipt.Size = new Size(92, 36);
             btnApproveReceipt.Text = "Approve";
             btnApproveReceipt.TabIndex = 10;
             btnApproveReceipt.Click += btnApproveReceipt_Click;
             // 
             // btnRejectReceipt
             // 
-            btnRejectReceipt.Location = new Point(356, 426);
+            btnRejectReceipt.Location = new Point(433, 578);
             btnRejectReceipt.Name = "btnRejectReceipt";
-            btnRejectReceipt.Size = new Size(70, 28);
+            btnRejectReceipt.Size = new Size(80, 36);
             btnRejectReceipt.Text = "Reject";
             btnRejectReceipt.TabIndex = 11;
             btnRejectReceipt.Click += btnRejectReceipt_Click;
             // 
             // btnPrintSelectedReceipts
             // 
-            btnPrintSelectedReceipts.Location = new Point(432, 426);
+            btnPrintSelectedReceipts.Location = new Point(521, 578);
             btnPrintSelectedReceipts.Name = "btnPrintSelectedReceipts";
-            btnPrintSelectedReceipts.Size = new Size(110, 28);
+            btnPrintSelectedReceipts.Size = new Size(126, 36);
             btnPrintSelectedReceipts.Text = "Print Selected";
             btnPrintSelectedReceipts.TabIndex = 12;
             btnPrintSelectedReceipts.Click += btnPrintSelectedReceipts_Click;
             // 
             // btnExportReceipts
             // 
-            btnExportReceipts.Location = new Point(548, 426);
+            btnExportReceipts.Location = new Point(654, 578);
             btnExportReceipts.Name = "btnExportReceipts";
-            btnExportReceipts.Size = new Size(80, 28);
+            btnExportReceipts.Size = new Size(92, 36);
             btnExportReceipts.Text = "Export";
             btnExportReceipts.TabIndex = 13;
             btnExportReceipts.Click += btnExportReceipts_Click;
@@ -238,14 +238,14 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(12, 462);
+            lblApproverNote.Location = new Point(38, 626);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "The Receipts Supervisor approves receipts.";
             // 
             // lblVaultMsg
             // 
             lblVaultMsg.AutoSize = true;
-            lblVaultMsg.Location = new Point(12, 486);
+            lblVaultMsg.Location = new Point(38, 658);
             lblVaultMsg.Name = "lblVaultMsg";
             // 
             // colReceiptNo
@@ -339,7 +339,7 @@ namespace Company.OfficeApp.Pages.Receipts
             Controls.Add(lblApproverNote);
             Controls.Add(lblVaultMsg);
             Name = "ReceiptVaultTab";
-            Size = new Size(960, 540);
+            Size = new Size(1152, 745);
             Load += ReceiptVaultTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvReceipts).EndInit();
             ResumeLayout(false);

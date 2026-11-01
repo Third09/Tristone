@@ -2,6 +2,7 @@
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "FixScanForm"
 FORM = True
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (420, 340)
 LOAD_EVENT = "FixScanForm_Load"
 TIME = {"Format": "DateTimePickerFormat.Custom", "CustomFormat": T("h:mm tt"), "ShowUpDown": "true", "ShowCheckBox": "true"}

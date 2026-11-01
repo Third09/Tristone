@@ -59,22 +59,23 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblRecordTitle
             // 
             lblRecordTitle.AutoSize = true;
-            lblRecordTitle.Location = new Point(12, 12);
+            lblRecordTitle.Location = new Point(38, 32);
             lblRecordTitle.Name = "lblRecordTitle";
             lblRecordTitle.Text = "Record a delivery (stock goes up; no approval needed)";
+            lblRecordTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblDeliveryPurchase
             // 
             lblDeliveryPurchase.AutoSize = true;
-            lblDeliveryPurchase.Location = new Point(12, 36);
+            lblDeliveryPurchase.Location = new Point(38, 64);
             lblDeliveryPurchase.Name = "lblDeliveryPurchase";
             lblDeliveryPurchase.Text = "Approved purchase (fills in vendor, material and price)";
             // 
             // cboDeliveryPurchase
             // 
-            cboDeliveryPurchase.Location = new Point(12, 54);
+            cboDeliveryPurchase.Location = new Point(38, 87);
             cboDeliveryPurchase.Name = "cboDeliveryPurchase";
-            cboDeliveryPurchase.Size = new Size(460, 23);
+            cboDeliveryPurchase.Size = new Size(529, 23);
             cboDeliveryPurchase.DropDownStyle = ComboBoxStyle.DropDownList;
             cboDeliveryPurchase.TabIndex = 0;
             cboDeliveryPurchase.SelectedIndexChanged += cboDeliveryPurchase_SelectedIndexChanged;
@@ -82,45 +83,45 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblDeliveryVendor
             // 
             lblDeliveryVendor.AutoSize = true;
-            lblDeliveryVendor.Location = new Point(12, 84);
+            lblDeliveryVendor.Location = new Point(38, 127);
             lblDeliveryVendor.Name = "lblDeliveryVendor";
             lblDeliveryVendor.Text = "Vendor";
             // 
             // cboDeliveryVendor
             // 
-            cboDeliveryVendor.Location = new Point(12, 102);
+            cboDeliveryVendor.Location = new Point(38, 151);
             cboDeliveryVendor.Name = "cboDeliveryVendor";
-            cboDeliveryVendor.Size = new Size(220, 23);
+            cboDeliveryVendor.Size = new Size(253, 23);
             cboDeliveryVendor.DropDownStyle = ComboBoxStyle.DropDownList;
             cboDeliveryVendor.TabIndex = 1;
             // 
             // lblDeliveryMaterial
             // 
             lblDeliveryMaterial.AutoSize = true;
-            lblDeliveryMaterial.Location = new Point(244, 84);
+            lblDeliveryMaterial.Location = new Point(305, 127);
             lblDeliveryMaterial.Name = "lblDeliveryMaterial";
             lblDeliveryMaterial.Text = "Material";
             // 
             // cboDeliveryMaterial
             // 
-            cboDeliveryMaterial.Location = new Point(244, 102);
+            cboDeliveryMaterial.Location = new Point(305, 151);
             cboDeliveryMaterial.Name = "cboDeliveryMaterial";
-            cboDeliveryMaterial.Size = new Size(228, 23);
+            cboDeliveryMaterial.Size = new Size(262, 23);
             cboDeliveryMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
             cboDeliveryMaterial.TabIndex = 2;
             // 
             // lblDeliveryQty
             // 
             lblDeliveryQty.AutoSize = true;
-            lblDeliveryQty.Location = new Point(12, 132);
+            lblDeliveryQty.Location = new Point(38, 190);
             lblDeliveryQty.Name = "lblDeliveryQty";
             lblDeliveryQty.Text = "Quantity received";
             // 
             // numDeliveryQty
             // 
-            numDeliveryQty.Location = new Point(12, 150);
+            numDeliveryQty.Location = new Point(38, 214);
             numDeliveryQty.Name = "numDeliveryQty";
-            numDeliveryQty.Size = new Size(120, 23);
+            numDeliveryQty.Size = new Size(138, 23);
             numDeliveryQty.DecimalPlaces = 2;
             numDeliveryQty.ThousandsSeparator = true;
             numDeliveryQty.Maximum = 999999999m;
@@ -129,15 +130,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblDeliveryPrice
             // 
             lblDeliveryPrice.AutoSize = true;
-            lblDeliveryPrice.Location = new Point(144, 132);
+            lblDeliveryPrice.Location = new Point(190, 190);
             lblDeliveryPrice.Name = "lblDeliveryPrice";
             lblDeliveryPrice.Text = "Unit price on receipt";
             // 
             // numDeliveryPrice
             // 
-            numDeliveryPrice.Location = new Point(144, 150);
+            numDeliveryPrice.Location = new Point(190, 214);
             numDeliveryPrice.Name = "numDeliveryPrice";
-            numDeliveryPrice.Size = new Size(120, 23);
+            numDeliveryPrice.Size = new Size(138, 23);
             numDeliveryPrice.DecimalPlaces = 2;
             numDeliveryPrice.ThousandsSeparator = true;
             numDeliveryPrice.Maximum = 999999999m;
@@ -146,44 +147,45 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblDeliveryDate
             // 
             lblDeliveryDate.AutoSize = true;
-            lblDeliveryDate.Location = new Point(276, 132);
+            lblDeliveryDate.Location = new Point(341, 190);
             lblDeliveryDate.Name = "lblDeliveryDate";
             lblDeliveryDate.Text = "Date received";
             // 
             // dtpDeliveryDate
             // 
-            dtpDeliveryDate.Location = new Point(276, 150);
+            dtpDeliveryDate.Location = new Point(341, 214);
             dtpDeliveryDate.Name = "dtpDeliveryDate";
-            dtpDeliveryDate.Size = new Size(120, 23);
+            dtpDeliveryDate.Size = new Size(138, 23);
             dtpDeliveryDate.Format = DateTimePickerFormat.Short;
             dtpDeliveryDate.TabIndex = 5;
             // 
             // lblReceiptTitle
             // 
             lblReceiptTitle.AutoSize = true;
-            lblReceiptTitle.Location = new Point(500, 36);
+            lblReceiptTitle.Location = new Point(599, 64);
             lblReceiptTitle.Name = "lblReceiptTitle";
             lblReceiptTitle.Text = "Receipt";
+            lblReceiptTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblDeliveryReceiptNo
             // 
             lblDeliveryReceiptNo.AutoSize = true;
-            lblDeliveryReceiptNo.Location = new Point(500, 56);
+            lblDeliveryReceiptNo.Location = new Point(599, 90);
             lblDeliveryReceiptNo.Name = "lblDeliveryReceiptNo";
             lblDeliveryReceiptNo.Text = "Receipt number";
             // 
             // txtDeliveryReceiptNo
             // 
-            txtDeliveryReceiptNo.Location = new Point(500, 74);
+            txtDeliveryReceiptNo.Location = new Point(599, 114);
             txtDeliveryReceiptNo.Name = "txtDeliveryReceiptNo";
-            txtDeliveryReceiptNo.Size = new Size(200, 23);
+            txtDeliveryReceiptNo.Size = new Size(230, 23);
             txtDeliveryReceiptNo.TabIndex = 6;
             // 
             // btnAttachDeliveryReceipt
             // 
-            btnAttachDeliveryReceipt.Location = new Point(500, 102);
+            btnAttachDeliveryReceipt.Location = new Point(599, 151);
             btnAttachDeliveryReceipt.Name = "btnAttachDeliveryReceipt";
-            btnAttachDeliveryReceipt.Size = new Size(120, 28);
+            btnAttachDeliveryReceipt.Size = new Size(138, 36);
             btnAttachDeliveryReceipt.Text = "Attach Scan";
             btnAttachDeliveryReceipt.TabIndex = 7;
             btnAttachDeliveryReceipt.Click += btnAttachDeliveryReceipt_Click;
@@ -191,14 +193,14 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblDeliveryReceiptFile
             // 
             lblDeliveryReceiptFile.AutoSize = true;
-            lblDeliveryReceiptFile.Location = new Point(628, 108);
+            lblDeliveryReceiptFile.Location = new Point(746, 159);
             lblDeliveryReceiptFile.Name = "lblDeliveryReceiptFile";
             lblDeliveryReceiptFile.Text = "No file attached";
             // 
             // chkDeliveryPhysicalOnly
             // 
             chkDeliveryPhysicalOnly.AutoSize = true;
-            chkDeliveryPhysicalOnly.Location = new Point(500, 138);
+            chkDeliveryPhysicalOnly.Location = new Point(599, 198);
             chkDeliveryPhysicalOnly.Name = "chkDeliveryPhysicalOnly";
             chkDeliveryPhysicalOnly.Text = "Physical copy only (no scan)";
             chkDeliveryPhysicalOnly.TabIndex = 8;
@@ -207,37 +209,37 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblDeliveryFiledAt
             // 
             lblDeliveryFiledAt.AutoSize = true;
-            lblDeliveryFiledAt.Location = new Point(500, 162);
+            lblDeliveryFiledAt.Location = new Point(599, 230);
             lblDeliveryFiledAt.Name = "lblDeliveryFiledAt";
             lblDeliveryFiledAt.Text = "Where the paper copy is filed (e.g. Folder B, Oct 2026)";
             // 
             // txtDeliveryFiledAt
             // 
-            txtDeliveryFiledAt.Location = new Point(500, 180);
+            txtDeliveryFiledAt.Location = new Point(599, 254);
             txtDeliveryFiledAt.Name = "txtDeliveryFiledAt";
-            txtDeliveryFiledAt.Size = new Size(300, 23);
+            txtDeliveryFiledAt.Size = new Size(345, 23);
             txtDeliveryFiledAt.TabIndex = 9;
             // 
             // lblDeliveryMsg
             // 
             lblDeliveryMsg.AutoSize = true;
-            lblDeliveryMsg.Location = new Point(12, 212);
+            lblDeliveryMsg.Location = new Point(38, 296);
             lblDeliveryMsg.Name = "lblDeliveryMsg";
             // 
             // btnSaveDelivery
             // 
-            btnSaveDelivery.Location = new Point(12, 234);
+            btnSaveDelivery.Location = new Point(38, 325);
             btnSaveDelivery.Name = "btnSaveDelivery";
-            btnSaveDelivery.Size = new Size(120, 28);
+            btnSaveDelivery.Size = new Size(138, 36);
             btnSaveDelivery.Text = "Save Delivery";
             btnSaveDelivery.TabIndex = 10;
             btnSaveDelivery.Click += btnSaveDelivery_Click;
             // 
             // btnCancelDelivery
             // 
-            btnCancelDelivery.Location = new Point(138, 234);
+            btnCancelDelivery.Location = new Point(183, 325);
             btnCancelDelivery.Name = "btnCancelDelivery";
-            btnCancelDelivery.Size = new Size(90, 28);
+            btnCancelDelivery.Size = new Size(103, 36);
             btnCancelDelivery.Text = "Clear";
             btnCancelDelivery.TabIndex = 11;
             btnCancelDelivery.Click += btnCancelDelivery_Click;
@@ -245,7 +247,7 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblDeliveries
             // 
             lblDeliveries.AutoSize = true;
-            lblDeliveries.Location = new Point(12, 280);
+            lblDeliveries.Location = new Point(38, 386);
             lblDeliveries.Name = "lblDeliveries";
             lblDeliveries.Text = "Deliveries";
             // 
@@ -259,17 +261,17 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvDeliveries.ReadOnly = true;
             dgvDeliveries.RowHeadersVisible = false;
             dgvDeliveries.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDeliveries.Location = new Point(12, 300);
+            dgvDeliveries.Location = new Point(38, 412);
             dgvDeliveries.Name = "dgvDeliveries";
-            dgvDeliveries.Size = new Size(930, 260);
+            dgvDeliveries.Size = new Size(1070, 343);
             dgvDeliveries.TabIndex = 12;
             dgvDeliveries.SelectionChanged += dgvDeliveries_SelectionChanged;
             // 
             // btnOpenDeliveryReceipt
             // 
-            btnOpenDeliveryReceipt.Location = new Point(12, 568);
+            btnOpenDeliveryReceipt.Location = new Point(38, 766);
             btnOpenDeliveryReceipt.Name = "btnOpenDeliveryReceipt";
-            btnOpenDeliveryReceipt.Size = new Size(140, 28);
+            btnOpenDeliveryReceipt.Size = new Size(161, 36);
             btnOpenDeliveryReceipt.Text = "Open Receipt Scan";
             btnOpenDeliveryReceipt.TabIndex = 13;
             btnOpenDeliveryReceipt.Click += btnOpenDeliveryReceipt_Click;
@@ -352,7 +354,7 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(dgvDeliveries);
             Controls.Add(btnOpenDeliveryReceipt);
             Name = "DeliveriesTab";
-            Size = new Size(960, 640);
+            Size = new Size(1152, 877);
             Load += DeliveriesTab_Load;
             ((System.ComponentModel.ISupportInitialize)numDeliveryQty).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDeliveryPrice).EndInit();

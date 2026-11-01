@@ -115,6 +115,7 @@ public static class Theme
         {
             case Button b: StyleButton(b); break;
             case DataGridView g: StyleGrid(g); break;
+            case TabControl tabs: StyleTabs(tabs); break;
             case TextBox t:
                 if (t.BorderStyle == BorderStyle.Fixed3D) t.BorderStyle = BorderStyle.FixedSingle;
                 if (!SetByHand(t, "ForeColor")) t.ForeColor = Text;
@@ -312,6 +313,23 @@ public static class Theme
         g.SizeChanged += (_, _) => parent?.Invalidate();
         g.VisibleChanged += (_, _) => parent?.Invalidate();
         Hook();
+    }
+
+    /// <summary>Tabs drawn flat: taller, the open tab in orange with an orange line under it, the others gray.</summary>
+    static void StyleTabs(TabControl t)
+    {
+        t.DrawMode = TabDrawMode.OwnerDrawFixed;
+        t.Padding = new Point(18, 9);
+        t.DrawItem += (_, e) =>
+        {
+            var r = t.GetTabRect(e.Index);
+            bool open = e.Index == t.SelectedIndex;
+            using (var back = new SolidBrush(Page)) e.Graphics.FillRectangle(back, r);
+            using var font = new Font(t.Font, open ? FontStyle.Bold : FontStyle.Regular);
+            TextRenderer.DrawText(e.Graphics, t.TabPages[e.Index].Text, font, r, open ? Orange : TextMuted,
+                                  TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
+            if (open) using (var line = new SolidBrush(Orange)) e.Graphics.FillRectangle(line, r.X + 6, r.Bottom - 3, r.Width - 12, 3);
+        };
     }
 
     /// <summary>A choice button that is "on" (e.g. the open About Us section): light orange with an orange border.</summary>

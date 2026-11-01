@@ -59,29 +59,29 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblSearch
             // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(12, 15);
+            lblSearch.Location = new Point(38, 36);
             lblSearch.Name = "lblSearch";
             lblSearch.Text = "Search";
             // 
             // txtMaterialSearch
             // 
-            txtMaterialSearch.Location = new Point(62, 12);
+            txtMaterialSearch.Location = new Point(95, 32);
             txtMaterialSearch.Name = "txtMaterialSearch";
-            txtMaterialSearch.Size = new Size(180, 23);
+            txtMaterialSearch.Size = new Size(207, 23);
             txtMaterialSearch.TabIndex = 0;
             // 
             // lblCategoryFilter
             // 
             lblCategoryFilter.AutoSize = true;
-            lblCategoryFilter.Location = new Point(256, 15);
+            lblCategoryFilter.Location = new Point(318, 36);
             lblCategoryFilter.Name = "lblCategoryFilter";
             lblCategoryFilter.Text = "Category";
             // 
             // cboMaterialCategoryFilter
             // 
-            cboMaterialCategoryFilter.Location = new Point(318, 12);
+            cboMaterialCategoryFilter.Location = new Point(390, 32);
             cboMaterialCategoryFilter.Name = "cboMaterialCategoryFilter";
-            cboMaterialCategoryFilter.Size = new Size(140, 23);
+            cboMaterialCategoryFilter.Size = new Size(161, 23);
             cboMaterialCategoryFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboMaterialCategoryFilter.TabIndex = 1;
             cboMaterialCategoryFilter.SelectedIndexChanged += Filter_Changed;
@@ -89,7 +89,7 @@ namespace Company.OfficeApp.Pages.Inventory
             // chkLowStockOnly
             // 
             chkLowStockOnly.AutoSize = true;
-            chkLowStockOnly.Location = new Point(472, 14);
+            chkLowStockOnly.Location = new Point(567, 34);
             chkLowStockOnly.Name = "chkLowStockOnly";
             chkLowStockOnly.Text = "Low stock only";
             chkLowStockOnly.TabIndex = 2;
@@ -98,7 +98,7 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblLowStockCount
             // 
             lblLowStockCount.AutoSize = true;
-            lblLowStockCount.Location = new Point(600, 15);
+            lblLowStockCount.Location = new Point(714, 36);
             lblLowStockCount.Name = "lblLowStockCount";
             lblLowStockCount.Text = "";
             // 
@@ -112,36 +112,36 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvMaterials.ReadOnly = true;
             dgvMaterials.RowHeadersVisible = false;
             dgvMaterials.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMaterials.Location = new Point(12, 44);
+            dgvMaterials.Location = new Point(38, 74);
             dgvMaterials.Name = "dgvMaterials";
-            dgvMaterials.Size = new Size(930, 220);
+            dgvMaterials.Size = new Size(1070, 290);
             dgvMaterials.TabIndex = 3;
             dgvMaterials.SelectionChanged += dgvMaterials_SelectionChanged;
             dgvMaterials.CellFormatting += dgvMaterials_CellFormatting;
             // 
             // btnAddMaterial
             // 
-            btnAddMaterial.Location = new Point(12, 272);
+            btnAddMaterial.Location = new Point(38, 375);
             btnAddMaterial.Name = "btnAddMaterial";
-            btnAddMaterial.Size = new Size(110, 28);
+            btnAddMaterial.Size = new Size(126, 36);
             btnAddMaterial.Text = "Add Material";
             btnAddMaterial.TabIndex = 4;
             btnAddMaterial.Click += btnAddMaterial_Click;
             // 
             // btnDeleteMaterial
             // 
-            btnDeleteMaterial.Location = new Point(128, 272);
+            btnDeleteMaterial.Location = new Point(171, 375);
             btnDeleteMaterial.Name = "btnDeleteMaterial";
-            btnDeleteMaterial.Size = new Size(90, 28);
+            btnDeleteMaterial.Size = new Size(103, 36);
             btnDeleteMaterial.Text = "Delete";
             btnDeleteMaterial.TabIndex = 5;
             btnDeleteMaterial.Click += btnDeleteMaterial_Click;
             // 
             // btnExportMaterials
             // 
-            btnExportMaterials.Location = new Point(224, 272);
+            btnExportMaterials.Location = new Point(282, 375);
             btnExportMaterials.Name = "btnExportMaterials";
-            btnExportMaterials.Size = new Size(90, 28);
+            btnExportMaterials.Size = new Size(103, 36);
             btnExportMaterials.Text = "Export";
             btnExportMaterials.TabIndex = 6;
             btnExportMaterials.Click += btnExportMaterials_Click;
@@ -149,64 +149,65 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblFormMode
             // 
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 316);
+            lblFormMode.Location = new Point(38, 433);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New material";
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblMaterialName
             // 
             lblMaterialName.AutoSize = true;
-            lblMaterialName.Location = new Point(12, 340);
+            lblMaterialName.Location = new Point(38, 465);
             lblMaterialName.Name = "lblMaterialName";
             lblMaterialName.Text = "Name (e.g. Portland Cement 40kg)";
             // 
             // txtMaterialName
             // 
-            txtMaterialName.Location = new Point(12, 358);
+            txtMaterialName.Location = new Point(38, 489);
             txtMaterialName.Name = "txtMaterialName";
-            txtMaterialName.Size = new Size(300, 23);
+            txtMaterialName.Size = new Size(345, 23);
             txtMaterialName.TabIndex = 7;
             // 
             // lblMaterialCategory
             // 
             lblMaterialCategory.AutoSize = true;
-            lblMaterialCategory.Location = new Point(12, 388);
+            lblMaterialCategory.Location = new Point(38, 528);
             lblMaterialCategory.Name = "lblMaterialCategory";
             lblMaterialCategory.Text = "Category (pick or type)";
             // 
             // cboMaterialCategory
             // 
-            cboMaterialCategory.Location = new Point(12, 406);
+            cboMaterialCategory.Location = new Point(38, 552);
             cboMaterialCategory.Name = "cboMaterialCategory";
-            cboMaterialCategory.Size = new Size(200, 23);
+            cboMaterialCategory.Size = new Size(230, 23);
             cboMaterialCategory.TabIndex = 8;
             // 
             // lblMaterialUnit
             // 
             lblMaterialUnit.AutoSize = true;
-            lblMaterialUnit.Location = new Point(12, 436);
+            lblMaterialUnit.Location = new Point(38, 592);
             lblMaterialUnit.Name = "lblMaterialUnit";
             lblMaterialUnit.Text = "Unit (pick or type)";
             // 
             // cboMaterialUnit
             // 
-            cboMaterialUnit.Location = new Point(12, 454);
+            cboMaterialUnit.Location = new Point(38, 615);
             cboMaterialUnit.Name = "cboMaterialUnit";
-            cboMaterialUnit.Size = new Size(200, 23);
+            cboMaterialUnit.Size = new Size(230, 23);
             cboMaterialUnit.TabIndex = 9;
             // 
             // lblMaterialPrice
             // 
             lblMaterialPrice.AutoSize = true;
-            lblMaterialPrice.Location = new Point(340, 340);
+            lblMaterialPrice.Location = new Point(415, 465);
             lblMaterialPrice.Name = "lblMaterialPrice";
             lblMaterialPrice.Text = "Unit price (pesos)";
             // 
             // numMaterialPrice
             // 
-            numMaterialPrice.Location = new Point(340, 358);
+            numMaterialPrice.Location = new Point(415, 489);
             numMaterialPrice.Name = "numMaterialPrice";
-            numMaterialPrice.Size = new Size(140, 23);
+            numMaterialPrice.Size = new Size(161, 23);
             numMaterialPrice.DecimalPlaces = 2;
             numMaterialPrice.ThousandsSeparator = true;
             numMaterialPrice.Maximum = 999999999m;
@@ -215,15 +216,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblStartingStock
             // 
             lblStartingStock.AutoSize = true;
-            lblStartingStock.Location = new Point(340, 388);
+            lblStartingStock.Location = new Point(415, 528);
             lblStartingStock.Name = "lblStartingStock";
             lblStartingStock.Text = "Starting stock (new materials only)";
             // 
             // numStartingStock
             // 
-            numStartingStock.Location = new Point(340, 406);
+            numStartingStock.Location = new Point(415, 552);
             numStartingStock.Name = "numStartingStock";
-            numStartingStock.Size = new Size(140, 23);
+            numStartingStock.Size = new Size(161, 23);
             numStartingStock.DecimalPlaces = 2;
             numStartingStock.ThousandsSeparator = true;
             numStartingStock.Maximum = 999999999m;
@@ -232,22 +233,22 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblCurrentStock
             // 
             lblCurrentStock.AutoSize = true;
-            lblCurrentStock.Location = new Point(340, 438);
+            lblCurrentStock.Location = new Point(415, 594);
             lblCurrentStock.Name = "lblCurrentStock";
             lblCurrentStock.Text = "Current stock: -";
             // 
             // lblMinimumStock
             // 
             lblMinimumStock.AutoSize = true;
-            lblMinimumStock.Location = new Point(340, 460);
+            lblMinimumStock.Location = new Point(415, 623);
             lblMinimumStock.Name = "lblMinimumStock";
             lblMinimumStock.Text = "Minimum stock (alert below this)";
             // 
             // numMinimumStock
             // 
-            numMinimumStock.Location = new Point(340, 478);
+            numMinimumStock.Location = new Point(415, 647);
             numMinimumStock.Name = "numMinimumStock";
-            numMinimumStock.Size = new Size(140, 23);
+            numMinimumStock.Size = new Size(161, 23);
             numMinimumStock.DecimalPlaces = 2;
             numMinimumStock.ThousandsSeparator = true;
             numMinimumStock.Maximum = 999999999m;
@@ -256,23 +257,23 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblMaterialMsg
             // 
             lblMaterialMsg.AutoSize = true;
-            lblMaterialMsg.Location = new Point(12, 516);
+            lblMaterialMsg.Location = new Point(38, 697);
             lblMaterialMsg.Name = "lblMaterialMsg";
             // 
             // btnSaveMaterial
             // 
-            btnSaveMaterial.Location = new Point(12, 538);
+            btnSaveMaterial.Location = new Point(38, 726);
             btnSaveMaterial.Name = "btnSaveMaterial";
-            btnSaveMaterial.Size = new Size(90, 28);
+            btnSaveMaterial.Size = new Size(103, 36);
             btnSaveMaterial.Text = "Save";
             btnSaveMaterial.TabIndex = 13;
             btnSaveMaterial.Click += btnSaveMaterial_Click;
             // 
             // btnCancelMaterial
             // 
-            btnCancelMaterial.Location = new Point(108, 538);
+            btnCancelMaterial.Location = new Point(148, 726);
             btnCancelMaterial.Name = "btnCancelMaterial";
-            btnCancelMaterial.Size = new Size(90, 28);
+            btnCancelMaterial.Size = new Size(103, 36);
             btnCancelMaterial.Text = "Cancel";
             btnCancelMaterial.TabIndex = 14;
             btnCancelMaterial.Click += btnCancelMaterial_Click;
@@ -349,7 +350,7 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(btnSaveMaterial);
             Controls.Add(btnCancelMaterial);
             Name = "MaterialsTab";
-            Size = new Size(960, 640);
+            Size = new Size(1152, 877);
             Load += MaterialsTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvMaterials).EndInit();
             ((System.ComponentModel.ISupportInitialize)numMaterialPrice).EndInit();

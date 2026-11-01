@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Receipts/NeedsReviewTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Receipts"
 CLASS = "NeedsReviewTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 440)
 LOAD_EVENT = "NeedsReviewTab_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'

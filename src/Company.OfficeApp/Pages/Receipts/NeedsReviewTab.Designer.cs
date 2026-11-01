@@ -38,7 +38,7 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblNeedsReviewInfo
             // 
             lblNeedsReviewInfo.AutoSize = true;
-            lblNeedsReviewInfo.Location = new Point(12, 15);
+            lblNeedsReviewInfo.Location = new Point(38, 36);
             lblNeedsReviewInfo.Name = "lblNeedsReviewInfo";
             lblNeedsReviewInfo.Text = "Expenses with no receipt. They count as expenses only after the Receipts Supervisor approves.";
             // 
@@ -52,35 +52,35 @@ namespace Company.OfficeApp.Pages.Receipts
             dgvNeedsReview.ReadOnly = true;
             dgvNeedsReview.RowHeadersVisible = false;
             dgvNeedsReview.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvNeedsReview.Location = new Point(12, 40);
+            dgvNeedsReview.Location = new Point(38, 69);
             dgvNeedsReview.Name = "dgvNeedsReview";
-            dgvNeedsReview.Size = new Size(930, 300);
+            dgvNeedsReview.Size = new Size(1070, 396);
             dgvNeedsReview.TabIndex = 0;
             dgvNeedsReview.SelectionChanged += dgvNeedsReview_SelectionChanged;
             // 
             // btnApproveNoReceipt
             // 
-            btnApproveNoReceipt.Location = new Point(12, 348);
+            btnApproveNoReceipt.Location = new Point(38, 475);
             btnApproveNoReceipt.Name = "btnApproveNoReceipt";
-            btnApproveNoReceipt.Size = new Size(80, 28);
+            btnApproveNoReceipt.Size = new Size(92, 36);
             btnApproveNoReceipt.Text = "Approve";
             btnApproveNoReceipt.TabIndex = 1;
             btnApproveNoReceipt.Click += btnApproveNoReceipt_Click;
             // 
             // btnRejectNoReceipt
             // 
-            btnRejectNoReceipt.Location = new Point(98, 348);
+            btnRejectNoReceipt.Location = new Point(137, 475);
             btnRejectNoReceipt.Name = "btnRejectNoReceipt";
-            btnRejectNoReceipt.Size = new Size(70, 28);
+            btnRejectNoReceipt.Size = new Size(80, 36);
             btnRejectNoReceipt.Text = "Reject";
             btnRejectNoReceipt.TabIndex = 2;
             btnRejectNoReceipt.Click += btnRejectNoReceipt_Click;
             // 
             // btnAttachLateReceipt
             // 
-            btnAttachLateReceipt.Location = new Point(174, 348);
+            btnAttachLateReceipt.Location = new Point(224, 475);
             btnAttachLateReceipt.Name = "btnAttachLateReceipt";
-            btnAttachLateReceipt.Size = new Size(120, 28);
+            btnAttachLateReceipt.Size = new Size(138, 36);
             btnAttachLateReceipt.Text = "Attach Receipt";
             btnAttachLateReceipt.TabIndex = 3;
             btnAttachLateReceipt.Click += btnAttachLateReceipt_Click;
@@ -88,14 +88,14 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(12, 384);
+            lblApproverNote.Location = new Point(38, 523);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "The Receipts Supervisor approves these.";
             // 
             // lblReviewMsg
             // 
             lblReviewMsg.AutoSize = true;
-            lblReviewMsg.Location = new Point(12, 408);
+            lblReviewMsg.Location = new Point(38, 555);
             lblReviewMsg.Name = "lblReviewMsg";
             // 
             // colDate
@@ -161,7 +161,7 @@ namespace Company.OfficeApp.Pages.Receipts
             Controls.Add(lblApproverNote);
             Controls.Add(lblReviewMsg);
             Name = "NeedsReviewTab";
-            Size = new Size(960, 440);
+            Size = new Size(1152, 613);
             Load += NeedsReviewTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvNeedsReview).EndInit();
             ResumeLayout(false);

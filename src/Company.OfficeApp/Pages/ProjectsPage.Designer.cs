@@ -15,6 +15,7 @@ namespace Company.OfficeApp.Pages
 
         #region Component Designer generated code
 
+        // ROOMY layout applied (docs/_tools/designer-gen/roomy_designer.py)
         private void InitializeComponent()
         {
             lblSearch = new Label();
@@ -70,46 +71,46 @@ namespace Company.OfficeApp.Pages
             // lblSearch
             //
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(12, 15);
+            lblSearch.Location = new Point(38, 36);
             lblSearch.Name = "lblSearch";
             lblSearch.Text = "Search";
             //
             // txtProjectSearch
             //
-            txtProjectSearch.Location = new Point(62, 12);
+            txtProjectSearch.Location = new Point(95, 32);
             txtProjectSearch.Name = "txtProjectSearch";
-            txtProjectSearch.Size = new Size(200, 23);
+            txtProjectSearch.Size = new Size(230, 23);
             txtProjectSearch.TabIndex = 0;
             //
             // lblStatusFilter
             //
             lblStatusFilter.AutoSize = true;
-            lblStatusFilter.Location = new Point(276, 15);
+            lblStatusFilter.Location = new Point(341, 36);
             lblStatusFilter.Name = "lblStatusFilter";
             lblStatusFilter.Text = "Status";
             //
             // cboStatusFilter
             //
             cboStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboStatusFilter.Location = new Point(322, 12);
+            cboStatusFilter.Location = new Point(394, 32);
             cboStatusFilter.Name = "cboStatusFilter";
-            cboStatusFilter.Size = new Size(110, 23);
+            cboStatusFilter.Size = new Size(126, 23);
             cboStatusFilter.TabIndex = 1;
             cboStatusFilter.SelectedIndexChanged += Filter_Changed;
             //
             // lblSectorFilter
             //
             lblSectorFilter.AutoSize = true;
-            lblSectorFilter.Location = new Point(446, 15);
+            lblSectorFilter.Location = new Point(537, 36);
             lblSectorFilter.Name = "lblSectorFilter";
             lblSectorFilter.Text = "Sector";
             //
             // cboSectorFilter
             //
             cboSectorFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboSectorFilter.Location = new Point(494, 12);
+            cboSectorFilter.Location = new Point(592, 32);
             cboSectorFilter.Name = "cboSectorFilter";
-            cboSectorFilter.Size = new Size(160, 23);
+            cboSectorFilter.Size = new Size(184, 23);
             cboSectorFilter.TabIndex = 2;
             cboSectorFilter.SelectedIndexChanged += Filter_Changed;
             //
@@ -119,13 +120,13 @@ namespace Company.OfficeApp.Pages
             dgvProjects.AllowUserToDeleteRows = false;
             dgvProjects.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProjects.Columns.AddRange(new DataGridViewColumn[] { colProjectName, colSite, colClient, colSector, colContractPrice, colStart, colTargetEnd, colStatus, colOnWebsite });
-            dgvProjects.Location = new Point(12, 44);
+            dgvProjects.Location = new Point(38, 74);
             dgvProjects.MultiSelect = false;
             dgvProjects.Name = "dgvProjects";
             dgvProjects.ReadOnly = true;
             dgvProjects.RowHeadersVisible = false;
             dgvProjects.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProjects.Size = new Size(900, 220);
+            dgvProjects.Size = new Size(1035, 290);
             dgvProjects.TabIndex = 3;
             dgvProjects.SelectionChanged += dgvProjects_SelectionChanged;
             //
@@ -188,27 +189,27 @@ namespace Company.OfficeApp.Pages
             //
             // btnAddProject
             //
-            btnAddProject.Location = new Point(12, 272);
+            btnAddProject.Location = new Point(38, 375);
             btnAddProject.Name = "btnAddProject";
-            btnAddProject.Size = new Size(100, 28);
+            btnAddProject.Size = new Size(115, 36);
             btnAddProject.TabIndex = 4;
             btnAddProject.Text = "Add Project";
             btnAddProject.Click += btnAddProject_Click;
             //
             // btnDeleteProject
             //
-            btnDeleteProject.Location = new Point(118, 272);
+            btnDeleteProject.Location = new Point(160, 375);
             btnDeleteProject.Name = "btnDeleteProject";
-            btnDeleteProject.Size = new Size(90, 28);
+            btnDeleteProject.Size = new Size(103, 36);
             btnDeleteProject.TabIndex = 5;
             btnDeleteProject.Text = "Delete";
             btnDeleteProject.Click += btnDeleteProject_Click;
             //
             // btnExportProjects
             //
-            btnExportProjects.Location = new Point(214, 272);
+            btnExportProjects.Location = new Point(270, 375);
             btnExportProjects.Name = "btnExportProjects";
-            btnExportProjects.Size = new Size(90, 28);
+            btnExportProjects.Size = new Size(103, 36);
             btnExportProjects.TabIndex = 6;
             btnExportProjects.Text = "Export";
             btnExportProjects.Click += btnExportProjects_Click;
@@ -216,134 +217,135 @@ namespace Company.OfficeApp.Pages
             // lblFormMode
             //
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 316);
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
+            lblFormMode.Location = new Point(38, 433);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New project";
             //
             // lblProjectName
             //
             lblProjectName.AutoSize = true;
-            lblProjectName.Location = new Point(12, 342);
+            lblProjectName.Location = new Point(38, 467);
             lblProjectName.Name = "lblProjectName";
             lblProjectName.Text = "Project name";
             //
             // txtProjectName
             //
-            txtProjectName.Location = new Point(12, 360);
+            txtProjectName.Location = new Point(38, 491);
             txtProjectName.Name = "txtProjectName";
-            txtProjectName.Size = new Size(300, 23);
+            txtProjectName.Size = new Size(345, 23);
             txtProjectName.TabIndex = 7;
             //
             // lblProjectSite
             //
             lblProjectSite.AutoSize = true;
-            lblProjectSite.Location = new Point(12, 390);
+            lblProjectSite.Location = new Point(38, 531);
             lblProjectSite.Name = "lblProjectSite";
             lblProjectSite.Text = "Site / location";
             //
             // txtProjectSite
             //
-            txtProjectSite.Location = new Point(12, 408);
+            txtProjectSite.Location = new Point(38, 555);
             txtProjectSite.Name = "txtProjectSite";
-            txtProjectSite.Size = new Size(300, 23);
+            txtProjectSite.Size = new Size(345, 23);
             txtProjectSite.TabIndex = 8;
             //
             // lblClientName
             //
             lblClientName.AutoSize = true;
-            lblClientName.Location = new Point(12, 438);
+            lblClientName.Location = new Point(38, 594);
             lblClientName.Name = "lblClientName";
             lblClientName.Text = "Client (optional)";
             //
             // txtClientName
             //
-            txtClientName.Location = new Point(12, 456);
+            txtClientName.Location = new Point(38, 618);
             txtClientName.Name = "txtClientName";
-            txtClientName.Size = new Size(300, 23);
+            txtClientName.Size = new Size(345, 23);
             txtClientName.TabIndex = 9;
             //
             // lblSector
             //
             lblSector.AutoSize = true;
-            lblSector.Location = new Point(12, 486);
+            lblSector.Location = new Point(38, 658);
             lblSector.Name = "lblSector";
             lblSector.Text = "Sector";
             //
             // cboSector
             //
             cboSector.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboSector.Location = new Point(12, 504);
+            cboSector.Location = new Point(38, 681);
             cboSector.Name = "cboSector";
-            cboSector.Size = new Size(200, 23);
+            cboSector.Size = new Size(230, 23);
             cboSector.TabIndex = 10;
             //
             // lblContractPrice
             //
             lblContractPrice.AutoSize = true;
-            lblContractPrice.Location = new Point(12, 534);
+            lblContractPrice.Location = new Point(38, 721);
             lblContractPrice.Name = "lblContractPrice";
             lblContractPrice.Text = "Contract price (pesos)";
             //
             // numContractPrice
             //
             numContractPrice.DecimalPlaces = 2;
-            numContractPrice.Location = new Point(12, 552);
+            numContractPrice.Location = new Point(38, 745);
             numContractPrice.Maximum = new decimal(new int[] { -727379969, 232, 0, 131072 });
             numContractPrice.Name = "numContractPrice";
-            numContractPrice.Size = new Size(200, 23);
+            numContractPrice.Size = new Size(230, 23);
             numContractPrice.TabIndex = 11;
             numContractPrice.ThousandsSeparator = true;
             //
             // lblStartDate
             //
             lblStartDate.AutoSize = true;
-            lblStartDate.Location = new Point(12, 582);
+            lblStartDate.Location = new Point(38, 784);
             lblStartDate.Name = "lblStartDate";
             lblStartDate.Text = "Start date";
             //
             // dtpStartDate
             //
             dtpStartDate.Format = DateTimePickerFormat.Short;
-            dtpStartDate.Location = new Point(12, 600);
+            dtpStartDate.Location = new Point(38, 808);
             dtpStartDate.Name = "dtpStartDate";
-            dtpStartDate.Size = new Size(140, 23);
+            dtpStartDate.Size = new Size(161, 23);
             dtpStartDate.TabIndex = 12;
             //
             // lblTargetEndDate
             //
             lblTargetEndDate.AutoSize = true;
-            lblTargetEndDate.Location = new Point(12, 630);
+            lblTargetEndDate.Location = new Point(38, 848);
             lblTargetEndDate.Name = "lblTargetEndDate";
             lblTargetEndDate.Text = "Target end date (tick to set)";
             //
             // dtpTargetEndDate
             //
             dtpTargetEndDate.Format = DateTimePickerFormat.Short;
-            dtpTargetEndDate.Location = new Point(12, 648);
+            dtpTargetEndDate.Location = new Point(38, 871);
             dtpTargetEndDate.Name = "dtpTargetEndDate";
             dtpTargetEndDate.ShowCheckBox = true;
-            dtpTargetEndDate.Size = new Size(140, 23);
+            dtpTargetEndDate.Size = new Size(161, 23);
             dtpTargetEndDate.TabIndex = 13;
             //
             // lblProjectStatus
             //
             lblProjectStatus.AutoSize = true;
-            lblProjectStatus.Location = new Point(12, 678);
+            lblProjectStatus.Location = new Point(38, 911);
             lblProjectStatus.Name = "lblProjectStatus";
             lblProjectStatus.Text = "Status";
             //
             // cboProjectStatus
             //
             cboProjectStatus.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboProjectStatus.Location = new Point(12, 696);
+            cboProjectStatus.Location = new Point(38, 935);
             cboProjectStatus.Name = "cboProjectStatus";
-            cboProjectStatus.Size = new Size(140, 23);
+            cboProjectStatus.Size = new Size(161, 23);
             cboProjectStatus.TabIndex = 14;
             //
             // chkShowOnWebsite
             //
             chkShowOnWebsite.AutoSize = true;
-            chkShowOnWebsite.Location = new Point(12, 728);
+            chkShowOnWebsite.Location = new Point(38, 977);
             chkShowOnWebsite.Name = "chkShowOnWebsite";
             chkShowOnWebsite.TabIndex = 15;
             chkShowOnWebsite.Text = "Show on website (sends it to Website Admin)";
@@ -351,60 +353,60 @@ namespace Company.OfficeApp.Pages
             // lblDaysSpent
             //
             lblDaysSpent.AutoSize = true;
-            lblDaysSpent.Location = new Point(360, 342);
+            lblDaysSpent.Location = new Point(438, 467);
             lblDaysSpent.Name = "lblDaysSpent";
             lblDaysSpent.Text = "Days: -";
             //
             // lblRevenue
             //
             lblRevenue.AutoSize = true;
-            lblRevenue.Location = new Point(360, 364);
+            lblRevenue.Location = new Point(438, 496);
             lblRevenue.Name = "lblRevenue";
             lblRevenue.Text = "Revenue: -";
             //
             // lblExpensesToDate
             //
             lblExpensesToDate.AutoSize = true;
-            lblExpensesToDate.Location = new Point(360, 386);
+            lblExpensesToDate.Location = new Point(438, 526);
             lblExpensesToDate.Name = "lblExpensesToDate";
             lblExpensesToDate.Text = "Expenses to date: -";
             //
             // lblProfitToDate
             //
             lblProfitToDate.AutoSize = true;
-            lblProfitToDate.Location = new Point(360, 408);
+            lblProfitToDate.Location = new Point(438, 555);
             lblProfitToDate.Name = "lblProfitToDate";
             lblProfitToDate.Text = "Profit to date: -";
             //
             // lblProjectFormMsg
             //
             lblProjectFormMsg.AutoSize = true;
-            lblProjectFormMsg.Location = new Point(12, 756);
+            lblProjectFormMsg.Location = new Point(38, 1014);
             lblProjectFormMsg.Name = "lblProjectFormMsg";
             //
             // btnSaveProject
             //
-            btnSaveProject.Location = new Point(12, 778);
+            btnSaveProject.Location = new Point(38, 1043);
             btnSaveProject.Name = "btnSaveProject";
-            btnSaveProject.Size = new Size(90, 28);
+            btnSaveProject.Size = new Size(103, 36);
             btnSaveProject.TabIndex = 16;
             btnSaveProject.Text = "Save";
             btnSaveProject.Click += btnSaveProject_Click;
             //
             // btnCancelProject
             //
-            btnCancelProject.Location = new Point(108, 778);
+            btnCancelProject.Location = new Point(148, 1043);
             btnCancelProject.Name = "btnCancelProject";
-            btnCancelProject.Size = new Size(90, 28);
+            btnCancelProject.Size = new Size(103, 36);
             btnCancelProject.TabIndex = 17;
             btnCancelProject.Text = "Cancel";
             btnCancelProject.Click += btnCancelProject_Click;
             //
             // btnPrintProjectReport
             //
-            btnPrintProjectReport.Location = new Point(204, 778);
+            btnPrintProjectReport.Location = new Point(259, 1043);
             btnPrintProjectReport.Name = "btnPrintProjectReport";
-            btnPrintProjectReport.Size = new Size(110, 28);
+            btnPrintProjectReport.Size = new Size(126, 36);
             btnPrintProjectReport.TabIndex = 18;
             btnPrintProjectReport.Text = "Print Report";
             btnPrintProjectReport.Click += btnPrintProjectReport_Click;
@@ -457,7 +459,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnCancelProject);
             Controls.Add(btnPrintProjectReport);
             Name = "ProjectsPage";
-            Size = new Size(930, 820);
+            Size = new Size(1118, 1114);
             Load += ProjectsPage_Load;
             ((System.ComponentModel.ISupportInitialize)dgvProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)numContractPrice).EndInit();

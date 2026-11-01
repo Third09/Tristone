@@ -63,37 +63,38 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblRecordTitle
             // 
             lblRecordTitle.AutoSize = true;
-            lblRecordTitle.Location = new Point(12, 12);
+            lblRecordTitle.Location = new Point(38, 32);
             lblRecordTitle.Name = "lblRecordTitle";
             lblRecordTitle.Text = "Record material used on a project (waits for Supervisor approval)";
+            lblRecordTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblUsageProject
             // 
             lblUsageProject.AutoSize = true;
-            lblUsageProject.Location = new Point(12, 36);
+            lblUsageProject.Location = new Point(38, 64);
             lblUsageProject.Name = "lblUsageProject";
             lblUsageProject.Text = "Project";
             // 
             // cboUsageProject
             // 
-            cboUsageProject.Location = new Point(12, 54);
+            cboUsageProject.Location = new Point(38, 87);
             cboUsageProject.Name = "cboUsageProject";
-            cboUsageProject.Size = new Size(240, 23);
+            cboUsageProject.Size = new Size(276, 23);
             cboUsageProject.DropDownStyle = ComboBoxStyle.DropDownList;
             cboUsageProject.TabIndex = 0;
             // 
             // lblUsageMaterial
             // 
             lblUsageMaterial.AutoSize = true;
-            lblUsageMaterial.Location = new Point(264, 36);
+            lblUsageMaterial.Location = new Point(328, 64);
             lblUsageMaterial.Name = "lblUsageMaterial";
             lblUsageMaterial.Text = "Material";
             // 
             // cboUsageMaterial
             // 
-            cboUsageMaterial.Location = new Point(264, 54);
+            cboUsageMaterial.Location = new Point(328, 87);
             cboUsageMaterial.Name = "cboUsageMaterial";
-            cboUsageMaterial.Size = new Size(240, 23);
+            cboUsageMaterial.Size = new Size(276, 23);
             cboUsageMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
             cboUsageMaterial.TabIndex = 1;
             cboUsageMaterial.SelectedIndexChanged += cboUsageMaterial_SelectedIndexChanged;
@@ -101,22 +102,22 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblAvailableStock
             // 
             lblAvailableStock.AutoSize = true;
-            lblAvailableStock.Location = new Point(516, 57);
+            lblAvailableStock.Location = new Point(617, 91);
             lblAvailableStock.Name = "lblAvailableStock";
             lblAvailableStock.Text = "In stock: -";
             // 
             // lblUsageQty
             // 
             lblUsageQty.AutoSize = true;
-            lblUsageQty.Location = new Point(12, 84);
+            lblUsageQty.Location = new Point(38, 127);
             lblUsageQty.Name = "lblUsageQty";
             lblUsageQty.Text = "Quantity used";
             // 
             // numUsageQty
             // 
-            numUsageQty.Location = new Point(12, 102);
+            numUsageQty.Location = new Point(38, 151);
             numUsageQty.Name = "numUsageQty";
-            numUsageQty.Size = new Size(120, 23);
+            numUsageQty.Size = new Size(138, 23);
             numUsageQty.DecimalPlaces = 2;
             numUsageQty.Maximum = 999999999m;
             numUsageQty.TabIndex = 2;
@@ -124,37 +125,37 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblUsageDate
             // 
             lblUsageDate.AutoSize = true;
-            lblUsageDate.Location = new Point(144, 84);
+            lblUsageDate.Location = new Point(190, 127);
             lblUsageDate.Name = "lblUsageDate";
             lblUsageDate.Text = "Date used";
             // 
             // dtpUsageDate
             // 
-            dtpUsageDate.Location = new Point(144, 102);
+            dtpUsageDate.Location = new Point(190, 151);
             dtpUsageDate.Name = "dtpUsageDate";
-            dtpUsageDate.Size = new Size(120, 23);
+            dtpUsageDate.Size = new Size(138, 23);
             dtpUsageDate.Format = DateTimePickerFormat.Short;
             dtpUsageDate.TabIndex = 3;
             // 
             // lblUsageNotes
             // 
             lblUsageNotes.AutoSize = true;
-            lblUsageNotes.Location = new Point(276, 84);
+            lblUsageNotes.Location = new Point(341, 127);
             lblUsageNotes.Name = "lblUsageNotes";
             lblUsageNotes.Text = "Notes (optional)";
             // 
             // txtUsageNotes
             // 
-            txtUsageNotes.Location = new Point(276, 102);
+            txtUsageNotes.Location = new Point(341, 151);
             txtUsageNotes.Name = "txtUsageNotes";
-            txtUsageNotes.Size = new Size(300, 23);
+            txtUsageNotes.Size = new Size(345, 23);
             txtUsageNotes.TabIndex = 4;
             // 
             // btnSubmitUsage
             // 
-            btnSubmitUsage.Location = new Point(588, 100);
+            btnSubmitUsage.Location = new Point(700, 148);
             btnSubmitUsage.Name = "btnSubmitUsage";
-            btnSubmitUsage.Size = new Size(90, 28);
+            btnSubmitUsage.Size = new Size(103, 36);
             btnSubmitUsage.Text = "Submit";
             btnSubmitUsage.TabIndex = 5;
             btnSubmitUsage.Click += btnSubmitUsage_Click;
@@ -162,21 +163,21 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblUsageMsg
             // 
             lblUsageMsg.AutoSize = true;
-            lblUsageMsg.Location = new Point(12, 132);
+            lblUsageMsg.Location = new Point(38, 190);
             lblUsageMsg.Name = "lblUsageMsg";
             // 
             // lblStatusFilter
             // 
             lblStatusFilter.AutoSize = true;
-            lblStatusFilter.Location = new Point(12, 160);
+            lblStatusFilter.Location = new Point(38, 227);
             lblStatusFilter.Name = "lblStatusFilter";
             lblStatusFilter.Text = "Show";
             // 
             // cboUsageStatusFilter
             // 
-            cboUsageStatusFilter.Location = new Point(52, 157);
+            cboUsageStatusFilter.Location = new Point(84, 223);
             cboUsageStatusFilter.Name = "cboUsageStatusFilter";
-            cboUsageStatusFilter.Size = new Size(160, 23);
+            cboUsageStatusFilter.Size = new Size(184, 23);
             cboUsageStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboUsageStatusFilter.TabIndex = 6;
             cboUsageStatusFilter.SelectedIndexChanged += cboUsageStatusFilter_SelectedIndexChanged;
@@ -191,26 +192,26 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvUsageRequests.ReadOnly = true;
             dgvUsageRequests.RowHeadersVisible = false;
             dgvUsageRequests.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsageRequests.Location = new Point(12, 188);
+            dgvUsageRequests.Location = new Point(38, 264);
             dgvUsageRequests.Name = "dgvUsageRequests";
-            dgvUsageRequests.Size = new Size(930, 200);
+            dgvUsageRequests.Size = new Size(1070, 264);
             dgvUsageRequests.TabIndex = 7;
             dgvUsageRequests.SelectionChanged += dgvUsageRequests_SelectionChanged;
             // 
             // btnApproveUsage
             // 
-            btnApproveUsage.Location = new Point(12, 396);
+            btnApproveUsage.Location = new Point(38, 539);
             btnApproveUsage.Name = "btnApproveUsage";
-            btnApproveUsage.Size = new Size(90, 28);
+            btnApproveUsage.Size = new Size(103, 36);
             btnApproveUsage.Text = "Approve";
             btnApproveUsage.TabIndex = 8;
             btnApproveUsage.Click += btnApproveUsage_Click;
             // 
             // btnRejectUsage
             // 
-            btnRejectUsage.Location = new Point(108, 396);
+            btnRejectUsage.Location = new Point(148, 539);
             btnRejectUsage.Name = "btnRejectUsage";
-            btnRejectUsage.Size = new Size(90, 28);
+            btnRejectUsage.Size = new Size(103, 36);
             btnRejectUsage.Text = "Reject";
             btnRejectUsage.TabIndex = 9;
             btnRejectUsage.Click += btnRejectUsage_Click;
@@ -218,22 +219,23 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(210, 402);
+            lblApproverNote.Location = new Point(265, 547);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "Approve / Reject: Inventory Supervisor only";
             // 
             // lblHistoryTitle
             // 
             lblHistoryTitle.AutoSize = true;
-            lblHistoryTitle.Location = new Point(12, 440);
+            lblHistoryTitle.Location = new Point(38, 597);
             lblHistoryTitle.Name = "lblHistoryTitle";
             lblHistoryTitle.Text = "Project material history (approved only)";
+            lblHistoryTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // cboHistoryProject
             // 
-            cboHistoryProject.Location = new Point(12, 460);
+            cboHistoryProject.Location = new Point(38, 623);
             cboHistoryProject.Name = "cboHistoryProject";
-            cboHistoryProject.Size = new Size(240, 23);
+            cboHistoryProject.Size = new Size(276, 23);
             cboHistoryProject.DropDownStyle = ComboBoxStyle.DropDownList;
             cboHistoryProject.TabIndex = 10;
             cboHistoryProject.SelectedIndexChanged += cboHistoryProject_SelectedIndexChanged;
@@ -241,15 +243,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblProjectMaterialTotal
             // 
             lblProjectMaterialTotal.AutoSize = true;
-            lblProjectMaterialTotal.Location = new Point(264, 463);
+            lblProjectMaterialTotal.Location = new Point(328, 627);
             lblProjectMaterialTotal.Name = "lblProjectMaterialTotal";
             lblProjectMaterialTotal.Text = "Total: -";
             // 
             // btnExportProjectMaterials
             // 
-            btnExportProjectMaterials.Location = new Point(852, 458);
+            btnExportProjectMaterials.Location = new Point(1004, 621);
             btnExportProjectMaterials.Name = "btnExportProjectMaterials";
-            btnExportProjectMaterials.Size = new Size(90, 28);
+            btnExportProjectMaterials.Size = new Size(103, 36);
             btnExportProjectMaterials.Text = "Export";
             btnExportProjectMaterials.TabIndex = 11;
             btnExportProjectMaterials.Click += btnExportProjectMaterials_Click;
@@ -264,9 +266,9 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvProjectMaterials.ReadOnly = true;
             dgvProjectMaterials.RowHeadersVisible = false;
             dgvProjectMaterials.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProjectMaterials.Location = new Point(12, 490);
+            dgvProjectMaterials.Location = new Point(38, 663);
             dgvProjectMaterials.Name = "dgvProjectMaterials";
-            dgvProjectMaterials.Size = new Size(930, 160);
+            dgvProjectMaterials.Size = new Size(1070, 211);
             dgvProjectMaterials.TabIndex = 12;
             // 
             // colDate
@@ -384,7 +386,7 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(btnExportProjectMaterials);
             Controls.Add(dgvProjectMaterials);
             Name = "UsageTab";
-            Size = new Size(960, 700);
+            Size = new Size(1152, 956);
             Load += UsageTab_Load;
             ((System.ComponentModel.ISupportInitialize)numUsageQty).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvUsageRequests).EndInit();

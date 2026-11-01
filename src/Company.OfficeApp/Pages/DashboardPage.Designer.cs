@@ -76,15 +76,15 @@ namespace Company.OfficeApp.Pages
             // lblPeriod
             // 
             lblPeriod.AutoSize = true;
-            lblPeriod.Location = new Point(12, 15);
+            lblPeriod.Location = new Point(38, 36);
             lblPeriod.Name = "lblPeriod";
             lblPeriod.Text = "Period";
             // 
             // cboPeriod
             // 
-            cboPeriod.Location = new Point(60, 12);
+            cboPeriod.Location = new Point(93, 32);
             cboPeriod.Name = "cboPeriod";
-            cboPeriod.Size = new Size(130, 23);
+            cboPeriod.Size = new Size(150, 23);
             cboPeriod.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPeriod.TabIndex = 0;
             cboPeriod.SelectedIndexChanged += cboPeriod_SelectedIndexChanged;
@@ -92,149 +92,153 @@ namespace Company.OfficeApp.Pages
             // lblFrom
             // 
             lblFrom.AutoSize = true;
-            lblFrom.Location = new Point(202, 15);
+            lblFrom.Location = new Point(256, 36);
             lblFrom.Name = "lblFrom";
             lblFrom.Text = "From";
             // 
             // dtpFrom
             // 
-            dtpFrom.Location = new Point(240, 12);
+            dtpFrom.Location = new Point(300, 32);
             dtpFrom.Name = "dtpFrom";
-            dtpFrom.Size = new Size(115, 23);
+            dtpFrom.Size = new Size(132, 23);
             dtpFrom.Format = DateTimePickerFormat.Short;
             dtpFrom.TabIndex = 1;
             // 
             // lblTo
             // 
             lblTo.AutoSize = true;
-            lblTo.Location = new Point(365, 15);
+            lblTo.Location = new Point(444, 36);
             lblTo.Name = "lblTo";
             lblTo.Text = "To";
             // 
             // dtpTo
             // 
-            dtpTo.Location = new Point(390, 12);
+            dtpTo.Location = new Point(472, 32);
             dtpTo.Name = "dtpTo";
-            dtpTo.Size = new Size(115, 23);
+            dtpTo.Size = new Size(132, 23);
             dtpTo.Format = DateTimePickerFormat.Short;
             dtpTo.TabIndex = 2;
             // 
             // lblDepartment
             // 
             lblDepartment.AutoSize = true;
-            lblDepartment.Location = new Point(517, 15);
+            lblDepartment.Location = new Point(619, 36);
             lblDepartment.Name = "lblDepartment";
             lblDepartment.Text = "Department";
             // 
             // cboDepartment
             // 
-            cboDepartment.Location = new Point(600, 12);
+            cboDepartment.Location = new Point(714, 32);
             cboDepartment.Name = "cboDepartment";
-            cboDepartment.Size = new Size(170, 23);
+            cboDepartment.Size = new Size(195, 23);
             cboDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
             cboDepartment.TabIndex = 3;
             // 
             // btnRefreshDashboard
             // 
-            btnRefreshDashboard.Location = new Point(782, 10);
+            btnRefreshDashboard.Location = new Point(923, 29);
             btnRefreshDashboard.Name = "btnRefreshDashboard";
-            btnRefreshDashboard.Size = new Size(90, 28);
+            btnRefreshDashboard.Size = new Size(103, 36);
             btnRefreshDashboard.Text = "Refresh";
             btnRefreshDashboard.TabIndex = 4;
             btnRefreshDashboard.Click += btnRefreshDashboard_Click;
             // 
             // pnlKpiCompleted
             // 
-            pnlKpiCompleted.Location = new Point(12, 48);
+            pnlKpiCompleted.Location = new Point(38, 79);
             pnlKpiCompleted.Name = "pnlKpiCompleted";
-            pnlKpiCompleted.Size = new Size(225, 64);
+            pnlKpiCompleted.Size = new Size(259, 84);
             pnlKpiCompleted.BorderStyle = BorderStyle.FixedSingle;
             pnlKpiCompleted.TabIndex = 5;
             // 
             // lblKpiCompletedTitle
             // 
             lblKpiCompletedTitle.AutoSize = true;
-            lblKpiCompletedTitle.Location = new Point(8, 8);
+            lblKpiCompletedTitle.Location = new Point(9, 11);
             lblKpiCompletedTitle.Name = "lblKpiCompletedTitle";
             lblKpiCompletedTitle.Text = "Completed Projects";
+            lblKpiCompletedTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblKpiCompleted
             // 
             lblKpiCompleted.AutoSize = true;
-            lblKpiCompleted.Location = new Point(8, 32);
+            lblKpiCompleted.Location = new Point(9, 42);
             lblKpiCompleted.Name = "lblKpiCompleted";
             lblKpiCompleted.Text = "-";
             // 
             // pnlKpiRevenue
             // 
-            pnlKpiRevenue.Location = new Point(245, 48);
+            pnlKpiRevenue.Location = new Point(306, 79);
             pnlKpiRevenue.Name = "pnlKpiRevenue";
-            pnlKpiRevenue.Size = new Size(225, 64);
+            pnlKpiRevenue.Size = new Size(259, 84);
             pnlKpiRevenue.BorderStyle = BorderStyle.FixedSingle;
             pnlKpiRevenue.TabIndex = 6;
             // 
             // lblKpiRevenueTitle
             // 
             lblKpiRevenueTitle.AutoSize = true;
-            lblKpiRevenueTitle.Location = new Point(8, 8);
+            lblKpiRevenueTitle.Location = new Point(9, 11);
             lblKpiRevenueTitle.Name = "lblKpiRevenueTitle";
             lblKpiRevenueTitle.Text = "Gross Revenue";
+            lblKpiRevenueTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblKpiRevenue
             // 
             lblKpiRevenue.AutoSize = true;
-            lblKpiRevenue.Location = new Point(8, 32);
+            lblKpiRevenue.Location = new Point(9, 42);
             lblKpiRevenue.Name = "lblKpiRevenue";
             lblKpiRevenue.Text = "-";
             // 
             // pnlKpiExpenses
             // 
-            pnlKpiExpenses.Location = new Point(478, 48);
+            pnlKpiExpenses.Location = new Point(574, 79);
             pnlKpiExpenses.Name = "pnlKpiExpenses";
-            pnlKpiExpenses.Size = new Size(225, 64);
+            pnlKpiExpenses.Size = new Size(259, 84);
             pnlKpiExpenses.BorderStyle = BorderStyle.FixedSingle;
             pnlKpiExpenses.TabIndex = 7;
             // 
             // lblKpiExpensesTitle
             // 
             lblKpiExpensesTitle.AutoSize = true;
-            lblKpiExpensesTitle.Location = new Point(8, 8);
+            lblKpiExpensesTitle.Location = new Point(9, 11);
             lblKpiExpensesTitle.Name = "lblKpiExpensesTitle";
             lblKpiExpensesTitle.Text = "Operational Expenses";
+            lblKpiExpensesTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblKpiExpenses
             // 
             lblKpiExpenses.AutoSize = true;
-            lblKpiExpenses.Location = new Point(8, 32);
+            lblKpiExpenses.Location = new Point(9, 42);
             lblKpiExpenses.Name = "lblKpiExpenses";
             lblKpiExpenses.Text = "-";
             // 
             // pnlKpiNet
             // 
-            pnlKpiNet.Location = new Point(711, 48);
+            pnlKpiNet.Location = new Point(842, 79);
             pnlKpiNet.Name = "pnlKpiNet";
-            pnlKpiNet.Size = new Size(225, 64);
+            pnlKpiNet.Size = new Size(259, 84);
             pnlKpiNet.BorderStyle = BorderStyle.FixedSingle;
             pnlKpiNet.TabIndex = 8;
             // 
             // lblKpiNetTitle
             // 
             lblKpiNetTitle.AutoSize = true;
-            lblKpiNetTitle.Location = new Point(8, 8);
+            lblKpiNetTitle.Location = new Point(9, 11);
             lblKpiNetTitle.Name = "lblKpiNetTitle";
             lblKpiNetTitle.Text = "Net Revenue";
+            lblKpiNetTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblKpiNet
             // 
             lblKpiNet.AutoSize = true;
-            lblKpiNet.Location = new Point(8, 32);
+            lblKpiNet.Location = new Point(9, 42);
             lblKpiNet.Name = "lblKpiNet";
             lblKpiNet.Text = "-";
             // 
             // lblKpiBreakdown
             // 
             lblKpiBreakdown.AutoSize = true;
-            lblKpiBreakdown.Location = new Point(12, 120);
+            lblKpiBreakdown.Location = new Point(38, 174);
             lblKpiBreakdown.Name = "lblKpiBreakdown";
             lblKpiBreakdown.Text = "";
             lblKpiBreakdown.MaximumSize = new Size(930, 0);
@@ -242,21 +246,22 @@ namespace Company.OfficeApp.Pages
             // lblChartTitle
             // 
             lblChartTitle.AutoSize = true;
-            lblChartTitle.Location = new Point(12, 168);
+            lblChartTitle.Location = new Point(38, 238);
             lblChartTitle.Name = "lblChartTitle";
             lblChartTitle.Text = "Project status (all projects, today)";
+            lblChartTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // chartProjectStatus
             // 
-            chartProjectStatus.Location = new Point(12, 188);
+            chartProjectStatus.Location = new Point(38, 264);
             chartProjectStatus.Name = "chartProjectStatus";
-            chartProjectStatus.Size = new Size(440, 260);
+            chartProjectStatus.Size = new Size(506, 260);
             chartProjectStatus.TabIndex = 9;
             // 
             // lblTopProjects
             // 
             lblTopProjects.AutoSize = true;
-            lblTopProjects.Location = new Point(470, 168);
+            lblTopProjects.Location = new Point(564, 238);
             lblTopProjects.Name = "lblTopProjects";
             lblTopProjects.Text = "Top performing projects (active in the period; click a column title to sort)";
             // 
@@ -270,17 +275,17 @@ namespace Company.OfficeApp.Pages
             dgvTopProjects.ReadOnly = true;
             dgvTopProjects.RowHeadersVisible = false;
             dgvTopProjects.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvTopProjects.Location = new Point(470, 188);
+            dgvTopProjects.Location = new Point(564, 264);
             dgvTopProjects.Name = "dgvTopProjects";
-            dgvTopProjects.Size = new Size(472, 260);
+            dgvTopProjects.Size = new Size(543, 343);
             dgvTopProjects.TabIndex = 10;
             dgvTopProjects.ColumnHeaderMouseClick += dgvTopProjects_ColumnHeaderMouseClick;
             // 
             // btnExportTopProjects
             // 
-            btnExportTopProjects.Location = new Point(470, 454);
+            btnExportTopProjects.Location = new Point(564, 615);
             btnExportTopProjects.Name = "btnExportTopProjects";
-            btnExportTopProjects.Size = new Size(90, 28);
+            btnExportTopProjects.Size = new Size(103, 36);
             btnExportTopProjects.Text = "Export";
             btnExportTopProjects.TabIndex = 11;
             btnExportTopProjects.Click += btnExportTopProjects_Click;
@@ -288,22 +293,23 @@ namespace Company.OfficeApp.Pages
             // lblLogTitle
             // 
             lblLogTitle.AutoSize = true;
-            lblLogTitle.Location = new Point(12, 494);
+            lblLogTitle.Location = new Point(38, 668);
             lblLogTitle.Name = "lblLogTitle";
             lblLogTitle.Text = "Log history";
+            lblLogTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblLogType
             // 
             lblLogType.AutoSize = true;
-            lblLogType.Location = new Point(12, 520);
+            lblLogType.Location = new Point(38, 702);
             lblLogType.Name = "lblLogType";
             lblLogType.Text = "Activity";
             // 
             // cboLogType
             // 
-            cboLogType.Location = new Point(70, 517);
+            cboLogType.Location = new Point(104, 698);
             cboLogType.Name = "cboLogType";
-            cboLogType.Size = new Size(170, 23);
+            cboLogType.Size = new Size(195, 23);
             cboLogType.DropDownStyle = ComboBoxStyle.DropDownList;
             cboLogType.TabIndex = 12;
             cboLogType.SelectedIndexChanged += cboLogType_SelectedIndexChanged;
@@ -311,22 +317,22 @@ namespace Company.OfficeApp.Pages
             // lblLogSearch
             // 
             lblLogSearch.AutoSize = true;
-            lblLogSearch.Location = new Point(252, 520);
+            lblLogSearch.Location = new Point(314, 702);
             lblLogSearch.Name = "lblLogSearch";
             lblLogSearch.Text = "Search";
             // 
             // txtLogSearch
             // 
-            txtLogSearch.Location = new Point(302, 517);
+            txtLogSearch.Location = new Point(371, 698);
             txtLogSearch.Name = "txtLogSearch";
-            txtLogSearch.Size = new Size(200, 23);
+            txtLogSearch.Size = new Size(230, 23);
             txtLogSearch.TabIndex = 13;
             // 
             // btnExportLogs
             // 
-            btnExportLogs.Location = new Point(514, 515);
+            btnExportLogs.Location = new Point(615, 696);
             btnExportLogs.Name = "btnExportLogs";
-            btnExportLogs.Size = new Size(90, 28);
+            btnExportLogs.Size = new Size(103, 36);
             btnExportLogs.Text = "Export";
             btnExportLogs.TabIndex = 14;
             btnExportLogs.Click += btnExportLogs_Click;
@@ -341,9 +347,9 @@ namespace Company.OfficeApp.Pages
             dgvLogHistory.ReadOnly = true;
             dgvLogHistory.RowHeadersVisible = false;
             dgvLogHistory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLogHistory.Location = new Point(12, 548);
+            dgvLogHistory.Location = new Point(38, 739);
             dgvLogHistory.Name = "dgvLogHistory";
-            dgvLogHistory.Size = new Size(930, 190);
+            dgvLogHistory.Size = new Size(1070, 251);
             dgvLogHistory.TabIndex = 15;
             // 
             // colTopProject
@@ -448,7 +454,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnExportLogs);
             Controls.Add(dgvLogHistory);
             Name = "DashboardPage";
-            Size = new Size(960, 756);
+            Size = new Size(1152, 1030);
             Load += DashboardPage_Load;
             ((System.ComponentModel.ISupportInitialize)dgvTopProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvLogHistory).EndInit();

@@ -15,6 +15,7 @@ namespace Company.OfficeApp.Pages
 
         #region Component Designer generated code
 
+        // ROOMY layout applied (docs/_tools/designer-gen/roomy_designer.py)
         private void InitializeComponent()
         {
             lblMyName = new Label();
@@ -47,28 +48,28 @@ namespace Company.OfficeApp.Pages
             // lblMyName
             //
             lblMyName.AutoSize = true;
-            lblMyName.Location = new Point(12, 12);
+            lblMyName.Location = new Point(38, 32);
             lblMyName.Name = "lblMyName";
             lblMyName.Text = "Name:";
             //
             // lblMyUsername
             //
             lblMyUsername.AutoSize = true;
-            lblMyUsername.Location = new Point(12, 34);
+            lblMyUsername.Location = new Point(38, 61);
             lblMyUsername.Name = "lblMyUsername";
             lblMyUsername.Text = "Username:";
             //
             // lblMyRole
             //
             lblMyRole.AutoSize = true;
-            lblMyRole.Location = new Point(12, 56);
+            lblMyRole.Location = new Point(38, 90);
             lblMyRole.Name = "lblMyRole";
             lblMyRole.Text = "Level:";
             //
             // lblAskAdmin  (Employees and Supervisors only)
             //
             lblAskAdmin.AutoSize = true;
-            lblAskAdmin.Location = new Point(12, 88);
+            lblAskAdmin.Location = new Point(38, 132);
             lblAskAdmin.Name = "lblAskAdmin";
             lblAskAdmin.Text = "Only Admins can change passwords. If you need a new password, ask an Admin.";
             //
@@ -82,62 +83,62 @@ namespace Company.OfficeApp.Pages
             grpChangePassword.Controls.Add(txtConfirmPassword);
             grpChangePassword.Controls.Add(btnSavePassword);
             grpChangePassword.Controls.Add(lblPasswordMsg);
-            grpChangePassword.Location = new Point(12, 88);
+            grpChangePassword.Location = new Point(38, 132);
             grpChangePassword.Name = "grpChangePassword";
-            grpChangePassword.Size = new Size(400, 232);
+            grpChangePassword.Size = new Size(460, 306);
             grpChangePassword.TabStop = false;
             grpChangePassword.Text = "Change password";
             //
             // lblCurrentPassword
             //
             lblCurrentPassword.AutoSize = true;
-            lblCurrentPassword.Location = new Point(12, 24);
+            lblCurrentPassword.Location = new Point(14, 32);
             lblCurrentPassword.Name = "lblCurrentPassword";
             lblCurrentPassword.Text = "Current password";
             //
             // txtCurrentPassword
             //
-            txtCurrentPassword.Location = new Point(12, 42);
+            txtCurrentPassword.Location = new Point(14, 55);
             txtCurrentPassword.Name = "txtCurrentPassword";
-            txtCurrentPassword.Size = new Size(260, 23);
+            txtCurrentPassword.Size = new Size(299, 23);
             txtCurrentPassword.TabIndex = 0;
             txtCurrentPassword.UseSystemPasswordChar = true;
             //
             // lblNewPassword
             //
             lblNewPassword.AutoSize = true;
-            lblNewPassword.Location = new Point(12, 72);
+            lblNewPassword.Location = new Point(14, 95);
             lblNewPassword.Name = "lblNewPassword";
             lblNewPassword.Text = "New password (at least 8 characters, with a letter and a number)";
             //
             // txtNewPassword
             //
-            txtNewPassword.Location = new Point(12, 90);
+            txtNewPassword.Location = new Point(14, 119);
             txtNewPassword.Name = "txtNewPassword";
-            txtNewPassword.Size = new Size(260, 23);
+            txtNewPassword.Size = new Size(299, 23);
             txtNewPassword.TabIndex = 1;
             txtNewPassword.UseSystemPasswordChar = true;
             //
             // lblConfirmPassword
             //
             lblConfirmPassword.AutoSize = true;
-            lblConfirmPassword.Location = new Point(12, 120);
+            lblConfirmPassword.Location = new Point(14, 158);
             lblConfirmPassword.Name = "lblConfirmPassword";
             lblConfirmPassword.Text = "Type the new password again";
             //
             // txtConfirmPassword
             //
-            txtConfirmPassword.Location = new Point(12, 138);
+            txtConfirmPassword.Location = new Point(14, 182);
             txtConfirmPassword.Name = "txtConfirmPassword";
-            txtConfirmPassword.Size = new Size(260, 23);
+            txtConfirmPassword.Size = new Size(299, 23);
             txtConfirmPassword.TabIndex = 2;
             txtConfirmPassword.UseSystemPasswordChar = true;
             //
             // btnSavePassword
             //
-            btnSavePassword.Location = new Point(12, 170);
+            btnSavePassword.Location = new Point(14, 224);
             btnSavePassword.Name = "btnSavePassword";
-            btnSavePassword.Size = new Size(120, 28);
+            btnSavePassword.Size = new Size(138, 36);
             btnSavePassword.TabIndex = 3;
             btnSavePassword.Text = "Save Password";
             btnSavePassword.Click += btnSavePassword_Click;
@@ -145,7 +146,7 @@ namespace Company.OfficeApp.Pages
             // lblPasswordMsg
             //
             lblPasswordMsg.AutoSize = true;
-            lblPasswordMsg.Location = new Point(12, 204);
+            lblPasswordMsg.Location = new Point(14, 269);
             lblPasswordMsg.Name = "lblPasswordMsg";
             //
             // grpSecurityQuestion  (Admin only)
@@ -159,67 +160,67 @@ namespace Company.OfficeApp.Pages
             grpSecurityQuestion.Controls.Add(txtSqCurrentPassword);
             grpSecurityQuestion.Controls.Add(btnSaveSecurityQuestion);
             grpSecurityQuestion.Controls.Add(lblSqMsg);
-            grpSecurityQuestion.Location = new Point(12, 332);
+            grpSecurityQuestion.Location = new Point(38, 454);
             grpSecurityQuestion.Name = "grpSecurityQuestion";
-            grpSecurityQuestion.Size = new Size(400, 272);
+            grpSecurityQuestion.Size = new Size(460, 359);
             grpSecurityQuestion.TabStop = false;
             grpSecurityQuestion.Text = "Security question (to reset your own password)";
             //
             // lblSqStatus
             //
-            lblSqStatus.Location = new Point(12, 22);
+            lblSqStatus.Location = new Point(14, 29);
             lblSqStatus.Name = "lblSqStatus";
-            lblSqStatus.Size = new Size(376, 34);
+            lblSqStatus.Size = new Size(432, 34);
             //
             // lblQuestion
             //
             lblQuestion.AutoSize = true;
-            lblQuestion.Location = new Point(12, 60);
+            lblQuestion.Location = new Point(14, 79);
             lblQuestion.Name = "lblQuestion";
             lblQuestion.Text = "Question (pick one or type your own)";
             //
             // cboSecurityQuestion
             //
-            cboSecurityQuestion.Location = new Point(12, 78);
+            cboSecurityQuestion.Location = new Point(14, 103);
             cboSecurityQuestion.Name = "cboSecurityQuestion";
-            cboSecurityQuestion.Size = new Size(376, 23);
+            cboSecurityQuestion.Size = new Size(432, 23);
             cboSecurityQuestion.TabIndex = 4;
             //
             // lblSqAnswer
             //
             lblSqAnswer.AutoSize = true;
-            lblSqAnswer.Location = new Point(12, 108);
+            lblSqAnswer.Location = new Point(14, 143);
             lblSqAnswer.Name = "lblSqAnswer";
             lblSqAnswer.Text = "Answer (capital letters don't matter)";
             //
             // txtSecurityAnswer
             //
-            txtSecurityAnswer.Location = new Point(12, 126);
+            txtSecurityAnswer.Location = new Point(14, 166);
             txtSecurityAnswer.Name = "txtSecurityAnswer";
-            txtSecurityAnswer.Size = new Size(260, 23);
+            txtSecurityAnswer.Size = new Size(299, 23);
             txtSecurityAnswer.TabIndex = 5;
             txtSecurityAnswer.UseSystemPasswordChar = true;
             //
             // lblSqCurrentPassword
             //
             lblSqCurrentPassword.AutoSize = true;
-            lblSqCurrentPassword.Location = new Point(12, 156);
+            lblSqCurrentPassword.Location = new Point(14, 206);
             lblSqCurrentPassword.Name = "lblSqCurrentPassword";
             lblSqCurrentPassword.Text = "Your current password (to confirm it's you)";
             //
             // txtSqCurrentPassword
             //
-            txtSqCurrentPassword.Location = new Point(12, 174);
+            txtSqCurrentPassword.Location = new Point(14, 230);
             txtSqCurrentPassword.Name = "txtSqCurrentPassword";
-            txtSqCurrentPassword.Size = new Size(260, 23);
+            txtSqCurrentPassword.Size = new Size(299, 23);
             txtSqCurrentPassword.TabIndex = 6;
             txtSqCurrentPassword.UseSystemPasswordChar = true;
             //
             // btnSaveSecurityQuestion
             //
-            btnSaveSecurityQuestion.Location = new Point(12, 206);
+            btnSaveSecurityQuestion.Location = new Point(14, 272);
             btnSaveSecurityQuestion.Name = "btnSaveSecurityQuestion";
-            btnSaveSecurityQuestion.Size = new Size(170, 28);
+            btnSaveSecurityQuestion.Size = new Size(195, 36);
             btnSaveSecurityQuestion.TabIndex = 7;
             btnSaveSecurityQuestion.Text = "Save Security Question";
             btnSaveSecurityQuestion.Click += btnSaveSecurityQuestion_Click;
@@ -227,7 +228,7 @@ namespace Company.OfficeApp.Pages
             // lblSqMsg
             //
             lblSqMsg.AutoSize = true;
-            lblSqMsg.Location = new Point(12, 242);
+            lblSqMsg.Location = new Point(14, 319);
             lblSqMsg.Name = "lblSqMsg";
             //
             // MyAccountPage
@@ -242,7 +243,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(grpChangePassword);
             Controls.Add(grpSecurityQuestion);
             Name = "MyAccountPage";
-            Size = new Size(640, 620);
+            Size = new Size(784, 850);
             grpChangePassword.ResumeLayout(false);
             grpChangePassword.PerformLayout();
             grpSecurityQuestion.ResumeLayout(false);

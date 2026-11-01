@@ -65,15 +65,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblSearch
             // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(12, 15);
+            lblSearch.Location = new Point(38, 36);
             lblSearch.Name = "lblSearch";
             lblSearch.Text = "Search";
             // 
             // txtVendorSearch
             // 
-            txtVendorSearch.Location = new Point(62, 12);
+            txtVendorSearch.Location = new Point(95, 32);
             txtVendorSearch.Name = "txtVendorSearch";
-            txtVendorSearch.Size = new Size(200, 23);
+            txtVendorSearch.Size = new Size(230, 23);
             txtVendorSearch.TabIndex = 0;
             // 
             // dgvVendors
@@ -86,35 +86,35 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvVendors.ReadOnly = true;
             dgvVendors.RowHeadersVisible = false;
             dgvVendors.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvVendors.Location = new Point(12, 44);
+            dgvVendors.Location = new Point(38, 74);
             dgvVendors.Name = "dgvVendors";
-            dgvVendors.Size = new Size(930, 200);
+            dgvVendors.Size = new Size(1070, 264);
             dgvVendors.TabIndex = 1;
             dgvVendors.SelectionChanged += dgvVendors_SelectionChanged;
             // 
             // btnAddVendor
             // 
-            btnAddVendor.Location = new Point(12, 252);
+            btnAddVendor.Location = new Point(38, 349);
             btnAddVendor.Name = "btnAddVendor";
-            btnAddVendor.Size = new Size(100, 28);
+            btnAddVendor.Size = new Size(115, 36);
             btnAddVendor.Text = "Add Vendor";
             btnAddVendor.TabIndex = 2;
             btnAddVendor.Click += btnAddVendor_Click;
             // 
             // btnDeleteVendor
             // 
-            btnDeleteVendor.Location = new Point(118, 252);
+            btnDeleteVendor.Location = new Point(160, 349);
             btnDeleteVendor.Name = "btnDeleteVendor";
-            btnDeleteVendor.Size = new Size(90, 28);
+            btnDeleteVendor.Size = new Size(103, 36);
             btnDeleteVendor.Text = "Delete";
             btnDeleteVendor.TabIndex = 3;
             btnDeleteVendor.Click += btnDeleteVendor_Click;
             // 
             // btnExportVendors
             // 
-            btnExportVendors.Location = new Point(214, 252);
+            btnExportVendors.Location = new Point(270, 349);
             btnExportVendors.Name = "btnExportVendors";
-            btnExportVendors.Size = new Size(90, 28);
+            btnExportVendors.Size = new Size(103, 36);
             btnExportVendors.Text = "Export";
             btnExportVendors.TabIndex = 4;
             btnExportVendors.Click += btnExportVendors_Click;
@@ -122,142 +122,143 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblFormMode
             // 
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 296);
+            lblFormMode.Location = new Point(38, 407);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New vendor";
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblVendorName
             // 
             lblVendorName.AutoSize = true;
-            lblVendorName.Location = new Point(12, 320);
+            lblVendorName.Location = new Point(38, 438);
             lblVendorName.Name = "lblVendorName";
             lblVendorName.Text = "Vendor / supplier name";
             // 
             // txtVendorName
             // 
-            txtVendorName.Location = new Point(12, 338);
+            txtVendorName.Location = new Point(38, 462);
             txtVendorName.Name = "txtVendorName";
-            txtVendorName.Size = new Size(300, 23);
+            txtVendorName.Size = new Size(345, 23);
             txtVendorName.TabIndex = 5;
             // 
             // lblVendorContact
             // 
             lblVendorContact.AutoSize = true;
-            lblVendorContact.Location = new Point(12, 368);
+            lblVendorContact.Location = new Point(38, 502);
             lblVendorContact.Name = "lblVendorContact";
             lblVendorContact.Text = "Contact person";
             // 
             // txtVendorContact
             // 
-            txtVendorContact.Location = new Point(12, 386);
+            txtVendorContact.Location = new Point(38, 526);
             txtVendorContact.Name = "txtVendorContact";
-            txtVendorContact.Size = new Size(300, 23);
+            txtVendorContact.Size = new Size(345, 23);
             txtVendorContact.TabIndex = 6;
             // 
             // lblVendorPhone
             // 
             lblVendorPhone.AutoSize = true;
-            lblVendorPhone.Location = new Point(12, 416);
+            lblVendorPhone.Location = new Point(38, 565);
             lblVendorPhone.Name = "lblVendorPhone";
             lblVendorPhone.Text = "Phone";
             // 
             // txtVendorPhone
             // 
-            txtVendorPhone.Location = new Point(12, 434);
+            txtVendorPhone.Location = new Point(38, 589);
             txtVendorPhone.Name = "txtVendorPhone";
-            txtVendorPhone.Size = new Size(300, 23);
+            txtVendorPhone.Size = new Size(345, 23);
             txtVendorPhone.TabIndex = 7;
             // 
             // lblVendorEmail
             // 
             lblVendorEmail.AutoSize = true;
-            lblVendorEmail.Location = new Point(12, 464);
+            lblVendorEmail.Location = new Point(38, 628);
             lblVendorEmail.Name = "lblVendorEmail";
             lblVendorEmail.Text = "Email";
             // 
             // txtVendorEmail
             // 
-            txtVendorEmail.Location = new Point(12, 482);
+            txtVendorEmail.Location = new Point(38, 652);
             txtVendorEmail.Name = "txtVendorEmail";
-            txtVendorEmail.Size = new Size(300, 23);
+            txtVendorEmail.Size = new Size(345, 23);
             txtVendorEmail.TabIndex = 8;
             // 
             // lblVendorAddress
             // 
             lblVendorAddress.AutoSize = true;
-            lblVendorAddress.Location = new Point(12, 512);
+            lblVendorAddress.Location = new Point(38, 692);
             lblVendorAddress.Name = "lblVendorAddress";
             lblVendorAddress.Text = "Address";
             // 
             // txtVendorAddress
             // 
-            txtVendorAddress.Location = new Point(12, 530);
+            txtVendorAddress.Location = new Point(38, 716);
             txtVendorAddress.Name = "txtVendorAddress";
-            txtVendorAddress.Size = new Size(300, 46);
+            txtVendorAddress.Size = new Size(345, 61);
             txtVendorAddress.Multiline = true;
             txtVendorAddress.TabIndex = 9;
             // 
             // lblVendorBank
             // 
             lblVendorBank.AutoSize = true;
-            lblVendorBank.Location = new Point(340, 320);
+            lblVendorBank.Location = new Point(415, 438);
             lblVendorBank.Name = "lblVendorBank";
             lblVendorBank.Text = "Bank name";
             // 
             // txtVendorBank
             // 
-            txtVendorBank.Location = new Point(340, 338);
+            txtVendorBank.Location = new Point(415, 462);
             txtVendorBank.Name = "txtVendorBank";
-            txtVendorBank.Size = new Size(240, 23);
+            txtVendorBank.Size = new Size(276, 23);
             txtVendorBank.TabIndex = 10;
             // 
             // lblVendorAccountName
             // 
             lblVendorAccountName.AutoSize = true;
-            lblVendorAccountName.Location = new Point(340, 368);
+            lblVendorAccountName.Location = new Point(415, 502);
             lblVendorAccountName.Name = "lblVendorAccountName";
             lblVendorAccountName.Text = "Account name";
             // 
             // txtVendorAccountName
             // 
-            txtVendorAccountName.Location = new Point(340, 386);
+            txtVendorAccountName.Location = new Point(415, 526);
             txtVendorAccountName.Name = "txtVendorAccountName";
-            txtVendorAccountName.Size = new Size(240, 23);
+            txtVendorAccountName.Size = new Size(276, 23);
             txtVendorAccountName.TabIndex = 11;
             // 
             // lblVendorAccountNo
             // 
             lblVendorAccountNo.AutoSize = true;
-            lblVendorAccountNo.Location = new Point(340, 416);
+            lblVendorAccountNo.Location = new Point(415, 565);
             lblVendorAccountNo.Name = "lblVendorAccountNo";
             lblVendorAccountNo.Text = "Account number";
             // 
             // txtVendorAccountNo
             // 
-            txtVendorAccountNo.Location = new Point(340, 434);
+            txtVendorAccountNo.Location = new Point(415, 589);
             txtVendorAccountNo.Name = "txtVendorAccountNo";
-            txtVendorAccountNo.Size = new Size(240, 23);
+            txtVendorAccountNo.Size = new Size(276, 23);
             txtVendorAccountNo.TabIndex = 12;
             // 
             // lblVendorVat
             // 
             lblVendorVat.AutoSize = true;
-            lblVendorVat.Location = new Point(340, 464);
+            lblVendorVat.Location = new Point(415, 628);
             lblVendorVat.Name = "lblVendorVat";
             lblVendorVat.Text = "VAT status";
             // 
             // cboVendorVat
             // 
-            cboVendorVat.Location = new Point(340, 482);
+            cboVendorVat.Location = new Point(415, 652);
             cboVendorVat.Name = "cboVendorVat";
-            cboVendorVat.Size = new Size(140, 23);
+            cboVendorVat.Size = new Size(161, 23);
             cboVendorVat.DropDownStyle = ComboBoxStyle.DropDownList;
             cboVendorVat.TabIndex = 13;
             // 
             // lblPapers
             // 
             lblPapers.AutoSize = true;
-            lblPapers.Location = new Point(610, 320);
+            lblPapers.Location = new Point(726, 438);
             lblPapers.Name = "lblPapers";
             lblPapers.Text = "Vendor papers (save the vendor first)";
             // 
@@ -271,42 +272,42 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvVendorDocs.ReadOnly = true;
             dgvVendorDocs.RowHeadersVisible = false;
             dgvVendorDocs.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvVendorDocs.Location = new Point(610, 338);
+            dgvVendorDocs.Location = new Point(726, 462);
             dgvVendorDocs.Name = "dgvVendorDocs";
-            dgvVendorDocs.Size = new Size(332, 140);
+            dgvVendorDocs.Size = new Size(382, 185);
             dgvVendorDocs.TabIndex = 14;
             // 
             // cboVendorDocType
             // 
-            cboVendorDocType.Location = new Point(610, 486);
+            cboVendorDocType.Location = new Point(726, 658);
             cboVendorDocType.Name = "cboVendorDocType";
-            cboVendorDocType.Size = new Size(200, 23);
+            cboVendorDocType.Size = new Size(230, 23);
             cboVendorDocType.DropDownStyle = ComboBoxStyle.DropDownList;
             cboVendorDocType.TabIndex = 15;
             // 
             // btnUploadVendorDoc
             // 
-            btnUploadVendorDoc.Location = new Point(816, 484);
+            btnUploadVendorDoc.Location = new Point(962, 655);
             btnUploadVendorDoc.Name = "btnUploadVendorDoc";
-            btnUploadVendorDoc.Size = new Size(126, 28);
+            btnUploadVendorDoc.Size = new Size(145, 36);
             btnUploadVendorDoc.Text = "Upload Paper";
             btnUploadVendorDoc.TabIndex = 16;
             btnUploadVendorDoc.Click += btnUploadVendorDoc_Click;
             // 
             // btnViewVendorDoc
             // 
-            btnViewVendorDoc.Location = new Point(610, 516);
+            btnViewVendorDoc.Location = new Point(726, 697);
             btnViewVendorDoc.Name = "btnViewVendorDoc";
-            btnViewVendorDoc.Size = new Size(90, 28);
+            btnViewVendorDoc.Size = new Size(103, 36);
             btnViewVendorDoc.Text = "View";
             btnViewVendorDoc.TabIndex = 17;
             btnViewVendorDoc.Click += btnViewVendorDoc_Click;
             // 
             // btnDeleteVendorDoc
             // 
-            btnDeleteVendorDoc.Location = new Point(706, 516);
+            btnDeleteVendorDoc.Location = new Point(836, 697);
             btnDeleteVendorDoc.Name = "btnDeleteVendorDoc";
-            btnDeleteVendorDoc.Size = new Size(104, 28);
+            btnDeleteVendorDoc.Size = new Size(120, 36);
             btnDeleteVendorDoc.Text = "Delete Paper";
             btnDeleteVendorDoc.TabIndex = 18;
             btnDeleteVendorDoc.Click += btnDeleteVendorDoc_Click;
@@ -314,23 +315,23 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblVendorMsg
             // 
             lblVendorMsg.AutoSize = true;
-            lblVendorMsg.Location = new Point(12, 586);
+            lblVendorMsg.Location = new Point(38, 790);
             lblVendorMsg.Name = "lblVendorMsg";
             // 
             // btnSaveVendor
             // 
-            btnSaveVendor.Location = new Point(12, 608);
+            btnSaveVendor.Location = new Point(38, 819);
             btnSaveVendor.Name = "btnSaveVendor";
-            btnSaveVendor.Size = new Size(90, 28);
+            btnSaveVendor.Size = new Size(103, 36);
             btnSaveVendor.Text = "Save";
             btnSaveVendor.TabIndex = 19;
             btnSaveVendor.Click += btnSaveVendor_Click;
             // 
             // btnCancelVendor
             // 
-            btnCancelVendor.Location = new Point(108, 608);
+            btnCancelVendor.Location = new Point(148, 819);
             btnCancelVendor.Name = "btnCancelVendor";
-            btnCancelVendor.Size = new Size(90, 28);
+            btnCancelVendor.Size = new Size(103, 36);
             btnCancelVendor.Text = "Cancel";
             btnCancelVendor.TabIndex = 20;
             btnCancelVendor.Click += btnCancelVendor_Click;
@@ -418,7 +419,7 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(btnSaveVendor);
             Controls.Add(btnCancelVendor);
             Name = "VendorsTab";
-            Size = new Size(960, 660);
+            Size = new Size(1152, 903);
             Load += VendorsTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvVendors).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvVendorDocs).EndInit();

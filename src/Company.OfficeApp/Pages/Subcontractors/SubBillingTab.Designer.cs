@@ -65,15 +65,15 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblBillingJob
             // 
             lblBillingJob.AutoSize = true;
-            lblBillingJob.Location = new Point(12, 15);
+            lblBillingJob.Location = new Point(38, 36);
             lblBillingJob.Name = "lblBillingJob";
             lblBillingJob.Text = "Job";
             // 
             // cboBillingJob
             // 
-            cboBillingJob.Location = new Point(50, 12);
+            cboBillingJob.Location = new Point(81, 32);
             cboBillingJob.Name = "cboBillingJob";
-            cboBillingJob.Size = new Size(420, 23);
+            cboBillingJob.Size = new Size(483, 23);
             cboBillingJob.DropDownStyle = ComboBoxStyle.DropDownList;
             cboBillingJob.TabIndex = 0;
             cboBillingJob.SelectedIndexChanged += cboBillingJob_SelectedIndexChanged;
@@ -81,35 +81,35 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblBillContract
             // 
             lblBillContract.AutoSize = true;
-            lblBillContract.Location = new Point(12, 46);
+            lblBillContract.Location = new Point(38, 77);
             lblBillContract.Name = "lblBillContract";
             lblBillContract.Text = "Contract:";
             // 
             // lblBillPaid
             // 
             lblBillPaid.AutoSize = true;
-            lblBillPaid.Location = new Point(210, 46);
+            lblBillPaid.Location = new Point(265, 77);
             lblBillPaid.Name = "lblBillPaid";
             lblBillPaid.Text = "Paid so far:";
             // 
             // lblBillRetention
             // 
             lblBillRetention.AutoSize = true;
-            lblBillRetention.Location = new Point(408, 46);
+            lblBillRetention.Location = new Point(493, 77);
             lblBillRetention.Name = "lblBillRetention";
             lblBillRetention.Text = "Retention held:";
             // 
             // lblBillRemaining
             // 
             lblBillRemaining.AutoSize = true;
-            lblBillRemaining.Location = new Point(606, 46);
+            lblBillRemaining.Location = new Point(721, 77);
             lblBillRemaining.Name = "lblBillRemaining";
             lblBillRemaining.Text = "Remaining:";
             // 
             // lblBillProgress
             // 
             lblBillProgress.AutoSize = true;
-            lblBillProgress.Location = new Point(804, 46);
+            lblBillProgress.Location = new Point(949, 77);
             lblBillProgress.Name = "lblBillProgress";
             lblBillProgress.Text = "Done:";
             // 
@@ -123,62 +123,62 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvBillingStages.ReadOnly = true;
             dgvBillingStages.RowHeadersVisible = false;
             dgvBillingStages.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvBillingStages.Location = new Point(12, 70);
+            dgvBillingStages.Location = new Point(38, 108);
             dgvBillingStages.Name = "dgvBillingStages";
-            dgvBillingStages.Size = new Size(930, 160);
+            dgvBillingStages.Size = new Size(1070, 211);
             dgvBillingStages.TabIndex = 1;
             dgvBillingStages.SelectionChanged += dgvBillingStages_SelectionChanged;
             // 
             // btnMarkStageReached
             // 
-            btnMarkStageReached.Location = new Point(12, 238);
+            btnMarkStageReached.Location = new Point(38, 330);
             btnMarkStageReached.Name = "btnMarkStageReached";
-            btnMarkStageReached.Size = new Size(140, 28);
+            btnMarkStageReached.Size = new Size(161, 36);
             btnMarkStageReached.Text = "Mark Stage Reached";
             btnMarkStageReached.TabIndex = 2;
             btnMarkStageReached.Click += btnMarkStageReached_Click;
             // 
             // btnPrepareVoucher
             // 
-            btnPrepareVoucher.Location = new Point(158, 238);
+            btnPrepareVoucher.Location = new Point(206, 330);
             btnPrepareVoucher.Name = "btnPrepareVoucher";
-            btnPrepareVoucher.Size = new Size(120, 28);
+            btnPrepareVoucher.Size = new Size(138, 36);
             btnPrepareVoucher.Text = "Prepare Voucher";
             btnPrepareVoucher.TabIndex = 3;
             btnPrepareVoucher.Click += btnPrepareVoucher_Click;
             // 
             // btnApproveVoucher
             // 
-            btnApproveVoucher.Location = new Point(284, 238);
+            btnApproveVoucher.Location = new Point(351, 330);
             btnApproveVoucher.Name = "btnApproveVoucher";
-            btnApproveVoucher.Size = new Size(120, 28);
+            btnApproveVoucher.Size = new Size(138, 36);
             btnApproveVoucher.Text = "Approve Voucher";
             btnApproveVoucher.TabIndex = 4;
             btnApproveVoucher.Click += btnApproveVoucher_Click;
             // 
             // btnRejectVoucher
             // 
-            btnRejectVoucher.Location = new Point(410, 238);
+            btnRejectVoucher.Location = new Point(495, 330);
             btnRejectVoucher.Name = "btnRejectVoucher";
-            btnRejectVoucher.Size = new Size(110, 28);
+            btnRejectVoucher.Size = new Size(126, 36);
             btnRejectVoucher.Text = "Reject Voucher";
             btnRejectVoucher.TabIndex = 5;
             btnRejectVoucher.Click += btnRejectVoucher_Click;
             // 
             // btnPrintVoucher
             // 
-            btnPrintVoucher.Location = new Point(526, 238);
+            btnPrintVoucher.Location = new Point(629, 330);
             btnPrintVoucher.Name = "btnPrintVoucher";
-            btnPrintVoucher.Size = new Size(100, 28);
+            btnPrintVoucher.Size = new Size(115, 36);
             btnPrintVoucher.Text = "Print Voucher";
             btnPrintVoucher.TabIndex = 6;
             btnPrintVoucher.Click += btnPrintVoucher_Click;
             // 
             // btnReleaseRetention
             // 
-            btnReleaseRetention.Location = new Point(632, 238);
+            btnReleaseRetention.Location = new Point(751, 330);
             btnReleaseRetention.Name = "btnReleaseRetention";
-            btnReleaseRetention.Size = new Size(130, 28);
+            btnReleaseRetention.Size = new Size(150, 36);
             btnReleaseRetention.Text = "Release Retention";
             btnReleaseRetention.TabIndex = 7;
             btnReleaseRetention.Click += btnReleaseRetention_Click;
@@ -186,44 +186,45 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(12, 272);
+            lblApproverNote.Location = new Point(38, 375);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "The Subcontractors Supervisor approves vouchers.";
             // 
             // lblPayoutTitle
             // 
             lblPayoutTitle.AutoSize = true;
-            lblPayoutTitle.Location = new Point(12, 300);
+            lblPayoutTitle.Location = new Point(38, 412);
             lblPayoutTitle.Name = "lblPayoutTitle";
             lblPayoutTitle.Text = "Record a payout (select an approved voucher above)";
+            lblPayoutTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblPayoutDate
             // 
             lblPayoutDate.AutoSize = true;
-            lblPayoutDate.Location = new Point(12, 322);
+            lblPayoutDate.Location = new Point(38, 441);
             lblPayoutDate.Name = "lblPayoutDate";
             lblPayoutDate.Text = "Date paid";
             // 
             // dtpPayoutDate
             // 
-            dtpPayoutDate.Location = new Point(12, 340);
+            dtpPayoutDate.Location = new Point(38, 465);
             dtpPayoutDate.Name = "dtpPayoutDate";
-            dtpPayoutDate.Size = new Size(125, 23);
+            dtpPayoutDate.Size = new Size(144, 23);
             dtpPayoutDate.Format = DateTimePickerFormat.Short;
             dtpPayoutDate.TabIndex = 8;
             // 
             // lblPayoutAmount
             // 
             lblPayoutAmount.AutoSize = true;
-            lblPayoutAmount.Location = new Point(147, 322);
+            lblPayoutAmount.Location = new Point(193, 441);
             lblPayoutAmount.Name = "lblPayoutAmount";
             lblPayoutAmount.Text = "Amount";
             // 
             // numPayoutAmount
             // 
-            numPayoutAmount.Location = new Point(147, 340);
+            numPayoutAmount.Location = new Point(193, 465);
             numPayoutAmount.Name = "numPayoutAmount";
-            numPayoutAmount.Size = new Size(130, 23);
+            numPayoutAmount.Size = new Size(150, 23);
             numPayoutAmount.DecimalPlaces = 2;
             numPayoutAmount.ThousandsSeparator = true;
             numPayoutAmount.Maximum = 999999999999m;
@@ -232,37 +233,37 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblPayoutMethod
             // 
             lblPayoutMethod.AutoSize = true;
-            lblPayoutMethod.Location = new Point(287, 322);
+            lblPayoutMethod.Location = new Point(354, 441);
             lblPayoutMethod.Name = "lblPayoutMethod";
             lblPayoutMethod.Text = "Method";
             // 
             // cboPayoutMethod
             // 
-            cboPayoutMethod.Location = new Point(287, 340);
+            cboPayoutMethod.Location = new Point(354, 465);
             cboPayoutMethod.Name = "cboPayoutMethod";
-            cboPayoutMethod.Size = new Size(120, 23);
+            cboPayoutMethod.Size = new Size(138, 23);
             cboPayoutMethod.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPayoutMethod.TabIndex = 10;
             // 
             // lblPayoutReference
             // 
             lblPayoutReference.AutoSize = true;
-            lblPayoutReference.Location = new Point(417, 322);
+            lblPayoutReference.Location = new Point(504, 441);
             lblPayoutReference.Name = "lblPayoutReference";
             lblPayoutReference.Text = "Reference no.";
             // 
             // txtPayoutReference
             // 
-            txtPayoutReference.Location = new Point(417, 340);
+            txtPayoutReference.Location = new Point(504, 465);
             txtPayoutReference.Name = "txtPayoutReference";
-            txtPayoutReference.Size = new Size(160, 23);
+            txtPayoutReference.Size = new Size(184, 23);
             txtPayoutReference.TabIndex = 11;
             // 
             // btnRecordPayout
             // 
-            btnRecordPayout.Location = new Point(587, 338);
+            btnRecordPayout.Location = new Point(699, 462);
             btnRecordPayout.Name = "btnRecordPayout";
-            btnRecordPayout.Size = new Size(110, 28);
+            btnRecordPayout.Size = new Size(126, 36);
             btnRecordPayout.Text = "Record Payout";
             btnRecordPayout.TabIndex = 12;
             btnRecordPayout.Click += btnRecordPayout_Click;
@@ -270,13 +271,13 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblBillMsg
             // 
             lblBillMsg.AutoSize = true;
-            lblBillMsg.Location = new Point(12, 372);
+            lblBillMsg.Location = new Point(38, 507);
             lblBillMsg.Name = "lblBillMsg";
             // 
             // lblPayouts
             // 
             lblPayouts.AutoSize = true;
-            lblPayouts.Location = new Point(12, 398);
+            lblPayouts.Location = new Point(38, 541);
             lblPayouts.Name = "lblPayouts";
             lblPayouts.Text = "Payouts";
             // 
@@ -290,9 +291,9 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvPayouts.ReadOnly = true;
             dgvPayouts.RowHeadersVisible = false;
             dgvPayouts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPayouts.Location = new Point(12, 418);
+            dgvPayouts.Location = new Point(38, 568);
             dgvPayouts.Name = "dgvPayouts";
-            dgvPayouts.Size = new Size(930, 140);
+            dgvPayouts.Size = new Size(1070, 185);
             dgvPayouts.TabIndex = 13;
             // 
             // colStage
@@ -406,7 +407,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             Controls.Add(lblPayouts);
             Controls.Add(dgvPayouts);
             Name = "SubBillingTab";
-            Size = new Size(960, 580);
+            Size = new Size(1152, 798);
             Load += SubBillingTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvBillingStages).EndInit();
             ((System.ComponentModel.ISupportInitialize)numPayoutAmount).EndInit();

@@ -2,6 +2,7 @@
 NAMESPACE = "Company.WebsiteAdmin.Pages"
 CLASS = "AddWebProjectForm"
 FORM = True
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (460, 230)
 LOAD_EVENT = "AddWebProjectForm_Load"
 

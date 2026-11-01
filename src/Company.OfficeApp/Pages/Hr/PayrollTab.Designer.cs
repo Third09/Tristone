@@ -46,15 +46,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPayGroup
             // 
             lblPayGroup.AutoSize = true;
-            lblPayGroup.Location = new Point(12, 15);
+            lblPayGroup.Location = new Point(38, 36);
             lblPayGroup.Name = "lblPayGroup";
             lblPayGroup.Text = "Pay group";
             // 
             // cboPayGroup
             // 
-            cboPayGroup.Location = new Point(90, 12);
+            cboPayGroup.Location = new Point(127, 32);
             cboPayGroup.Name = "cboPayGroup";
-            cboPayGroup.Size = new Size(150, 23);
+            cboPayGroup.Size = new Size(172, 23);
             cboPayGroup.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPayGroup.TabIndex = 0;
             cboPayGroup.SelectedIndexChanged += cboPayGroup_SelectedIndexChanged;
@@ -62,15 +62,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPayPeriod
             // 
             lblPayPeriod.AutoSize = true;
-            lblPayPeriod.Location = new Point(252, 15);
+            lblPayPeriod.Location = new Point(314, 36);
             lblPayPeriod.Name = "lblPayPeriod";
             lblPayPeriod.Text = "Pay period";
             // 
             // cboPayPeriod
             // 
-            cboPayPeriod.Location = new Point(330, 12);
+            cboPayPeriod.Location = new Point(403, 32);
             cboPayPeriod.Name = "cboPayPeriod";
-            cboPayPeriod.Size = new Size(330, 23);
+            cboPayPeriod.Size = new Size(379, 23);
             cboPayPeriod.DropDownStyle = ComboBoxStyle.DropDownList;
             cboPayPeriod.TabIndex = 1;
             cboPayPeriod.SelectedIndexChanged += cboPayPeriod_SelectedIndexChanged;
@@ -78,32 +78,32 @@ namespace Company.OfficeApp.Pages.Hr
             // lblPayrollStatus
             // 
             lblPayrollStatus.AutoSize = true;
-            lblPayrollStatus.Location = new Point(672, 15);
+            lblPayrollStatus.Location = new Point(797, 36);
             lblPayrollStatus.Name = "lblPayrollStatus";
             lblPayrollStatus.Text = "";
             // 
             // lblPayrollWarnings
             // 
             lblPayrollWarnings.AutoSize = true;
-            lblPayrollWarnings.Location = new Point(12, 44);
+            lblPayrollWarnings.Location = new Point(38, 74);
             lblPayrollWarnings.Name = "lblPayrollWarnings";
             lblPayrollWarnings.Text = "";
             lblPayrollWarnings.MaximumSize = new Size(930, 0);
             // 
             // btnComputePayroll
             // 
-            btnComputePayroll.Location = new Point(12, 100);
+            btnComputePayroll.Location = new Point(38, 148);
             btnComputePayroll.Name = "btnComputePayroll";
-            btnComputePayroll.Size = new Size(130, 28);
+            btnComputePayroll.Size = new Size(150, 36);
             btnComputePayroll.Text = "Compute Payroll";
             btnComputePayroll.TabIndex = 2;
             btnComputePayroll.Click += btnComputePayroll_Click;
             // 
             // btnFinalizePayroll
             // 
-            btnFinalizePayroll.Location = new Point(148, 100);
+            btnFinalizePayroll.Location = new Point(194, 148);
             btnFinalizePayroll.Name = "btnFinalizePayroll";
-            btnFinalizePayroll.Size = new Size(130, 28);
+            btnFinalizePayroll.Size = new Size(150, 36);
             btnFinalizePayroll.Text = "Finalize Payroll";
             btnFinalizePayroll.TabIndex = 3;
             btnFinalizePayroll.Click += btnFinalizePayroll_Click;
@@ -118,42 +118,42 @@ namespace Company.OfficeApp.Pages.Hr
             dgvPayroll.ReadOnly = true;
             dgvPayroll.RowHeadersVisible = false;
             dgvPayroll.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPayroll.Location = new Point(12, 136);
+            dgvPayroll.Location = new Point(38, 196);
             dgvPayroll.Name = "dgvPayroll";
-            dgvPayroll.Size = new Size(930, 330);
+            dgvPayroll.Size = new Size(1070, 436);
             dgvPayroll.TabIndex = 4;
             dgvPayroll.CellDoubleClick += dgvPayroll_CellDoubleClick;
             // 
             // lblPayrollTotal
             // 
             lblPayrollTotal.AutoSize = true;
-            lblPayrollTotal.Location = new Point(12, 474);
+            lblPayrollTotal.Location = new Point(38, 642);
             lblPayrollTotal.Name = "lblPayrollTotal";
             lblPayrollTotal.Text = "";
             // 
             // btnPrintPayslips
             // 
-            btnPrintPayslips.Location = new Point(12, 498);
+            btnPrintPayslips.Location = new Point(38, 673);
             btnPrintPayslips.Name = "btnPrintPayslips";
-            btnPrintPayslips.Size = new Size(120, 28);
+            btnPrintPayslips.Size = new Size(138, 36);
             btnPrintPayslips.Text = "Print Payslips";
             btnPrintPayslips.TabIndex = 5;
             btnPrintPayslips.Click += btnPrintPayslips_Click;
             // 
             // btnSavePayslipsPdf
             // 
-            btnSavePayslipsPdf.Location = new Point(138, 498);
+            btnSavePayslipsPdf.Location = new Point(183, 673);
             btnSavePayslipsPdf.Name = "btnSavePayslipsPdf";
-            btnSavePayslipsPdf.Size = new Size(150, 28);
+            btnSavePayslipsPdf.Size = new Size(172, 36);
             btnSavePayslipsPdf.Text = "Save Payslips as PDF";
             btnSavePayslipsPdf.TabIndex = 6;
             btnSavePayslipsPdf.Click += btnSavePayslipsPdf_Click;
             // 
             // btnExportPayroll
             // 
-            btnExportPayroll.Location = new Point(294, 498);
+            btnExportPayroll.Location = new Point(362, 673);
             btnExportPayroll.Name = "btnExportPayroll";
-            btnExportPayroll.Size = new Size(80, 28);
+            btnExportPayroll.Size = new Size(92, 36);
             btnExportPayroll.Text = "Export";
             btnExportPayroll.TabIndex = 7;
             btnExportPayroll.Click += btnExportPayroll_Click;
@@ -161,14 +161,14 @@ namespace Company.OfficeApp.Pages.Hr
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(12, 534);
+            lblApproverNote.Location = new Point(38, 721);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "The HR Supervisor finalizes payroll.";
             // 
             // lblPayrollMsg
             // 
             lblPayrollMsg.AutoSize = true;
-            lblPayrollMsg.Location = new Point(12, 558);
+            lblPayrollMsg.Location = new Point(38, 753);
             lblPayrollMsg.Name = "lblPayrollMsg";
             lblPayrollMsg.MaximumSize = new Size(930, 0);
             // 
@@ -248,7 +248,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(lblApproverNote);
             Controls.Add(lblPayrollMsg);
             Name = "PayrollTab";
-            Size = new Size(960, 600);
+            Size = new Size(1152, 824);
             Load += PayrollTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvPayroll).EndInit();
             ResumeLayout(false);

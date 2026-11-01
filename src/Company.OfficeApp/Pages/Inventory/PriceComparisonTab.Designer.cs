@@ -66,15 +66,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblCompareMaterial
             // 
             lblCompareMaterial.AutoSize = true;
-            lblCompareMaterial.Location = new Point(12, 15);
+            lblCompareMaterial.Location = new Point(38, 36);
             lblCompareMaterial.Name = "lblCompareMaterial";
             lblCompareMaterial.Text = "Material to buy";
             // 
             // cboCompareMaterial
             // 
-            cboCompareMaterial.Location = new Point(110, 12);
+            cboCompareMaterial.Location = new Point(150, 32);
             cboCompareMaterial.Name = "cboCompareMaterial";
-            cboCompareMaterial.Size = new Size(260, 23);
+            cboCompareMaterial.Size = new Size(299, 23);
             cboCompareMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
             cboCompareMaterial.TabIndex = 0;
             cboCompareMaterial.SelectedIndexChanged += cboCompareMaterial_SelectedIndexChanged;
@@ -82,94 +82,94 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblAddQuote
             // 
             lblAddQuote.AutoSize = true;
-            lblAddQuote.Location = new Point(12, 46);
+            lblAddQuote.Location = new Point(38, 77);
             lblAddQuote.Name = "lblAddQuote";
             lblAddQuote.Text = "Add a quote";
             // 
             // lblQuoteVendor
             // 
             lblQuoteVendor.AutoSize = true;
-            lblQuoteVendor.Location = new Point(12, 66);
+            lblQuoteVendor.Location = new Point(38, 103);
             lblQuoteVendor.Name = "lblQuoteVendor";
             lblQuoteVendor.Text = "Vendor";
             // 
             // cboQuoteVendor
             // 
-            cboQuoteVendor.Location = new Point(12, 84);
+            cboQuoteVendor.Location = new Point(38, 127);
             cboQuoteVendor.Name = "cboQuoteVendor";
-            cboQuoteVendor.Size = new Size(200, 23);
+            cboQuoteVendor.Size = new Size(230, 23);
             cboQuoteVendor.DropDownStyle = ComboBoxStyle.DropDownList;
             cboQuoteVendor.TabIndex = 1;
             // 
             // lblQuoteDate
             // 
             lblQuoteDate.AutoSize = true;
-            lblQuoteDate.Location = new Point(224, 66);
+            lblQuoteDate.Location = new Point(282, 103);
             lblQuoteDate.Name = "lblQuoteDate";
             lblQuoteDate.Text = "Date inputted";
             // 
             // dtpQuoteDate
             // 
-            dtpQuoteDate.Location = new Point(224, 84);
+            dtpQuoteDate.Location = new Point(282, 127);
             dtpQuoteDate.Name = "dtpQuoteDate";
-            dtpQuoteDate.Size = new Size(120, 23);
+            dtpQuoteDate.Size = new Size(138, 23);
             dtpQuoteDate.Format = DateTimePickerFormat.Short;
             dtpQuoteDate.TabIndex = 2;
             // 
             // lblQuoteProduct
             // 
             lblQuoteProduct.AutoSize = true;
-            lblQuoteProduct.Location = new Point(356, 66);
+            lblQuoteProduct.Location = new Point(433, 103);
             lblQuoteProduct.Name = "lblQuoteProduct";
             lblQuoteProduct.Text = "Product name";
             // 
             // txtQuoteProduct
             // 
-            txtQuoteProduct.Location = new Point(356, 84);
+            txtQuoteProduct.Location = new Point(433, 127);
             txtQuoteProduct.Name = "txtQuoteProduct";
-            txtQuoteProduct.Size = new Size(200, 23);
+            txtQuoteProduct.Size = new Size(230, 23);
             txtQuoteProduct.TabIndex = 3;
             // 
             // lblQuoteCategory
             // 
             lblQuoteCategory.AutoSize = true;
-            lblQuoteCategory.Location = new Point(568, 66);
+            lblQuoteCategory.Location = new Point(677, 103);
             lblQuoteCategory.Name = "lblQuoteCategory";
             lblQuoteCategory.Text = "Category";
             // 
             // cboQuoteCategory
             // 
-            cboQuoteCategory.Location = new Point(568, 84);
+            cboQuoteCategory.Location = new Point(677, 127);
             cboQuoteCategory.Name = "cboQuoteCategory";
-            cboQuoteCategory.Size = new Size(140, 23);
+            cboQuoteCategory.Size = new Size(161, 23);
             cboQuoteCategory.TabIndex = 4;
             // 
             // lblQuoteDescription
             // 
             lblQuoteDescription.AutoSize = true;
-            lblQuoteDescription.Location = new Point(12, 114);
+            lblQuoteDescription.Location = new Point(38, 166);
             lblQuoteDescription.Name = "lblQuoteDescription";
             lblQuoteDescription.Text = "Description";
             // 
             // txtQuoteDescription
             // 
-            txtQuoteDescription.Location = new Point(12, 132);
+            txtQuoteDescription.Location = new Point(38, 190);
             txtQuoteDescription.Name = "txtQuoteDescription";
-            txtQuoteDescription.Size = new Size(332, 23);
+            txtQuoteDescription.Size = new Size(382, 23);
             txtQuoteDescription.TabIndex = 5;
             // 
             // lblQuoteUnitPrice
             // 
             lblQuoteUnitPrice.AutoSize = true;
-            lblQuoteUnitPrice.Location = new Point(356, 114);
+            lblQuoteUnitPrice.Location = new Point(433, 166);
             lblQuoteUnitPrice.Name = "lblQuoteUnitPrice";
             lblQuoteUnitPrice.Text = "Unit price";
             // 
             // numQuoteUnitPrice
             // 
-            numQuoteUnitPrice.Location = new Point(356, 132);
+            numQuoteUnitPrice.Location = new Point(433, 190);
             numQuoteUnitPrice.Name = "numQuoteUnitPrice";
-            numQuoteUnitPrice.Size = new Size(120, 23);
+            numQuoteUnitPrice.Size = new Size(138, 23);
             numQuoteUnitPrice.DecimalPlaces = 2;
             numQuoteUnitPrice.ThousandsSeparator = true;
             numQuoteUnitPrice.Maximum = 999999999m;
@@ -178,15 +178,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblQuoteQty
             // 
             lblQuoteQty.AutoSize = true;
-            lblQuoteQty.Location = new Point(488, 114);
+            lblQuoteQty.Location = new Point(585, 166);
             lblQuoteQty.Name = "lblQuoteQty";
             lblQuoteQty.Text = "Quantity";
             // 
             // numQuoteQty
             // 
-            numQuoteQty.Location = new Point(488, 132);
+            numQuoteQty.Location = new Point(585, 190);
             numQuoteQty.Name = "numQuoteQty";
-            numQuoteQty.Size = new Size(100, 23);
+            numQuoteQty.Size = new Size(115, 23);
             numQuoteQty.DecimalPlaces = 2;
             numQuoteQty.ThousandsSeparator = true;
             numQuoteQty.Maximum = 999999999m;
@@ -194,9 +194,9 @@ namespace Company.OfficeApp.Pages.Inventory
             // 
             // btnAddQuote
             // 
-            btnAddQuote.Location = new Point(600, 130);
+            btnAddQuote.Location = new Point(714, 188);
             btnAddQuote.Name = "btnAddQuote";
-            btnAddQuote.Size = new Size(108, 28);
+            btnAddQuote.Size = new Size(124, 36);
             btnAddQuote.Text = "Add Quote";
             btnAddQuote.TabIndex = 8;
             btnAddQuote.Click += btnAddQuote_Click;
@@ -204,13 +204,13 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblQuoteMsg
             // 
             lblQuoteMsg.AutoSize = true;
-            lblQuoteMsg.Location = new Point(12, 162);
+            lblQuoteMsg.Location = new Point(38, 230);
             lblQuoteMsg.Name = "lblQuoteMsg";
             // 
             // lblCheapestQuote
             // 
             lblCheapestQuote.AutoSize = true;
-            lblCheapestQuote.Location = new Point(12, 190);
+            lblCheapestQuote.Location = new Point(38, 267);
             lblCheapestQuote.Name = "lblCheapestQuote";
             lblCheapestQuote.Text = "";
             // 
@@ -224,27 +224,27 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvQuotes.ReadOnly = true;
             dgvQuotes.RowHeadersVisible = false;
             dgvQuotes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvQuotes.Location = new Point(12, 210);
+            dgvQuotes.Location = new Point(38, 293);
             dgvQuotes.Name = "dgvQuotes";
-            dgvQuotes.Size = new Size(930, 180);
+            dgvQuotes.Size = new Size(1070, 238);
             dgvQuotes.TabIndex = 9;
             dgvQuotes.SelectionChanged += dgvQuotes_SelectionChanged;
             dgvQuotes.CellFormatting += dgvQuotes_CellFormatting;
             // 
             // btnDeleteQuote
             // 
-            btnDeleteQuote.Location = new Point(12, 398);
+            btnDeleteQuote.Location = new Point(38, 541);
             btnDeleteQuote.Name = "btnDeleteQuote";
-            btnDeleteQuote.Size = new Size(110, 28);
+            btnDeleteQuote.Size = new Size(126, 36);
             btnDeleteQuote.Text = "Delete Quote";
             btnDeleteQuote.TabIndex = 10;
             btnDeleteQuote.Click += btnDeleteQuote_Click;
             // 
             // btnApprovePurchase
             // 
-            btnApprovePurchase.Location = new Point(128, 398);
+            btnApprovePurchase.Location = new Point(171, 541);
             btnApprovePurchase.Name = "btnApprovePurchase";
-            btnApprovePurchase.Size = new Size(160, 28);
+            btnApprovePurchase.Size = new Size(184, 36);
             btnApprovePurchase.Text = "Approve as Purchase";
             btnApprovePurchase.TabIndex = 11;
             btnApprovePurchase.Click += btnApprovePurchase_Click;
@@ -252,14 +252,14 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(300, 404);
+            lblApproverNote.Location = new Point(369, 549);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "Approve as Purchase: Inventory Supervisor only";
             // 
             // lblPurchases
             // 
             lblPurchases.AutoSize = true;
-            lblPurchases.Location = new Point(12, 444);
+            lblPurchases.Location = new Point(38, 602);
             lblPurchases.Name = "lblPurchases";
             lblPurchases.Text = "Approved purchases";
             // 
@@ -273,9 +273,9 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvPurchases.ReadOnly = true;
             dgvPurchases.RowHeadersVisible = false;
             dgvPurchases.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPurchases.Location = new Point(12, 464);
+            dgvPurchases.Location = new Point(38, 628);
             dgvPurchases.Name = "dgvPurchases";
-            dgvPurchases.Size = new Size(930, 180);
+            dgvPurchases.Size = new Size(1070, 238);
             dgvPurchases.TabIndex = 12;
             // 
             // colQVendor
@@ -402,7 +402,7 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(lblPurchases);
             Controls.Add(dgvPurchases);
             Name = "PriceComparisonTab";
-            Size = new Size(960, 700);
+            Size = new Size(1152, 956);
             Load += PriceComparisonTab_Load;
             ((System.ComponentModel.ISupportInitialize)numQuoteUnitPrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)numQuoteQty).EndInit();

@@ -54,9 +54,9 @@ namespace Company.OfficeApp.Pages.Hr
             // 
             // btnUploadBiometrics
             // 
-            btnUploadBiometrics.Location = new Point(12, 10);
+            btnUploadBiometrics.Location = new Point(38, 29);
             btnUploadBiometrics.Name = "btnUploadBiometrics";
-            btnUploadBiometrics.Size = new Size(160, 28);
+            btnUploadBiometrics.Size = new Size(184, 36);
             btnUploadBiometrics.Text = "Upload Scanner File";
             btnUploadBiometrics.TabIndex = 0;
             btnUploadBiometrics.Click += btnUploadBiometrics_Click;
@@ -64,24 +64,24 @@ namespace Company.OfficeApp.Pages.Hr
             // lblImportSummary
             // 
             lblImportSummary.AutoSize = true;
-            lblImportSummary.Location = new Point(180, 16);
+            lblImportSummary.Location = new Point(231, 37);
             lblImportSummary.Name = "lblImportSummary";
             lblImportSummary.Text = "No scanner file uploaded yet.";
             // 
             // btnViewImportErrors
             // 
-            btnViewImportErrors.Location = new Point(12, 42);
+            btnViewImportErrors.Location = new Point(38, 71);
             btnViewImportErrors.Name = "btnViewImportErrors";
-            btnViewImportErrors.Size = new Size(160, 28);
+            btnViewImportErrors.Size = new Size(184, 36);
             btnViewImportErrors.Text = "View Rejected Rows";
             btnViewImportErrors.TabIndex = 1;
             btnViewImportErrors.Click += btnViewImportErrors_Click;
             // 
             // btnExportToScanner
             // 
-            btnExportToScanner.Location = new Point(178, 42);
+            btnExportToScanner.Location = new Point(229, 71);
             btnExportToScanner.Name = "btnExportToScanner";
-            btnExportToScanner.Size = new Size(200, 28);
+            btnExportToScanner.Size = new Size(230, 36);
             btnExportToScanner.Text = "Make Scanner Employee File";
             btnExportToScanner.TabIndex = 2;
             btnExportToScanner.Click += btnExportToScanner_Click;
@@ -89,15 +89,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblAttendanceFrom
             // 
             lblAttendanceFrom.AutoSize = true;
-            lblAttendanceFrom.Location = new Point(12, 83);
+            lblAttendanceFrom.Location = new Point(38, 126);
             lblAttendanceFrom.Name = "lblAttendanceFrom";
             lblAttendanceFrom.Text = "From";
             // 
             // dtpAttendanceFrom
             // 
-            dtpAttendanceFrom.Location = new Point(52, 80);
+            dtpAttendanceFrom.Location = new Point(84, 122);
             dtpAttendanceFrom.Name = "dtpAttendanceFrom";
-            dtpAttendanceFrom.Size = new Size(115, 23);
+            dtpAttendanceFrom.Size = new Size(132, 23);
             dtpAttendanceFrom.Format = DateTimePickerFormat.Short;
             dtpAttendanceFrom.TabIndex = 3;
             dtpAttendanceFrom.ValueChanged += Filter_Changed;
@@ -105,15 +105,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblAttendanceTo
             // 
             lblAttendanceTo.AutoSize = true;
-            lblAttendanceTo.Location = new Point(177, 83);
+            lblAttendanceTo.Location = new Point(228, 126);
             lblAttendanceTo.Name = "lblAttendanceTo";
             lblAttendanceTo.Text = "To";
             // 
             // dtpAttendanceTo
             // 
-            dtpAttendanceTo.Location = new Point(203, 80);
+            dtpAttendanceTo.Location = new Point(257, 122);
             dtpAttendanceTo.Name = "dtpAttendanceTo";
-            dtpAttendanceTo.Size = new Size(115, 23);
+            dtpAttendanceTo.Size = new Size(132, 23);
             dtpAttendanceTo.Format = DateTimePickerFormat.Short;
             dtpAttendanceTo.TabIndex = 4;
             dtpAttendanceTo.ValueChanged += Filter_Changed;
@@ -121,15 +121,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblAttendanceFilter
             // 
             lblAttendanceFilter.AutoSize = true;
-            lblAttendanceFilter.Location = new Point(330, 83);
+            lblAttendanceFilter.Location = new Point(403, 126);
             lblAttendanceFilter.Name = "lblAttendanceFilter";
             lblAttendanceFilter.Text = "Show";
             // 
             // cboAttendanceFilter
             // 
-            cboAttendanceFilter.Location = new Point(372, 80);
+            cboAttendanceFilter.Location = new Point(452, 122);
             cboAttendanceFilter.Name = "cboAttendanceFilter";
-            cboAttendanceFilter.Size = new Size(200, 23);
+            cboAttendanceFilter.Size = new Size(230, 23);
             cboAttendanceFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboAttendanceFilter.TabIndex = 5;
             cboAttendanceFilter.SelectedIndexChanged += Filter_Changed;
@@ -137,15 +137,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblAttendanceSearch
             // 
             lblAttendanceSearch.AutoSize = true;
-            lblAttendanceSearch.Location = new Point(584, 83);
+            lblAttendanceSearch.Location = new Point(696, 126);
             lblAttendanceSearch.Name = "lblAttendanceSearch";
             lblAttendanceSearch.Text = "Search";
             // 
             // txtAttendanceSearch
             // 
-            txtAttendanceSearch.Location = new Point(634, 80);
+            txtAttendanceSearch.Location = new Point(753, 122);
             txtAttendanceSearch.Name = "txtAttendanceSearch";
-            txtAttendanceSearch.Size = new Size(180, 23);
+            txtAttendanceSearch.Size = new Size(207, 23);
             txtAttendanceSearch.TabIndex = 6;
             // 
             // dgvAttendance
@@ -158,9 +158,9 @@ namespace Company.OfficeApp.Pages.Hr
             dgvAttendance.ReadOnly = true;
             dgvAttendance.RowHeadersVisible = false;
             dgvAttendance.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvAttendance.Location = new Point(12, 112);
+            dgvAttendance.Location = new Point(38, 164);
             dgvAttendance.Name = "dgvAttendance";
-            dgvAttendance.Size = new Size(930, 380);
+            dgvAttendance.Size = new Size(1070, 502);
             dgvAttendance.TabIndex = 7;
             dgvAttendance.SelectionChanged += dgvAttendance_SelectionChanged;
             dgvAttendance.CellFormatting += dgvAttendance_CellFormatting;
@@ -169,42 +169,42 @@ namespace Company.OfficeApp.Pages.Hr
             // lblAttendanceCount
             // 
             lblAttendanceCount.AutoSize = true;
-            lblAttendanceCount.Location = new Point(12, 500);
+            lblAttendanceCount.Location = new Point(38, 676);
             lblAttendanceCount.Name = "lblAttendanceCount";
             lblAttendanceCount.Text = "";
             // 
             // btnFixScan
             // 
-            btnFixScan.Location = new Point(12, 522);
+            btnFixScan.Location = new Point(38, 705);
             btnFixScan.Name = "btnFixScan";
-            btnFixScan.Size = new Size(130, 28);
+            btnFixScan.Size = new Size(150, 36);
             btnFixScan.Text = "Fix Missing Scan";
             btnFixScan.TabIndex = 8;
             btnFixScan.Click += btnFixScan_Click;
             // 
             // btnApproveOvertime
             // 
-            btnApproveOvertime.Location = new Point(148, 522);
+            btnApproveOvertime.Location = new Point(194, 705);
             btnApproveOvertime.Name = "btnApproveOvertime";
-            btnApproveOvertime.Size = new Size(130, 28);
+            btnApproveOvertime.Size = new Size(150, 36);
             btnApproveOvertime.Text = "Approve Overtime";
             btnApproveOvertime.TabIndex = 9;
             btnApproveOvertime.Click += btnApproveOvertime_Click;
             // 
             // btnRejectOvertime
             // 
-            btnRejectOvertime.Location = new Point(284, 522);
+            btnRejectOvertime.Location = new Point(351, 705);
             btnRejectOvertime.Name = "btnRejectOvertime";
-            btnRejectOvertime.Size = new Size(120, 28);
+            btnRejectOvertime.Size = new Size(138, 36);
             btnRejectOvertime.Text = "Reject Overtime";
             btnRejectOvertime.TabIndex = 10;
             btnRejectOvertime.Click += btnRejectOvertime_Click;
             // 
             // btnExportAttendance
             // 
-            btnExportAttendance.Location = new Point(410, 522);
+            btnExportAttendance.Location = new Point(495, 705);
             btnExportAttendance.Name = "btnExportAttendance";
-            btnExportAttendance.Size = new Size(80, 28);
+            btnExportAttendance.Size = new Size(92, 36);
             btnExportAttendance.Text = "Export";
             btnExportAttendance.TabIndex = 11;
             btnExportAttendance.Click += btnExportAttendance_Click;
@@ -212,14 +212,14 @@ namespace Company.OfficeApp.Pages.Hr
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(12, 558);
+            lblApproverNote.Location = new Point(38, 753);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "The HR Supervisor approves overtime.";
             // 
             // lblAttendanceMsg
             // 
             lblAttendanceMsg.AutoSize = true;
-            lblAttendanceMsg.Location = new Point(12, 582);
+            lblAttendanceMsg.Location = new Point(38, 784);
             lblAttendanceMsg.Name = "lblAttendanceMsg";
             // 
             // colDate
@@ -327,7 +327,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(lblApproverNote);
             Controls.Add(lblAttendanceMsg);
             Name = "AttendanceTab";
-            Size = new Size(960, 610);
+            Size = new Size(1152, 837);
             Load += AttendanceTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvAttendance).EndInit();
             ResumeLayout(false);

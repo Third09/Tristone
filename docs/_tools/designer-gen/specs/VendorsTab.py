@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Inventory/VendorsTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Inventory"
 CLASS = "VendorsTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 660)
 LOAD_EVENT = "VendorsTab_Load"
 DATE = 'new DataGridViewCellStyle { Format = "MMM d, yyyy" }'

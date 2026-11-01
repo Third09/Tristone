@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Hr/AttendanceTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "AttendanceTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 610)
 LOAD_EVENT = "AttendanceTab_Load"
 DATE = 'new DataGridViewCellStyle { Format = "MMM d, yyyy" }'

@@ -40,44 +40,44 @@ namespace Company.OfficeApp.Pages.Receipts
             // 
             // pnlScan
             // 
-            pnlScan.Location = new Point(12, 12);
+            pnlScan.Location = new Point(38, 32);
             pnlScan.Name = "pnlScan";
-            pnlScan.Size = new Size(560, 560);
+            pnlScan.Size = new Size(644, 739);
             pnlScan.AutoScroll = true;
             pnlScan.BorderStyle = BorderStyle.FixedSingle;
             pnlScan.TabIndex = 0;
             // 
             // picReceiptScan
             // 
-            picReceiptScan.Location = new Point(0, 0);
+            picReceiptScan.Location = new Point(24, 16);
             picReceiptScan.Name = "picReceiptScan";
-            picReceiptScan.Size = new Size(556, 556);
+            picReceiptScan.Size = new Size(639, 734);
             picReceiptScan.SizeMode = PictureBoxSizeMode.Zoom;
             picReceiptScan.TabIndex = 1;
             // 
             // btnZoomIn
             // 
-            btnZoomIn.Location = new Point(12, 584);
+            btnZoomIn.Location = new Point(38, 787);
             btnZoomIn.Name = "btnZoomIn";
-            btnZoomIn.Size = new Size(90, 28);
+            btnZoomIn.Size = new Size(103, 36);
             btnZoomIn.Text = "Zoom In";
             btnZoomIn.TabIndex = 2;
             btnZoomIn.Click += btnZoomIn_Click;
             // 
             // btnZoomOut
             // 
-            btnZoomOut.Location = new Point(108, 584);
+            btnZoomOut.Location = new Point(148, 787);
             btnZoomOut.Name = "btnZoomOut";
-            btnZoomOut.Size = new Size(90, 28);
+            btnZoomOut.Size = new Size(103, 36);
             btnZoomOut.Text = "Zoom Out";
             btnZoomOut.TabIndex = 3;
             btnZoomOut.Click += btnZoomOut_Click;
             // 
             // btnOpenOriginal
             // 
-            btnOpenOriginal.Location = new Point(204, 584);
+            btnOpenOriginal.Location = new Point(259, 787);
             btnOpenOriginal.Name = "btnOpenOriginal";
-            btnOpenOriginal.Size = new Size(110, 28);
+            btnOpenOriginal.Size = new Size(126, 36);
             btnOpenOriginal.Text = "Open Original";
             btnOpenOriginal.TabIndex = 4;
             btnOpenOriginal.Click += btnOpenOriginal_Click;
@@ -85,86 +85,86 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblViewReceiptNo
             // 
             lblViewReceiptNo.AutoSize = true;
-            lblViewReceiptNo.Location = new Point(590, 12);
+            lblViewReceiptNo.Location = new Point(702, 32);
             lblViewReceiptNo.Name = "lblViewReceiptNo";
             // 
             // lblViewDate
             // 
             lblViewDate.AutoSize = true;
-            lblViewDate.Location = new Point(590, 36);
+            lblViewDate.Location = new Point(702, 64);
             lblViewDate.Name = "lblViewDate";
             // 
             // lblViewMerchant
             // 
             lblViewMerchant.AutoSize = true;
-            lblViewMerchant.Location = new Point(590, 60);
+            lblViewMerchant.Location = new Point(702, 95);
             lblViewMerchant.Name = "lblViewMerchant";
             // 
             // lblViewAmount
             // 
             lblViewAmount.AutoSize = true;
-            lblViewAmount.Location = new Point(590, 84);
+            lblViewAmount.Location = new Point(702, 127);
             lblViewAmount.Name = "lblViewAmount";
             // 
             // lblViewCategory
             // 
             lblViewCategory.AutoSize = true;
-            lblViewCategory.Location = new Point(590, 108);
+            lblViewCategory.Location = new Point(702, 159);
             lblViewCategory.Name = "lblViewCategory";
             // 
             // lblViewProject
             // 
             lblViewProject.AutoSize = true;
-            lblViewProject.Location = new Point(590, 132);
+            lblViewProject.Location = new Point(702, 190);
             lblViewProject.Name = "lblViewProject";
             // 
             // lblViewUploadedBy
             // 
             lblViewUploadedBy.AutoSize = true;
-            lblViewUploadedBy.Location = new Point(590, 156);
+            lblViewUploadedBy.Location = new Point(702, 222);
             lblViewUploadedBy.Name = "lblViewUploadedBy";
             // 
             // lblViewStatus
             // 
             lblViewStatus.AutoSize = true;
-            lblViewStatus.Location = new Point(590, 180);
+            lblViewStatus.Location = new Point(702, 254);
             lblViewStatus.Name = "lblViewStatus";
             // 
             // lblViewCopy
             // 
             lblViewCopy.AutoSize = true;
-            lblViewCopy.Location = new Point(590, 204);
+            lblViewCopy.Location = new Point(702, 285);
             lblViewCopy.Name = "lblViewCopy";
             lblViewCopy.MaximumSize = new Size(290, 0);
             // 
             // lblViewReason
             // 
             lblViewReason.AutoSize = true;
-            lblViewReason.Location = new Point(590, 252);
+            lblViewReason.Location = new Point(702, 349);
             lblViewReason.Name = "lblViewReason";
             lblViewReason.MaximumSize = new Size(290, 0);
             // 
             // lblViewerMsg
             // 
             lblViewerMsg.AutoSize = true;
-            lblViewerMsg.Location = new Point(590, 540);
+            lblViewerMsg.Location = new Point(702, 729);
             lblViewerMsg.Name = "lblViewerMsg";
             lblViewerMsg.MaximumSize = new Size(290, 0);
             // 
             // btnPrintReceipt
             // 
-            btnPrintReceipt.Location = new Point(590, 584);
+            btnPrintReceipt.Location = new Point(702, 787);
             btnPrintReceipt.Name = "btnPrintReceipt";
-            btnPrintReceipt.Size = new Size(90, 28);
+            btnPrintReceipt.Size = new Size(103, 36);
             btnPrintReceipt.Text = "Print";
             btnPrintReceipt.TabIndex = 5;
             btnPrintReceipt.Click += btnPrintReceipt_Click;
             // 
             // btnCloseViewer
             // 
-            btnCloseViewer.Location = new Point(686, 584);
+            btnCloseViewer.Location = new Point(813, 787);
             btnCloseViewer.Name = "btnCloseViewer";
-            btnCloseViewer.Size = new Size(90, 28);
+            btnCloseViewer.Size = new Size(103, 36);
             btnCloseViewer.Text = "Close";
             btnCloseViewer.DialogResult = DialogResult.Cancel;
             btnCloseViewer.TabIndex = 6;
@@ -173,7 +173,7 @@ namespace Company.OfficeApp.Pages.Receipts
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(900, 630);
+            ClientSize = new Size(1083, 864);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

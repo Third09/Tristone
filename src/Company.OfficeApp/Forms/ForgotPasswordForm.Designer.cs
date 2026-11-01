@@ -15,6 +15,7 @@ namespace Company.OfficeApp.Forms
 
         #region Windows Form Designer generated code
 
+        // ROOMY layout applied (docs/_tools/designer-gen/roomy_designer.py)
         private void InitializeComponent()
         {
             pnlStep1 = new Panel();
@@ -56,37 +57,37 @@ namespace Company.OfficeApp.Forms
             // lblForgotInfo
             //
             lblForgotInfo.AutoSize = true;
-            lblForgotInfo.Location = new Point(12, 12);
+            lblForgotInfo.Location = new Point(14, 16);
             lblForgotInfo.Name = "lblForgotInfo";
             lblForgotInfo.Text = "Enter your username.";
             //
             // txtForgotUsername
             //
-            txtForgotUsername.Location = new Point(12, 34);
+            txtForgotUsername.Location = new Point(14, 45);
             txtForgotUsername.Name = "txtForgotUsername";
-            txtForgotUsername.Size = new Size(260, 23);
+            txtForgotUsername.Size = new Size(299, 23);
             txtForgotUsername.TabIndex = 0;
             //
             // lblForgotError
             //
-            lblForgotError.Location = new Point(12, 64);
+            lblForgotError.Location = new Point(14, 84);
             lblForgotError.Name = "lblForgotError";
-            lblForgotError.Size = new Size(330, 48);
+            lblForgotError.Size = new Size(379, 48);
             //
             // btnForgotNext
             //
-            btnForgotNext.Location = new Point(12, 118);
+            btnForgotNext.Location = new Point(14, 156);
             btnForgotNext.Name = "btnForgotNext";
-            btnForgotNext.Size = new Size(90, 28);
+            btnForgotNext.Size = new Size(103, 36);
             btnForgotNext.TabIndex = 1;
             btnForgotNext.Text = "Next";
             btnForgotNext.Click += btnForgotNext_Click;
             //
             // btnForgotCancel
             //
-            btnForgotCancel.Location = new Point(108, 118);
+            btnForgotCancel.Location = new Point(124, 156);
             btnForgotCancel.Name = "btnForgotCancel";
-            btnForgotCancel.Size = new Size(90, 28);
+            btnForgotCancel.Size = new Size(103, 36);
             btnForgotCancel.TabIndex = 2;
             btnForgotCancel.Text = "Cancel";
             btnForgotCancel.Click += btnClose_Click;
@@ -100,15 +101,15 @@ namespace Company.OfficeApp.Forms
             //
             // lblRequestSent
             //
-            lblRequestSent.Location = new Point(12, 12);
+            lblRequestSent.Location = new Point(14, 16);
             lblRequestSent.Name = "lblRequestSent";
-            lblRequestSent.Size = new Size(330, 48);
+            lblRequestSent.Size = new Size(379, 48);
             //
             // btnForgotClose
             //
-            btnForgotClose.Location = new Point(12, 66);
+            btnForgotClose.Location = new Point(14, 87);
             btnForgotClose.Name = "btnForgotClose";
-            btnForgotClose.Size = new Size(90, 28);
+            btnForgotClose.Size = new Size(103, 36);
             btnForgotClose.TabIndex = 0;
             btnForgotClose.Text = "Close";
             btnForgotClose.Click += btnClose_Click;
@@ -132,80 +133,80 @@ namespace Company.OfficeApp.Forms
             // lblQuestionCaption
             //
             lblQuestionCaption.AutoSize = true;
-            lblQuestionCaption.Location = new Point(12, 12);
+            lblQuestionCaption.Location = new Point(14, 16);
             lblQuestionCaption.Name = "lblQuestionCaption";
             lblQuestionCaption.Text = "Security question:";
             //
             // lblSecurityQuestion
             //
-            lblSecurityQuestion.Location = new Point(12, 32);
+            lblSecurityQuestion.Location = new Point(14, 42);
             lblSecurityQuestion.Name = "lblSecurityQuestion";
-            lblSecurityQuestion.Size = new Size(330, 36);
+            lblSecurityQuestion.Size = new Size(379, 36);
             //
             // lblAnswer
             //
             lblAnswer.AutoSize = true;
-            lblAnswer.Location = new Point(12, 72);
+            lblAnswer.Location = new Point(14, 95);
             lblAnswer.Name = "lblAnswer";
             lblAnswer.Text = "Answer";
             //
             // txtSecurityAnswer
             //
-            txtSecurityAnswer.Location = new Point(12, 90);
+            txtSecurityAnswer.Location = new Point(14, 119);
             txtSecurityAnswer.Name = "txtSecurityAnswer";
-            txtSecurityAnswer.Size = new Size(260, 23);
+            txtSecurityAnswer.Size = new Size(299, 23);
             txtSecurityAnswer.TabIndex = 0;
             //
             // lblNewPassword
             //
             lblNewPassword.AutoSize = true;
-            lblNewPassword.Location = new Point(12, 122);
+            lblNewPassword.Location = new Point(14, 161);
             lblNewPassword.Name = "lblNewPassword";
             lblNewPassword.Text = "New password (at least 8 characters, with a letter and a number)";
             //
             // txtNewPassword
             //
-            txtNewPassword.Location = new Point(12, 140);
+            txtNewPassword.Location = new Point(14, 185);
             txtNewPassword.Name = "txtNewPassword";
-            txtNewPassword.Size = new Size(260, 23);
+            txtNewPassword.Size = new Size(299, 23);
             txtNewPassword.TabIndex = 1;
             txtNewPassword.UseSystemPasswordChar = true;
             //
             // lblConfirmPassword
             //
             lblConfirmPassword.AutoSize = true;
-            lblConfirmPassword.Location = new Point(12, 172);
+            lblConfirmPassword.Location = new Point(14, 227);
             lblConfirmPassword.Name = "lblConfirmPassword";
             lblConfirmPassword.Text = "Type the new password again";
             //
             // txtConfirmPassword
             //
-            txtConfirmPassword.Location = new Point(12, 190);
+            txtConfirmPassword.Location = new Point(14, 251);
             txtConfirmPassword.Name = "txtConfirmPassword";
-            txtConfirmPassword.Size = new Size(260, 23);
+            txtConfirmPassword.Size = new Size(299, 23);
             txtConfirmPassword.TabIndex = 2;
             txtConfirmPassword.UseSystemPasswordChar = true;
             //
             // lblAdminError
             //
-            lblAdminError.Location = new Point(12, 220);
+            lblAdminError.Location = new Point(14, 290);
             lblAdminError.Name = "lblAdminError";
-            lblAdminError.Size = new Size(330, 36);
+            lblAdminError.Size = new Size(379, 36);
             //
             // btnResetPassword
             //
-            btnResetPassword.Location = new Point(12, 262);
+            btnResetPassword.Location = new Point(14, 346);
             btnResetPassword.Name = "btnResetPassword";
-            btnResetPassword.Size = new Size(120, 28);
+            btnResetPassword.Size = new Size(138, 36);
             btnResetPassword.TabIndex = 3;
             btnResetPassword.Text = "Reset Password";
             btnResetPassword.Click += btnResetPassword_Click;
             //
             // btnAdminCancel
             //
-            btnAdminCancel.Location = new Point(138, 262);
+            btnAdminCancel.Location = new Point(159, 346);
             btnAdminCancel.Name = "btnAdminCancel";
-            btnAdminCancel.Size = new Size(90, 28);
+            btnAdminCancel.Size = new Size(103, 36);
             btnAdminCancel.TabIndex = 4;
             btnAdminCancel.Text = "Cancel";
             btnAdminCancel.Click += btnClose_Click;
@@ -214,7 +215,7 @@ namespace Company.OfficeApp.Forms
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(380, 304);
+            ClientSize = new Size(485, 433);
             Controls.Add(pnlStep1);
             Controls.Add(pnlRequestSent);
             Controls.Add(pnlAdmin);

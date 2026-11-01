@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Hr/PayrollTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "PayrollTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 600)
 LOAD_EVENT = "PayrollTab_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'

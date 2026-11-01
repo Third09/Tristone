@@ -71,29 +71,29 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblSearch
             // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(12, 15);
+            lblSearch.Location = new Point(38, 36);
             lblSearch.Name = "lblSearch";
             lblSearch.Text = "Search";
             // 
             // txtEquipmentSearch
             // 
-            txtEquipmentSearch.Location = new Point(62, 12);
+            txtEquipmentSearch.Location = new Point(95, 32);
             txtEquipmentSearch.Name = "txtEquipmentSearch";
-            txtEquipmentSearch.Size = new Size(160, 23);
+            txtEquipmentSearch.Size = new Size(184, 23);
             txtEquipmentSearch.TabIndex = 0;
             // 
             // lblTypeFilter
             // 
             lblTypeFilter.AutoSize = true;
-            lblTypeFilter.Location = new Point(234, 15);
+            lblTypeFilter.Location = new Point(293, 36);
             lblTypeFilter.Name = "lblTypeFilter";
             lblTypeFilter.Text = "Type";
             // 
             // cboEquipmentTypeFilter
             // 
-            cboEquipmentTypeFilter.Location = new Point(270, 12);
+            cboEquipmentTypeFilter.Location = new Point(334, 32);
             cboEquipmentTypeFilter.Name = "cboEquipmentTypeFilter";
-            cboEquipmentTypeFilter.Size = new Size(130, 23);
+            cboEquipmentTypeFilter.Size = new Size(150, 23);
             cboEquipmentTypeFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEquipmentTypeFilter.TabIndex = 1;
             cboEquipmentTypeFilter.SelectedIndexChanged += Filter_Changed;
@@ -101,15 +101,15 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblStatusFilter
             // 
             lblStatusFilter.AutoSize = true;
-            lblStatusFilter.Location = new Point(412, 15);
+            lblStatusFilter.Location = new Point(498, 36);
             lblStatusFilter.Name = "lblStatusFilter";
             lblStatusFilter.Text = "Status";
             // 
             // cboEquipmentStatusFilter
             // 
-            cboEquipmentStatusFilter.Location = new Point(458, 12);
+            cboEquipmentStatusFilter.Location = new Point(551, 32);
             cboEquipmentStatusFilter.Name = "cboEquipmentStatusFilter";
-            cboEquipmentStatusFilter.Size = new Size(120, 23);
+            cboEquipmentStatusFilter.Size = new Size(138, 23);
             cboEquipmentStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEquipmentStatusFilter.TabIndex = 2;
             cboEquipmentStatusFilter.SelectedIndexChanged += Filter_Changed;
@@ -117,7 +117,7 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblMaintenanceDue
             // 
             lblMaintenanceDue.AutoSize = true;
-            lblMaintenanceDue.Location = new Point(592, 15);
+            lblMaintenanceDue.Location = new Point(705, 36);
             lblMaintenanceDue.Name = "lblMaintenanceDue";
             lblMaintenanceDue.Text = "";
             // 
@@ -131,36 +131,36 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvEquipment.ReadOnly = true;
             dgvEquipment.RowHeadersVisible = false;
             dgvEquipment.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEquipment.Location = new Point(12, 44);
+            dgvEquipment.Location = new Point(38, 74);
             dgvEquipment.Name = "dgvEquipment";
-            dgvEquipment.Size = new Size(930, 180);
+            dgvEquipment.Size = new Size(1070, 238);
             dgvEquipment.TabIndex = 3;
             dgvEquipment.SelectionChanged += dgvEquipment_SelectionChanged;
             dgvEquipment.CellFormatting += dgvEquipment_CellFormatting;
             // 
             // btnAddEquipment
             // 
-            btnAddEquipment.Location = new Point(12, 232);
+            btnAddEquipment.Location = new Point(38, 322);
             btnAddEquipment.Name = "btnAddEquipment";
-            btnAddEquipment.Size = new Size(120, 28);
+            btnAddEquipment.Size = new Size(138, 36);
             btnAddEquipment.Text = "Add Equipment";
             btnAddEquipment.TabIndex = 4;
             btnAddEquipment.Click += btnAddEquipment_Click;
             // 
             // btnDeleteEquipment
             // 
-            btnDeleteEquipment.Location = new Point(138, 232);
+            btnDeleteEquipment.Location = new Point(183, 322);
             btnDeleteEquipment.Name = "btnDeleteEquipment";
-            btnDeleteEquipment.Size = new Size(90, 28);
+            btnDeleteEquipment.Size = new Size(103, 36);
             btnDeleteEquipment.Text = "Delete";
             btnDeleteEquipment.TabIndex = 5;
             btnDeleteEquipment.Click += btnDeleteEquipment_Click;
             // 
             // btnExportEquipment
             // 
-            btnExportEquipment.Location = new Point(234, 232);
+            btnExportEquipment.Location = new Point(293, 322);
             btnExportEquipment.Name = "btnExportEquipment";
-            btnExportEquipment.Size = new Size(90, 28);
+            btnExportEquipment.Size = new Size(103, 36);
             btnExportEquipment.Text = "Export";
             btnExportEquipment.TabIndex = 6;
             btnExportEquipment.Click += btnExportEquipment_Click;
@@ -168,42 +168,43 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblFormMode
             // 
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 274);
+            lblFormMode.Location = new Point(38, 378);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New equipment";
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblEquipmentName
             // 
             lblEquipmentName.AutoSize = true;
-            lblEquipmentName.Location = new Point(12, 298);
+            lblEquipmentName.Location = new Point(38, 409);
             lblEquipmentName.Name = "lblEquipmentName";
             lblEquipmentName.Text = "Name (e.g. Concrete Mixer #2)";
             // 
             // txtEquipmentName
             // 
-            txtEquipmentName.Location = new Point(12, 316);
+            txtEquipmentName.Location = new Point(38, 433);
             txtEquipmentName.Name = "txtEquipmentName";
-            txtEquipmentName.Size = new Size(260, 23);
+            txtEquipmentName.Size = new Size(299, 23);
             txtEquipmentName.TabIndex = 7;
             // 
             // lblEquipmentType
             // 
             lblEquipmentType.AutoSize = true;
-            lblEquipmentType.Location = new Point(12, 346);
+            lblEquipmentType.Location = new Point(38, 473);
             lblEquipmentType.Name = "lblEquipmentType";
             lblEquipmentType.Text = "Type";
             // 
             // cboEquipmentType
             // 
-            cboEquipmentType.Location = new Point(12, 364);
+            cboEquipmentType.Location = new Point(38, 496);
             cboEquipmentType.Name = "cboEquipmentType";
-            cboEquipmentType.Size = new Size(160, 23);
+            cboEquipmentType.Size = new Size(184, 23);
             cboEquipmentType.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEquipmentType.TabIndex = 8;
             // 
             // rdoOwned
             // 
-            rdoOwned.Location = new Point(12, 396);
+            rdoOwned.Location = new Point(38, 539);
             rdoOwned.Name = "rdoOwned";
             rdoOwned.Text = "Owned";
             rdoOwned.AutoSize = true;
@@ -212,7 +213,7 @@ namespace Company.OfficeApp.Pages.Inventory
             // 
             // rdoRented
             // 
-            rdoRented.Location = new Point(90, 396);
+            rdoRented.Location = new Point(127, 539);
             rdoRented.Name = "rdoRented";
             rdoRented.Text = "Rented";
             rdoRented.AutoSize = true;
@@ -222,29 +223,29 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblRentalCompany
             // 
             lblRentalCompany.AutoSize = true;
-            lblRentalCompany.Location = new Point(12, 424);
+            lblRentalCompany.Location = new Point(38, 576);
             lblRentalCompany.Name = "lblRentalCompany";
             lblRentalCompany.Text = "Rental company";
             // 
             // txtRentalCompany
             // 
-            txtRentalCompany.Location = new Point(12, 442);
+            txtRentalCompany.Location = new Point(38, 599);
             txtRentalCompany.Name = "txtRentalCompany";
-            txtRentalCompany.Size = new Size(260, 23);
+            txtRentalCompany.Size = new Size(299, 23);
             txtRentalCompany.TabIndex = 11;
             // 
             // lblRentalRate
             // 
             lblRentalRate.AutoSize = true;
-            lblRentalRate.Location = new Point(12, 472);
+            lblRentalRate.Location = new Point(38, 639);
             lblRentalRate.Name = "lblRentalRate";
             lblRentalRate.Text = "Rental rate";
             // 
             // numRentalRate
             // 
-            numRentalRate.Location = new Point(12, 490);
+            numRentalRate.Location = new Point(38, 663);
             numRentalRate.Name = "numRentalRate";
-            numRentalRate.Size = new Size(120, 23);
+            numRentalRate.Size = new Size(138, 23);
             numRentalRate.DecimalPlaces = 2;
             numRentalRate.ThousandsSeparator = true;
             numRentalRate.Maximum = 99999999m;
@@ -252,24 +253,24 @@ namespace Company.OfficeApp.Pages.Inventory
             // 
             // cboRentalRateUnit
             // 
-            cboRentalRateUnit.Location = new Point(138, 490);
+            cboRentalRateUnit.Location = new Point(183, 663);
             cboRentalRateUnit.Name = "cboRentalRateUnit";
-            cboRentalRateUnit.Size = new Size(100, 23);
+            cboRentalRateUnit.Size = new Size(115, 23);
             cboRentalRateUnit.DropDownStyle = ComboBoxStyle.DropDownList;
             cboRentalRateUnit.TabIndex = 13;
             // 
             // lblRentalReturn
             // 
             lblRentalReturn.AutoSize = true;
-            lblRentalReturn.Location = new Point(12, 520);
+            lblRentalReturn.Location = new Point(38, 702);
             lblRentalReturn.Name = "lblRentalReturn";
             lblRentalReturn.Text = "Return date (tick to set)";
             // 
             // dtpRentalReturn
             // 
-            dtpRentalReturn.Location = new Point(12, 538);
+            dtpRentalReturn.Location = new Point(38, 726);
             dtpRentalReturn.Name = "dtpRentalReturn";
-            dtpRentalReturn.Size = new Size(140, 23);
+            dtpRentalReturn.Size = new Size(161, 23);
             dtpRentalReturn.Format = DateTimePickerFormat.Short;
             dtpRentalReturn.ShowCheckBox = true;
             dtpRentalReturn.TabIndex = 14;
@@ -277,30 +278,30 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblEquipmentStatus
             // 
             lblEquipmentStatus.AutoSize = true;
-            lblEquipmentStatus.Location = new Point(300, 298);
+            lblEquipmentStatus.Location = new Point(369, 409);
             lblEquipmentStatus.Name = "lblEquipmentStatus";
             lblEquipmentStatus.Text = "Status";
             // 
             // cboEquipmentStatus
             // 
-            cboEquipmentStatus.Location = new Point(300, 316);
+            cboEquipmentStatus.Location = new Point(369, 433);
             cboEquipmentStatus.Name = "cboEquipmentStatus";
-            cboEquipmentStatus.Size = new Size(140, 23);
+            cboEquipmentStatus.Size = new Size(161, 23);
             cboEquipmentStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEquipmentStatus.TabIndex = 15;
             // 
             // lblNextMaintenance
             // 
             lblNextMaintenance.AutoSize = true;
-            lblNextMaintenance.Location = new Point(300, 346);
+            lblNextMaintenance.Location = new Point(369, 473);
             lblNextMaintenance.Name = "lblNextMaintenance";
             lblNextMaintenance.Text = "Next maintenance (tick to set)";
             // 
             // dtpNextMaintenance
             // 
-            dtpNextMaintenance.Location = new Point(300, 364);
+            dtpNextMaintenance.Location = new Point(369, 496);
             dtpNextMaintenance.Name = "dtpNextMaintenance";
-            dtpNextMaintenance.Size = new Size(140, 23);
+            dtpNextMaintenance.Size = new Size(161, 23);
             dtpNextMaintenance.Format = DateTimePickerFormat.Short;
             dtpNextMaintenance.ShowCheckBox = true;
             dtpNextMaintenance.TabIndex = 16;
@@ -308,23 +309,23 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblEquipmentMsg
             // 
             lblEquipmentMsg.AutoSize = true;
-            lblEquipmentMsg.Location = new Point(12, 572);
+            lblEquipmentMsg.Location = new Point(38, 771);
             lblEquipmentMsg.Name = "lblEquipmentMsg";
             // 
             // btnSaveEquipment
             // 
-            btnSaveEquipment.Location = new Point(12, 594);
+            btnSaveEquipment.Location = new Point(38, 800);
             btnSaveEquipment.Name = "btnSaveEquipment";
-            btnSaveEquipment.Size = new Size(90, 28);
+            btnSaveEquipment.Size = new Size(103, 36);
             btnSaveEquipment.Text = "Save";
             btnSaveEquipment.TabIndex = 17;
             btnSaveEquipment.Click += btnSaveEquipment_Click;
             // 
             // btnCancelEquipment
             // 
-            btnCancelEquipment.Location = new Point(108, 594);
+            btnCancelEquipment.Location = new Point(148, 800);
             btnCancelEquipment.Name = "btnCancelEquipment";
-            btnCancelEquipment.Size = new Size(90, 28);
+            btnCancelEquipment.Size = new Size(103, 36);
             btnCancelEquipment.Text = "Cancel";
             btnCancelEquipment.TabIndex = 18;
             btnCancelEquipment.Click += btnCancelEquipment_Click;
@@ -332,9 +333,10 @@ namespace Company.OfficeApp.Pages.Inventory
             // lblLogTitle
             // 
             lblLogTitle.AutoSize = true;
-            lblLogTitle.Location = new Point(470, 274);
+            lblLogTitle.Location = new Point(564, 378);
             lblLogTitle.Name = "lblLogTitle";
             lblLogTitle.Text = "Maintenance & repair log (selected equipment)";
+            lblLogTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // dgvMaintenanceLog
             // 
@@ -346,25 +348,25 @@ namespace Company.OfficeApp.Pages.Inventory
             dgvMaintenanceLog.ReadOnly = true;
             dgvMaintenanceLog.RowHeadersVisible = false;
             dgvMaintenanceLog.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMaintenanceLog.Location = new Point(470, 298);
+            dgvMaintenanceLog.Location = new Point(564, 409);
             dgvMaintenanceLog.Name = "dgvMaintenanceLog";
-            dgvMaintenanceLog.Size = new Size(472, 220);
+            dgvMaintenanceLog.Size = new Size(543, 290);
             dgvMaintenanceLog.TabIndex = 19;
             // 
             // btnAddMaintenance
             // 
-            btnAddMaintenance.Location = new Point(470, 526);
+            btnAddMaintenance.Location = new Point(564, 710);
             btnAddMaintenance.Name = "btnAddMaintenance";
-            btnAddMaintenance.Size = new Size(130, 28);
+            btnAddMaintenance.Size = new Size(150, 36);
             btnAddMaintenance.Text = "Add Log Entry";
             btnAddMaintenance.TabIndex = 20;
             btnAddMaintenance.Click += btnAddMaintenance_Click;
             // 
             // btnDeleteMaintenance
             // 
-            btnDeleteMaintenance.Location = new Point(606, 526);
+            btnDeleteMaintenance.Location = new Point(721, 710);
             btnDeleteMaintenance.Name = "btnDeleteMaintenance";
-            btnDeleteMaintenance.Size = new Size(110, 28);
+            btnDeleteMaintenance.Size = new Size(126, 36);
             btnDeleteMaintenance.Text = "Delete Entry";
             btnDeleteMaintenance.TabIndex = 21;
             btnDeleteMaintenance.Click += btnDeleteMaintenance_Click;
@@ -474,7 +476,7 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(btnAddMaintenance);
             Controls.Add(btnDeleteMaintenance);
             Name = "EquipmentTab";
-            Size = new Size(960, 660);
+            Size = new Size(1152, 903);
             Load += EquipmentTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvEquipment).EndInit();
             ((System.ComponentModel.ISupportInitialize)numRentalRate).EndInit();

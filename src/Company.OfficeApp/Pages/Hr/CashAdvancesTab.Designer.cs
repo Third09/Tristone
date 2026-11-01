@@ -45,15 +45,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblCaFilter
             // 
             lblCaFilter.AutoSize = true;
-            lblCaFilter.Location = new Point(12, 15);
+            lblCaFilter.Location = new Point(38, 36);
             lblCaFilter.Name = "lblCaFilter";
             lblCaFilter.Text = "Show";
             // 
             // cboCashAdvanceFilter
             // 
-            cboCashAdvanceFilter.Location = new Point(60, 12);
+            cboCashAdvanceFilter.Location = new Point(93, 32);
             cboCashAdvanceFilter.Name = "cboCashAdvanceFilter";
-            cboCashAdvanceFilter.Size = new Size(180, 23);
+            cboCashAdvanceFilter.Size = new Size(207, 23);
             cboCashAdvanceFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboCashAdvanceFilter.TabIndex = 0;
             cboCashAdvanceFilter.SelectedIndexChanged += Filter_Changed;
@@ -68,35 +68,35 @@ namespace Company.OfficeApp.Pages.Hr
             dgvCashAdvances.ReadOnly = true;
             dgvCashAdvances.RowHeadersVisible = false;
             dgvCashAdvances.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCashAdvances.Location = new Point(12, 44);
+            dgvCashAdvances.Location = new Point(38, 74);
             dgvCashAdvances.Name = "dgvCashAdvances";
-            dgvCashAdvances.Size = new Size(930, 220);
+            dgvCashAdvances.Size = new Size(1070, 290);
             dgvCashAdvances.TabIndex = 1;
             dgvCashAdvances.SelectionChanged += dgvCashAdvances_SelectionChanged;
             // 
             // btnNewCashAdvance
             // 
-            btnNewCashAdvance.Location = new Point(12, 272);
+            btnNewCashAdvance.Location = new Point(38, 375);
             btnNewCashAdvance.Name = "btnNewCashAdvance";
-            btnNewCashAdvance.Size = new Size(150, 28);
+            btnNewCashAdvance.Size = new Size(172, 36);
             btnNewCashAdvance.Text = "New Cash Advance";
             btnNewCashAdvance.TabIndex = 2;
             btnNewCashAdvance.Click += btnNewCashAdvance_Click;
             // 
             // btnApproveCashAdvance
             // 
-            btnApproveCashAdvance.Location = new Point(168, 272);
+            btnApproveCashAdvance.Location = new Point(217, 375);
             btnApproveCashAdvance.Name = "btnApproveCashAdvance";
-            btnApproveCashAdvance.Size = new Size(90, 28);
+            btnApproveCashAdvance.Size = new Size(103, 36);
             btnApproveCashAdvance.Text = "Approve";
             btnApproveCashAdvance.TabIndex = 3;
             btnApproveCashAdvance.Click += btnApproveCashAdvance_Click;
             // 
             // btnRejectCashAdvance
             // 
-            btnRejectCashAdvance.Location = new Point(264, 272);
+            btnRejectCashAdvance.Location = new Point(328, 375);
             btnRejectCashAdvance.Name = "btnRejectCashAdvance";
-            btnRejectCashAdvance.Size = new Size(90, 28);
+            btnRejectCashAdvance.Size = new Size(103, 36);
             btnRejectCashAdvance.Text = "Reject";
             btnRejectCashAdvance.TabIndex = 4;
             btnRejectCashAdvance.Click += btnRejectCashAdvance_Click;
@@ -104,20 +104,20 @@ namespace Company.OfficeApp.Pages.Hr
             // lblApproverNote
             // 
             lblApproverNote.AutoSize = true;
-            lblApproverNote.Location = new Point(12, 308);
+            lblApproverNote.Location = new Point(38, 423);
             lblApproverNote.Name = "lblApproverNote";
             lblApproverNote.Text = "The HR Supervisor approves cash advances.";
             // 
             // lblCaMsg
             // 
             lblCaMsg.AutoSize = true;
-            lblCaMsg.Location = new Point(12, 332);
+            lblCaMsg.Location = new Point(38, 454);
             lblCaMsg.Name = "lblCaMsg";
             // 
             // lblDeductions
             // 
             lblDeductions.AutoSize = true;
-            lblDeductions.Location = new Point(12, 360);
+            lblDeductions.Location = new Point(38, 491);
             lblDeductions.Name = "lblDeductions";
             lblDeductions.Text = "Deductions taken (selected cash advance)";
             // 
@@ -131,9 +131,9 @@ namespace Company.OfficeApp.Pages.Hr
             dgvCashAdvanceDeductions.ReadOnly = true;
             dgvCashAdvanceDeductions.RowHeadersVisible = false;
             dgvCashAdvanceDeductions.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCashAdvanceDeductions.Location = new Point(12, 380);
+            dgvCashAdvanceDeductions.Location = new Point(38, 518);
             dgvCashAdvanceDeductions.Name = "dgvCashAdvanceDeductions";
-            dgvCashAdvanceDeductions.Size = new Size(600, 200);
+            dgvCashAdvanceDeductions.Size = new Size(690, 264);
             dgvCashAdvanceDeductions.TabIndex = 5;
             // 
             // colCaDate
@@ -225,7 +225,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(lblDeductions);
             Controls.Add(dgvCashAdvanceDeductions);
             Name = "CashAdvancesTab";
-            Size = new Size(960, 600);
+            Size = new Size(1152, 824);
             Load += CashAdvancesTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvCashAdvances).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvCashAdvanceDeductions).EndInit();

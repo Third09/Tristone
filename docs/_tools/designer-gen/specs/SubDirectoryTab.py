@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Subcontractors/SubDirectoryTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Subcontractors"
 CLASS = "SubDirectoryTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 720)
 LOAD_EVENT = "SubDirectoryTab_Load"
 DATE = 'new DataGridViewCellStyle { Format = "MMM d, yyyy", NullValue = "-" }'

@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Subcontractors/SubJobsTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Subcontractors"
 CLASS = "SubJobsTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 870)
 LOAD_EVENT = "SubJobsTab_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'

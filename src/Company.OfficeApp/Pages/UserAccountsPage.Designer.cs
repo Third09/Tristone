@@ -15,6 +15,7 @@ namespace Company.OfficeApp.Pages
 
         #region Component Designer generated code
 
+        // ROOMY layout applied (docs/_tools/designer-gen/roomy_designer.py)
         private void InitializeComponent()
         {
             lblSearch = new Label();
@@ -54,30 +55,30 @@ namespace Company.OfficeApp.Pages
             // lblSearch
             //
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(12, 15);
+            lblSearch.Location = new Point(38, 36);
             lblSearch.Name = "lblSearch";
             lblSearch.Text = "Search";
             //
             // txtUserSearch
             //
-            txtUserSearch.Location = new Point(62, 12);
+            txtUserSearch.Location = new Point(95, 32);
             txtUserSearch.Name = "txtUserSearch";
-            txtUserSearch.Size = new Size(200, 23);
+            txtUserSearch.Size = new Size(230, 23);
             txtUserSearch.TabIndex = 0;
             //
             // lblStatusFilter
             //
             lblStatusFilter.AutoSize = true;
-            lblStatusFilter.Location = new Point(276, 15);
+            lblStatusFilter.Location = new Point(341, 36);
             lblStatusFilter.Name = "lblStatusFilter";
             lblStatusFilter.Text = "Status";
             //
             // cboUserStatusFilter
             //
             cboUserStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboUserStatusFilter.Location = new Point(322, 12);
+            cboUserStatusFilter.Location = new Point(394, 32);
             cboUserStatusFilter.Name = "cboUserStatusFilter";
-            cboUserStatusFilter.Size = new Size(120, 23);
+            cboUserStatusFilter.Size = new Size(138, 23);
             cboUserStatusFilter.TabIndex = 1;
             cboUserStatusFilter.SelectedIndexChanged += Filter_Changed;
             //
@@ -87,13 +88,13 @@ namespace Company.OfficeApp.Pages
             dgvUsers.AllowUserToDeleteRows = false;
             dgvUsers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvUsers.Columns.AddRange(new DataGridViewColumn[] { colName, colUsername, colDepartment, colLevel, colStatus, colLastSignIn });
-            dgvUsers.Location = new Point(12, 44);
+            dgvUsers.Location = new Point(38, 74);
             dgvUsers.MultiSelect = false;
             dgvUsers.Name = "dgvUsers";
             dgvUsers.ReadOnly = true;
             dgvUsers.RowHeadersVisible = false;
             dgvUsers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsers.Size = new Size(700, 220);
+            dgvUsers.Size = new Size(805, 290);
             dgvUsers.TabIndex = 2;
             dgvUsers.SelectionChanged += dgvUsers_SelectionChanged;
             //
@@ -142,45 +143,45 @@ namespace Company.OfficeApp.Pages
             //
             // btnCreateAccount
             //
-            btnCreateAccount.Location = new Point(12, 272);
+            btnCreateAccount.Location = new Point(38, 375);
             btnCreateAccount.Name = "btnCreateAccount";
-            btnCreateAccount.Size = new Size(120, 28);
+            btnCreateAccount.Size = new Size(138, 36);
             btnCreateAccount.TabIndex = 3;
             btnCreateAccount.Text = "Create Account";
             btnCreateAccount.Click += btnCreateAccount_Click;
             //
             // btnSetUserPassword
             //
-            btnSetUserPassword.Location = new Point(138, 272);
+            btnSetUserPassword.Location = new Point(183, 375);
             btnSetUserPassword.Name = "btnSetUserPassword";
-            btnSetUserPassword.Size = new Size(130, 28);
+            btnSetUserPassword.Size = new Size(150, 36);
             btnSetUserPassword.TabIndex = 4;
             btnSetUserPassword.Text = "Set New Password";
             btnSetUserPassword.Click += btnSetUserPassword_Click;
             //
             // btnUnlockUser
             //
-            btnUnlockUser.Location = new Point(274, 272);
+            btnUnlockUser.Location = new Point(339, 375);
             btnUnlockUser.Name = "btnUnlockUser";
-            btnUnlockUser.Size = new Size(90, 28);
+            btnUnlockUser.Size = new Size(103, 36);
             btnUnlockUser.TabIndex = 5;
             btnUnlockUser.Text = "Unlock";
             btnUnlockUser.Click += btnUnlockUser_Click;
             //
             // btnDisableUser
             //
-            btnDisableUser.Location = new Point(370, 272);
+            btnDisableUser.Location = new Point(449, 375);
             btnDisableUser.Name = "btnDisableUser";
-            btnDisableUser.Size = new Size(90, 28);
+            btnDisableUser.Size = new Size(103, 36);
             btnDisableUser.TabIndex = 6;
             btnDisableUser.Text = "Disable";
             btnDisableUser.Click += btnDisableUser_Click;
             //
             // btnEnableUser
             //
-            btnEnableUser.Location = new Point(466, 272);
+            btnEnableUser.Location = new Point(560, 375);
             btnEnableUser.Name = "btnEnableUser";
-            btnEnableUser.Size = new Size(90, 28);
+            btnEnableUser.Size = new Size(103, 36);
             btnEnableUser.TabIndex = 7;
             btnEnableUser.Text = "Enable";
             btnEnableUser.Click += btnEnableUser_Click;
@@ -188,59 +189,60 @@ namespace Company.OfficeApp.Pages
             // lblFormMode
             //
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 316);
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
+            lblFormMode.Location = new Point(38, 433);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New account";
             //
             // lblUserEmployee
             //
             lblUserEmployee.AutoSize = true;
-            lblUserEmployee.Location = new Point(12, 342);
+            lblUserEmployee.Location = new Point(38, 467);
             lblUserEmployee.Name = "lblUserEmployee";
             lblUserEmployee.Text = "Employee (office staff without a login; add them in HR & Payroll first)";
             //
             // cboUserEmployee
             //
             cboUserEmployee.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboUserEmployee.Location = new Point(12, 360);
+            cboUserEmployee.Location = new Point(38, 491);
             cboUserEmployee.Name = "cboUserEmployee";
-            cboUserEmployee.Size = new Size(300, 23);
+            cboUserEmployee.Size = new Size(345, 23);
             cboUserEmployee.TabIndex = 8;
             cboUserEmployee.SelectedIndexChanged += cboUserEmployee_SelectedIndexChanged;
             //
             // lblNewUsername
             //
             lblNewUsername.AutoSize = true;
-            lblNewUsername.Location = new Point(12, 390);
+            lblNewUsername.Location = new Point(38, 531);
             lblNewUsername.Name = "lblNewUsername";
             lblNewUsername.Text = "Username (letters, numbers, . - _ ; no spaces)";
             //
             // txtNewUsername
             //
-            txtNewUsername.Location = new Point(12, 408);
+            txtNewUsername.Location = new Point(38, 555);
             txtNewUsername.Name = "txtNewUsername";
-            txtNewUsername.Size = new Size(260, 23);
+            txtNewUsername.Size = new Size(299, 23);
             txtNewUsername.TabIndex = 9;
             //
             // lblNewUserPassword
             //
             lblNewUserPassword.AutoSize = true;
-            lblNewUserPassword.Location = new Point(12, 438);
+            lblNewUserPassword.Location = new Point(38, 594);
             lblNewUserPassword.Name = "lblNewUserPassword";
             lblNewUserPassword.Text = "First password (new accounts only; 8+ characters, a letter and a number)";
             //
             // txtNewUserPassword
             //
-            txtNewUserPassword.Location = new Point(12, 456);
+            txtNewUserPassword.Location = new Point(38, 618);
             txtNewUserPassword.Name = "txtNewUserPassword";
-            txtNewUserPassword.Size = new Size(260, 23);
+            txtNewUserPassword.Size = new Size(299, 23);
             txtNewUserPassword.TabIndex = 10;
             //
             // btnGenerateUserPassword
             //
-            btnGenerateUserPassword.Location = new Point(278, 455);
+            btnGenerateUserPassword.Location = new Point(344, 617);
             btnGenerateUserPassword.Name = "btnGenerateUserPassword";
-            btnGenerateUserPassword.Size = new Size(90, 25);
+            btnGenerateUserPassword.Size = new Size(103, 36);
             btnGenerateUserPassword.TabIndex = 11;
             btnGenerateUserPassword.Text = "Generate";
             btnGenerateUserPassword.Click += btnGenerateUserPassword_Click;
@@ -248,55 +250,55 @@ namespace Company.OfficeApp.Pages
             // lblUserLevel
             //
             lblUserLevel.AutoSize = true;
-            lblUserLevel.Location = new Point(12, 486);
+            lblUserLevel.Location = new Point(38, 658);
             lblUserLevel.Name = "lblUserLevel";
             lblUserLevel.Text = "Level";
             //
             // cboUserLevel
             //
             cboUserLevel.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboUserLevel.Location = new Point(12, 504);
+            cboUserLevel.Location = new Point(38, 681);
             cboUserLevel.Name = "cboUserLevel";
-            cboUserLevel.Size = new Size(160, 23);
+            cboUserLevel.Size = new Size(184, 23);
             cboUserLevel.TabIndex = 12;
             cboUserLevel.SelectedIndexChanged += cboUserLevel_SelectedIndexChanged;
             //
             // lblUserDepartment
             //
             lblUserDepartment.AutoSize = true;
-            lblUserDepartment.Location = new Point(12, 534);
+            lblUserDepartment.Location = new Point(38, 721);
             lblUserDepartment.Name = "lblUserDepartment";
             lblUserDepartment.Text = "Department (from the employee; none for Admins)";
             //
             // cboUserDepartment
             //
             cboUserDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboUserDepartment.Location = new Point(12, 552);
+            cboUserDepartment.Location = new Point(38, 745);
             cboUserDepartment.Name = "cboUserDepartment";
-            cboUserDepartment.Size = new Size(160, 23);
+            cboUserDepartment.Size = new Size(184, 23);
             cboUserDepartment.Enabled = false;
             cboUserDepartment.TabIndex = 13;
             //
             // lblUserFormMsg
             //
             lblUserFormMsg.AutoSize = true;
-            lblUserFormMsg.Location = new Point(12, 582);
+            lblUserFormMsg.Location = new Point(38, 784);
             lblUserFormMsg.Name = "lblUserFormMsg";
             //
             // btnSaveUser
             //
-            btnSaveUser.Location = new Point(12, 604);
+            btnSaveUser.Location = new Point(38, 813);
             btnSaveUser.Name = "btnSaveUser";
-            btnSaveUser.Size = new Size(90, 28);
+            btnSaveUser.Size = new Size(103, 36);
             btnSaveUser.TabIndex = 14;
             btnSaveUser.Text = "Save";
             btnSaveUser.Click += btnSaveUser_Click;
             //
             // btnCancelUser
             //
-            btnCancelUser.Location = new Point(108, 604);
+            btnCancelUser.Location = new Point(148, 813);
             btnCancelUser.Name = "btnCancelUser";
-            btnCancelUser.Size = new Size(90, 28);
+            btnCancelUser.Size = new Size(103, 36);
             btnCancelUser.TabIndex = 15;
             btnCancelUser.Text = "Cancel";
             btnCancelUser.Click += btnCancelUser_Click;
@@ -332,7 +334,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnSaveUser);
             Controls.Add(btnCancelUser);
             Name = "UserAccountsPage";
-            Size = new Size(730, 650);
+            Size = new Size(887, 890);
             Load += UserAccountsPage_Load;
             ((System.ComponentModel.ISupportInitialize)dgvUsers).EndInit();
             ResumeLayout(false);

@@ -87,29 +87,29 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblSearch
             // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(12, 15);
+            lblSearch.Location = new Point(38, 36);
             lblSearch.Name = "lblSearch";
             lblSearch.Text = "Search";
             // 
             // txtSubSearch
             // 
-            txtSubSearch.Location = new Point(62, 12);
+            txtSubSearch.Location = new Point(95, 32);
             txtSubSearch.Name = "txtSubSearch";
-            txtSubSearch.Size = new Size(180, 23);
+            txtSubSearch.Size = new Size(207, 23);
             txtSubSearch.TabIndex = 0;
             // 
             // lblTradeFilter
             // 
             lblTradeFilter.AutoSize = true;
-            lblTradeFilter.Location = new Point(254, 15);
+            lblTradeFilter.Location = new Point(316, 36);
             lblTradeFilter.Name = "lblTradeFilter";
             lblTradeFilter.Text = "Trade";
             // 
             // cboSubTradeFilter
             // 
-            cboSubTradeFilter.Location = new Point(294, 12);
+            cboSubTradeFilter.Location = new Point(362, 32);
             cboSubTradeFilter.Name = "cboSubTradeFilter";
-            cboSubTradeFilter.Size = new Size(200, 23);
+            cboSubTradeFilter.Size = new Size(230, 23);
             cboSubTradeFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboSubTradeFilter.TabIndex = 1;
             cboSubTradeFilter.SelectedIndexChanged += Filter_Changed;
@@ -117,7 +117,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblPcabDue
             // 
             lblPcabDue.AutoSize = true;
-            lblPcabDue.Location = new Point(506, 15);
+            lblPcabDue.Location = new Point(606, 36);
             lblPcabDue.Name = "lblPcabDue";
             lblPcabDue.Text = "";
             // 
@@ -131,36 +131,36 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvSubcontractors.ReadOnly = true;
             dgvSubcontractors.RowHeadersVisible = false;
             dgvSubcontractors.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvSubcontractors.Location = new Point(12, 44);
+            dgvSubcontractors.Location = new Point(38, 74);
             dgvSubcontractors.Name = "dgvSubcontractors";
-            dgvSubcontractors.Size = new Size(930, 170);
+            dgvSubcontractors.Size = new Size(1070, 224);
             dgvSubcontractors.TabIndex = 2;
             dgvSubcontractors.SelectionChanged += dgvSubcontractors_SelectionChanged;
             dgvSubcontractors.CellFormatting += dgvSubcontractors_CellFormatting;
             // 
             // btnAddSubcontractor
             // 
-            btnAddSubcontractor.Location = new Point(12, 222);
+            btnAddSubcontractor.Location = new Point(38, 309);
             btnAddSubcontractor.Name = "btnAddSubcontractor";
-            btnAddSubcontractor.Size = new Size(140, 28);
+            btnAddSubcontractor.Size = new Size(161, 36);
             btnAddSubcontractor.Text = "Add Subcontractor";
             btnAddSubcontractor.TabIndex = 3;
             btnAddSubcontractor.Click += btnAddSubcontractor_Click;
             // 
             // btnDeleteSubcontractor
             // 
-            btnDeleteSubcontractor.Location = new Point(158, 222);
+            btnDeleteSubcontractor.Location = new Point(206, 309);
             btnDeleteSubcontractor.Name = "btnDeleteSubcontractor";
-            btnDeleteSubcontractor.Size = new Size(90, 28);
+            btnDeleteSubcontractor.Size = new Size(103, 36);
             btnDeleteSubcontractor.Text = "Delete";
             btnDeleteSubcontractor.TabIndex = 4;
             btnDeleteSubcontractor.Click += btnDeleteSubcontractor_Click;
             // 
             // btnExportSubcontractors
             // 
-            btnExportSubcontractors.Location = new Point(254, 222);
+            btnExportSubcontractors.Location = new Point(316, 309);
             btnExportSubcontractors.Name = "btnExportSubcontractors";
-            btnExportSubcontractors.Size = new Size(90, 28);
+            btnExportSubcontractors.Size = new Size(103, 36);
             btnExportSubcontractors.Text = "Export";
             btnExportSubcontractors.TabIndex = 5;
             btnExportSubcontractors.Click += btnExportSubcontractors_Click;
@@ -168,78 +168,79 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblFormMode
             // 
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 264);
+            lblFormMode.Location = new Point(38, 364);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New subcontractor";
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblSubBusinessName
             // 
             lblSubBusinessName.AutoSize = true;
-            lblSubBusinessName.Location = new Point(12, 288);
+            lblSubBusinessName.Location = new Point(38, 396);
             lblSubBusinessName.Name = "lblSubBusinessName";
             lblSubBusinessName.Text = "Official business name";
             // 
             // txtSubBusinessName
             // 
-            txtSubBusinessName.Location = new Point(12, 306);
+            txtSubBusinessName.Location = new Point(38, 420);
             txtSubBusinessName.Name = "txtSubBusinessName";
-            txtSubBusinessName.Size = new Size(260, 23);
+            txtSubBusinessName.Size = new Size(299, 23);
             txtSubBusinessName.TabIndex = 6;
             // 
             // lblSubTradeName
             // 
             lblSubTradeName.AutoSize = true;
-            lblSubTradeName.Location = new Point(12, 336);
+            lblSubTradeName.Location = new Point(38, 460);
             lblSubTradeName.Name = "lblSubTradeName";
             lblSubTradeName.Text = "Trade name (DBA)";
             // 
             // txtSubTradeName
             // 
-            txtSubTradeName.Location = new Point(12, 354);
+            txtSubTradeName.Location = new Point(38, 483);
             txtSubTradeName.Name = "txtSubTradeName";
-            txtSubTradeName.Size = new Size(260, 23);
+            txtSubTradeName.Size = new Size(299, 23);
             txtSubTradeName.TabIndex = 7;
             // 
             // lblSubDtiSec
             // 
             lblSubDtiSec.AutoSize = true;
-            lblSubDtiSec.Location = new Point(12, 384);
+            lblSubDtiSec.Location = new Point(38, 523);
             lblSubDtiSec.Name = "lblSubDtiSec";
             lblSubDtiSec.Text = "DTI / SEC reg. no.";
             // 
             // txtSubDtiSec
             // 
-            txtSubDtiSec.Location = new Point(12, 402);
+            txtSubDtiSec.Location = new Point(38, 547);
             txtSubDtiSec.Name = "txtSubDtiSec";
-            txtSubDtiSec.Size = new Size(125, 23);
+            txtSubDtiSec.Size = new Size(144, 23);
             txtSubDtiSec.TabIndex = 8;
             // 
             // lblSubTin
             // 
             lblSubTin.AutoSize = true;
-            lblSubTin.Location = new Point(147, 384);
+            lblSubTin.Location = new Point(193, 523);
             lblSubTin.Name = "lblSubTin";
             lblSubTin.Text = "TIN";
             // 
             // txtSubTin
             // 
-            txtSubTin.Location = new Point(147, 402);
+            txtSubTin.Location = new Point(193, 547);
             txtSubTin.Name = "txtSubTin";
-            txtSubTin.Size = new Size(125, 23);
+            txtSubTin.Size = new Size(144, 23);
             txtSubTin.TabIndex = 9;
             // 
             // lblSubOfficeAddress
             // 
             lblSubOfficeAddress.AutoSize = true;
-            lblSubOfficeAddress.Location = new Point(12, 432);
+            lblSubOfficeAddress.Location = new Point(38, 586);
             lblSubOfficeAddress.Name = "lblSubOfficeAddress";
             lblSubOfficeAddress.Text = "Main office address";
             // 
             // txtSubOfficeAddress
             // 
-            txtSubOfficeAddress.Location = new Point(12, 450);
+            txtSubOfficeAddress.Location = new Point(38, 610);
             txtSubOfficeAddress.Name = "txtSubOfficeAddress";
-            txtSubOfficeAddress.Size = new Size(260, 38);
+            txtSubOfficeAddress.Size = new Size(299, 50);
             txtSubOfficeAddress.Multiline = true;
             txtSubOfficeAddress.ScrollBars = ScrollBars.Vertical;
             txtSubOfficeAddress.TabIndex = 10;
@@ -247,15 +248,15 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblSubYardAddress
             // 
             lblSubYardAddress.AutoSize = true;
-            lblSubYardAddress.Location = new Point(12, 494);
+            lblSubYardAddress.Location = new Point(38, 668);
             lblSubYardAddress.Name = "lblSubYardAddress";
             lblSubYardAddress.Text = "Warehouse / yard location";
             // 
             // txtSubYardAddress
             // 
-            txtSubYardAddress.Location = new Point(12, 512);
+            txtSubYardAddress.Location = new Point(38, 692);
             txtSubYardAddress.Name = "txtSubYardAddress";
-            txtSubYardAddress.Size = new Size(260, 38);
+            txtSubYardAddress.Size = new Size(299, 50);
             txtSubYardAddress.Multiline = true;
             txtSubYardAddress.ScrollBars = ScrollBars.Vertical;
             txtSubYardAddress.TabIndex = 11;
@@ -263,240 +264,240 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblSubBankName
             // 
             lblSubBankName.AutoSize = true;
-            lblSubBankName.Location = new Point(12, 556);
+            lblSubBankName.Location = new Point(38, 750);
             lblSubBankName.Name = "lblSubBankName";
             lblSubBankName.Text = "Bank name";
             // 
             // txtSubBankName
             // 
-            txtSubBankName.Location = new Point(12, 574);
+            txtSubBankName.Location = new Point(38, 774);
             txtSubBankName.Name = "txtSubBankName";
-            txtSubBankName.Size = new Size(125, 23);
+            txtSubBankName.Size = new Size(144, 23);
             txtSubBankName.TabIndex = 12;
             // 
             // lblSubAccountName
             // 
             lblSubAccountName.AutoSize = true;
-            lblSubAccountName.Location = new Point(147, 556);
+            lblSubAccountName.Location = new Point(193, 750);
             lblSubAccountName.Name = "lblSubAccountName";
             lblSubAccountName.Text = "Account name";
             // 
             // txtSubAccountName
             // 
-            txtSubAccountName.Location = new Point(147, 574);
+            txtSubAccountName.Location = new Point(193, 774);
             txtSubAccountName.Name = "txtSubAccountName";
-            txtSubAccountName.Size = new Size(125, 23);
+            txtSubAccountName.Size = new Size(144, 23);
             txtSubAccountName.TabIndex = 13;
             // 
             // lblSubAccountNo
             // 
             lblSubAccountNo.AutoSize = true;
-            lblSubAccountNo.Location = new Point(12, 604);
+            lblSubAccountNo.Location = new Point(38, 813);
             lblSubAccountNo.Name = "lblSubAccountNo";
             lblSubAccountNo.Text = "Account number";
             // 
             // txtSubAccountNo
             // 
-            txtSubAccountNo.Location = new Point(12, 622);
+            txtSubAccountNo.Location = new Point(38, 837);
             txtSubAccountNo.Name = "txtSubAccountNo";
-            txtSubAccountNo.Size = new Size(260, 23);
+            txtSubAccountNo.Size = new Size(299, 23);
             txtSubAccountNo.TabIndex = 14;
             // 
             // lblPrimaryName
             // 
             lblPrimaryName.AutoSize = true;
-            lblPrimaryName.Location = new Point(300, 288);
+            lblPrimaryName.Location = new Point(369, 396);
             lblPrimaryName.Name = "lblPrimaryName";
             lblPrimaryName.Text = "Primary contact: name";
             // 
             // txtPrimaryName
             // 
-            txtPrimaryName.Location = new Point(300, 306);
+            txtPrimaryName.Location = new Point(369, 420);
             txtPrimaryName.Name = "txtPrimaryName";
-            txtPrimaryName.Size = new Size(145, 23);
+            txtPrimaryName.Size = new Size(167, 23);
             txtPrimaryName.TabIndex = 15;
             // 
             // lblPrimaryRole
             // 
             lblPrimaryRole.AutoSize = true;
-            lblPrimaryRole.Location = new Point(455, 288);
+            lblPrimaryRole.Location = new Point(547, 396);
             lblPrimaryRole.Name = "lblPrimaryRole";
             lblPrimaryRole.Text = "Designation / role";
             // 
             // txtPrimaryRole
             // 
-            txtPrimaryRole.Location = new Point(455, 306);
+            txtPrimaryRole.Location = new Point(547, 420);
             txtPrimaryRole.Name = "txtPrimaryRole";
-            txtPrimaryRole.Size = new Size(145, 23);
+            txtPrimaryRole.Size = new Size(167, 23);
             txtPrimaryRole.TabIndex = 16;
             // 
             // lblPrimaryPhone
             // 
             lblPrimaryPhone.AutoSize = true;
-            lblPrimaryPhone.Location = new Point(300, 336);
+            lblPrimaryPhone.Location = new Point(369, 460);
             lblPrimaryPhone.Name = "lblPrimaryPhone";
             lblPrimaryPhone.Text = "Phone";
             // 
             // txtPrimaryPhone
             // 
-            txtPrimaryPhone.Location = new Point(300, 354);
+            txtPrimaryPhone.Location = new Point(369, 483);
             txtPrimaryPhone.Name = "txtPrimaryPhone";
-            txtPrimaryPhone.Size = new Size(145, 23);
+            txtPrimaryPhone.Size = new Size(167, 23);
             txtPrimaryPhone.TabIndex = 17;
             // 
             // lblPrimaryMobile
             // 
             lblPrimaryMobile.AutoSize = true;
-            lblPrimaryMobile.Location = new Point(455, 336);
+            lblPrimaryMobile.Location = new Point(547, 460);
             lblPrimaryMobile.Name = "lblPrimaryMobile";
             lblPrimaryMobile.Text = "Mobile";
             // 
             // txtPrimaryMobile
             // 
-            txtPrimaryMobile.Location = new Point(455, 354);
+            txtPrimaryMobile.Location = new Point(547, 483);
             txtPrimaryMobile.Name = "txtPrimaryMobile";
-            txtPrimaryMobile.Size = new Size(145, 23);
+            txtPrimaryMobile.Size = new Size(167, 23);
             txtPrimaryMobile.TabIndex = 18;
             // 
             // lblPrimaryEmail
             // 
             lblPrimaryEmail.AutoSize = true;
-            lblPrimaryEmail.Location = new Point(300, 384);
+            lblPrimaryEmail.Location = new Point(369, 523);
             lblPrimaryEmail.Name = "lblPrimaryEmail";
             lblPrimaryEmail.Text = "Email";
             // 
             // txtPrimaryEmail
             // 
-            txtPrimaryEmail.Location = new Point(300, 402);
+            txtPrimaryEmail.Location = new Point(369, 547);
             txtPrimaryEmail.Name = "txtPrimaryEmail";
-            txtPrimaryEmail.Size = new Size(300, 23);
+            txtPrimaryEmail.Size = new Size(345, 23);
             txtPrimaryEmail.TabIndex = 19;
             // 
             // lblSecondaryName
             // 
             lblSecondaryName.AutoSize = true;
-            lblSecondaryName.Location = new Point(300, 432);
+            lblSecondaryName.Location = new Point(369, 586);
             lblSecondaryName.Name = "lblSecondaryName";
             lblSecondaryName.Text = "Backup contact: name";
             // 
             // txtSecondaryName
             // 
-            txtSecondaryName.Location = new Point(300, 450);
+            txtSecondaryName.Location = new Point(369, 610);
             txtSecondaryName.Name = "txtSecondaryName";
-            txtSecondaryName.Size = new Size(145, 23);
+            txtSecondaryName.Size = new Size(167, 23);
             txtSecondaryName.TabIndex = 20;
             // 
             // lblSecondaryRole
             // 
             lblSecondaryRole.AutoSize = true;
-            lblSecondaryRole.Location = new Point(455, 432);
+            lblSecondaryRole.Location = new Point(547, 586);
             lblSecondaryRole.Name = "lblSecondaryRole";
             lblSecondaryRole.Text = "Role";
             // 
             // txtSecondaryRole
             // 
-            txtSecondaryRole.Location = new Point(455, 450);
+            txtSecondaryRole.Location = new Point(547, 610);
             txtSecondaryRole.Name = "txtSecondaryRole";
-            txtSecondaryRole.Size = new Size(145, 23);
+            txtSecondaryRole.Size = new Size(167, 23);
             txtSecondaryRole.TabIndex = 21;
             // 
             // lblSecondaryPhone
             // 
             lblSecondaryPhone.AutoSize = true;
-            lblSecondaryPhone.Location = new Point(300, 480);
+            lblSecondaryPhone.Location = new Point(369, 650);
             lblSecondaryPhone.Name = "lblSecondaryPhone";
             lblSecondaryPhone.Text = "Phone";
             // 
             // txtSecondaryPhone
             // 
-            txtSecondaryPhone.Location = new Point(300, 498);
+            txtSecondaryPhone.Location = new Point(369, 673);
             txtSecondaryPhone.Name = "txtSecondaryPhone";
-            txtSecondaryPhone.Size = new Size(145, 23);
+            txtSecondaryPhone.Size = new Size(167, 23);
             txtSecondaryPhone.TabIndex = 22;
             // 
             // lblSecondaryMobile
             // 
             lblSecondaryMobile.AutoSize = true;
-            lblSecondaryMobile.Location = new Point(455, 480);
+            lblSecondaryMobile.Location = new Point(547, 650);
             lblSecondaryMobile.Name = "lblSecondaryMobile";
             lblSecondaryMobile.Text = "Mobile";
             // 
             // txtSecondaryMobile
             // 
-            txtSecondaryMobile.Location = new Point(455, 498);
+            txtSecondaryMobile.Location = new Point(547, 673);
             txtSecondaryMobile.Name = "txtSecondaryMobile";
-            txtSecondaryMobile.Size = new Size(145, 23);
+            txtSecondaryMobile.Size = new Size(167, 23);
             txtSecondaryMobile.TabIndex = 23;
             // 
             // lblSecondaryEmail
             // 
             lblSecondaryEmail.AutoSize = true;
-            lblSecondaryEmail.Location = new Point(300, 528);
+            lblSecondaryEmail.Location = new Point(369, 713);
             lblSecondaryEmail.Name = "lblSecondaryEmail";
             lblSecondaryEmail.Text = "Email";
             // 
             // txtSecondaryEmail
             // 
-            txtSecondaryEmail.Location = new Point(300, 546);
+            txtSecondaryEmail.Location = new Point(369, 737);
             txtSecondaryEmail.Name = "txtSecondaryEmail";
-            txtSecondaryEmail.Size = new Size(300, 23);
+            txtSecondaryEmail.Size = new Size(345, 23);
             txtSecondaryEmail.TabIndex = 24;
             // 
             // lblSubTrades
             // 
             lblSubTrades.AutoSize = true;
-            lblSubTrades.Location = new Point(628, 288);
+            lblSubTrades.Location = new Point(746, 396);
             lblSubTrades.Name = "lblSubTrades";
             lblSubTrades.Text = "Trade categories (tick all that apply)";
             // 
             // clbSubTrades
             // 
-            clbSubTrades.Location = new Point(628, 306);
+            clbSubTrades.Location = new Point(746, 420);
             clbSubTrades.Name = "clbSubTrades";
-            clbSubTrades.Size = new Size(300, 150);
+            clbSubTrades.Size = new Size(345, 198);
             clbSubTrades.CheckOnClick = true;
             clbSubTrades.TabIndex = 25;
             // 
             // lblPcabNumber
             // 
             lblPcabNumber.AutoSize = true;
-            lblPcabNumber.Location = new Point(628, 466);
+            lblPcabNumber.Location = new Point(746, 631);
             lblPcabNumber.Name = "lblPcabNumber";
             lblPcabNumber.Text = "PCAB license no.";
             // 
             // txtPcabNumber
             // 
-            txtPcabNumber.Location = new Point(628, 484);
+            txtPcabNumber.Location = new Point(746, 655);
             txtPcabNumber.Name = "txtPcabNumber";
-            txtPcabNumber.Size = new Size(145, 23);
+            txtPcabNumber.Size = new Size(167, 23);
             txtPcabNumber.TabIndex = 26;
             // 
             // lblPcabClassification
             // 
             lblPcabClassification.AutoSize = true;
-            lblPcabClassification.Location = new Point(783, 466);
+            lblPcabClassification.Location = new Point(924, 631);
             lblPcabClassification.Name = "lblPcabClassification";
             lblPcabClassification.Text = "Classification";
             // 
             // txtPcabClassification
             // 
-            txtPcabClassification.Location = new Point(783, 484);
+            txtPcabClassification.Location = new Point(924, 655);
             txtPcabClassification.Name = "txtPcabClassification";
-            txtPcabClassification.Size = new Size(145, 23);
+            txtPcabClassification.Size = new Size(167, 23);
             txtPcabClassification.TabIndex = 27;
             // 
             // lblPcabExpiry
             // 
             lblPcabExpiry.AutoSize = true;
-            lblPcabExpiry.Location = new Point(628, 514);
+            lblPcabExpiry.Location = new Point(746, 694);
             lblPcabExpiry.Name = "lblPcabExpiry";
             lblPcabExpiry.Text = "PCAB expiry (tick to set)";
             // 
             // dtpPcabExpiry
             // 
-            dtpPcabExpiry.Location = new Point(628, 532);
+            dtpPcabExpiry.Location = new Point(746, 718);
             dtpPcabExpiry.Name = "dtpPcabExpiry";
-            dtpPcabExpiry.Size = new Size(140, 23);
+            dtpPcabExpiry.Size = new Size(161, 23);
             dtpPcabExpiry.Format = DateTimePickerFormat.Short;
             dtpPcabExpiry.ShowCheckBox = true;
             dtpPcabExpiry.TabIndex = 28;
@@ -504,23 +505,23 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblSubMsg
             // 
             lblSubMsg.AutoSize = true;
-            lblSubMsg.Location = new Point(12, 656);
+            lblSubMsg.Location = new Point(38, 882);
             lblSubMsg.Name = "lblSubMsg";
             // 
             // btnSaveSubcontractor
             // 
-            btnSaveSubcontractor.Location = new Point(12, 678);
+            btnSaveSubcontractor.Location = new Point(38, 911);
             btnSaveSubcontractor.Name = "btnSaveSubcontractor";
-            btnSaveSubcontractor.Size = new Size(90, 28);
+            btnSaveSubcontractor.Size = new Size(103, 36);
             btnSaveSubcontractor.Text = "Save";
             btnSaveSubcontractor.TabIndex = 29;
             btnSaveSubcontractor.Click += btnSaveSubcontractor_Click;
             // 
             // btnCancelSubcontractor
             // 
-            btnCancelSubcontractor.Location = new Point(108, 678);
+            btnCancelSubcontractor.Location = new Point(148, 911);
             btnCancelSubcontractor.Name = "btnCancelSubcontractor";
-            btnCancelSubcontractor.Size = new Size(90, 28);
+            btnCancelSubcontractor.Size = new Size(103, 36);
             btnCancelSubcontractor.Text = "Cancel";
             btnCancelSubcontractor.TabIndex = 30;
             btnCancelSubcontractor.Click += btnCancelSubcontractor_Click;
@@ -621,7 +622,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             Controls.Add(btnSaveSubcontractor);
             Controls.Add(btnCancelSubcontractor);
             Name = "SubDirectoryTab";
-            Size = new Size(960, 720);
+            Size = new Size(1152, 982);
             Load += SubDirectoryTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvSubcontractors).EndInit();
             ResumeLayout(false);

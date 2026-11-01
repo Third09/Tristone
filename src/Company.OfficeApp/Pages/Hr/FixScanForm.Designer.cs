@@ -37,29 +37,29 @@ namespace Company.OfficeApp.Pages.Hr
             // lblFixEmployeeDate
             // 
             lblFixEmployeeDate.AutoSize = true;
-            lblFixEmployeeDate.Location = new Point(12, 12);
+            lblFixEmployeeDate.Location = new Point(38, 32);
             lblFixEmployeeDate.Name = "lblFixEmployeeDate";
             lblFixEmployeeDate.Text = "";
             // 
             // lblFixHint
             // 
             lblFixHint.AutoSize = true;
-            lblFixHint.Location = new Point(12, 34);
+            lblFixHint.Location = new Point(38, 61);
             lblFixHint.Name = "lblFixHint";
             lblFixHint.Text = "Tick each time that is known.";
             // 
             // lblFixTimeIn
             // 
             lblFixTimeIn.AutoSize = true;
-            lblFixTimeIn.Location = new Point(12, 64);
+            lblFixTimeIn.Location = new Point(38, 100);
             lblFixTimeIn.Name = "lblFixTimeIn";
             lblFixTimeIn.Text = "Time in";
             // 
             // dtpFixTimeIn
             // 
-            dtpFixTimeIn.Location = new Point(120, 60);
+            dtpFixTimeIn.Location = new Point(162, 95);
             dtpFixTimeIn.Name = "dtpFixTimeIn";
-            dtpFixTimeIn.Size = new Size(130, 23);
+            dtpFixTimeIn.Size = new Size(150, 23);
             dtpFixTimeIn.Format = DateTimePickerFormat.Custom;
             dtpFixTimeIn.CustomFormat = "h:mm tt";
             dtpFixTimeIn.ShowUpDown = true;
@@ -69,15 +69,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblFixBreakOut
             // 
             lblFixBreakOut.AutoSize = true;
-            lblFixBreakOut.Location = new Point(12, 94);
+            lblFixBreakOut.Location = new Point(38, 140);
             lblFixBreakOut.Name = "lblFixBreakOut";
             lblFixBreakOut.Text = "Break out";
             // 
             // dtpFixBreakOut
             // 
-            dtpFixBreakOut.Location = new Point(120, 90);
+            dtpFixBreakOut.Location = new Point(162, 135);
             dtpFixBreakOut.Name = "dtpFixBreakOut";
-            dtpFixBreakOut.Size = new Size(130, 23);
+            dtpFixBreakOut.Size = new Size(150, 23);
             dtpFixBreakOut.Format = DateTimePickerFormat.Custom;
             dtpFixBreakOut.CustomFormat = "h:mm tt";
             dtpFixBreakOut.ShowUpDown = true;
@@ -87,15 +87,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblFixBreakIn
             // 
             lblFixBreakIn.AutoSize = true;
-            lblFixBreakIn.Location = new Point(12, 124);
+            lblFixBreakIn.Location = new Point(38, 180);
             lblFixBreakIn.Name = "lblFixBreakIn";
             lblFixBreakIn.Text = "Break in";
             // 
             // dtpFixBreakIn
             // 
-            dtpFixBreakIn.Location = new Point(120, 120);
+            dtpFixBreakIn.Location = new Point(162, 174);
             dtpFixBreakIn.Name = "dtpFixBreakIn";
-            dtpFixBreakIn.Size = new Size(130, 23);
+            dtpFixBreakIn.Size = new Size(150, 23);
             dtpFixBreakIn.Format = DateTimePickerFormat.Custom;
             dtpFixBreakIn.CustomFormat = "h:mm tt";
             dtpFixBreakIn.ShowUpDown = true;
@@ -105,15 +105,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblFixTimeOut
             // 
             lblFixTimeOut.AutoSize = true;
-            lblFixTimeOut.Location = new Point(12, 154);
+            lblFixTimeOut.Location = new Point(38, 219);
             lblFixTimeOut.Name = "lblFixTimeOut";
             lblFixTimeOut.Text = "Time out";
             // 
             // dtpFixTimeOut
             // 
-            dtpFixTimeOut.Location = new Point(120, 150);
+            dtpFixTimeOut.Location = new Point(162, 214);
             dtpFixTimeOut.Name = "dtpFixTimeOut";
-            dtpFixTimeOut.Size = new Size(130, 23);
+            dtpFixTimeOut.Size = new Size(150, 23);
             dtpFixTimeOut.Format = DateTimePickerFormat.Custom;
             dtpFixTimeOut.CustomFormat = "h:mm tt";
             dtpFixTimeOut.ShowUpDown = true;
@@ -123,15 +123,15 @@ namespace Company.OfficeApp.Pages.Hr
             // lblFixReason
             // 
             lblFixReason.AutoSize = true;
-            lblFixReason.Location = new Point(12, 186);
+            lblFixReason.Location = new Point(38, 262);
             lblFixReason.Name = "lblFixReason";
             lblFixReason.Text = "Reason (required)";
             // 
             // txtFixReason
             // 
-            txtFixReason.Location = new Point(12, 204);
+            txtFixReason.Location = new Point(38, 285);
             txtFixReason.Name = "txtFixReason";
-            txtFixReason.Size = new Size(396, 56);
+            txtFixReason.Size = new Size(455, 74);
             txtFixReason.Multiline = true;
             txtFixReason.ScrollBars = ScrollBars.Vertical;
             txtFixReason.TabIndex = 4;
@@ -139,24 +139,24 @@ namespace Company.OfficeApp.Pages.Hr
             // lblFixMsg
             // 
             lblFixMsg.AutoSize = true;
-            lblFixMsg.Location = new Point(12, 268);
+            lblFixMsg.Location = new Point(38, 370);
             lblFixMsg.Name = "lblFixMsg";
             lblFixMsg.MaximumSize = new Size(396, 0);
             // 
             // btnSaveFix
             // 
-            btnSaveFix.Location = new Point(222, 300);
+            btnSaveFix.Location = new Point(279, 412);
             btnSaveFix.Name = "btnSaveFix";
-            btnSaveFix.Size = new Size(90, 28);
+            btnSaveFix.Size = new Size(103, 36);
             btnSaveFix.Text = "Save";
             btnSaveFix.TabIndex = 5;
             btnSaveFix.Click += btnSaveFix_Click;
             // 
             // btnCancelFix
             // 
-            btnCancelFix.Location = new Point(318, 300);
+            btnCancelFix.Location = new Point(390, 412);
             btnCancelFix.Name = "btnCancelFix";
-            btnCancelFix.Size = new Size(90, 28);
+            btnCancelFix.Size = new Size(103, 36);
             btnCancelFix.Text = "Cancel";
             btnCancelFix.DialogResult = DialogResult.Cancel;
             btnCancelFix.TabIndex = 6;
@@ -165,7 +165,7 @@ namespace Company.OfficeApp.Pages.Hr
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(420, 340);
+            ClientSize = new Size(531, 481);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

@@ -2,6 +2,7 @@
 NAMESPACE = "Company.OfficeApp.Pages.Hr"
 CLASS = "CashAdvanceEntryForm"
 FORM = True
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (400, 330)
 LOAD_EVENT = "CashAdvanceEntryForm_Load"
 MONEY = {"DecimalPlaces": "2", "ThousandsSeparator": "true", "Maximum": "9999999m"}

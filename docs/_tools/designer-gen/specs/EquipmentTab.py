@@ -1,6 +1,7 @@
 # Spec for src/Company.OfficeApp/Pages/Inventory/EquipmentTab.Designer.cs
 NAMESPACE = "Company.OfficeApp.Pages.Inventory"
 CLASS = "EquipmentTab"
+ROOMY = True   # spread out like the Figma pages (2026-11-01)
 SIZE = (960, 660)
 LOAD_EVENT = "EquipmentTab_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" }'

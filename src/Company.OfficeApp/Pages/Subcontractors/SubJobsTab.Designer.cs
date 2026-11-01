@@ -92,15 +92,15 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblProjectFilter
             // 
             lblProjectFilter.AutoSize = true;
-            lblProjectFilter.Location = new Point(12, 15);
+            lblProjectFilter.Location = new Point(38, 36);
             lblProjectFilter.Name = "lblProjectFilter";
             lblProjectFilter.Text = "Project";
             // 
             // cboJobProjectFilter
             // 
-            cboJobProjectFilter.Location = new Point(62, 12);
+            cboJobProjectFilter.Location = new Point(95, 32);
             cboJobProjectFilter.Name = "cboJobProjectFilter";
-            cboJobProjectFilter.Size = new Size(220, 23);
+            cboJobProjectFilter.Size = new Size(253, 23);
             cboJobProjectFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboJobProjectFilter.TabIndex = 0;
             cboJobProjectFilter.SelectedIndexChanged += Filter_Changed;
@@ -108,15 +108,15 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblSubFilter
             // 
             lblSubFilter.AutoSize = true;
-            lblSubFilter.Location = new Point(294, 15);
+            lblSubFilter.Location = new Point(362, 36);
             lblSubFilter.Name = "lblSubFilter";
             lblSubFilter.Text = "Subcontractor";
             // 
             // cboJobSubFilter
             // 
-            cboJobSubFilter.Location = new Point(380, 12);
+            cboJobSubFilter.Location = new Point(461, 32);
             cboJobSubFilter.Name = "cboJobSubFilter";
-            cboJobSubFilter.Size = new Size(220, 23);
+            cboJobSubFilter.Size = new Size(253, 23);
             cboJobSubFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             cboJobSubFilter.TabIndex = 1;
             cboJobSubFilter.SelectedIndexChanged += Filter_Changed;
@@ -131,26 +131,26 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvJobs.ReadOnly = true;
             dgvJobs.RowHeadersVisible = false;
             dgvJobs.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvJobs.Location = new Point(12, 44);
+            dgvJobs.Location = new Point(38, 74);
             dgvJobs.Name = "dgvJobs";
-            dgvJobs.Size = new Size(930, 150);
+            dgvJobs.Size = new Size(1070, 198);
             dgvJobs.TabIndex = 2;
             dgvJobs.SelectionChanged += dgvJobs_SelectionChanged;
             // 
             // btnNewJob
             // 
-            btnNewJob.Location = new Point(12, 202);
+            btnNewJob.Location = new Point(38, 283);
             btnNewJob.Name = "btnNewJob";
-            btnNewJob.Size = new Size(90, 28);
+            btnNewJob.Size = new Size(103, 36);
             btnNewJob.Text = "New Job";
             btnNewJob.TabIndex = 3;
             btnNewJob.Click += btnNewJob_Click;
             // 
             // btnDeleteJob
             // 
-            btnDeleteJob.Location = new Point(108, 202);
+            btnDeleteJob.Location = new Point(148, 283);
             btnDeleteJob.Name = "btnDeleteJob";
-            btnDeleteJob.Size = new Size(90, 28);
+            btnDeleteJob.Size = new Size(103, 36);
             btnDeleteJob.Text = "Delete";
             btnDeleteJob.TabIndex = 4;
             btnDeleteJob.Click += btnDeleteJob_Click;
@@ -158,52 +158,53 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblFormMode
             // 
             lblFormMode.AutoSize = true;
-            lblFormMode.Location = new Point(12, 244);
+            lblFormMode.Location = new Point(38, 338);
             lblFormMode.Name = "lblFormMode";
             lblFormMode.Text = "New job";
+            lblFormMode.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // lblJobSubcontractor
             // 
             lblJobSubcontractor.AutoSize = true;
-            lblJobSubcontractor.Location = new Point(12, 268);
+            lblJobSubcontractor.Location = new Point(38, 370);
             lblJobSubcontractor.Name = "lblJobSubcontractor";
             lblJobSubcontractor.Text = "Subcontractor";
             // 
             // cboJobSubcontractor
             // 
-            cboJobSubcontractor.Location = new Point(12, 286);
+            cboJobSubcontractor.Location = new Point(38, 394);
             cboJobSubcontractor.Name = "cboJobSubcontractor";
-            cboJobSubcontractor.Size = new Size(260, 23);
+            cboJobSubcontractor.Size = new Size(299, 23);
             cboJobSubcontractor.DropDownStyle = ComboBoxStyle.DropDownList;
             cboJobSubcontractor.TabIndex = 5;
             // 
             // lblJobProject
             // 
             lblJobProject.AutoSize = true;
-            lblJobProject.Location = new Point(12, 316);
+            lblJobProject.Location = new Point(38, 433);
             lblJobProject.Name = "lblJobProject";
             lblJobProject.Text = "Project";
             // 
             // cboJobProject
             // 
-            cboJobProject.Location = new Point(12, 334);
+            cboJobProject.Location = new Point(38, 457);
             cboJobProject.Name = "cboJobProject";
-            cboJobProject.Size = new Size(260, 23);
+            cboJobProject.Size = new Size(299, 23);
             cboJobProject.DropDownStyle = ComboBoxStyle.DropDownList;
             cboJobProject.TabIndex = 6;
             // 
             // lblJobScope
             // 
             lblJobScope.AutoSize = true;
-            lblJobScope.Location = new Point(12, 364);
+            lblJobScope.Location = new Point(38, 496);
             lblJobScope.Name = "lblJobScope";
             lblJobScope.Text = "Scope of work";
             // 
             // txtJobScope
             // 
-            txtJobScope.Location = new Point(12, 382);
+            txtJobScope.Location = new Point(38, 520);
             txtJobScope.Name = "txtJobScope";
-            txtJobScope.Size = new Size(260, 56);
+            txtJobScope.Size = new Size(299, 74);
             txtJobScope.Multiline = true;
             txtJobScope.ScrollBars = ScrollBars.Vertical;
             txtJobScope.TabIndex = 7;
@@ -211,15 +212,15 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblJobAmount
             // 
             lblJobAmount.AutoSize = true;
-            lblJobAmount.Location = new Point(12, 446);
+            lblJobAmount.Location = new Point(38, 605);
             lblJobAmount.Name = "lblJobAmount";
             lblJobAmount.Text = "Contract amount";
             // 
             // numJobAmount
             // 
-            numJobAmount.Location = new Point(12, 464);
+            numJobAmount.Location = new Point(38, 628);
             numJobAmount.Name = "numJobAmount";
-            numJobAmount.Size = new Size(130, 23);
+            numJobAmount.Size = new Size(150, 23);
             numJobAmount.DecimalPlaces = 2;
             numJobAmount.ThousandsSeparator = true;
             numJobAmount.Maximum = 999999999999m;
@@ -229,15 +230,15 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblRetentionPct
             // 
             lblRetentionPct.AutoSize = true;
-            lblRetentionPct.Location = new Point(152, 446);
+            lblRetentionPct.Location = new Point(199, 605);
             lblRetentionPct.Name = "lblRetentionPct";
             lblRetentionPct.Text = "Retention %";
             // 
             // numRetentionPct
             // 
-            numRetentionPct.Location = new Point(152, 464);
+            numRetentionPct.Location = new Point(199, 628);
             numRetentionPct.Name = "numRetentionPct";
-            numRetentionPct.Size = new Size(70, 23);
+            numRetentionPct.Size = new Size(80, 23);
             numRetentionPct.DecimalPlaces = 2;
             numRetentionPct.Maximum = 99m;
             numRetentionPct.Value = 10m;
@@ -246,53 +247,53 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblJobStart
             // 
             lblJobStart.AutoSize = true;
-            lblJobStart.Location = new Point(12, 494);
+            lblJobStart.Location = new Point(38, 668);
             lblJobStart.Name = "lblJobStart";
             lblJobStart.Text = "Start date";
             // 
             // dtpJobStart
             // 
-            dtpJobStart.Location = new Point(12, 512);
+            dtpJobStart.Location = new Point(38, 692);
             dtpJobStart.Name = "dtpJobStart";
-            dtpJobStart.Size = new Size(125, 23);
+            dtpJobStart.Size = new Size(144, 23);
             dtpJobStart.Format = DateTimePickerFormat.Short;
             dtpJobStart.TabIndex = 10;
             // 
             // lblJobEnd
             // 
             lblJobEnd.AutoSize = true;
-            lblJobEnd.Location = new Point(147, 494);
+            lblJobEnd.Location = new Point(193, 668);
             lblJobEnd.Name = "lblJobEnd";
             lblJobEnd.Text = "End date";
             // 
             // dtpJobEnd
             // 
-            dtpJobEnd.Location = new Point(147, 512);
+            dtpJobEnd.Location = new Point(193, 692);
             dtpJobEnd.Name = "dtpJobEnd";
-            dtpJobEnd.Size = new Size(125, 23);
+            dtpJobEnd.Size = new Size(144, 23);
             dtpJobEnd.Format = DateTimePickerFormat.Short;
             dtpJobEnd.TabIndex = 11;
             // 
             // lblJobMsg
             // 
             lblJobMsg.AutoSize = true;
-            lblJobMsg.Location = new Point(12, 546);
+            lblJobMsg.Location = new Point(38, 737);
             lblJobMsg.Name = "lblJobMsg";
             // 
             // btnSaveJob
             // 
-            btnSaveJob.Location = new Point(12, 568);
+            btnSaveJob.Location = new Point(38, 766);
             btnSaveJob.Name = "btnSaveJob";
-            btnSaveJob.Size = new Size(90, 28);
+            btnSaveJob.Size = new Size(103, 36);
             btnSaveJob.Text = "Save Job";
             btnSaveJob.TabIndex = 12;
             btnSaveJob.Click += btnSaveJob_Click;
             // 
             // btnCancelJob
             // 
-            btnCancelJob.Location = new Point(108, 568);
+            btnCancelJob.Location = new Point(148, 766);
             btnCancelJob.Name = "btnCancelJob";
-            btnCancelJob.Size = new Size(90, 28);
+            btnCancelJob.Size = new Size(103, 36);
             btnCancelJob.Text = "Cancel";
             btnCancelJob.TabIndex = 13;
             btnCancelJob.Click += btnCancelJob_Click;
@@ -300,7 +301,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblStages
             // 
             lblStages.AutoSize = true;
-            lblStages.Location = new Point(300, 268);
+            lblStages.Location = new Point(369, 370);
             lblStages.Name = "lblStages";
             lblStages.Text = "Payment stages (must add up to 100%)";
             // 
@@ -314,9 +315,9 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvJobStages.ReadOnly = true;
             dgvJobStages.RowHeadersVisible = false;
             dgvJobStages.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvJobStages.Location = new Point(300, 286);
+            dgvJobStages.Location = new Point(369, 394);
             dgvJobStages.Name = "dgvJobStages";
-            dgvJobStages.Size = new Size(300, 150);
+            dgvJobStages.Size = new Size(345, 198);
             dgvJobStages.ReadOnly = false;
             dgvJobStages.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dgvJobStages.TabIndex = 14;
@@ -326,24 +327,24 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblStagesTotal
             // 
             lblStagesTotal.AutoSize = true;
-            lblStagesTotal.Location = new Point(300, 444);
+            lblStagesTotal.Location = new Point(369, 602);
             lblStagesTotal.Name = "lblStagesTotal";
             lblStagesTotal.Text = "Total: 100%";
             // 
             // btnAddStage
             // 
-            btnAddStage.Location = new Point(300, 466);
+            btnAddStage.Location = new Point(369, 631);
             btnAddStage.Name = "btnAddStage";
-            btnAddStage.Size = new Size(100, 28);
+            btnAddStage.Size = new Size(115, 36);
             btnAddStage.Text = "Add Stage";
             btnAddStage.TabIndex = 15;
             btnAddStage.Click += btnAddStage_Click;
             // 
             // btnRemoveStage
             // 
-            btnRemoveStage.Location = new Point(406, 466);
+            btnRemoveStage.Location = new Point(491, 631);
             btnRemoveStage.Name = "btnRemoveStage";
-            btnRemoveStage.Size = new Size(110, 28);
+            btnRemoveStage.Size = new Size(126, 36);
             btnRemoveStage.Text = "Remove Stage";
             btnRemoveStage.TabIndex = 16;
             btnRemoveStage.Click += btnRemoveStage_Click;
@@ -351,7 +352,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblJobDocs
             // 
             lblJobDocs.AutoSize = true;
-            lblJobDocs.Location = new Point(628, 268);
+            lblJobDocs.Location = new Point(746, 370);
             lblJobDocs.Name = "lblJobDocs";
             lblJobDocs.Text = "Supporting papers (contract, scope)";
             // 
@@ -365,25 +366,25 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvJobDocs.ReadOnly = true;
             dgvJobDocs.RowHeadersVisible = false;
             dgvJobDocs.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvJobDocs.Location = new Point(628, 286);
+            dgvJobDocs.Location = new Point(746, 394);
             dgvJobDocs.Name = "dgvJobDocs";
-            dgvJobDocs.Size = new Size(314, 150);
+            dgvJobDocs.Size = new Size(361, 198);
             dgvJobDocs.TabIndex = 17;
             // 
             // btnUploadJobDoc
             // 
-            btnUploadJobDoc.Location = new Point(628, 444);
+            btnUploadJobDoc.Location = new Point(746, 602);
             btnUploadJobDoc.Name = "btnUploadJobDoc";
-            btnUploadJobDoc.Size = new Size(130, 28);
+            btnUploadJobDoc.Size = new Size(150, 36);
             btnUploadJobDoc.Text = "Upload Document";
             btnUploadJobDoc.TabIndex = 18;
             btnUploadJobDoc.Click += btnUploadJobDoc_Click;
             // 
             // btnViewJobDoc
             // 
-            btnViewJobDoc.Location = new Point(764, 444);
+            btnViewJobDoc.Location = new Point(903, 602);
             btnViewJobDoc.Name = "btnViewJobDoc";
-            btnViewJobDoc.Size = new Size(80, 28);
+            btnViewJobDoc.Size = new Size(92, 36);
             btnViewJobDoc.Text = "View";
             btnViewJobDoc.TabIndex = 19;
             btnViewJobDoc.Click += btnViewJobDoc_Click;
@@ -391,82 +392,83 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblProgressTitle
             // 
             lblProgressTitle.AutoSize = true;
-            lblProgressTitle.Location = new Point(12, 612);
+            lblProgressTitle.Location = new Point(38, 824);
             lblProgressTitle.Name = "lblProgressTitle";
             lblProgressTitle.Text = "Progress (selected job)";
+            lblProgressTitle.Font = new Font("Segoe UI Semibold", 11.5F);
             // 
             // prgJobProgress
             // 
-            prgJobProgress.Location = new Point(12, 632);
+            prgJobProgress.Location = new Point(38, 850);
             prgJobProgress.Name = "prgJobProgress";
-            prgJobProgress.Size = new Size(260, 20);
+            prgJobProgress.Size = new Size(299, 20);
             prgJobProgress.TabIndex = 20;
             // 
             // lblProgressPct
             // 
             lblProgressPct.AutoSize = true;
-            lblProgressPct.Location = new Point(280, 634);
+            lblProgressPct.Location = new Point(346, 853);
             lblProgressPct.Name = "lblProgressPct";
             lblProgressPct.Text = "";
             // 
             // lblProgressPctInput
             // 
             lblProgressPctInput.AutoSize = true;
-            lblProgressPctInput.Location = new Point(12, 662);
+            lblProgressPctInput.Location = new Point(38, 890);
             lblProgressPctInput.Name = "lblProgressPctInput";
             lblProgressPctInput.Text = "% completed";
             // 
             // numProgressPct
             // 
-            numProgressPct.Location = new Point(12, 680);
+            numProgressPct.Location = new Point(38, 914);
             numProgressPct.Name = "numProgressPct";
-            numProgressPct.Size = new Size(70, 23);
+            numProgressPct.Size = new Size(80, 23);
             numProgressPct.DecimalPlaces = 0;
             numProgressPct.TabIndex = 21;
             // 
             // lblProgressDate
             // 
             lblProgressDate.AutoSize = true;
-            lblProgressDate.Location = new Point(92, 662);
+            lblProgressDate.Location = new Point(130, 890);
             lblProgressDate.Name = "lblProgressDate";
             lblProgressDate.Text = "Date";
             // 
             // dtpProgressDate
             // 
-            dtpProgressDate.Location = new Point(92, 680);
+            dtpProgressDate.Location = new Point(130, 914);
             dtpProgressDate.Name = "dtpProgressDate";
-            dtpProgressDate.Size = new Size(125, 23);
+            dtpProgressDate.Size = new Size(144, 23);
             dtpProgressDate.Format = DateTimePickerFormat.Short;
             dtpProgressDate.TabIndex = 22;
             // 
             // lblProgressNotes
             // 
             lblProgressNotes.AutoSize = true;
-            lblProgressNotes.Location = new Point(227, 662);
+            lblProgressNotes.Location = new Point(285, 890);
             lblProgressNotes.Name = "lblProgressNotes";
             lblProgressNotes.Text = "Notes";
             // 
             // txtProgressNotes
             // 
-            txtProgressNotes.Location = new Point(227, 680);
+            txtProgressNotes.Location = new Point(285, 914);
             txtProgressNotes.Name = "txtProgressNotes";
-            txtProgressNotes.Size = new Size(300, 23);
+            txtProgressNotes.Size = new Size(345, 23);
             txtProgressNotes.TabIndex = 23;
             // 
             // btnAttachProgressFile
             // 
-            btnAttachProgressFile.Location = new Point(537, 678);
+            btnAttachProgressFile.Location = new Point(642, 911);
             btnAttachProgressFile.Name = "btnAttachProgressFile";
-            btnAttachProgressFile.Size = new Size(130, 28);
+            btnAttachProgressFile.Size = new Size(150, 36);
             btnAttachProgressFile.Text = "Attach Photo / File";
             btnAttachProgressFile.TabIndex = 24;
             btnAttachProgressFile.Click += btnAttachProgressFile_Click;
             // 
             // btnAddProgressUpdate
             // 
-            btnAddProgressUpdate.Location = new Point(673, 678);
+            btnAddProgressUpdate.Location = new Point(798, 911);
             btnAddProgressUpdate.Name = "btnAddProgressUpdate";
-            btnAddProgressUpdate.Size = new Size(110, 28);
+            btnAddProgressUpdate.Size = new Size(126, 36);
             btnAddProgressUpdate.Text = "Add Update";
             btnAddProgressUpdate.TabIndex = 25;
             btnAddProgressUpdate.Click += btnAddProgressUpdate_Click;
@@ -474,14 +476,14 @@ namespace Company.OfficeApp.Pages.Subcontractors
             // lblProgressFile
             // 
             lblProgressFile.AutoSize = true;
-            lblProgressFile.Location = new Point(537, 710);
+            lblProgressFile.Location = new Point(642, 953);
             lblProgressFile.Name = "lblProgressFile";
             lblProgressFile.Text = "";
             // 
             // lblProgressMsg
             // 
             lblProgressMsg.AutoSize = true;
-            lblProgressMsg.Location = new Point(12, 710);
+            lblProgressMsg.Location = new Point(38, 953);
             lblProgressMsg.Name = "lblProgressMsg";
             // 
             // dgvProgressHistory
@@ -494,9 +496,9 @@ namespace Company.OfficeApp.Pages.Subcontractors
             dgvProgressHistory.ReadOnly = true;
             dgvProgressHistory.RowHeadersVisible = false;
             dgvProgressHistory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProgressHistory.Location = new Point(12, 734);
+            dgvProgressHistory.Location = new Point(38, 985);
             dgvProgressHistory.Name = "dgvProgressHistory";
-            dgvProgressHistory.Size = new Size(930, 120);
+            dgvProgressHistory.Size = new Size(1070, 158);
             dgvProgressHistory.TabIndex = 26;
             dgvProgressHistory.CellDoubleClick += dgvProgressHistory_CellDoubleClick;
             // 
@@ -652,7 +654,7 @@ namespace Company.OfficeApp.Pages.Subcontractors
             Controls.Add(lblProgressMsg);
             Controls.Add(dgvProgressHistory);
             Name = "SubJobsTab";
-            Size = new Size(960, 870);
+            Size = new Size(1152, 1180);
             Load += SubJobsTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvJobs).EndInit();
             ((System.ComponentModel.ISupportInitialize)numJobAmount).EndInit();

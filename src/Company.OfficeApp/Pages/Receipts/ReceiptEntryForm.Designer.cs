@@ -49,58 +49,58 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptNo
             // 
             lblReceiptNo.AutoSize = true;
-            lblReceiptNo.Location = new Point(12, 12);
+            lblReceiptNo.Location = new Point(38, 32);
             lblReceiptNo.Name = "lblReceiptNo";
             lblReceiptNo.Text = "Receipt number";
             // 
             // txtReceiptNo
             // 
-            txtReceiptNo.Location = new Point(12, 30);
+            txtReceiptNo.Location = new Point(38, 56);
             txtReceiptNo.Name = "txtReceiptNo";
-            txtReceiptNo.Size = new Size(200, 23);
+            txtReceiptNo.Size = new Size(230, 23);
             txtReceiptNo.TabIndex = 0;
             // 
             // lblPurchaseDate
             // 
             lblPurchaseDate.AutoSize = true;
-            lblPurchaseDate.Location = new Point(222, 12);
+            lblPurchaseDate.Location = new Point(279, 32);
             lblPurchaseDate.Name = "lblPurchaseDate";
             lblPurchaseDate.Text = "Date of purchase";
             // 
             // dtpPurchaseDate
             // 
-            dtpPurchaseDate.Location = new Point(222, 30);
+            dtpPurchaseDate.Location = new Point(279, 56);
             dtpPurchaseDate.Name = "dtpPurchaseDate";
-            dtpPurchaseDate.Size = new Size(130, 23);
+            dtpPurchaseDate.Size = new Size(150, 23);
             dtpPurchaseDate.Format = DateTimePickerFormat.Short;
             dtpPurchaseDate.TabIndex = 1;
             // 
             // lblMerchant
             // 
             lblMerchant.AutoSize = true;
-            lblMerchant.Location = new Point(12, 60);
+            lblMerchant.Location = new Point(38, 95);
             lblMerchant.Name = "lblMerchant";
             lblMerchant.Text = "Merchant / store";
             // 
             // txtMerchant
             // 
-            txtMerchant.Location = new Point(12, 78);
+            txtMerchant.Location = new Point(38, 119);
             txtMerchant.Name = "txtMerchant";
-            txtMerchant.Size = new Size(340, 23);
+            txtMerchant.Size = new Size(391, 23);
             txtMerchant.TabIndex = 2;
             // 
             // lblReceiptAmount
             // 
             lblReceiptAmount.AutoSize = true;
-            lblReceiptAmount.Location = new Point(12, 108);
+            lblReceiptAmount.Location = new Point(38, 159);
             lblReceiptAmount.Name = "lblReceiptAmount";
             lblReceiptAmount.Text = "Amount";
             // 
             // numReceiptAmount
             // 
-            numReceiptAmount.Location = new Point(12, 126);
+            numReceiptAmount.Location = new Point(38, 182);
             numReceiptAmount.Name = "numReceiptAmount";
-            numReceiptAmount.Size = new Size(140, 23);
+            numReceiptAmount.Size = new Size(161, 23);
             numReceiptAmount.DecimalPlaces = 2;
             numReceiptAmount.ThousandsSeparator = true;
             numReceiptAmount.Maximum = 999999999999m;
@@ -109,21 +109,21 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblReceiptCategory
             // 
             lblReceiptCategory.AutoSize = true;
-            lblReceiptCategory.Location = new Point(162, 108);
+            lblReceiptCategory.Location = new Point(210, 159);
             lblReceiptCategory.Name = "lblReceiptCategory";
             lblReceiptCategory.Text = "Category";
             // 
             // cboReceiptCategory
             // 
-            cboReceiptCategory.Location = new Point(162, 126);
+            cboReceiptCategory.Location = new Point(210, 182);
             cboReceiptCategory.Name = "cboReceiptCategory";
-            cboReceiptCategory.Size = new Size(190, 23);
+            cboReceiptCategory.Size = new Size(218, 23);
             cboReceiptCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cboReceiptCategory.TabIndex = 4;
             // 
             // rdoProjectExpense
             // 
-            rdoProjectExpense.Location = new Point(12, 160);
+            rdoProjectExpense.Location = new Point(38, 227);
             rdoProjectExpense.Name = "rdoProjectExpense";
             rdoProjectExpense.Text = "Project expense";
             rdoProjectExpense.AutoSize = true;
@@ -133,7 +133,7 @@ namespace Company.OfficeApp.Pages.Receipts
             // 
             // rdoOverheadExpense
             // 
-            rdoOverheadExpense.Location = new Point(150, 160);
+            rdoOverheadExpense.Location = new Point(196, 227);
             rdoOverheadExpense.Name = "rdoOverheadExpense";
             rdoOverheadExpense.Text = "Company overhead";
             rdoOverheadExpense.AutoSize = true;
@@ -141,31 +141,31 @@ namespace Company.OfficeApp.Pages.Receipts
             // 
             // cboReceiptForProject
             // 
-            cboReceiptForProject.Location = new Point(12, 186);
+            cboReceiptForProject.Location = new Point(38, 262);
             cboReceiptForProject.Name = "cboReceiptForProject";
-            cboReceiptForProject.Size = new Size(340, 23);
+            cboReceiptForProject.Size = new Size(391, 23);
             cboReceiptForProject.DropDownStyle = ComboBoxStyle.DropDownList;
             cboReceiptForProject.TabIndex = 7;
             // 
             // lblUploadedBy
             // 
             lblUploadedBy.AutoSize = true;
-            lblUploadedBy.Location = new Point(12, 220);
+            lblUploadedBy.Location = new Point(38, 306);
             lblUploadedBy.Name = "lblUploadedBy";
             lblUploadedBy.Text = "";
             // 
             // lblReceiptCopy
             // 
             lblReceiptCopy.AutoSize = true;
-            lblReceiptCopy.Location = new Point(12, 252);
+            lblReceiptCopy.Location = new Point(38, 349);
             lblReceiptCopy.Name = "lblReceiptCopy";
             lblReceiptCopy.Text = "Receipt copy";
             // 
             // btnAttachScan
             // 
-            btnAttachScan.Location = new Point(12, 272);
+            btnAttachScan.Location = new Point(38, 375);
             btnAttachScan.Name = "btnAttachScan";
-            btnAttachScan.Size = new Size(110, 28);
+            btnAttachScan.Size = new Size(126, 36);
             btnAttachScan.Text = "Attach Scan";
             btnAttachScan.TabIndex = 8;
             btnAttachScan.Click += btnAttachScan_Click;
@@ -173,14 +173,14 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblScanFile
             // 
             lblScanFile.AutoSize = true;
-            lblScanFile.Location = new Point(130, 278);
+            lblScanFile.Location = new Point(174, 383);
             lblScanFile.Name = "lblScanFile";
             lblScanFile.Text = "(no file)";
             // 
             // chkPhysicalOnly
             // 
             chkPhysicalOnly.AutoSize = true;
-            chkPhysicalOnly.Location = new Point(12, 310);
+            chkPhysicalOnly.Location = new Point(38, 425);
             chkPhysicalOnly.Name = "chkPhysicalOnly";
             chkPhysicalOnly.Text = "Physical copy only";
             chkPhysicalOnly.TabIndex = 9;
@@ -189,21 +189,21 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblFiledLocation
             // 
             lblFiledLocation.AutoSize = true;
-            lblFiledLocation.Location = new Point(12, 336);
+            lblFiledLocation.Location = new Point(38, 460);
             lblFiledLocation.Name = "lblFiledLocation";
             lblFiledLocation.Text = "Where the paper copy is filed";
             // 
             // txtFiledLocation
             // 
-            txtFiledLocation.Location = new Point(12, 354);
+            txtFiledLocation.Location = new Point(38, 483);
             txtFiledLocation.Name = "txtFiledLocation";
-            txtFiledLocation.Size = new Size(340, 23);
+            txtFiledLocation.Size = new Size(391, 23);
             txtFiledLocation.TabIndex = 10;
             // 
             // chkNoReceipt
             // 
             chkNoReceipt.AutoSize = true;
-            chkNoReceipt.Location = new Point(12, 392);
+            chkNoReceipt.Location = new Point(38, 533);
             chkNoReceipt.Name = "chkNoReceipt";
             chkNoReceipt.Text = "No receipt at all (goes to Needs Review)";
             chkNoReceipt.TabIndex = 11;
@@ -212,15 +212,15 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblNoReceiptReason
             // 
             lblNoReceiptReason.AutoSize = true;
-            lblNoReceiptReason.Location = new Point(12, 418);
+            lblNoReceiptReason.Location = new Point(38, 568);
             lblNoReceiptReason.Name = "lblNoReceiptReason";
             lblNoReceiptReason.Text = "Why there is no receipt";
             // 
             // txtNoReceiptReason
             // 
-            txtNoReceiptReason.Location = new Point(12, 436);
+            txtNoReceiptReason.Location = new Point(38, 592);
             txtNoReceiptReason.Name = "txtNoReceiptReason";
-            txtNoReceiptReason.Size = new Size(490, 50);
+            txtNoReceiptReason.Size = new Size(564, 66);
             txtNoReceiptReason.Multiline = true;
             txtNoReceiptReason.ScrollBars = ScrollBars.Vertical;
             txtNoReceiptReason.TabIndex = 12;
@@ -228,23 +228,23 @@ namespace Company.OfficeApp.Pages.Receipts
             // lblEntryMsg
             // 
             lblEntryMsg.AutoSize = true;
-            lblEntryMsg.Location = new Point(12, 494);
+            lblEntryMsg.Location = new Point(38, 668);
             lblEntryMsg.Name = "lblEntryMsg";
             // 
             // btnSaveReceipt
             // 
-            btnSaveReceipt.Location = new Point(320, 518);
+            btnSaveReceipt.Location = new Point(392, 700);
             btnSaveReceipt.Name = "btnSaveReceipt";
-            btnSaveReceipt.Size = new Size(90, 28);
+            btnSaveReceipt.Size = new Size(103, 36);
             btnSaveReceipt.Text = "Save";
             btnSaveReceipt.TabIndex = 13;
             btnSaveReceipt.Click += btnSaveReceipt_Click;
             // 
             // btnCancelReceipt
             // 
-            btnCancelReceipt.Location = new Point(416, 518);
+            btnCancelReceipt.Location = new Point(502, 700);
             btnCancelReceipt.Name = "btnCancelReceipt";
-            btnCancelReceipt.Size = new Size(90, 28);
+            btnCancelReceipt.Size = new Size(103, 36);
             btnCancelReceipt.Text = "Cancel";
             btnCancelReceipt.DialogResult = DialogResult.Cancel;
             btnCancelReceipt.TabIndex = 14;
@@ -253,7 +253,7 @@ namespace Company.OfficeApp.Pages.Receipts
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(520, 560);
+            ClientSize = new Size(646, 771);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

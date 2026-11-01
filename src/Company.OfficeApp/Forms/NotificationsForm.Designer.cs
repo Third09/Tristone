@@ -15,6 +15,7 @@ namespace Company.OfficeApp.Forms
 
         #region Windows Form Designer generated code
 
+        // ROOMY layout applied (docs/_tools/designer-gen/roomy_designer.py)
         private void InitializeComponent()
         {
             lblTitle = new Label();
@@ -34,7 +35,7 @@ namespace Company.OfficeApp.Forms
             // lblTitle
             //
             lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(12, 12);
+            lblTitle.Location = new Point(38, 32);
             lblTitle.Name = "lblTitle";
             lblTitle.Text = "Forgot Password requests";
             //
@@ -44,13 +45,13 @@ namespace Company.OfficeApp.Forms
             dgvPasswordRequests.AllowUserToDeleteRows = false;
             dgvPasswordRequests.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvPasswordRequests.Columns.AddRange(new DataGridViewColumn[] { colName, colUsername, colDepartment, colLevel, colRequestedAt });
-            dgvPasswordRequests.Location = new Point(12, 34);
+            dgvPasswordRequests.Location = new Point(38, 61);
             dgvPasswordRequests.MultiSelect = false;
             dgvPasswordRequests.Name = "dgvPasswordRequests";
             dgvPasswordRequests.ReadOnly = true;
             dgvPasswordRequests.RowHeadersVisible = false;
             dgvPasswordRequests.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPasswordRequests.Size = new Size(600, 220);
+            dgvPasswordRequests.Size = new Size(690, 290);
             dgvPasswordRequests.TabIndex = 0;
             //
             // colName
@@ -92,34 +93,34 @@ namespace Company.OfficeApp.Forms
             // lblEmpty
             //
             lblEmpty.AutoSize = true;
-            lblEmpty.Location = new Point(12, 260);
+            lblEmpty.Location = new Point(38, 359);
             lblEmpty.Name = "lblEmpty";
             lblEmpty.Text = "No waiting requests.";
             lblEmpty.Visible = false;
             //
             // btnSetNewPassword
             //
-            btnSetNewPassword.Location = new Point(12, 284);
+            btnSetNewPassword.Location = new Point(38, 391);
             btnSetNewPassword.Name = "btnSetNewPassword";
-            btnSetNewPassword.Size = new Size(130, 28);
+            btnSetNewPassword.Size = new Size(150, 36);
             btnSetNewPassword.TabIndex = 1;
             btnSetNewPassword.Text = "Set New Password";
             btnSetNewPassword.Click += btnSetNewPassword_Click;
             //
             // btnDismissRequest
             //
-            btnDismissRequest.Location = new Point(148, 284);
+            btnDismissRequest.Location = new Point(194, 391);
             btnDismissRequest.Name = "btnDismissRequest";
-            btnDismissRequest.Size = new Size(90, 28);
+            btnDismissRequest.Size = new Size(103, 36);
             btnDismissRequest.TabIndex = 2;
             btnDismissRequest.Text = "Dismiss";
             btnDismissRequest.Click += btnDismissRequest_Click;
             //
             // btnCloseNotifications
             //
-            btnCloseNotifications.Location = new Point(244, 284);
+            btnCloseNotifications.Location = new Point(305, 391);
             btnCloseNotifications.Name = "btnCloseNotifications";
-            btnCloseNotifications.Size = new Size(90, 28);
+            btnCloseNotifications.Size = new Size(103, 36);
             btnCloseNotifications.TabIndex = 3;
             btnCloseNotifications.Text = "Close";
             btnCloseNotifications.Click += btnCloseNotifications_Click;
@@ -128,7 +129,7 @@ namespace Company.OfficeApp.Forms
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(624, 324);
+            ClientSize = new Size(766, 460);
             Controls.Add(lblTitle);
             Controls.Add(dgvPasswordRequests);
             Controls.Add(lblEmpty);
