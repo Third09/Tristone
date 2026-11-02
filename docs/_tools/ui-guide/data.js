@@ -9,17 +9,19 @@ const shared = [
     opensFrom: "First screen when Tri-Stone (TriStone.exe, the one program) starts, and after signing out. The same window signs in office staff, Admins and Website Admins.",
     whoSees: "Everyone",
     groups: [
-      { name: "Main section", rows: [
-        ["Company logo", "PictureBox", "picLogo", "Shows the Tri-Stone logo."],
-        ["Title text", "Label", "lblTitle", "\"Sign in to Tri-Stone\"."],
-        ["Username box", "TextBox", "txtUsername", "Type username or email."],
-        ["Password box", "TextBox (UseSystemPasswordChar = True)", "txtPassword", "Type password; shows dots."],
+      { name: "Main section (laid out like the Figma login, 2026-11-02)", rows: [
+        ["Company logo", "PictureBox (Zoom)", "picLogo", "The Tri-Stone logo (Resources/logo-dark.png), centered."],
+        ["Title text", "Label (Segoe UI 18 bold)", "lblTitle", "\"Sign in to Tri-Stone\"."],
+        ["Subtitle", "Label", "lblSubtitle", "\"Sign in to access the company system.\""],
+        ["Sign-in card", "Card", "cardSignIn", "White rounded box holding the fields."],
+        ["Username box", "InputFrame + TextBox", "frmUsername, txtUsername, lblUsername", "Type the username (capital letters don't matter)."],
+        ["Password box", "InputFrame + TextBox (UseSystemPasswordChar = True)", "frmPassword, txtPassword, lblPassword", "Type the password; shows dots."],
         ["Show password tick box", "CheckBox", "chkShowPassword", "Shows the password as plain text while ticked."],
-        ["Error message", "Label", "lblError", "Shows \"Wrong username or password\", attempts left, or \"Account locked, contact Admin\". Hidden until needed."],
-        ["Sign In button", "Button", "btnSignIn", "Checks the username and password and opens the Main Window."],
-        ["Forgot Password link", "LinkLabel", "lnkForgotPassword", "Opens the Forgot Password window."],
-        ["Exit button", "Button", "btnExit", "Closes Tri-Stone."],
-        ["Database settings link", "LinkLabel", "lnkDbSettings", "Opens the Database Settings window (to change the server address). Small, not prominent."],
+        ["Forgot Password link", "LinkLabel", "lnkForgotPassword", "Right of Show password; opens the Forgot Password window."],
+        ["Error message", "Label (red)", "lblError", "\"Wrong username or password\", attempts left, \"Account locked\" or the idle sign-out notice."],
+        ["Sign In button", "Button (dark, full width)", "btnSignIn", "Checks the username and password and opens the right app. Enter also signs in."],
+        ["Database settings link", "LinkLabel", "lnkDbSettings", "Bottom left, small: opens Database Settings (the server address)."],
+        ["Exit button", "Button", "btnExit", "Bottom right: closes Tri-Stone."],
       ]},
     ],
   },
@@ -87,7 +89,8 @@ const shared = [
     note: "Every office-app page in this guide (Dashboard, Projects, etc.) is a UserControl that loads inside the Main section (pnlContent); Website Admin is a separate app (Part 6). The window always fills the screen above the taskbar, with no title bar and no minimize / maximize / close buttons (FormBorderStyle = None, ControlBox = False), so it can't be resized, moved or closed by accident; Sign Out is the way out. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
     groups: [
       { name: "Sidebar (left side)", rows: [
-        ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds all sidebar buttons, top to bottom. Hidden buttons take no space. The open page's button is shown in bold (for now)."],
+        ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds the logo and the sidebar buttons, top to bottom. Hidden buttons take no space. Each button has an icon; the open page's button is orange with white text."],
+        ["Logo", "PictureBox (Zoom)", "picLogo", "The Tri-Stone logo at the top of the sidebar."],
         ["Small logo", "PictureBox", "picSidebarLogo", "Company logo at the top of the sidebar."],
         ["Dashboard button", "Button", "btnNavDashboard", "Opens Dashboard. Admin, Supervisors."],
         ["Projects button", "Button", "btnNavProjects", "Opens Projects. Admins (view only) and the Receipts Supervisor."],
@@ -224,7 +227,8 @@ const websiteAdmin = [
     note: "Separate screens from the office app, opened by Tri-Stone, laid out like the office app. The sidebar follows the Figma design \"CCMS SUPERSYSTEM\" (owner decisions 2026-11-01). Full screen with no title bar; same \"Still there?\" idle check. Leaving a page or logging out with unsaved edits asks first.",
     groups: [
       { name: "Sidebar (left side)", rows: [
-        ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds the buttons, top to bottom. The open page's button is in bold."],
+        ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds the logo and the buttons, top to bottom. Each button has an icon; the open page's button is orange with white text."],
+        ["Logo", "PictureBox (Zoom)", "picLogo", "The Tri-Stone logo at the top of the sidebar."],
         ["Home button", "Button", "btnNavHome", "Opens the Homepage Editor (the first page shown)."],
         ["Projects button", "Button", "btnNavProjects", "Opens the Projects Page Editor."],
         ["Services button", "Button", "btnNavServices", "Opens the Services Page Editor."],

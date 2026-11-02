@@ -39,9 +39,9 @@ The settings are saved on that computer only. To change them later, click **Data
 
 ## Signing in
 
-1. Open **Tri-Stone** (`Apps\Tri-Stone\TriStone.exe`, or its desktop shortcut). It's the one program for everyone.
+1. Open **Tri-Stone** (`Apps\Tri-Stone\TriStone.exe`, or its desktop shortcut). It's the one program for everyone. The Sign In window shows the logo and a white box with the fields.
 2. Type your **username** (capital letters don't matter) and **password**.
-3. Tick **Show password** if you want to check what you typed.
+3. Tick **Show password** if you want to check what you typed. **Forgot Password?** is on the same line, at the right.
 4. Click **Sign In** (or press Enter). The office app opens. (Website Admin logins open the Website Admin screens; Admins are asked which one, see chapter 10.)
 
 If it doesn't work, the message under the password box tells you why:
@@ -94,9 +94,15 @@ Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Si
 
 ## The main window
 
-- **Left sidebar:** the pages you're allowed to use. You only see your own department's page (Admins see everything). The page that's open is shown in **bold**.
-- **Top:** the page name, your name, and your department and level. Admins also see **Password requests (N)**.
-- **Middle:** the page you chose.
+- **Left sidebar:** the logo, then the pages you're allowed to use, each with a small icon. You only see your own department's page (Admins see everything). The page that's open is **orange**. **Sign Out** (red) is at the bottom.
+- **Top:** the page name in big letters, your name, and your department and level. Admins also see **Password requests (N)**.
+- **Middle:** the page you chose. Pages with several parts have **tabs** across the top; the open tab is orange with a line under it.
+
+**How to read the screens**
+
+- **Orange buttons** do the main thing (Add, Save, Submit, Approve...). **Red text** buttons remove or refuse something (Delete, Reject). White buttons do everything else (Export, Print, Cancel...). A pale button can't be used right now (for example, nothing is selected yet).
+- **Tables** have a border around them and lines between every cell; the gray header row names the columns, every other row is lightly shaded, and the gray area under the last row means the list ends there. An empty table says **No records to show**.
+- The **Website Admin** screens use white cards on a light gray background, with colored message boxes: orange = unsaved changes, green = saved, red = something went wrong.
 
 ## My Account
 

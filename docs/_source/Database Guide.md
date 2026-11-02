@@ -2,7 +2,7 @@
 
 How `construction_db` is designed, how it is built and changed, how the application reads and writes it, and which tables each page of the system uses. Appendix A is the complete schema reference, generated from the live database.
 
-> PostgreSQL 18.6, database `construction_db`, encoding UTF8, extensions `plpgsql` and `pgcrypto`. Scripts 001-013 applied: **37 tables** (35 application tables + `app_settings` + `schema_versions`).
+> PostgreSQL 18.6, database `construction_db`, encoding UTF8, extensions `plpgsql` and `pgcrypto`. Scripts 001-014 applied: **43 tables** (41 application tables + `app_settings` + `schema_versions`).
 
 # 1. Architecture
 
