@@ -18,6 +18,8 @@ appsettings.*.local.json
 # Generated files
 docs/_tools/guides/html/
 installer/output/
+installer/publish/
+installer/obj-release/
 
 # Word lock files while a document is open
 ~$*.docx

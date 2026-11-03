@@ -23,11 +23,13 @@ public static class WebsiteInquiries
     static string? RequireAccess() => WebsiteAccess.Require();
 
     /// <summary>
-    /// Website Traffic: page visits counted this month (the free counter; owner decision 2026-11-01). The website
-    /// reports each visit to the API, which writes website_visits; visits while the office server is off aren't counted.
+    /// Website Traffic: visits counted this month (the free counter; owner decisions 2026-11-01 and 2026-11-03). The
+    /// website reports each visitor session to the Google Script (<see cref="InquiryImport.VisitsThisMonthAsync"/>);
+    /// when that can't be read, the count in website_visits (kept for a later API) is shown.
     /// </summary>
     public static async Task<int> VisitsThisMonthAsync()
     {
+        if (await InquiryImport.VisitsThisMonthAsync() is { } fromScript) return fromScript;
         using var db = Db.Open();
         var start = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         return await db.WebsiteVisits.CountAsync(v => v.VisitedAt >= start);

@@ -7,8 +7,11 @@
 //      1. saves it as a row in the "Tri-Stone Inquiries" Google Sheet
 //      2. emails it to the recipient (same nice email as before). The recipient
 //         is set from Website Admin (Contact Us > Save Email); TO_EMAIL until then.
+//      A {"action":"visit"} post (website, once per visitor session) adds 1 to
+//      today's count in the sheet's "Visits" tab (date + count only).
 //  - doGet: the Tri-Stone Website Admin app (Contact Us page) reads the
-//      saved rows with the secret read key, and adds new ones to its list.
+//      saved rows with the secret read key, and adds new ones to its list;
+//      with what=visits it reads the daily visit counts instead.
 //  - setup: run ONCE by hand (Run button). Makes the Sheet and the read key,
 //      and shows the key in the Execution log for Website Admin.
 //
@@ -69,6 +72,37 @@ function saveInquiry(d) {
   }
 }
 
+// ---------- Visit counter (Website Admin > Contact Us > Website Visits) ----------
+function visitsSheet() {
+  const ss = inquirySheet().getParent();
+  let sh = ss.getSheetByName("Visits");
+  if (!sh) {
+    sh = ss.insertSheet("Visits");
+    sh.getRange("A:A").setNumberFormat("@");
+    sh.appendRow(["date", "visits"]);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function recordVisit() {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sh = visitsSheet();
+    const today = Utilities.formatDate(new Date(), "Asia/Manila", "yyyy-MM-dd");
+    const last = sh.getLastRow();
+    if (last > 1 && String(sh.getRange(last, 1).getValue()) === today) {
+      const cell = sh.getRange(last, 2);
+      cell.setValue(Number(cell.getValue()) + 1);
+    } else {
+      sh.appendRow([today, 1]);
+    }
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function json(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -77,6 +111,16 @@ function json(obj) {
 function doGet(e) {
   const key = PropertiesService.getScriptProperties().getProperty("READ_KEY");
   if (!key || !e || !e.parameter || e.parameter.key !== key) return json({ ok: false, error: "wrong key" });
+  if (e.parameter.what === "visits") {
+    try {
+      const day = (v) => (v instanceof Date ? Utilities.formatDate(v, "Asia/Manila", "yyyy-MM-dd") : String(v));
+      const visits = visitsSheet().getDataRange().getValues().slice(1).filter((r) => r[0])
+        .map((r) => ({ date: day(r[0]), count: Number(r[1]) || 0 }));
+      return json({ ok: true, visits: visits });
+    } catch (err) {
+      return json({ ok: false, error: String(err) });
+    }
+  }
   try {
     const values = inquirySheet().getDataRange().getValues();
     const text = (v) => (v instanceof Date ? Utilities.formatDate(v, "Asia/Manila", "yyyy-MM-dd'T'HH:mm:ss") : String(v));
@@ -169,6 +213,12 @@ function buildHtml(d) {
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
+
+    // A website visit: count it and stop (no email, no inquiry)
+    if (d.action === "visit") {
+      try { recordVisit(); } catch (err) { /* a missed count is not worth an error */ }
+      return json({ ok: true });
+    }
 
     // Website Admin changing the recipient email (needs the read key)
     if (d.action === "settings") {

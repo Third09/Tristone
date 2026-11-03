@@ -364,7 +364,8 @@ Home is a single-item editor over `website_content`: `home.hero_image`, `home.he
 
 ## 10.7 Contact Us (`Pages/ContactUsPage`, `InquiryForm`, `Services/WebsiteInquiries`)
 
-- KPIs: total inquiries, pending (New), **website visits this month** (`VisitsThisMonthAsync` counts `website_visits`, the free counter the API will fill; owner chose it over Netlify Analytics, which costs money).
+- KPIs: total inquiries, pending (New), **website visits this month** (`WebsiteInquiries.VisitsThisMonthAsync` -> `InquiryImport.VisitsThisMonthAsync`: GET `?what=visits&key=...` on the Google Script, sums this month's days; falls back to counting `website_visits`. The website's `contact.js` sends `{action: "visit"}` with `navigator.sendBeacon` once per browser session, not on localhost / tristone.preview; the script's `recordVisit` adds 1 to today's row in the "Visits" tab under a lock. Owner chose a free counter over Netlify Analytics, which costs money.)
+- Website Contact form (2026-11-03): `content.js` `fillServiceChoices` fills the service list from the published services + Other (the HTML keeps the 3 originals + Other as fallback); new optional `location` box; `contact.js` sends `location`, the script saves and emails it.
 - Recipient email (`inquiry.recipient_email`, Website Admins and Admins) and company details (`contact.address`, `contact.phone`, `contact.email`, `contact.copyright`), each with its own Save.
 - New inquiries come from the website's Google Apps Script (owner decision 2026-11-03; code in `docs/_tools/google-script/Code.gs`): `doPost` saves each Contact form message in the "Tri-Stone Inquiries" Google Sheet, then emails it; `doGet?key=...` returns all rows as JSON; `setup()` (run once by hand) makes the Sheet and the read key. `Services/InquiryImport.PullAsync` (Contact Us load and Refresh, `MainForm` load) reads them with the address and key from `PublishSettings` and inserts the ones whose `source_ref` (script 016, unique) isn't there yet, as New; not set up = does nothing. Problems come back as text and show next to the count.
 - Recipient email: the script emails `RECIPIENT` (a script property) or `TO_EMAIL`. `InquiryImport.SetRecipientAsync` posts `{action: "settings", key, recipient}` to the script (Google answers with a redirect, which `HttpClient` follows); called by Contact Us > Save Email and by Website Settings > Save when the key or address changed. Script 017 corrected the seeded company email to tristoneconstructionservices@gmail.com.
@@ -417,6 +418,7 @@ Script **022_app_role.sql** makes `tristone_app` (NOLOGIN until the server turns
 
 # Coming next
 
-- The rest of the website side: the visit counter and the Contact form changes
 - The API and the website Contact form
-- Phase 6: run the server kit on the real laptop, then the installers (Setup.exe)
+- Phase 6: run the server kit on the real server PC
+
+**Setup.exe (`installer/`):** `build-installer.cmd [version]` = `dotnet publish src/Company.Launcher -c Release -r win-x64 --self-contained` into `installer/publish` (about 176 MB, no .NET needed on the PCs), then Inno Setup 6 compiles `TriStone.iss` into `installer/output/Tri-Stone-Setup-<version>.exe` (Program Files\Tri-Stone, desktop + Start menu shortcut, closes a running Tri-Stone when updating, settings in C:\ProgramData kept). First start without `dbsettings.json` opens Database Settings.

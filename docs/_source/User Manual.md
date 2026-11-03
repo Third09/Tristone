@@ -494,7 +494,7 @@ The projects come from the office **Projects** page: an Admin or the Receipts Su
 
 **Contact Us**
 
-The top shows **Total inquiries**, **Pending (New)** and **Website visits this month**.
+The top shows **Total inquiries**, **Pending (New)** and **Website visits this month** (each visitor counted once per visit, through the Google Script).
 
 - **Inquiries are forwarded to**: the email that receives the website's inquiries. Change it and click **Save Email**: the website starts emailing the new address right away (once the inquiries are connected).
 - **Company details**: the address, phone, email and footer line shown on the website. Click **Save Details**, then **Publish Website**.
@@ -548,7 +548,7 @@ One Linux Mint laptop holds the database, the scans and pictures, and the nightl
 **C. Each office PC (once)**
 
 1. Double-click `server\connect-files.cmd` and type the files password.
-2. Open **Tri-Stone**. On **Database Settings** type Server **192.168.1.50**, User **tristone_app** and the app password, then **Test** and **Save**.
+2. Run **Tri-Stone-Setup.exe** (made with `installer\build-installer.cmd`, see below) and click through it. Tri-Stone opens **Database Settings** the first time: type Server **192.168.1.50**, User **tristone_app** and the app password, then **Test** and **Save**.
 3. In Website Admin, set up **Website Settings** on the PCs that will publish.
 
 **D. Updates and backups**
@@ -568,3 +568,9 @@ The same setup also works on a Windows 10/11 PC that stays on. Use the files in 
 5. Moving the home data in: drag `construction_db.dump` onto **restore-database.cmd** and type **YES**.
 6. The office PCs connect exactly as in **C** above.
 7. A second backup copy: put a folder (e.g. a USB drive's `E:\Backups`) in `"CopyTo"` in `C:\ProgramData\TriStone\Server\backup.json`.
+
+**F. Making Setup.exe (for the office PCs)**
+
+1. Install **Inno Setup 6** once (free, jrsoftware.org).
+2. Double-click `installer\build-installer.cmd`. After a few minutes it makes `installer\output\Tri-Stone-Setup-1.0.0.exe`.
+3. Copy that file to each office PC (USB stick or the shared folder) and run it. A new version later: run the build again and install it over the old one; the settings stay.

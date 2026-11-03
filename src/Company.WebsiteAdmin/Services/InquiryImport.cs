@@ -76,6 +76,25 @@ public static class InquiryImport
         catch (TaskCanceledException) { return "The Google Script took too long to answer."; }
     }
 
+    /// <summary>
+    /// Website visits this month (owner request 2026-11-03): the website counts each visitor session in the Google
+    /// Script's "Visits" tab (one row per day). Null when inquiries aren't set up on this PC or the script can't be read.
+    /// </summary>
+    public static async Task<int?> VisitsThisMonthAsync()
+    {
+        var settings = PublishSettings.Load();
+        if (!settings.InquiriesSet) return null;
+        try
+        {
+            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+            var json = JsonNode.Parse(await http.GetStringAsync(settings.InquiryScriptUrl + "?what=visits&key=" + Uri.EscapeDataString(settings.InquiryKey)));
+            if (json?["ok"]?.GetValue<bool>() != true || json["visits"] is not JsonArray days) return null;
+            var month = DateTime.Today.ToString("yyyy-MM");
+            return days.Where(d => ((string?)d?["date"])?.StartsWith(month) == true).Sum(d => d!["count"]?.GetValue<int>() ?? 0);
+        }
+        catch { return null; }   // the Contact Us page then shows the database count
+    }
+
     record SheetRow(string Id, string Received, string Name, string Email, string Phone, string Service, string Location, string Message);
 
     static async Task<(List<SheetRow>? Rows, string? Problem)> FetchAsync(PublishSettings settings)

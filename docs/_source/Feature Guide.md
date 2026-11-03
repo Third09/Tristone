@@ -384,7 +384,7 @@ Any number of sections (owner request 2026-11-03), shown on the website in their
 
 ## 10.6 Contact Us
 
-- KPIs: Total inquiries, Pending (New), Website visits this month (our own free counter: the website reports each visit to the API; visits while the office server is off are not counted).
+- KPIs: Total inquiries, Pending (New), Website visits this month (our own free counter, owner request 2026-11-03: the website counts each visitor once per browser session through the same Google Script, one row per day in the sheet's "Visits" tab; only the date and the page are sent; Website Admin reads the days of this month; without the script it shows the database count).
 - Inquiries are forwarded to: an email address (validated), editable by Website Admins and Admins, with a Yes/No check. Save Email also tells the website's Google Script (which sends the emails) to use it; if the script can't be reached the message says the website still emails the old address. Saving the read key in Website Settings sends the saved address to the script too, so both always agree.
 - Company details shown on the website: address, phone, email (validated), footer line; Save Details lists the changes.
 - **Getting new inquiries** (owner decision 2026-11-03, no server): the website's Contact form posts to its Google Apps Script, which saves each message as a row in the "Tri-Stone Inquiries" Google Sheet and emails Gmail. Opening Contact Us, clicking Refresh and opening Website Admin ask the script for its rows (with the secret read key from Website Settings) and add the ones not copied yet as **New**. The count line says "(N new from the website)", or "(New inquiries not checked: reason)" when the script can't be reached; the list still shows what is already saved. Each message is added once (`source_ref`, script 016), even from two PCs at once. Blank name/message become "(no name)"/"(no message)"; longer texts are cut to the column limits.
@@ -392,7 +392,7 @@ Any number of sections (owner request 2026-11-03), shown on the website in their
 
 ## 10.7 Not done yet (needs the website side)
 
-Publish now reaches the live website (2026-11-03). Still to do: the visit report (Website Traffic) and the Contact form changes (3 fixed services + Other, optional Project Location), which need the API.
+Publish reaches the live website and the Contact form is connected (2026-11-03): its service list shows the published services (each name once) plus Other, and an optional Project Location box was added; both reach the email and Contact Us. Visits are counted (above). No server needed for any of it.
 
 # 11. Glossary
 
