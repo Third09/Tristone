@@ -447,7 +447,7 @@ The Website Admin window looks like the office app: click a button in the **left
 
 - **Save Changes** (on each page) keeps your edits. The live website does **not** change yet.
 - **Publish Website** (top right) puts **everything saved** on the live website. The website shows it in **about a minute**. Under it you see when it was last published and by whom.
-- The first time on a PC, Publish opens **GitHub Settings**: paste the GitHub token, click **Test**, then **Save**. (See "Making the GitHub token" below.)
+- The first time on a PC, Publish opens **Website Settings**: paste the GitHub token, click **Test**, then **Save**. (See "Making the GitHub token" below.)
 - Leaving a page with unsaved edits asks first. **Discard Changes** brings back the saved version.
 - Pictures must be **JPEG or PNG**, **8 MB** at most.
 
@@ -486,6 +486,7 @@ The top shows **Total inquiries**, **Pending (New)** and **Website visits this m
 
 - **Inquiries are forwarded to**: the email that receives the website's inquiries. Change it and click **Save Email**.
 - **Company details**: the address, phone, email and footer line shown on the website. Click **Save Details**, then **Publish Website**.
+- New inquiries from the website are added when you open Contact Us or click **Refresh** (the line under the list says how many). This needs the read key in **Website Settings** once per PC (see "Connecting the inquiries" below).
 - The list shows the inquiries from the website's Contact form (new ones in **bold**). Search, pick a **Status** or tick **From** / **To** dates; **Reset Filter** clears them; **Export to Excel** saves the list.
 - **Double-click** an inquiry (or click it and **Open Inquiry**) to read it. **Copy Email**, then paste it in Gmail to reply. Set the **Status** (New, Contacted, Closed), write **Notes** (only for you and the other Website Admins), click **Save**, check the changes and click **Yes**.
 
@@ -499,6 +500,17 @@ Inquiries are never deleted; close them instead.
 4. **Repository access**: **Only select repositories** > **tristone_website**.
 5. **Permissions** > **Repository permissions** > **Contents**: **Read and write**.
 6. Click **Generate token** and copy it (GitHub shows it only once).
-7. In Website Admin, click **GitHub Settings**, paste it in **GitHub token**, click **Test**, then **Save**.
+7. In Website Admin, click **Website Settings**, paste it in **GitHub token**, click **Test**, then **Save**.
 
 Never send the token in chat or email. If it leaks, delete it on GitHub and make a new one.
+
+**Connecting the inquiries (once)**
+
+1. Open **script.google.com** and click the website's script (**Untitled project**).
+2. Select all the code and replace it with the code in `docs\_tools\google-script\Code.gs`. Click **Save** (disk icon).
+3. At the top, pick **setup** in the function list and click **Run**. Allow the permissions it asks for (your own Google account).
+4. The **Execution log** shows the **Read key**. Copy it.
+5. Click **Deploy** > **Manage deployments** > the pencil (**Edit**) > **Version: New version** > **Deploy**. The web address stays the same.
+6. In Website Admin, click **Website Settings**, paste the key in **Read key**, click **Test Inquiries**, then **Save**.
+
+Each PC that uses Website Admin needs step 6 once. Keep the read key private.

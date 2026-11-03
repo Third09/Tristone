@@ -58,6 +58,7 @@ public partial class MainForm : Form
         ShowPage(WebPage.Home);
         IdleMonitor.Instance.Start();
         tmrIdle.Start();
+        try { await InquiryImport.PullAsync(); } catch { /* only for the count; Contact Us reports problems */ }
         await ShowNewInquiriesAsync();
         await ShowLastPublishedAsync();
     }
@@ -145,7 +146,7 @@ public partial class MainForm : Form
         if (MessageBox.Show(this, "Put every saved change (Home, Projects, Services, About Us and the company details) on the live website?" + unsaved,
                 "Publish Website", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
         // First publish on this PC: ask where to send it.
-        if (!PublishSettings.Load().IsSet && !ShowGitHubSettings()) return;
+        if (!PublishSettings.Load().IsSet && !ShowWebsiteSettings()) return;
         btnPublishWebsite.Enabled = false;
         UseWaitCursor = true;
         try
@@ -160,10 +161,10 @@ public partial class MainForm : Form
         finally { btnPublishWebsite.Enabled = true; UseWaitCursor = false; }
     }
 
-    void btnGitHubSettings_Click(object sender, EventArgs e) => ShowGitHubSettings();
+    void btnWebsiteSettings_Click(object sender, EventArgs e) => ShowWebsiteSettings();
 
-    /// <summary>Opens GitHub Settings; true when they were saved.</summary>
-    bool ShowGitHubSettings()
+    /// <summary>Opens Website Settings; true when they were saved.</summary>
+    bool ShowWebsiteSettings()
     {
         using var form = new PublishSettingsForm();
         return form.ShowDialog(this) == DialogResult.OK;

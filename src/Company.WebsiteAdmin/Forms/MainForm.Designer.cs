@@ -31,7 +31,7 @@ namespace Company.WebsiteAdmin.Forms
             lblPageTitle = new Label();
             lblUserName = new Label();
             btnPublishWebsite = new Button();
-            btnGitHubSettings = new Button();
+            btnWebsiteSettings = new Button();
             lblLastPublished = new Label();
             pnlContent = new Panel();
             pnlSidebar.SuspendLayout();
@@ -129,7 +129,7 @@ namespace Company.WebsiteAdmin.Forms
             pnlTopBar.Controls.Add(lblPageTitle);
             pnlTopBar.Controls.Add(lblUserName);
             pnlTopBar.Controls.Add(btnPublishWebsite);
-            pnlTopBar.Controls.Add(btnGitHubSettings);
+            pnlTopBar.Controls.Add(btnWebsiteSettings);
             pnlTopBar.Controls.Add(lblLastPublished);
             pnlTopBar.Dock = DockStyle.Top;
             pnlTopBar.Name = "pnlTopBar";
@@ -161,16 +161,16 @@ namespace Company.WebsiteAdmin.Forms
             btnPublishWebsite.Text = "Publish Website";
             btnPublishWebsite.Click += btnPublishWebsite_Click;
             //
-            // btnGitHubSettings  (where Publish Website sends the content; per PC)
+            // btnWebsiteSettings  (where Publish sends the content and Contact Us gets inquiries; per PC)
             //
-            btnGitHubSettings.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnGitHubSettings.Location = new Point(504, 18);
-            btnGitHubSettings.Name = "btnGitHubSettings";
-            btnGitHubSettings.Font = new Font("Segoe UI", 10F);
-            btnGitHubSettings.Size = new Size(136, 40);
-            btnGitHubSettings.TabIndex = 7;
-            btnGitHubSettings.Text = "GitHub Settings";
-            btnGitHubSettings.Click += btnGitHubSettings_Click;
+            btnWebsiteSettings.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnWebsiteSettings.Location = new Point(504, 18);
+            btnWebsiteSettings.Name = "btnWebsiteSettings";
+            btnWebsiteSettings.Font = new Font("Segoe UI", 10F);
+            btnWebsiteSettings.Size = new Size(136, 40);
+            btnWebsiteSettings.TabIndex = 7;
+            btnWebsiteSettings.Text = "Website Settings";
+            btnWebsiteSettings.Click += btnWebsiteSettings_Click;
             //
             // lblLastPublished
             //
@@ -230,7 +230,7 @@ namespace Company.WebsiteAdmin.Forms
         private Label lblPageTitle;
         private Label lblUserName;
         private Button btnPublishWebsite;
-        private Button btnGitHubSettings;
+        private Button btnWebsiteSettings;
         private Label lblLastPublished;
         private Panel pnlContent;
         private System.Windows.Forms.Timer tmrIdle;

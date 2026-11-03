@@ -60,6 +60,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 012_attendance | `attendance_imports`, `attendance_scans`, `attendance_days` |
 | 013_payroll | `holidays`, `cash_advances`, `payroll_runs`, `payslips`, `cash_advance_deductions` |
 | 014_website_content | `website_content` (seeded from the current website text), `website_projects`, `website_project_photos`, `website_services` (seeded with the 3 service cards), `website_publishes`, `website_visits` |
+| 016_inquiry_source | `inquiries.source_ref` (the Google Script's id for each message) + a unique index, so a message is copied in only once |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
@@ -264,7 +265,7 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 
 ## 4.9 Website and settings
 
-- `inquiries`: New → Contacted → Closed, internal `notes`, never deleted. The website will insert rows through the API.
+- `inquiries`: New → Contacted → Closed, internal `notes`, never deleted. New rows are copied from the website's Google Sheet (through its Google Apps Script) by the Contact Us page; `source_ref` (script 016) is unique, so a message is never added twice.
 - `website_content` (key/value, one row per text or picture): `home.hero_image`, `home.headline`, `home.subheadline`, `contact.address`, `contact.phone`, `contact.email`, `contact.copyright`, `inquiry.recipient_email`. Pictures are stored as paths relative to the files folder. `updated_by/at` = last Save.
 - `website_projects`: one row per featured office project (`project_id` UNIQUE → `projects`), `sort_order`, `is_visible`, `short_description`. Its photos (`website_project_photos`, ON DELETE CASCADE) have `sort_order` and `is_showcase`; the 10-photo limit is checked by the app.
 - `website_services`: `service_name` CHECK (the 3 fixed services), `sector` CHECK (the project sectors), `location`, `short_description`, `image_path`, `sort_order`, `is_visible`.

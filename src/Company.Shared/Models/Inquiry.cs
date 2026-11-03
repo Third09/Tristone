@@ -27,6 +27,9 @@ public class Inquiry
     /// <summary>The login (users.user_id) that last changed the status or notes: a Website Admin or an Admin (script 011).</summary>
     [Column("updated_by")] public int? UpdatedBy { get; set; }
     [Column("updated_at")] public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>The Google Script's id for this message (script 016), so it is never copied in twice. Null for older rows.</summary>
+    [Column("source_ref")] public string? SourceRef { get; set; }
 }
 
 public static class InquiryStatuses

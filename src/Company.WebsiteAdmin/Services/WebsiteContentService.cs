@@ -139,7 +139,7 @@ public static class PublishService
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
         var settings = PublishSettings.Load();
-        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click GitHub Settings first.";
+        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
 
         var (site, problem) = await BuildAsync();
         if (problem != null) return problem;

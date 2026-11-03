@@ -58,10 +58,23 @@ public partial class ContactUsPage : UserControl, IWebsiteEditor
     async void ContactUsPage_Load(object sender, EventArgs e)
     {
         await LoadSettingsAsync();
-        await LoadInquiriesAsync();
+        await PullAndLoadAsync();
     }
 
-    async void btnRefreshContact_Click(object sender, EventArgs e) => await LoadInquiriesAsync();
+    async void btnRefreshContact_Click(object sender, EventArgs e) => await PullAndLoadAsync();
+
+    /// <summary>Gets new inquiries from the website's Google Script (InquiryImport), then shows the list.</summary>
+    async Task PullAndLoadAsync()
+    {
+        InquiryImport.Result pulled;
+        lblInquiryCount.Text = "Checking the website for new inquiries...";
+        try { pulled = await InquiryImport.PullAsync(); }
+        catch (Exception ex) { pulled = new(0, "Can't reach the database. " + ex.Message); }
+        await LoadInquiriesAsync();
+        if (pulled.Problem != null) lblInquiryCount.Text += "   (New inquiries not checked: " + pulled.Problem + ")";
+        else if (pulled.Added > 0) lblInquiryCount.Text += $"   ({pulled.Added} new from the website)";
+        if (pulled.Added > 0) Changed?.Invoke(this, EventArgs.Empty);   // sidebar "(N new)"
+    }
 
     async Task LoadSettingsAsync()
     {

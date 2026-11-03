@@ -70,7 +70,7 @@ public static class GitHubPublisher
 
     static async Task<string?> RunAsync(PublishSettings settings, Func<HttpClient, Task<string?>> work)
     {
-        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click GitHub Settings first.";
+        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
         using var http = new HttpClient { BaseAddress = new Uri("https://api.github.com/"), Timeout = TimeSpan.FromSeconds(60) };
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.Token);
         http.DefaultRequestHeaders.UserAgent.ParseAdd("TriStone-WebsiteAdmin");
@@ -92,10 +92,10 @@ public static class GitHubPublisher
 
         throw new GitHubException(response.StatusCode switch
         {
-            HttpStatusCode.Unauthorized => "GitHub didn't accept the token (wrong or expired). Enter a new one in GitHub Settings.",
+            HttpStatusCode.Unauthorized => "GitHub didn't accept the token (wrong or expired). Enter a new one in Website Settings.",
             HttpStatusCode.Forbidden => "The token isn't allowed to change this repository. It needs Contents: Read and write.",
             HttpStatusCode.NotFound => $"GitHub can't find \"{settings.Repository}\" (branch \"{settings.Branch}\"), " +
-                                       "or the token has no access to it. Check GitHub Settings.",
+                                       "or the token has no access to it. Check Website Settings.",
             HttpStatusCode.Conflict or HttpStatusCode.UnprocessableEntity when method == HttpMethod.Patch =>
                 "The website was changed on GitHub at the same moment. Click Publish Website again.",
             _ => $"GitHub refused ({(int)response.StatusCode}): {TryMessage(text)}",
