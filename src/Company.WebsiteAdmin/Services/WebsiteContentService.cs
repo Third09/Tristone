@@ -202,8 +202,10 @@ public static class PublishService
             services = await OneByOne(services, async s => new
             {
                 name = s.ServiceName, category = s.Sector, location = s.Location, description = s.ShortDescription,
-                icon = s.Icon,   // ruler / helmet / tools: the card icon and the website picture used when image is null
-                image = await Picture(s.ImagePath),
+                icon = s.Icon,
+                icon_url = WebsiteServiceIcons.Get(s.Icon).Url,
+                // no picture of its own: the website's picture for its icon (like the original 3 cards)
+                image = await Picture(s.ImagePath) ?? "/Updated/images/" + WebsiteServiceIcons.Get(s.Icon).Picture,
             }),
             projects = await OneByOne(projects, async p => new
             {

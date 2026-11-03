@@ -39,16 +39,18 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         foreach (var l in new[] { lblServicesHint, lblServiceImageName, lblServiceDescCount, lblServiceMsg }) l.ForeColor = Theme.TextMuted;
         dgvWebServices.AutoGenerateColumns = false;
         RecordForm.NoAutoSelect(dgvWebServices, on => filling = on, RestoreSelection);
-        cboServiceName.Items.AddRange(WebsiteServiceNames.All);
+        cboServiceName.Items.AddRange([.. WebsiteServiceNames.Suggestions.Select(s => s.Name)]);
+        cboServiceName.MaxDropDownItems = 15;
+        cboServiceIcon.MaxDropDownItems = 12;
         cboServiceSector.Items.AddRange(ProjectSectors.All);
         cboServiceIcon.Items.AddRange(WebsiteServiceIcons.All);
         cboServiceIcon.DrawItem += DrawIconItem;
-        // Typing or picking one of the 3 original services sets its usual icon.
+        // Typing or picking a listed service sets its usual icon.
         cboServiceName.TextChanged += (_, _) =>
         {
             if (loading) return;
-            var known = WebsiteServiceNames.All.FirstOrDefault(n => n.Equals(cboServiceName.Text.Trim(), StringComparison.OrdinalIgnoreCase));
-            if (known != null) cboServiceIcon.SelectedItem = WebsiteServiceIcons.For(known);
+            var known = WebsiteServiceNames.Suggestions.Any(s => s.Name.Equals(cboServiceName.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (known) cboServiceIcon.SelectedItem = WebsiteServiceIcons.For(cboServiceName.Text);
         };
         txtServiceLocation.MaxLength = WebServiceService.MaxLocation;
         EditorUi.Counter(txtServiceDesc, lblServiceDescCount, WebServiceService.MaxDescription);

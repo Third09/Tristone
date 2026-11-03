@@ -103,39 +103,92 @@ public class WebsiteVisit
     [Column("page")] public string? Page { get; set; }
 }
 
-/// <summary>The fixed service list (owner decision 2026-11-01); the database CHECK has the same three.</summary>
+/// <summary>The original 3 services (owner decision 2026-11-01). Since 2026-11-03 any name can be typed; see <see cref="Suggestions"/>.</summary>
 public static class WebsiteServiceNames
 {
     public const string Residential = "Residential Construction";
     public const string Commercial = "Commercial Construction";
     public const string Repairs = "Repairs and Home Extension";
     public static readonly string[] All = [Residential, Commercial, Repairs];
+
+    /// <summary>
+    /// Services offered in the name list (owner request 2026-11-03: common construction and specialty services), each with
+    /// its usual icon (<see cref="WebsiteServiceIcons"/>). Picking or typing one sets that icon.
+    /// </summary>
+    public static readonly (string Name, string Icon)[] Suggestions =
+    [
+        (Residential, "ruler"), (Commercial, "helmet"), (Repairs, "tools"),
+        ("Industrial Construction", "building-factory-2"),
+        ("Design and Build", "ruler-measure"),
+        ("Home Renovation and Remodeling", "home-edit"),
+        ("Kitchen and Bathroom Renovation", "bath"),
+        ("Home Extension", "home-plus"),
+        ("Repairs and Maintenance", "tool"),
+        ("Interior Fit-out", "armchair"),
+        ("Roofing and Waterproofing", "umbrella"),
+        ("Electrical Works", "bolt"),
+        ("Plumbing and Sanitary Works", "droplet"),
+        ("Painting and Finishing", "paint"),
+        ("Tiling and Flooring", "layout-grid"),
+        ("Ceiling and Drywall", "layout-board-split"),
+        ("Steel Works and Welding", "flame"),
+        ("Masonry and Concrete Works", "wall"),
+        ("Glass and Aluminum Works", "window"),
+        ("Carpentry and Cabinetry", "hammer"),
+        ("Site Development and Earthworks", "shovel"),
+        ("Demolition", "wrecking-ball"),
+        ("Fencing and Perimeter Walls", "fence"),
+        ("Landscaping", "plant-2"),
+        ("Swimming Pools", "pool"),
+        ("Driveways and Paving", "road"),
+        ("Project Management", "clipboard-check"),
+        ("Cost Estimation and Quotation", "calculator"),
+        ("Permits and Plans Assistance", "file-certificate"),
+    ];
 }
 
+/// <summary>One service icon: its key (website_services.icon), its name in the list, the website picture a card without
+/// a picture shows, and its address on the website.</summary>
+public record ServiceIcon(string Key, string Label, string Picture, string Url);
+
 /// <summary>
-/// The website's 3 service icons (owner request 2026-11-03). Each one also brings the picture the website shows when a
-/// card has none: Ruler = the Residential Construction picture, Helmet = Commercial, Tools = Repairs.
+/// The service icons (owner requests 2026-11-03). The first 3 are the website's own; the rest are Tabler Icons (MIT),
+/// kept in the website at Updated/images/service-icons. Each also brings the picture a card without one shows: one of
+/// the website's 3 service pictures (Residential.jpg, commercial.jpg, repairs.jpg), the closest match.
 /// </summary>
 public static class WebsiteServiceIcons
 {
     public const string Ruler = "ruler", Helmet = "helmet", Tools = "tools";
-    public static readonly string[] All = [Ruler, Helmet, Tools];
+    const string House = "Residential.jpg", Building = "commercial.jpg", Fixing = "repairs.jpg";
 
-    /// <summary>The icon an original service uses (typed names get Ruler until one is picked).</summary>
-    public static string For(string serviceName) => serviceName switch
-    {
-        WebsiteServiceNames.Commercial => Helmet,
-        WebsiteServiceNames.Repairs => Tools,
-        _ => Ruler,
-    };
+    static ServiceIcon Own(string key, string label, string picture) => new(key, label, picture, $"/Updated/images/icon-{key}.svg");
+    static ServiceIcon Tabler(string key, string label, string picture) => new(key, label, picture, $"/Updated/images/service-icons/{key}.svg");
+
+    public static readonly ServiceIcon[] List =
+    [
+        Own(Ruler, "Ruler and pencil", House), Own(Helmet, "Hard hat and tools", Building), Own(Tools, "Wrench and screwdriver", Fixing),
+        Tabler("building-factory-2", "Factory", Building), Tabler("ruler-measure", "Measuring tape", House),
+        Tabler("home-edit", "House with pencil", Fixing), Tabler("bath", "Bathtub", Fixing), Tabler("home-plus", "House with plus", House),
+        Tabler("tool", "Wrench", Fixing), Tabler("armchair", "Armchair", Building), Tabler("umbrella", "Umbrella", Fixing),
+        Tabler("bolt", "Lightning bolt", Fixing), Tabler("droplet", "Water drop", Fixing), Tabler("paint", "Paint roller", Fixing),
+        Tabler("layout-grid", "Tiles", Fixing), Tabler("layout-board-split", "Panels", Fixing), Tabler("flame", "Flame", Building),
+        Tabler("wall", "Brick wall", House), Tabler("window", "Window", House), Tabler("hammer", "Hammer", Fixing),
+        Tabler("shovel", "Shovel", Building), Tabler("wrecking-ball", "Wrecking ball", Building), Tabler("fence", "Fence", House),
+        Tabler("plant-2", "Plant", House), Tabler("pool", "Pool", House), Tabler("road", "Road", Building),
+        Tabler("clipboard-check", "Checklist", Building), Tabler("calculator", "Calculator", Building),
+        Tabler("file-certificate", "Certificate", Building),
+    ];
+
+    public static readonly string[] All = [.. List.Select(i => i.Key)];
+
+    public static ServiceIcon Get(string key) => List.FirstOrDefault(i => i.Key == key) ?? List[0];
+
+    /// <summary>The usual icon for a service name (any case); Ruler for a name not in the list.</summary>
+    public static string For(string serviceName) =>
+        WebsiteServiceNames.Suggestions.FirstOrDefault(s => s.Name.Equals(serviceName.Trim(), StringComparison.OrdinalIgnoreCase)).Icon ?? Ruler;
 
     /// <summary>Shown in the icon list.</summary>
-    public static string Label(string icon) => icon switch
-    {
-        Helmet => "Helmet (like Commercial Construction)",
-        Tools => "Tools (like Repairs and Home Extension)",
-        _ => "Ruler (like Residential Construction)",
-    };
+    public static string Label(string key) => Get(key).Label;
 }
 
 /// <summary>The website_content keys the editors use.</summary>

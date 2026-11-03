@@ -387,7 +387,7 @@ const websiteAdmin = [
         ["Picture drop zone", "DropZone + Label", "dzService, lblServiceImageName", "Click or drop a JPEG/PNG (8 MB at most)."],
         ["Section title", "Label", "lblServiceInfo", "\"Service Information\"."],
         ["Name of service / Category", "ComboBox (DropDown: type or pick) / ComboBox (DropDownList) + Labels", "cboServiceName, cboServiceSector, lblServiceName, lblServiceSector", "Any service name (the 3 originals are in its list) / the project sectors."],
-        ["Icon", "ComboBox (owner-drawn: icon + name) + Label", "cboServiceIcon, lblServiceIcon", "Ruler, Helmet or Tools. Also picks the website's picture used when the card has none."],
+        ["Icon", "ComboBox (owner-drawn: icon + name) + Label", "cboServiceIcon, lblServiceIcon", "29 icons shown with their pictures; a listed service picks its own. Also decides the website picture used when the card has none."],
         ["Location", "InputFrame + TextBox (max 100)", "frmServiceLocation, txtServiceLocation, lblServiceLocation", "e.g. San Juan City."],
         ["Short description", "InputFrame + TextBox (max 100) + Labels", "frmServiceDesc, txtServiceDesc, lblServiceDesc, lblServiceDescCount", "With a counter."],
       ]},

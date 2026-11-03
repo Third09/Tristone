@@ -274,7 +274,7 @@ public static class WebServiceService
 
     static WebServiceInput Clean(WebServiceInput i) => i with
     {
-        ServiceName = WebsiteServiceNames.All.FirstOrDefault(n => n.Equals(i.ServiceName.Trim(), StringComparison.OrdinalIgnoreCase))
+        ServiceName = WebsiteServiceNames.Suggestions.Select(s => s.Name).FirstOrDefault(n => n.Equals(i.ServiceName.Trim(), StringComparison.OrdinalIgnoreCase))
                       ?? string.Join(' ', i.ServiceName.Split(' ', StringSplitOptions.RemoveEmptyEntries)),
         Location = string.IsNullOrWhiteSpace(i.Location) ? null : i.Location.Trim(),
         ShortDescription = string.IsNullOrWhiteSpace(i.ShortDescription) ? null : i.ShortDescription.Trim(),
