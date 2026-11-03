@@ -484,7 +484,7 @@ The projects come from the office **Projects** page: an Admin or the Receipts Su
 
 The top shows **Total inquiries**, **Pending (New)** and **Website visits this month**.
 
-- **Inquiries are forwarded to**: the email that receives the website's inquiries. Change it and click **Save Email**.
+- **Inquiries are forwarded to**: the email that receives the website's inquiries. Change it and click **Save Email**: the website starts emailing the new address right away (once the inquiries are connected).
 - **Company details**: the address, phone, email and footer line shown on the website. Click **Save Details**, then **Publish Website**.
 - New inquiries from the website are added when you open Contact Us or click **Refresh** (the line under the list says how many). This needs the read key in **Website Settings** once per PC (see "Connecting the inquiries" below).
 - The list shows the inquiries from the website's Contact form (new ones in **bold**). Search, pick a **Status** or tick **From** / **To** dates; **Reset Filter** clears them; **Export to Excel** saves the list.

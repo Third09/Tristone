@@ -1,3 +1,4 @@
+using Company.Shared.Models;
 using Company.WebsiteAdmin.Services;
 
 namespace Company.WebsiteAdmin.Forms;
@@ -68,12 +69,37 @@ public partial class PublishSettingsForm : Form
         finally { btnTestInquiries.Enabled = true; }
     }
 
-    void btnSaveSettings_Click(object sender, EventArgs e)
+    async void btnSaveSettings_Click(object sender, EventArgs e)
     {
         lblPublishSettingsMsg.Text = "";
         if (WebsiteAccess.Require() is { } denied) { lblPublishSettingsMsg.Text = denied; return; }
         if (Typed() is not { } s) return;
+        var keyChanged = s.InquiryKey != saved.InquiryKey || s.InquiryScriptUrl != saved.InquiryScriptUrl;
         s.Save();
+        // Newly connected: the script emails inquiries to the recipient saved on Contact Us, so both agree.
+        if (keyChanged && s.InquiriesSet)
+        {
+            btnSaveSettings.Enabled = false;
+            lblPublishSettingsMsg.Text = "Saved. Sending the recipient email to the script...";
+            try
+            {
+                var recipient = (await WebsiteContentService.LoadAsync(WebsiteKeys.RecipientEmail))[WebsiteKeys.RecipientEmail];
+                if (recipient != null && await InquiryImport.SetRecipientAsync(recipient) is { } problem)
+                {
+                    lblPublishSettingsMsg.Text = "Saved, but the script's email wasn't updated: " + problem;
+                    btnSaveSettings.Enabled = true;
+                    return;   // stay open so it can be read; Cancel closes
+                }
+            }
+            catch (Exception ex) { lblPublishSettingsMsg.Text = "Saved, but the database couldn't be read. " + ex.Message; btnSaveSettings.Enabled = true; return; }
+        }
         DialogResult = DialogResult.OK;
     }
+
+    static void Open(string url) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+
+    void lnkOpenGitHubTokens_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+        Open("https://github.com/settings/personal-access-tokens/new");
+
+    void lnkOpenScript_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Open("https://script.google.com/home");
 }

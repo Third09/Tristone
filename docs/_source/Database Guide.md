@@ -61,6 +61,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 013_payroll | `holidays`, `cash_advances`, `payroll_runs`, `payslips`, `cash_advance_deductions` |
 | 014_website_content | `website_content` (seeded from the current website text), `website_projects`, `website_project_photos`, `website_services` (seeded with the 3 service cards), `website_publishes`, `website_visits` |
 | 016_inquiry_source | `inquiries.source_ref` (the Google Script's id for each message) + a unique index, so a message is copied in only once |
+| 017_inquiry_email_fix | data only: the company email and inquiry recipient corrected to tristoneconstructionservices@gmail.com (only where they still had the shortened seed value) |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions

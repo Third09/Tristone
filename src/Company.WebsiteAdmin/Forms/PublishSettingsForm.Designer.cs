@@ -34,6 +34,10 @@ namespace Company.WebsiteAdmin.Forms
             lblInquiryKey = new Label();
             txtInquiryKey = new TextBox();
             btnTestInquiries = new Button();
+            lblTokenSteps = new Label();
+            lnkOpenGitHubTokens = new LinkLabel();
+            lblInquirySteps = new Label();
+            lnkOpenScript = new LinkLabel();
             lblPublishSettingsMsg = new Label();
             btnSaveSettings = new Button();
             btnCancelSettings = new Button();
@@ -106,7 +110,7 @@ namespace Company.WebsiteAdmin.Forms
             //
             // btnTestConnection
             //
-            btnTestConnection.Location = new Point(32, 234);
+            btnTestConnection.Location = new Point(32, 316);
             btnTestConnection.Name = "btnTestConnection";
             btnTestConnection.Size = new Size(130, 36);
             btnTestConnection.TabIndex = 3;
@@ -117,13 +121,13 @@ namespace Company.WebsiteAdmin.Forms
             //
             lblInquiriesTitle.AutoSize = true;
             lblInquiriesTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblInquiriesTitle.Location = new Point(32, 292);
+            lblInquiriesTitle.Location = new Point(32, 376);
             lblInquiriesTitle.Name = "lblInquiriesTitle";
             lblInquiriesTitle.Text = "Inquiries (Google Script)";
             //
             // lblInquiriesInfo
             //
-            lblInquiriesInfo.Location = new Point(32, 320);
+            lblInquiriesInfo.Location = new Point(32, 404);
             lblInquiriesInfo.Name = "lblInquiriesInfo";
             lblInquiriesInfo.Size = new Size(470, 40);
             lblInquiriesInfo.Text = "Contact Us gets new inquiries from the website's Google Script. The read key is shown when you run setup in the script.";
@@ -131,13 +135,13 @@ namespace Company.WebsiteAdmin.Forms
             // lblInquiryScriptUrl
             //
             lblInquiryScriptUrl.AutoSize = true;
-            lblInquiryScriptUrl.Location = new Point(32, 366);
+            lblInquiryScriptUrl.Location = new Point(32, 450);
             lblInquiryScriptUrl.Name = "lblInquiryScriptUrl";
             lblInquiryScriptUrl.Text = "Script web address";
             //
             // txtInquiryScriptUrl
             //
-            txtInquiryScriptUrl.Location = new Point(32, 390);
+            txtInquiryScriptUrl.Location = new Point(32, 474);
             txtInquiryScriptUrl.Name = "txtInquiryScriptUrl";
             txtInquiryScriptUrl.Size = new Size(470, 23);
             txtInquiryScriptUrl.TabIndex = 4;
@@ -145,13 +149,13 @@ namespace Company.WebsiteAdmin.Forms
             // lblInquiryKey
             //
             lblInquiryKey.AutoSize = true;
-            lblInquiryKey.Location = new Point(32, 426);
+            lblInquiryKey.Location = new Point(32, 510);
             lblInquiryKey.Name = "lblInquiryKey";
             lblInquiryKey.Text = "Read key";
             //
             // txtInquiryKey
             //
-            txtInquiryKey.Location = new Point(32, 450);
+            txtInquiryKey.Location = new Point(32, 534);
             txtInquiryKey.Name = "txtInquiryKey";
             txtInquiryKey.Size = new Size(470, 23);
             txtInquiryKey.TabIndex = 5;
@@ -159,22 +163,54 @@ namespace Company.WebsiteAdmin.Forms
             //
             // btnTestInquiries
             //
-            btnTestInquiries.Location = new Point(32, 486);
+            btnTestInquiries.Location = new Point(32, 646);
             btnTestInquiries.Name = "btnTestInquiries";
             btnTestInquiries.Size = new Size(130, 36);
             btnTestInquiries.TabIndex = 6;
             btnTestInquiries.Text = "Test Inquiries";
             btnTestInquiries.Click += btnTestInquiries_Click;
             //
+            // lblTokenSteps
+            //
+            lblTokenSteps.Location = new Point(32, 232);
+            lblTokenSteps.Name = "lblTokenSteps";
+            lblTokenSteps.Size = new Size(470, 56);
+            lblTokenSteps.Text = "To make one: on GitHub click your picture > Settings > Developer settings > Fine-grained tokens > Generate new token. Repository access: only tristone_website. Permissions: Contents = Read and write. Copy it right away.";
+            //
+            // lnkOpenGitHubTokens
+            //
+            lnkOpenGitHubTokens.AutoSize = true;
+            lnkOpenGitHubTokens.Location = new Point(32, 290);
+            lnkOpenGitHubTokens.Name = "lnkOpenGitHubTokens";
+            lnkOpenGitHubTokens.TabStop = true;
+            lnkOpenGitHubTokens.Text = "Open the GitHub token page";
+            lnkOpenGitHubTokens.LinkClicked += lnkOpenGitHubTokens_LinkClicked;
+            //
+            // lblInquirySteps
+            //
+            lblInquirySteps.Location = new Point(32, 562);
+            lblInquirySteps.Name = "lblInquirySteps";
+            lblInquirySteps.Size = new Size(470, 56);
+            lblInquirySteps.Text = "To get the key: open the script, replace its code with the new code (User Manual: Connecting the inquiries), Save, choose setup and click Run, copy the key from the Execution log. Then Deploy > Manage deployments > Edit > New version > Deploy.";
+            //
+            // lnkOpenScript
+            //
+            lnkOpenScript.AutoSize = true;
+            lnkOpenScript.Location = new Point(32, 620);
+            lnkOpenScript.Name = "lnkOpenScript";
+            lnkOpenScript.TabStop = true;
+            lnkOpenScript.Text = "Open Google Apps Script";
+            lnkOpenScript.LinkClicked += lnkOpenScript_LinkClicked;
+            //
             // lblPublishSettingsMsg
             //
-            lblPublishSettingsMsg.Location = new Point(32, 534);
+            lblPublishSettingsMsg.Location = new Point(32, 700);
             lblPublishSettingsMsg.Name = "lblPublishSettingsMsg";
             lblPublishSettingsMsg.Size = new Size(470, 40);
             //
             // btnSaveSettings
             //
-            btnSaveSettings.Location = new Point(276, 584);
+            btnSaveSettings.Location = new Point(276, 748);
             btnSaveSettings.Name = "btnSaveSettings";
             btnSaveSettings.Size = new Size(110, 36);
             btnSaveSettings.TabIndex = 7;
@@ -184,7 +220,7 @@ namespace Company.WebsiteAdmin.Forms
             // btnCancelSettings
             //
             btnCancelSettings.DialogResult = DialogResult.Cancel;
-            btnCancelSettings.Location = new Point(392, 584);
+            btnCancelSettings.Location = new Point(392, 748);
             btnCancelSettings.Name = "btnCancelSettings";
             btnCancelSettings.Size = new Size(110, 36);
             btnCancelSettings.TabIndex = 8;
@@ -196,7 +232,7 @@ namespace Company.WebsiteAdmin.Forms
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = btnCancelSettings;
-            ClientSize = new Size(534, 644);
+            ClientSize = new Size(534, 806);
             Controls.Add(lblPublishTitle);
             Controls.Add(lblPublishInfo);
             Controls.Add(lblRepository);
@@ -214,6 +250,10 @@ namespace Company.WebsiteAdmin.Forms
             Controls.Add(lblInquiryKey);
             Controls.Add(txtInquiryKey);
             Controls.Add(btnTestInquiries);
+            Controls.Add(lblTokenSteps);
+            Controls.Add(lnkOpenGitHubTokens);
+            Controls.Add(lblInquirySteps);
+            Controls.Add(lnkOpenScript);
             Controls.Add(lblPublishSettingsMsg);
             Controls.Add(btnSaveSettings);
             Controls.Add(btnCancelSettings);
@@ -247,6 +287,10 @@ namespace Company.WebsiteAdmin.Forms
         private Label lblInquiryKey;
         private TextBox txtInquiryKey;
         private Button btnTestInquiries;
+        private Label lblTokenSteps;
+        private LinkLabel lnkOpenGitHubTokens;
+        private Label lblInquirySteps;
+        private LinkLabel lnkOpenScript;
         private Label lblPublishSettingsMsg;
         private Button btnSaveSettings;
         private Button btnCancelSettings;

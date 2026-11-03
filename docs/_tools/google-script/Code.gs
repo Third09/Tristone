@@ -5,7 +5,8 @@
 // What it does:
 //  - doPost: the website's Contact form sends each message here.
 //      1. saves it as a row in the "Tri-Stone Inquiries" Google Sheet
-//      2. emails it to TO_EMAIL (same nice email as before)
+//      2. emails it to the recipient (same nice email as before). The recipient
+//         is set from Website Admin (Contact Us > Save Email); TO_EMAIL until then.
 //  - doGet: the Tri-Stone Website Admin app (Contact Us page) reads the
 //      saved rows with the secret read key, and adds new ones to its list.
 //  - setup: run ONCE by hand (Run button). Makes the Sheet and the read key,
@@ -15,7 +16,11 @@
 // Version: New version > Deploy. The web address stays the same.
 // =====================================================================
 
-const TO_EMAIL = "tristoneconstructionservices@gmail.com";
+const TO_EMAIL = "tristoneconstructionservices@gmail.com";   // used until Website Admin sets one
+
+function recipient() {
+  return PropertiesService.getScriptProperties().getProperty("RECIPIENT") || TO_EMAIL;
+}
 const LOGO_URL = "https://clydezhit.github.io/tri-stone/images/tristone_logo_white.png";
 const SHEET_HEADERS = ["id", "received", "name", "email", "phone", "service", "location", "message"];
 
@@ -79,7 +84,7 @@ function doGet(e) {
       id: text(r[0]), received: text(r[1]), name: text(r[2]), email: text(r[3]),
       phone: text(r[4]), service: text(r[5]), location: text(r[6]), message: text(r[7])
     }));
-    return json({ ok: true, rows: rows });
+    return json({ ok: true, rows: rows, recipient: recipient() });
   } catch (err) {
     return json({ ok: false, error: String(err) });
   }
@@ -165,6 +170,15 @@ function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
 
+    // Website Admin changing the recipient email (needs the read key)
+    if (d.action === "settings") {
+      const key = PropertiesService.getScriptProperties().getProperty("READ_KEY");
+      if (!key || d.key !== key) return json({ ok: false, error: "wrong key" });
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(d.recipient || ""))) return json({ ok: false, error: "not an email address" });
+      PropertiesService.getScriptProperties().setProperty("RECIPIENT", String(d.recipient).trim());
+      return json({ ok: true, recipient: recipient() });
+    }
+
     // Save first, so the message is kept even if the email fails.
     // If saving fails, the email still goes out and says so.
     let saveProblem = "";
@@ -181,7 +195,7 @@ function doPost(e) {
       (saveProblem ? "\n\n(Not saved for Website Admin: " + saveProblem + ")" : "");
 
     MailApp.sendEmail({
-      to: TO_EMAIL,
+      to: recipient(),
       replyTo: d.email,
       subject: "New inquiry from " + d.name + " (" + d.service + ")",
       body: plain,

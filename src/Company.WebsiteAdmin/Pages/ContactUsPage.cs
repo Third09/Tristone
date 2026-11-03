@@ -105,7 +105,11 @@ public partial class ContactUsPage : UserControl, IWebsiteEditor
             var error = await WebsiteContentService.SaveAsync("Inquiry recipient email", new() { [WebsiteKeys.RecipientEmail] = email });
             if (error != null) { lblContactSettingsMsg.Text = error; return; }
             await LoadSettingsAsync();
-            lblContactSettingsMsg.Text = "Recipient email saved.";
+            // The website's Google Script sends the emails, so it gets the new address too.
+            var scriptProblem = await InquiryImport.SetRecipientAsync(email);
+            lblContactSettingsMsg.Text = scriptProblem == null
+                ? $"Saved. Website inquiries are now emailed to {email}."
+                : "Saved here, but the website still emails the old address: " + scriptProblem;
         }
         catch (Exception ex) { lblContactSettingsMsg.Text = "Unable to save changes. Please try again. " + ex.Message; }
         finally { btnSaveRecipientEmail.Enabled = true; }

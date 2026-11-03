@@ -45,6 +45,37 @@ public static class InquiryImport
         return (rows?.Count ?? 0, problem);
     }
 
+    /// <summary>
+    /// Tells the website's Google Script where to email new inquiries (Contact Us > Save Email). Null when done,
+    /// otherwise the reason (e.g. inquiries not set up on this PC).
+    /// </summary>
+    public static async Task<string?> SetRecipientAsync(string email)
+    {
+        if (WebsiteAccess.Require() is { } denied) return denied;
+        var settings = PublishSettings.Load();
+        if (!settings.InquiriesSet) return "Inquiries aren't set up on this PC yet (Website Settings).";
+        try
+        {
+            // Google answers a POST with a redirect to the result, which HttpClient follows.
+            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+            var body = new JsonObject { ["action"] = "settings", ["key"] = settings.InquiryKey, ["recipient"] = email }.ToJsonString();
+            using var response = await http.PostAsync(settings.InquiryScriptUrl, new StringContent(body, System.Text.Encoding.UTF8, "text/plain"));
+            var text = await response.Content.ReadAsStringAsync();
+            JsonNode? json;
+            try { json = JsonNode.Parse(text); }
+            catch (System.Text.Json.JsonException) { return "The Google Script didn't answer like expected. Check that its new code was deployed."; }
+            if (json?["ok"]?.GetValue<bool>() == true) return null;
+            return (string?)json?["error"] switch
+            {
+                "wrong key" => "The Google Script refused the read key (Website Settings).",
+                "not an email address" => "The Google Script says that isn't an email address.",
+                var other => "The Google Script reported a problem: " + other,
+            };
+        }
+        catch (HttpRequestException) { return "Can't reach the Google Script. Check this PC's internet connection."; }
+        catch (TaskCanceledException) { return "The Google Script took too long to answer."; }
+    }
+
     record SheetRow(string Id, string Received, string Name, string Email, string Phone, string Service, string Location, string Message);
 
     static async Task<(List<SheetRow>? Rows, string? Problem)> FetchAsync(PublishSettings settings)

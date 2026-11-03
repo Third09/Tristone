@@ -268,6 +268,8 @@ const websiteAdmin = [
         ["Script web address", "TextBox", "txtInquiryScriptUrl", "The Google Script address (the same one the website's Contact form uses)."],
         ["Read key", "TextBox (hidden characters)", "txtInquiryKey", "The key shown by running setup in the script. Empty = keep the saved one."],
         ["Test Inquiries button", "Button", "btnTestInquiries", "Checks the address and key; says how many inquiries the script has."],
+        ["Steps under each part", "Label", "lblTokenSteps, lblInquirySteps", "Short how-to for the token and the read key."],
+        ["Links", "LinkLabel", "lnkOpenGitHubTokens, lnkOpenScript", "Open the GitHub token page / Google Apps Script in the browser."],
         ["Message", "Label", "lblPublishSettingsMsg", "Test result or what to fix."],
         ["Save button", "Button", "btnSaveSettings", "Saves on this PC and closes."],
         ["Cancel button", "Button", "btnCancelSettings", "Closes without saving."],
