@@ -30,6 +30,7 @@ CONTROLS = [
     ("Button", "btnMoveServiceDown", 142, 242, 110, 36, {"PARENT": "cardServicesList", "Text": T("Move Down")}),
     ("Button", "btnHideShowService", 260, 242, 130, 36, {"PARENT": "cardServicesList", "Text": T("Unpublish")}),
     ("Button", "btnDeleteWebService", 398, 242, 110, 36, {"PARENT": "cardServicesList", "Text": T("Delete")}),
+    ("Button", "btnDuplicateService", 516, 242, 120, 36, {"PARENT": "cardServicesList", "Text": T("Duplicate")}),
 
     # form
     ("Label", "lblFormMode", 24, 18, None, None, {"PARENT": "cardServiceForm", "Font": SECTION, "Text": T("Service Image")}),
@@ -79,6 +80,7 @@ EVENTS = {
     "btnMoveServiceDown": [("Click", "btnMoveServiceDown_Click")],
     "btnHideShowService": [("Click", "btnHideShowService_Click")],
     "btnDeleteWebService": [("Click", "btnDeleteWebService_Click")],
+    "btnDuplicateService": [("Click", "btnDuplicateService_Click")],
     "txtServiceDesc": [("TextChanged", "Field_Changed")],
     "txtServiceLocation": [("TextChanged", "Field_Changed")],
     "cboServiceName": [("TextChanged", "Field_Changed")],

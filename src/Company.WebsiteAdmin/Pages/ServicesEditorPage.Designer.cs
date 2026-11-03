@@ -30,6 +30,7 @@ namespace Company.WebsiteAdmin.Pages
             btnMoveServiceDown = new Button();
             btnHideShowService = new Button();
             btnDeleteWebService = new Button();
+            btnDuplicateService = new Button();
             lblFormMode = new Label();
             dzService = new Company.OfficeApp.UI.DropZone();
             lblServiceImageName = new Label();
@@ -62,6 +63,7 @@ namespace Company.WebsiteAdmin.Pages
             cardServicesList.Controls.Add(btnMoveServiceDown);
             cardServicesList.Controls.Add(btnHideShowService);
             cardServicesList.Controls.Add(btnDeleteWebService);
+            cardServicesList.Controls.Add(btnDuplicateService);
             cardServiceForm.Controls.Add(lblFormMode);
             cardServiceForm.Controls.Add(dzService);
             cardServiceForm.Controls.Add(lblServiceImageName);
@@ -215,6 +217,15 @@ namespace Company.WebsiteAdmin.Pages
             btnDeleteWebService.Text = "Delete";
             btnDeleteWebService.TabIndex = 10;
             btnDeleteWebService.Click += btnDeleteWebService_Click;
+            //
+            // btnDuplicateService  (a hidden copy of the chosen card, right after it)
+            //
+            btnDuplicateService.Location = new Point(516, 242);
+            btnDuplicateService.Name = "btnDuplicateService";
+            btnDuplicateService.Size = new Size(120, 36);
+            btnDuplicateService.TabIndex = 9;
+            btnDuplicateService.Text = "Duplicate";
+            btnDuplicateService.Click += btnDuplicateService_Click;
             // 
             // lblFormMode
             // 
@@ -486,6 +497,7 @@ namespace Company.WebsiteAdmin.Pages
         private Button btnMoveServiceDown;
         private Button btnHideShowService;
         private Button btnDeleteWebService;
+        private Button btnDuplicateService;
         private Label lblFormMode;
         private Company.OfficeApp.UI.DropZone dzService;
         private Label lblServiceImageName;

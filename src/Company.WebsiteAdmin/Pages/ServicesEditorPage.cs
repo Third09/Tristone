@@ -124,7 +124,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     {
         RecordForm.SetEnabled(cardServiceForm, lblFormMode, on);
         btnSaveWebService.Enabled = btnCancelWebService.Enabled = on;
-        btnMoveServiceUp.Enabled = btnMoveServiceDown.Enabled = btnHideShowService.Enabled = btnDeleteWebService.Enabled = on && !addOnly;
+        btnMoveServiceUp.Enabled = btnMoveServiceDown.Enabled = btnHideShowService.Enabled = btnDeleteWebService.Enabled = btnDuplicateService.Enabled = on && !addOnly;
     }
 
     void ClearForm()
@@ -326,6 +326,22 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
             editingId = null;
             await LoadAsync(id);
             Say(StatusKind.Success, done, "Click Publish Website to update the live site.");
+        }
+        catch (Exception ex) { Say(StatusKind.Error, "Can't reach the database", ex.Message); }
+    }
+
+    async void btnDuplicateService_Click(object sender, EventArgs e)
+    {
+        if (editingId is not { } id) return;
+        if (HasUnsavedChanges && MessageBox.Show(this, "This card has unsaved changes. They won't be in the copy. Copy it anyway?",
+                "Duplicate", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+        try
+        {
+            var (copyId, error) = await WebServiceService.DuplicateAsync(id);
+            if (copyId == null) { Say(StatusKind.Error, "Not copied", error ?? ""); return; }
+            editingId = null;
+            await LoadAsync(copyId);
+            Say(StatusKind.Success, "Copy made", "The copy is hidden: change what is different, save, then click Publish above the list to show it.");
         }
         catch (Exception ex) { Say(StatusKind.Error, "Can't reach the database", ex.Message); }
     }

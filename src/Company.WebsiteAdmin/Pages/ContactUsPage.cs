@@ -63,6 +63,9 @@ public partial class ContactUsPage : UserControl, IWebsiteEditor
 
     async void btnRefreshContact_Click(object sender, EventArgs e) => await PullAndLoadAsync();
 
+    /// <summary>Reloads the list (used when a new-inquiry notification is clicked while this page is open).</summary>
+    public async void RefreshInquiries() => await LoadInquiriesAsync();
+
     /// <summary>Gets new inquiries from the website's Google Script (InquiryImport), then shows the list.</summary>
     async Task PullAndLoadAsync()
     {

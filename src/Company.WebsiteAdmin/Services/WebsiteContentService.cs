@@ -1,6 +1,7 @@
 using System.Net.Mail;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Company.OfficeApp.Data;
 using Company.OfficeApp.Services;
 using Company.Shared.Models;
@@ -133,7 +134,9 @@ public static class PublishService
     const string WebRoot = "/" + SiteFolder + "/";
 
     /// <summary>site.json and its pictures (repository path -> bytes), or the reason they can't be made.</summary>
-    public record SiteFiles(string Json, Dictionary<string, byte[]> Files);
+    /// <summary><paramref name="Sources"/>: each picture's repository path -> its stored path in the files folder (kept with the
+    /// publish so Undo Publish can rebuild that version).</summary>
+    public record SiteFiles(string Json, Dictionary<string, byte[]> Files, Dictionary<string, string> Sources);
 
     public static async Task<string?> PublishAsync()
     {
@@ -147,10 +150,78 @@ public static class PublishService
         var error = await GitHubPublisher.PushAsync(settings, site!.Files, SiteFolder, $"Website Admin: published by {who.FullName}");
         if (error != null) return error;
 
-        using var db = Db.Open();
-        db.WebsitePublishes.Add(new WebsitePublish { PublishedBy = who.UserId, PublishedAt = DateTime.Now, Content = site.Json });
-        await db.SaveChangesAsync();
+        await RecordAsync(site.Json, site.Sources, restoredFrom: null);
         return null;
+    }
+
+    // website_publishes.content = site.json plus, for Undo Publish, "_sources" (pictures) and "_restored_from" (an undo).
+    static async Task RecordAsync(string siteJson, Dictionary<string, string> sources, int? restoredFrom)
+    {
+        var content = JsonNode.Parse(siteJson)!.AsObject();
+        content["_sources"] = JsonSerializer.SerializeToNode(sources);
+        if (restoredFrom != null) content["_restored_from"] = restoredFrom;
+        using var db = Db.Open();
+        db.WebsitePublishes.Add(new WebsitePublish
+        {
+            PublishedBy = Session.CurrentUser!.UserId, PublishedAt = DateTime.Now, Content = content.ToJsonString(),
+        });
+        await db.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Undo Publish (owner request 2026-11-03): puts the version published before the current one back on the live site.
+    /// Saved edits in Website Admin are not changed. Null when done, otherwise the reason.
+    /// </summary>
+    public static async Task<string?> UndoAsync()
+    {
+        if (WebsiteAccess.Require() is { } denied) return denied;
+        var settings = PublishSettings.Load();
+        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
+        List<WebsitePublish> last;
+        using (var db = Db.Open())
+            last = await db.WebsitePublishes.AsNoTracking().OrderByDescending(p => p.PublishedAt).ThenByDescending(p => p.PublishId).Take(2).ToListAsync();
+        if (last.Count < 2) return "There is no earlier version to go back to yet.";
+        var target = JsonNode.Parse(last[1].Content)!.AsObject();
+        if (target["_sources"] is not JsonObject sourceNode)
+            return "The earlier version was published before Undo Publish existed, so it can't be put back.";
+
+        var sources = sourceNode.ToDictionary(s => s.Key, s => (string)s.Value!);
+        var files = new Dictionary<string, byte[]>();
+        foreach (var (repoPath, stored) in sources)
+        {
+            var full = await FileStore.FullPathAsync(stored);
+            if (!File.Exists(full)) return "A picture of that version is missing from the files folder:\n" + full;
+            files[repoPath] = await File.ReadAllBytesAsync(full);
+        }
+        foreach (var key in target.Select(p => p.Key).Where(k => k.StartsWith('_')).ToList()) target.Remove(key);
+        var json = target.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        });
+        files[SiteFolder + "/site.json"] = Encoding.UTF8.GetBytes(json);
+
+        var who = Session.CurrentUser!;
+        var error = await GitHubPublisher.PushAsync(settings, files, SiteFolder, $"Website Admin: undo publish by {who.FullName}");
+        if (error != null) return error;
+        await RecordAsync(json, sources, restoredFrom: last[1].PublishId);
+        return null;
+    }
+
+    /// <summary>
+    /// How many website edits were saved since the live version was published (shown on the Publish button). After an
+    /// Undo Publish, counts from the version that was put back. Edits to the inquiry recipient aren't counted (not on the site).
+    /// </summary>
+    public static async Task<int> WaitingCountAsync()
+    {
+        using var db = Db.Open();
+        var latest = await db.WebsitePublishes.AsNoTracking().OrderByDescending(p => p.PublishedAt).ThenByDescending(p => p.PublishId)
+            .Select(p => new { p.PublishedAt, p.Content }).FirstOrDefaultAsync();
+        DateTime since = latest?.PublishedAt ?? DateTime.MinValue;
+        if (latest != null && JsonNode.Parse(latest.Content)?["_restored_from"]?.GetValue<int>() is { } restored)
+            since = await db.WebsitePublishes.Where(p => p.PublishId == restored).Select(p => p.PublishedAt).FirstOrDefaultAsync();
+        string[] tables = ["website_content", "website_projects", "website_project_photos", "website_services", "website_about_sections"];
+        return await db.AuditLogs.CountAsync(a => a.Department == WebsiteAccess.AuditDepartment && tables.Contains(a.TableName)
+                                               && a.ChangedAt > since && (a.RecordName == null || a.RecordName != "Inquiry recipient email"));
     }
 
     /// <summary>Makes site.json (what the website reads) and collects the pictures it points to.</summary>
@@ -173,6 +244,7 @@ public static class PublishService
         // Pictures: stored path in the files folder -> address on the website (a web-safe copy of its file name).
         var files = new Dictionary<string, byte[]>();
         var missing = new List<string>();
+        var sources = new Dictionary<string, string>();
         async Task<string?> Picture(string? stored)
         {
             if (string.IsNullOrEmpty(stored)) return null;   // none: the website keeps its own picture
@@ -180,6 +252,7 @@ public static class PublishService
             var full = await FileStore.FullPathAsync(stored);
             if (!File.Exists(full)) { missing.Add(full); return null; }
             files[SiteFolder + "/images/" + name] = await File.ReadAllBytesAsync(full);
+            sources[SiteFolder + "/images/" + name] = stored;
             return WebRoot + "images/" + name;
         }
 
@@ -230,7 +303,7 @@ public static class PublishService
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,   // keep ₱, ñ readable
         });
         files[SiteFolder + "/site.json"] = Encoding.UTF8.GetBytes(json);
-        return (new SiteFiles(json, files), null);
+        return (new SiteFiles(json, files, sources), null);
     }
 
     /// <summary>Runs <paramref name="make"/> for each item in turn (pictures are read one at a time).</summary>

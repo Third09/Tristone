@@ -21,6 +21,7 @@ namespace Company.WebsiteAdmin.Pages
             lblInqContact = new Label();
             lblInqEmail = new Label();
             btnCopyEmail = new Button();
+            btnReplyGmail = new Button();
             lblInqLocation = new Label();
             lblInqService = new Label();
             lblInqReceived = new Label();
@@ -64,6 +65,15 @@ namespace Company.WebsiteAdmin.Pages
             btnCopyEmail.Text = "Copy Email";
             btnCopyEmail.TabIndex = 0;
             btnCopyEmail.Click += btnCopyEmail_Click;
+            //
+            // btnReplyGmail  (opens a Gmail reply with the client's email and a short greeting filled in)
+            //
+            btnReplyGmail.Location = new Point(518, 124);
+            btnReplyGmail.Name = "btnReplyGmail";
+            btnReplyGmail.Size = new Size(136, 36);
+            btnReplyGmail.Text = "Reply in Gmail";
+            btnReplyGmail.TabIndex = 1;
+            btnReplyGmail.Click += btnReplyGmail_Click;
             // 
             // lblInqLocation
             // 
@@ -172,6 +182,7 @@ namespace Company.WebsiteAdmin.Pages
             Controls.Add(lblInqContact);
             Controls.Add(lblInqEmail);
             Controls.Add(btnCopyEmail);
+            Controls.Add(btnReplyGmail);
             Controls.Add(lblInqLocation);
             Controls.Add(lblInqService);
             Controls.Add(lblInqReceived);
@@ -195,6 +206,7 @@ namespace Company.WebsiteAdmin.Pages
         private Label lblInqContact;
         private Label lblInqEmail;
         private Button btnCopyEmail;
+        private Button btnReplyGmail;
         private Label lblInqLocation;
         private Label lblInqService;
         private Label lblInqReceived;

@@ -61,6 +61,7 @@ public partial class MainForm : Form
         try { await InquiryImport.PullAsync(); } catch { /* only for the count; Contact Us reports problems */ }
         await ShowNewInquiriesAsync();
         await ShowLastPublishedAsync();
+        tmrWebsiteCheck.Start();
     }
 
     static string Title(WebPage page) => page switch
@@ -136,6 +137,83 @@ public partial class MainForm : Form
                 ? $"Last published: {p.At:MMM d, yyyy h:mm tt} by {p.By}" : "Not published from the app yet";
         }
         catch { /* only a hint */ }
+        await ShowWaitingAsync();
+    }
+
+    /// <summary>The Publish button says how many saved edits aren't live yet, e.g. "Publish Website (3)".</summary>
+    async Task ShowWaitingAsync()
+    {
+        try
+        {
+            var n = await PublishService.WaitingCountAsync();
+            btnPublishWebsite.Text = n == 0 ? "Publish Website" : $"Publish Website ({n})";
+        }
+        catch { /* only a hint */ }
+    }
+
+    int checks;
+    bool checking;
+
+    // Every 15 s: the Publish count; every 3 minutes: new inquiries from the website, with a Windows notification.
+    async void tmrWebsiteCheck_Tick(object? sender, EventArgs e)
+    {
+        if (checking) return;
+        checking = true;
+        try
+        {
+            await ShowWaitingAsync();
+            if (++checks % 12 != 0) return;
+            var pulled = await InquiryImport.PullAsync();
+            if (pulled.Added == 0) return;
+            await ShowNewInquiriesAsync();
+            ntfInquiries.Icon = Icon ?? SystemIcons.Information;
+            ntfInquiries.Visible = true;
+            ntfInquiries.ShowBalloonTip(10000, "New website inquiry",
+                pulled.Added == 1 ? "1 new inquiry. Click to open Contact Us." : $"{pulled.Added} new inquiries. Click to open Contact Us.", ToolTipIcon.Info);
+        }
+        catch { /* tried again on the next check */ }
+        finally { checking = false; }
+    }
+
+    void ntfInquiries_BalloonTipClicked(object? sender, EventArgs e)
+    {
+        Activate();
+        if (current == WebPage.ContactUs) { (pnlContent.Controls[0] as ContactUsPage)?.RefreshInquiries(); return; }
+        ShowPage(WebPage.ContactUs);
+    }
+
+    /// <summary>Ctrl+S: clicks the Save button nearest to where you are typing (on Contact Us: the box you are in).</summary>
+    void MainForm_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (!(e.Control && e.KeyCode == Keys.S)) return;
+        e.SuppressKeyPress = true;
+        static IEnumerable<Button> Saves(Control c) =>
+            c.Controls.Cast<Control>().SelectMany(x => x is Button b ? [b] : Saves(x))
+             .Where(b => b.Name.StartsWith("btnSave") && b.Visible && b.Enabled);
+        Control? at = ActiveControl;
+        while (at is ContainerControl { ActiveControl: { } inner }) at = inner;
+        for (var c = at; c != null && c != this; c = c.Parent)
+            if (Saves(c).FirstOrDefault() is { } save) { save.PerformClick(); return; }
+        Saves(pnlContent).FirstOrDefault()?.PerformClick();
+    }
+
+    /// <summary>Undo Publish: the version before the live one goes back on the website; saved edits stay as they are.</summary>
+    async void btnUndoPublish_Click(object sender, EventArgs e)
+    {
+        if (MessageBox.Show(this, "Put the previous version of the website back on the live site?\n\nYour saved edits in Website Admin stay as they are: fix them and click Publish Website again when ready.",
+                "Undo Publish", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+        btnUndoPublish.Enabled = false;
+        UseWaitCursor = true;
+        try
+        {
+            var error = await PublishService.UndoAsync();
+            if (error != null) { MessageBox.Show(this, error, "Undo Publish"); return; }
+            await ShowLastPublishedAsync();
+            MessageBox.Show(this, "Done. The live website shows the previous version in about a minute.", "Undo Publish",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex) { MessageBox.Show(this, "Couldn't undo. Please try again.\n" + ex.Message, "Undo Publish"); }
+        finally { btnUndoPublish.Enabled = true; UseWaitCursor = false; }
     }
 
     /// <summary>Publish Website: everything saved on every page goes live (unsaved edits on the open page are not included).</summary>
@@ -208,6 +286,8 @@ public partial class MainForm : Form
         SignedOut = true;
         SignedOutIdle = idle;
         tmrIdle.Stop();
+        tmrWebsiteCheck.Stop();
+        ntfInquiries.Visible = false;
         await AuthService.SignOutAsync(idle);
         loggedOut = true;
         Close();

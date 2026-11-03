@@ -481,6 +481,17 @@ The projects come from the office **Projects** page: an Admin or the Receipts Su
 4. **Add Section** opens a small window: add a picture, a heading and the text, then click **Add Section**. New sections go last.
 5. **Move Up** / **Move Down** change the order on the website. **Delete Section** removes the open one (the last section can't be deleted).
 
+
+**Handy extras**
+
+- **Publish Website (3)**: the number shows how many saved edits aren't on the live site yet.
+- **Undo Publish** (top right) puts the previous version back on the live site. Your saved edits stay in Website Admin; fix them and publish again.
+- **Ctrl+S** saves the page you are on (on Contact Us: the box you are typing in).
+- Big photos are made smaller automatically when you add them (1600 pixels at most), so the website loads fast. Your original file is not changed.
+- New inquiries: Website Admin checks every 3 minutes and shows a Windows notification; click it to open Contact Us.
+- **Reply in Gmail** (inquiry window) opens a Gmail message to the client with a greeting filled in. Finish it and click Send in Gmail.
+- **Duplicate** (Services) makes a hidden copy of the chosen card right after it. Change what's different, save, then click **Publish** above the list to show it.
+
 **Contact Us**
 
 The top shows **Total inquiries**, **Pending (New)** and **Website visits this month**.

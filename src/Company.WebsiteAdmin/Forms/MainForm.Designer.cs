@@ -33,6 +33,9 @@ namespace Company.WebsiteAdmin.Forms
             btnPublishWebsite = new Button();
             btnWebsiteSettings = new Button();
             btnPreviewWebsite = new Button();
+            btnUndoPublish = new Button();
+            tmrWebsiteCheck = new System.Windows.Forms.Timer(components);
+            ntfInquiries = new NotifyIcon(components);
             lblLastPublished = new Label();
             pnlContent = new Panel();
             pnlSidebar.SuspendLayout();
@@ -132,6 +135,7 @@ namespace Company.WebsiteAdmin.Forms
             pnlTopBar.Controls.Add(btnPublishWebsite);
             pnlTopBar.Controls.Add(btnWebsiteSettings);
             pnlTopBar.Controls.Add(btnPreviewWebsite);
+            pnlTopBar.Controls.Add(btnUndoPublish);
             pnlTopBar.Controls.Add(lblLastPublished);
             pnlTopBar.Dock = DockStyle.Top;
             pnlTopBar.Name = "pnlTopBar";
@@ -185,6 +189,27 @@ namespace Company.WebsiteAdmin.Forms
             btnPreviewWebsite.Text = "Preview Website";
             btnPreviewWebsite.Click += btnPreviewWebsite_Click;
             //
+            // btnUndoPublish  (puts the version before the live one back on the website)
+            //
+            btnUndoPublish.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnUndoPublish.Location = new Point(212, 18);
+            btnUndoPublish.Name = "btnUndoPublish";
+            btnUndoPublish.Font = new Font("Segoe UI", 10F);
+            btnUndoPublish.Size = new Size(136, 40);
+            btnUndoPublish.TabIndex = 9;
+            btnUndoPublish.Text = "Undo Publish";
+            btnUndoPublish.Click += btnUndoPublish_Click;
+            //
+            // tmrWebsiteCheck  (every 15 s: changes waiting on the Publish button; every 3 min: new inquiries)
+            //
+            tmrWebsiteCheck.Interval = 15000;
+            tmrWebsiteCheck.Tick += tmrWebsiteCheck_Tick;
+            //
+            // ntfInquiries  (Windows notification when new inquiries arrive; click = open Contact Us)
+            //
+            ntfInquiries.Text = "Tri-Stone Website Admin";
+            ntfInquiries.BalloonTipClicked += ntfInquiries_BalloonTipClicked;
+            //
             // lblLastPublished
             //
             lblLastPublished.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -222,6 +247,8 @@ namespace Company.WebsiteAdmin.Forms
             Text = "Tri-Stone Website Admin";
             FormClosing += MainForm_FormClosing;
             Load += MainForm_Load;
+            KeyPreview = true;
+            KeyDown += MainForm_KeyDown;
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             pnlSidebar.ResumeLayout(false);
             pnlTopBar.ResumeLayout(false);
@@ -245,6 +272,9 @@ namespace Company.WebsiteAdmin.Forms
         private Button btnPublishWebsite;
         private Button btnWebsiteSettings;
         private Button btnPreviewWebsite;
+        private Button btnUndoPublish;
+        private System.Windows.Forms.Timer tmrWebsiteCheck;
+        private NotifyIcon ntfInquiries;
         private Label lblLastPublished;
         private Panel pnlContent;
         private System.Windows.Forms.Timer tmrIdle;

@@ -352,6 +352,32 @@ public static class WebServiceService
         return null;
     }
 
+    /// <summary>
+    /// Duplicate (owner request 2026-11-03): a copy of the card right after it, with the same name, location, description,
+    /// icon and picture (the same stored file); hidden until you edit it and click Publish (so the website never shows the
+    /// same card twice by accident). Returns the copy's id.
+    /// </summary>
+    public static async Task<(int? Id, string? Error)> DuplicateAsync(int id)
+    {
+        if (WebsiteAccess.Require() is { } denied) return (null, denied);
+        using var db = Db.Open();
+        var all = await db.WebsiteServices.OrderBy(x => x.SortOrder).ThenBy(x => x.WebServiceId).ToListAsync();
+        var s = all.FirstOrDefault(x => x.WebServiceId == id);
+        if (s == null) return (null, "This service no longer exists.");
+        var copy = new WebsiteService
+        {
+            ServiceName = s.ServiceName, Location = s.Location, ShortDescription = s.ShortDescription, Icon = s.Icon,
+            ImagePath = s.ImagePath, IsVisible = false, CreatedBy = Session.CurrentUser!.UserId, CreatedAt = DateTime.Now,
+        };
+        all.Insert(all.IndexOf(s) + 1, copy);
+        for (int i = 0; i < all.Count; i++) all[i].SortOrder = i + 1;
+        db.WebsiteServices.Add(copy);
+        await db.SaveChangesAsync();
+        AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_services", copy.WebServiceId, copy.ServiceName, AuditActions.Added, null, Snapshot(copy));
+        await db.SaveChangesAsync();
+        return (copy.WebServiceId, null);
+    }
+
     public static async Task<string?> DeleteAsync(int id)
     {
         if (WebsiteAccess.Require() is { } denied) return denied;

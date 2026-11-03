@@ -241,9 +241,12 @@ const websiteAdmin = [
         ["Top bar", "Panel (Dock = Top)", "pnlTopBar", "Page title, who is signed in, Publish Website."],
         ["Page title", "Label", "lblPageTitle", "e.g. \"Homepage Editor\"."],
         ["Signed-in name", "Label", "lblUserName", "e.g. \"Signed in: Juan Dela Cruz (jdelacruz) - Website Admin\"."],
+        ["Undo Publish button", "Button", "btnUndoPublish", "Asks Yes/No, then puts the version before the live one back on the website (saved edits stay)."],
+        ["Check timer", "(component) Timer", "tmrWebsiteCheck", "Every 15 s: the count on the Publish button; every 3 minutes: new inquiries."],
+        ["New inquiry notification", "(component) NotifyIcon", "ntfInquiries", "Windows notification \"n new inquiries\"; click = Contact Us."],
         ["Preview Website button", "Button", "btnPreviewWebsite", "Opens Preview Website: the whole website with the saved changes, not live (asks first when the open page has unsaved edits)."],
         ["Website Settings button", "Button", "btnWebsiteSettings", "Opens Website Settings: where Publish sends the website's content (per PC)."],
-        ["Publish Website button", "Button", "btnPublishWebsite", "Asks Yes/No, then puts every saved change on the live website: pushes site.json and the pictures to the website's GitHub repository; Netlify shows them in about a minute (unsaved edits on the open page are not included; the message says so). Opens Website Settings first when this PC has none."],
+        ["Publish Website button", "Button", "btnPublishWebsite", "Shows \"Publish Website (n)\" when n saved edits aren't live yet. Asks Yes/No, then puts every saved change on the live website: pushes site.json and the pictures to the website's GitHub repository; Netlify shows them in about a minute (unsaved edits on the open page are not included; the message says so). Opens Website Settings first when this PC has none."],
         ["Last published", "Label", "lblLastPublished", "e.g. \"Last published: Nov 1, 2026 3:20 PM by Website Admin\"."],
         ["Main section", "Panel (Dock = Fill)", "pnlContent", "The chosen page loads here."],
         ["Idle timer", "(component) Timer", "tmrIdle", "Checks once a second for 5 minutes without activity, then shows \"Still there?\"."],
@@ -381,6 +384,7 @@ const websiteAdmin = [
         ["Add New Service", "Button", "btnAddWebService", "Opens the pop-up."],
         ["Services table", "DataGridView", "dgvWebServices", "Columns: Slot, Service, Category, Location, On Website."],
         ["Move Up / Down, Unpublish, Delete", "Button", "btnMoveServiceUp, btnMoveServiceDown, btnHideShowService, btnDeleteWebService", "As on Projects."],
+        ["Duplicate button", "Button", "btnDuplicateService", "A hidden copy of the chosen card, right after it."],
       ]},
       { name: "Service form (cardServiceForm)", rows: [
         ["Title", "Label", "lblFormMode", "e.g. \"Service Image - Slot 1\" or \"New Service\"."],
@@ -470,6 +474,7 @@ const websiteAdmin = [
       { name: "Details", rows: [
         ["Details", "Label", "lblInqName, lblInqContact, lblInqEmail, lblInqLocation, lblInqService, lblInqReceived", "Name, contact number, email, project location, service, when received."],
         ["Copy Email button", "Button", "btnCopyEmail", "Copies the email for replying from Gmail."],
+        ["Reply in Gmail button", "Button", "btnReplyGmail", "Opens a Gmail message to the client with a greeting filled in (nothing is sent until Send in Gmail)."],
         ["Message", "TextBox (multiline, read-only) + Label", "txtInqMessage, lblInqMessage", "What the client wrote."],
       ]},
       { name: "Follow-up", rows: [

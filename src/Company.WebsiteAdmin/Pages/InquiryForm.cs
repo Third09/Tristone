@@ -48,6 +48,31 @@ public partial class InquiryForm : Form
         lblInquiryMsg.Text = $"Copied {email}. Paste it in Gmail to reply.";
     }
 
+    /// <summary>
+    /// Reply in Gmail (owner request 2026-11-03): opens a new Gmail message in the browser, addressed to the client, with
+    /// a subject and a short greeting to finish. Nothing is sent until you click Send in Gmail.
+    /// </summary>
+    async void btnReplyGmail_Click(object sender, EventArgs e)
+    {
+        if (inquiry.Email is not { } email) { lblInquiryMsg.Text = "This inquiry has no email address. Call them instead."; return; }
+        string phone = "";
+        try { phone = (await WebsiteContentService.LoadAsync(WebsiteKeys.Phone))[WebsiteKeys.Phone] ?? ""; }
+        catch { /* the reply works without it */ }
+        var service = string.IsNullOrWhiteSpace(inquiry.ServiceRequired) ? "your project" : inquiry.ServiceRequired;
+        var body = $"Hi {inquiry.FullName},\n\nThank you for contacting Tri-Stone Construction Services about {service}.\n\n\n\n" +
+                   $"Best regards,\nTri-Stone Construction Services" + (phone == "" ? "" : $"\n{phone}");
+        var url = "https://mail.google.com/mail/?view=cm&fs=1" +
+                  "&to=" + Uri.EscapeDataString(email) +
+                  "&su=" + Uri.EscapeDataString("Re: Your inquiry to Tri-Stone Construction") +
+                  "&body=" + Uri.EscapeDataString(body);
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            lblInquiryMsg.Text = "Gmail opened in your browser. Finish the message and click Send there.";
+        }
+        catch (Exception ex) { lblInquiryMsg.Text = "Couldn't open the browser. Use Copy Email instead. " + ex.Message; }
+    }
+
     async void btnSaveInquiry_Click(object sender, EventArgs e)
     {
         var input = ReadForm();
