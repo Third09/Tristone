@@ -140,7 +140,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 1. Check the "Check at home" list in the Testing Log on real data.
 2. The website side: the Contact form changes and the visit counter.
 3. The **API**: receives inquiries and visits from the website.
-4. **Phase 6, the office setup:** the Linux server (database, files, backups, security), Setup.exe for the 5 PCs, and the website connection through Cloudflare Tunnel.
+4. **Phase 6, the office setup:** the server kit is ready (`server` folder: one install script for the Linux laptop with the database, shared files folder, firewall and nightly backups; a copy tool to move your data). Still to do: run it on the real laptop, Setup.exe for the 5 PCs, and the website connection through Cloudflare Tunnel.
 
 # 9. Words used
 

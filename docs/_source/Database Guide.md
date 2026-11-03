@@ -66,6 +66,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 019_service_icon | `website_services.icon` (ruler / helmet / tools, NOT NULL, CHECK), filled from the service name |
 | 020_more_service_icons | `website_services.icon` becomes VARCHAR(40) with a not-blank CHECK (the icon list lives in the app: 29 icons) |
 | 021_drop_service_category | drops `website_services.sector` (service cards have no category; owner decision 2026-11-03) |
+| 022_app_role | the app's limited login `tristone_app` (NOLOGIN until the office server enables it) and its rights |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
@@ -146,7 +147,7 @@ Every primary key and unique constraint has its own index. The extra indexes fol
 
 - **Passwords and security answers** are bcrypt hashes (cost 11, `BCrypt.Net-Next` in the app; `crypt(..., gen_salt('bf', 11))` from `pgcrypto` for the first Admin). Answers are trimmed and lower-cased before hashing.
 - **Private values never reach `audit_logs`:** password hashes, security answers, SSS/PhilHealth/Pag-IBIG/TIN numbers and bank account numbers. Snapshots record `*_on_file: true/false` instead.
-- **Phase 6:** port 5432 open only to the office LAN (`ufw` + `pg_hba.conf`); the app connects with its own role limited to `SELECT/INSERT/UPDATE/DELETE` on the application tables (no DDL), not `postgres`; the API gets an even smaller role; nightly `pg_dump` backups copied off the server.
+- **Phase 6:** port 5432 open only to the office LAN (`ufw` + `pg_hba.conf`); the app connects with its own role `tristone_app` (script 022: `SELECT/INSERT/UPDATE/DELETE` on the tables, sequences, default privileges for later tables, no DDL, no writing `schema_versions`), not `postgres`; `server/install-server.sh` turns its login on with a password; the API gets an even smaller role; nightly `pg_dump` backups copied off the server.
 
 # 3. Entity map
 

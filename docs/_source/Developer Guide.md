@@ -398,8 +398,23 @@ Each part is tested with a throwaway console program (net10.0-windows, reference
 
 **Not tested yet:** the "last active Admin" protection (needs a separate test database), the scanner employee file on the real scanner, and payroll on real attendance (both under "Check at home").
 
+# Chapter 12: The office server (Phase 6, `server/`)
+
+Built 2026-11-03; not yet run on the real laptop. Plan as decided 2026-10-27: Linux Mint laptop at 192.168.1.50, PostgreSQL + shared files + backups, office LAN only, the app on its own limited login.
+
+| File | What it does |
+|---|---|
+| `install-server.sh` | Run once with sudo. PostgreSQL 18 from apt.postgresql.org (Mint -> `UBUNTU_CODENAME`), `conf.d/tristone.conf` (`listen_addresses='*'`, scram), `pg_hba.conf` lines for `tristone_app` and `postgres` from the LAN only, postgres password, `setup-database.sh`, `tristone_app` LOGIN + password, Samba share `TriStoneFiles` (`/srv/tristone/files`, user `tristone`, `hosts allow` = LAN), `app_settings.file_storage_path` = `\\ADDR\TriStoneFiles`, `ufw` (deny incoming; 22, 5432 and Samba from the LAN), backup script + `/etc/cron.d/tristone-backup` (23:30). Passwords are asked (12+ characters), never stored in files. |
+| `setup-database.sh` | Linux twin of `database/setup-database.ps1` (same `schema_versions` rules; scripts fed through stdin so the postgres user needn't read the home folder). `PSQL` / `DATABASE` can be overridden (tested from Git Bash on Windows). |
+| `tristone-backup.sh` | `/usr/local/bin/tristone-backup`: `pg_dump -Fc` + `files.tar.gz` into `/srv/tristone/backups/YYYY-MM-DD`, keeps `KEEP_DAYS` (14), copies to `COPY_TO` (USB) from `/etc/tristone-backup.conf`. |
+| `restore-database.sh` | Replaces construction_db with a `.dump` (asks YES, saves the current one first, `pg_restore --no-owner --no-acl`), runs newer scripts and 022 again, re-points `file_storage_path`. |
+| `export-database.cmd` | Home PC: `pg_dump -Fc` of construction_db next to the file, to move the real data. |
+| `connect-files.cmd` | Office PC: stores the share password in Windows Credential Manager (`cmdkey`) so `FileStore` can reach `\\SERVER\TriStoneFiles`. |
+
+Script **022_app_role.sql** makes `tristone_app` (NOLOGIN until the server turns it on): CONNECT, USAGE on `public`, SELECT/INSERT/UPDATE/DELETE on all tables, USAGE/SELECT/UPDATE on sequences, default privileges for tables later scripts create (as postgres), and no writing to `schema_versions`. The app needs nothing more (it never changes table structure). Each PC keeps its own `dbsettings.json` (DPAPI) and Website Admin `publishsettings.json`.
+
 # Coming next
 
 - The rest of the website side: the visit counter and the Contact form changes
 - The API and the website Contact form
-- Phase 6: the server and the installers
+- Phase 6: run the server kit on the real laptop, then the installers (Setup.exe)

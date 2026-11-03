@@ -526,3 +526,33 @@ Never send the token in chat or email. If it leaks, delete it on GitHub and make
 6. In Website Admin, click **Website Settings**, paste the key in **Read key**, click **Test Inquiries**, then **Save**.
 
 Each PC that uses Website Admin needs step 6 once. Keep the read key private.
+
+# 11. The office server (Phase 6)
+
+One Linux Mint laptop holds the database, the scans and pictures, and the nightly backups. The 5 office PCs use it over the office network. Everything is in the `server` folder of the Tristone files.
+
+**A. Set up the server (once)**
+
+1. On the laptop, install Linux Mint, plug it into the office switch, and in the router give it the fixed address **192.168.1.50**.
+2. Copy the Tristone folder onto the laptop (or `git clone` it).
+3. Open **Terminal** in the `server` folder and type: `sudo ./install-server.sh`
+4. It asks for the office network (press Enter for 192.168.1.0/24), the address, and **three passwords**: the postgres admin password, the app password and the files password. Write them on paper and keep them safe.
+5. When it says **Done**, the server is ready. It makes a backup every night at 23:30.
+
+**B. Move the real data from the home PC (once)**
+
+1. On the home PC, double-click `server\export-database.cmd`. It makes `construction_db.dump`.
+2. Copy that file to the laptop (USB stick), then in the `server` folder type: `sudo ./restore-database.sh /path/to/construction_db.dump` and type **YES**.
+3. From any office PC, open `\\192.168.1.50\TriStoneFiles` and copy everything from the home PC's `C:\TriStoneFiles` into it.
+
+**C. Each office PC (once)**
+
+1. Double-click `server\connect-files.cmd` and type the files password.
+2. Open **Tri-Stone**. On **Database Settings** type Server **192.168.1.50**, User **tristone_app** and the app password, then **Test** and **Save**.
+3. In Website Admin, set up **Website Settings** on the PCs that will publish.
+
+**D. Updates and backups**
+
+- After a new version with database updates: on the server, `git pull`, then `sudo ./setup-database.sh`.
+- To keep a copy off the laptop too, plug in a USB drive and put its folder in `/etc/tristone-backup.conf` (`COPY_TO="/media/..."`).
+- Backup now: `sudo tristone-backup`. Put a backup back: `sudo ./restore-database.sh /srv/tristone/backups/<date>/construction_db.dump`.
