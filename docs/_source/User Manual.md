@@ -556,3 +556,15 @@ One Linux Mint laptop holds the database, the scans and pictures, and the nightl
 - After a new version with database updates: on the server, `git pull`, then `sudo ./setup-database.sh`.
 - To keep a copy off the laptop too, plug in a USB drive and put its folder in `/etc/tristone-backup.conf` (`COPY_TO="/media/..."`).
 - Backup now: `sudo tristone-backup`. Put a backup back: `sudo ./restore-database.sh /srv/tristone/backups/<date>/construction_db.dump`.
+
+**E. Using a Windows PC as the server instead**
+
+The same setup also works on a Windows 10/11 PC that stays on. Use the files in `server\windows`:
+
+1. Give the PC a fixed address in the router (e.g. 192.168.1.50) and plug it into the office switch.
+2. Copy the Tristone folder onto it, open `server\windows` and double-click **install-server.cmd**. Click **Yes** when Windows asks for administrator rights.
+3. It installs PostgreSQL if needed (if it's already installed, type its postgres password), then asks the same **three passwords** as the Linux setup.
+4. When it says **Done**: the database is open to the office network only, `C:\TriStoneFiles` is shared as `\\192.168.1.50\TriStoneFiles`, and a backup is made every night at 23:30 into `C:\TriStoneBackups`. The PC no longer goes to sleep.
+5. Moving the home data in: drag `construction_db.dump` onto **restore-database.cmd** and type **YES**.
+6. The office PCs connect exactly as in **C** above.
+7. A second backup copy: put a folder (e.g. a USB drive's `E:\Backups`) in `"CopyTo"` in `C:\ProgramData\TriStone\Server\backup.json`.
