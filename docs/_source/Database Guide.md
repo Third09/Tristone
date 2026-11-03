@@ -60,6 +60,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 012_attendance | `attendance_imports`, `attendance_scans`, `attendance_days` |
 | 013_payroll | `holidays`, `cash_advances`, `payroll_runs`, `payslips`, `cash_advance_deductions` |
 | 014_website_content | `website_content` (seeded from the current website text), `website_projects`, `website_project_photos`, `website_services` (seeded with the 3 service cards), `website_publishes`, `website_visits` |
+| 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
 
@@ -264,9 +265,10 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 ## 4.9 Website and settings
 
 - `inquiries`: New → Contacted → Closed, internal `notes`, never deleted. The website will insert rows through the API.
-- `website_content` (key/value, one row per text or picture): `home.hero_image`, `home.headline`, `home.subheadline`, `about.N.image` / `about.N.heading` (N = 1..3), `about.1.text`, `about.2.text`, `about.3.vision`, `about.3.mission`, `contact.address`, `contact.phone`, `contact.email`, `contact.copyright`, `inquiry.recipient_email`. Pictures are stored as paths relative to the files folder. `updated_by/at` = last Save.
+- `website_content` (key/value, one row per text or picture): `home.hero_image`, `home.headline`, `home.subheadline`, `contact.address`, `contact.phone`, `contact.email`, `contact.copyright`, `inquiry.recipient_email`. Pictures are stored as paths relative to the files folder. `updated_by/at` = last Save.
 - `website_projects`: one row per featured office project (`project_id` UNIQUE → `projects`), `sort_order`, `is_visible`, `short_description`. Its photos (`website_project_photos`, ON DELETE CASCADE) have `sort_order` and `is_showcase`; the 10-photo limit is checked by the app.
 - `website_services`: `service_name` CHECK (the 3 fixed services), `sector` CHECK (the project sectors), `location`, `short_description`, `image_path`, `sort_order`, `is_visible`.
+- `website_about_sections` (script 015): one row per About Us section, shown in `sort_order`: `heading` + `body`, optional `heading2` + `body2` (a second part in the same row, like OUR VISION / OUR MISSION), `image_path`. Any number; the app keeps at least one.
 - `website_publishes`: each Publish Website stores a `jsonb` snapshot of everything saved; the live site is built from the newest row. `website_visits`: one row per page visit (the free Website Traffic counter; written by the API later).
 - `app_settings` (key/value): `file_storage_path`; `hr.work_start`, `hr.work_end`, `hr.break_start`, `hr.break_end` (HH:mm), `hr.grace_minutes`, `hr.work_days` (0 = Sunday ... 6 = Saturday, comma-separated), `hr.ot_rate`, `hr.ot_minimum_minutes`, `hr.work_days_per_month`, `hr.sss_rate`, `hr.sss_min_credit`, `hr.sss_max_credit`, `hr.philhealth_rate`, `hr.philhealth_floor`, `hr.philhealth_ceiling`, `hr.pagibig_rate`, `hr.pagibig_cap`, `hr.withholding_tax`. A missing key means "use the default in the code" (`HrSettings.Default`).
 
@@ -299,7 +301,8 @@ R = reads, W = writes. Every write also inserts into `audit_logs`, except sign-i
 | Receipts > Change Orders | `ChangeOrderService` | `change_orders`, `projects` | `change_orders`, `projects.target_end_date` |
 | Receipts > Reports | `ReceiptReports` | `receipts`, `projects` | — |
 | Every Edit History tab | `AuditService` | `audit_logs`, `users` | — |
-| Website Admin > Home / About Us | `WebsiteContentService` | `website_content` | `website_content` |
+| Website Admin > Home | `WebsiteContentService` | `website_content` | `website_content` |
+| Website Admin > About Us | `WebAboutService` | `website_about_sections` | `website_about_sections` |
 | Website Admin > Projects | `WebProjectService` | `website_projects`, `website_project_photos`, `projects` | `website_projects`, `website_project_photos` |
 | Website Admin > Services | `WebServiceService` | `website_services` | the same |
 | Website Admin > Contact Us | `WebsiteInquiries`, `WebsiteContentService` | `inquiries`, `website_visits`, `website_content` | `inquiries.status/notes/updated_by/updated_at`, `website_content` (contact details, recipient) |
@@ -1201,7 +1204,7 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 43 tables
 - **Check** `change_orders_status_check`: `CHECK ((status IN ('Waiting', 'Approved', 'Rejected')))`
 - **Index** `ix_change_orders_project`: `project_id WHERE (status = 'Approved')`
 
-## Website (010, 014)
+## Website (010, 014, 015)
 
 ### inquiries
 
@@ -1296,6 +1299,26 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 43 tables
 - **Foreign key** `website_services_created_by_fkey`: `FOREIGN KEY created_by REFERENCES users(user_id)`
 - **Check** `website_services_sector_check`: `CHECK ((sector IN ('Residential', 'Commercial', 'Industrial', 'Repairs / Renovations')))`
 - **Check** `website_services_service_name_check`: `CHECK ((service_name IN ('Residential Construction', 'Commercial Construction', 'Repairs and Home Extension')))`
+
+### website_about_sections
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `about_section_id` | serial |  |  |
+| `sort_order` | int |  | 0 |
+| `heading` | varchar(100) |  |  |
+| `body` | varchar(2000) | yes |  |
+| `heading2` | varchar(100) | yes |  |
+| `body2` | varchar(2000) | yes |  |
+| `image_path` | varchar(500) | yes |  |
+| `created_by` | int | yes |  |
+| `created_at` | timestamp |  | now() |
+| `updated_by` | int | yes |  |
+| `updated_at` | timestamp | yes |  |
+
+- **Primary key** `website_about_sections_pkey`: `PRIMARY KEY about_section_id`
+- **Foreign key** `website_about_sections_created_by_fkey`: `FOREIGN KEY created_by REFERENCES users(user_id)`
+- **Foreign key** `website_about_sections_updated_by_fkey`: `FOREIGN KEY updated_by REFERENCES users(user_id)`
 
 ### website_publishes
 

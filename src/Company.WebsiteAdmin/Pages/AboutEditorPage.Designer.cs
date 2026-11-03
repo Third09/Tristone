@@ -23,9 +23,11 @@ namespace Company.WebsiteAdmin.Pages
             pnlGap1 = new Panel();
             pnlSections = new Panel();
             lblSectionsTitle = new Label();
-            btnAboutSection1 = new Button();
-            btnAboutSection2 = new Button();
-            btnAboutSection3 = new Button();
+            btnAddAboutSection = new Button();
+            btnMoveAboutUp = new Button();
+            btnMoveAboutDown = new Button();
+            btnDeleteAboutSection = new Button();
+            flpAboutSections = new FlowLayoutPanel();
             lblAboutImage = new Label();
             lblAboutSection = new Label();
             dzAbout = new Company.OfficeApp.UI.DropZone();
@@ -36,6 +38,11 @@ namespace Company.WebsiteAdmin.Pages
             lblAboutHeadingCount = new Label();
             frmAboutHeading = new Company.OfficeApp.UI.InputFrame();
             txtAboutHeading = new TextBox();
+            chkAboutTwoParts = new CheckBox();
+            lblAboutHeading2 = new Label();
+            lblAboutHeading2Count = new Label();
+            frmAboutHeading2 = new Company.OfficeApp.UI.InputFrame();
+            txtAboutHeading2 = new TextBox();
             lblAboutText1 = new Label();
             lblAboutText1Count = new Label();
             frmAboutText1 = new Company.OfficeApp.UI.InputFrame();
@@ -54,9 +61,11 @@ namespace Company.WebsiteAdmin.Pages
             btnDiscardAbout = new Button();
             btnSaveAbout = new Button();
             pnlSections.Controls.Add(lblSectionsTitle);
-            pnlSections.Controls.Add(btnAboutSection1);
-            pnlSections.Controls.Add(btnAboutSection2);
-            pnlSections.Controls.Add(btnAboutSection3);
+            pnlSections.Controls.Add(btnAddAboutSection);
+            pnlSections.Controls.Add(btnMoveAboutUp);
+            pnlSections.Controls.Add(btnMoveAboutDown);
+            pnlSections.Controls.Add(btnDeleteAboutSection);
+            pnlSections.Controls.Add(flpAboutSections);
             cardAboutForm.Controls.Add(lblAboutImage);
             cardAboutForm.Controls.Add(lblAboutSection);
             cardAboutForm.Controls.Add(dzAbout);
@@ -67,6 +76,11 @@ namespace Company.WebsiteAdmin.Pages
             cardAboutForm.Controls.Add(lblAboutHeadingCount);
             cardAboutForm.Controls.Add(frmAboutHeading);
             frmAboutHeading.Controls.Add(txtAboutHeading);
+            cardAboutForm.Controls.Add(chkAboutTwoParts);
+            cardAboutForm.Controls.Add(lblAboutHeading2);
+            cardAboutForm.Controls.Add(lblAboutHeading2Count);
+            cardAboutForm.Controls.Add(frmAboutHeading2);
+            frmAboutHeading2.Controls.Add(txtAboutHeading2);
             cardAboutForm.Controls.Add(lblAboutText1);
             cardAboutForm.Controls.Add(lblAboutText1Count);
             cardAboutForm.Controls.Add(frmAboutText1);
@@ -137,38 +151,57 @@ namespace Company.WebsiteAdmin.Pages
             lblSectionsTitle.Font = new Font("Segoe UI", 14F);
             lblSectionsTitle.Text = "About Us Page Sections";
             // 
-            // btnAboutSection1
-            // 
-            btnAboutSection1.Location = new Point(0, 44);
-            btnAboutSection1.Name = "btnAboutSection1";
-            btnAboutSection1.Size = new Size(360, 60);
-            btnAboutSection1.Font = new Font("Segoe UI Semibold", 11F);
-            btnAboutSection1.TextAlign = ContentAlignment.MiddleLeft;
-            btnAboutSection1.Text = "ABOUT TRI-STONE  ·  Section 1";
-            btnAboutSection1.TabIndex = 5;
-            btnAboutSection1.Click += btnAboutSection_Click;
-            // 
-            // btnAboutSection2
-            // 
-            btnAboutSection2.Location = new Point(376, 44);
-            btnAboutSection2.Name = "btnAboutSection2";
-            btnAboutSection2.Size = new Size(360, 60);
-            btnAboutSection2.Font = new Font("Segoe UI Semibold", 11F);
-            btnAboutSection2.TextAlign = ContentAlignment.MiddleLeft;
-            btnAboutSection2.Text = "Our Principles  ·  Section 2";
-            btnAboutSection2.TabIndex = 6;
-            btnAboutSection2.Click += btnAboutSection_Click;
-            // 
-            // btnAboutSection3
-            // 
-            btnAboutSection3.Location = new Point(752, 44);
-            btnAboutSection3.Name = "btnAboutSection3";
-            btnAboutSection3.Size = new Size(360, 60);
-            btnAboutSection3.Font = new Font("Segoe UI Semibold", 11F);
-            btnAboutSection3.TextAlign = ContentAlignment.MiddleLeft;
-            btnAboutSection3.Text = "Our Mission and Vision  ·  Section 3";
-            btnAboutSection3.TabIndex = 7;
-            btnAboutSection3.Click += btnAboutSection_Click;
+            // btnAddAboutSection  (opens the Add Section pop-up)
+            //
+            btnAddAboutSection.Location = new Point(632, 0);
+            btnAddAboutSection.Name = "btnAddAboutSection";
+            btnAddAboutSection.Size = new Size(150, 36);
+            btnAddAboutSection.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnAddAboutSection.Font = new Font("Segoe UI", 10F);
+            btnAddAboutSection.Text = "Add Section";
+            btnAddAboutSection.TabIndex = 5;
+            btnAddAboutSection.Click += btnAddAboutSection_Click;
+            //
+            // btnMoveAboutUp
+            //
+            btnMoveAboutUp.Location = new Point(792, 0);
+            btnMoveAboutUp.Name = "btnMoveAboutUp";
+            btnMoveAboutUp.Size = new Size(120, 36);
+            btnMoveAboutUp.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMoveAboutUp.Font = new Font("Segoe UI", 10F);
+            btnMoveAboutUp.Text = "Move Up";
+            btnMoveAboutUp.TabIndex = 6;
+            btnMoveAboutUp.Click += btnMoveAboutUp_Click;
+            //
+            // btnMoveAboutDown
+            //
+            btnMoveAboutDown.Location = new Point(922, 0);
+            btnMoveAboutDown.Name = "btnMoveAboutDown";
+            btnMoveAboutDown.Size = new Size(120, 36);
+            btnMoveAboutDown.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMoveAboutDown.Font = new Font("Segoe UI", 10F);
+            btnMoveAboutDown.Text = "Move Down";
+            btnMoveAboutDown.TabIndex = 7;
+            btnMoveAboutDown.Click += btnMoveAboutDown_Click;
+            //
+            // btnDeleteAboutSection
+            //
+            btnDeleteAboutSection.Location = new Point(1052, 0);
+            btnDeleteAboutSection.Name = "btnDeleteAboutSection";
+            btnDeleteAboutSection.Size = new Size(140, 36);
+            btnDeleteAboutSection.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDeleteAboutSection.Font = new Font("Segoe UI", 10F);
+            btnDeleteAboutSection.Text = "Delete Section";
+            btnDeleteAboutSection.TabIndex = 8;
+            btnDeleteAboutSection.Click += btnDeleteAboutSection_Click;
+            //
+            // flpAboutSections  (one choice card per section, made in code; wraps to more rows)
+            //
+            flpAboutSections.Location = new Point(0, 48);
+            flpAboutSections.Name = "flpAboutSections";
+            flpAboutSections.Size = new Size(1192, 60);
+            flpAboutSections.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            flpAboutSections.TabIndex = 9;
             // 
             // lblAboutImage
             // 
@@ -253,7 +286,52 @@ namespace Company.WebsiteAdmin.Pages
             txtAboutHeading.Font = new Font("Segoe UI", 10.5F);
             txtAboutHeading.TabIndex = 11;
             txtAboutHeading.TextChanged += Field_Changed;
-            // 
+            //
+            // chkAboutTwoParts  (shows the second heading and text, like Vision and Mission)
+            //
+            chkAboutTwoParts.AutoSize = true;
+            chkAboutTwoParts.Location = new Point(240, 302);
+            chkAboutTwoParts.Name = "chkAboutTwoParts";
+            chkAboutTwoParts.Font = new Font("Segoe UI", 10F);
+            chkAboutTwoParts.Text = "Two parts (like Vision and Mission)";
+            chkAboutTwoParts.TabIndex = 23;
+            chkAboutTwoParts.CheckedChanged += chkAboutTwoParts_CheckedChanged;
+            //
+            // lblAboutHeading2
+            //
+            lblAboutHeading2.AutoSize = true;
+            lblAboutHeading2.Location = new Point(24, 566);
+            lblAboutHeading2.Name = "lblAboutHeading2";
+            lblAboutHeading2.Font = new Font("Segoe UI Semibold", 10F);
+            lblAboutHeading2.Text = "Second Heading";
+            //
+            // lblAboutHeading2Count
+            //
+            lblAboutHeading2Count.Location = new Point(628, 566);
+            lblAboutHeading2Count.Name = "lblAboutHeading2Count";
+            lblAboutHeading2Count.Size = new Size(100, 20);
+            lblAboutHeading2Count.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblAboutHeading2Count.TextAlign = ContentAlignment.MiddleRight;
+            lblAboutHeading2Count.Text = "0/100";
+            //
+            // frmAboutHeading2
+            //
+            frmAboutHeading2.Location = new Point(24, 590);
+            frmAboutHeading2.Name = "frmAboutHeading2";
+            frmAboutHeading2.Size = new Size(704, 44);
+            frmAboutHeading2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            frmAboutHeading2.TabIndex = 24;
+            //
+            // txtAboutHeading2
+            //
+            txtAboutHeading2.Location = new Point(12, 11);
+            txtAboutHeading2.Name = "txtAboutHeading2";
+            txtAboutHeading2.Size = new Size(680, 23);
+            txtAboutHeading2.BorderStyle = BorderStyle.None;
+            txtAboutHeading2.Font = new Font("Segoe UI", 10.5F);
+            txtAboutHeading2.TabIndex = 25;
+            txtAboutHeading2.TextChanged += Field_Changed;
+            //
             // lblAboutText1
             // 
             lblAboutText1.AutoSize = true;
@@ -431,9 +509,16 @@ namespace Company.WebsiteAdmin.Pages
         private Panel pnlGap1;
         private Panel pnlSections;
         private Label lblSectionsTitle;
-        private Button btnAboutSection1;
-        private Button btnAboutSection2;
-        private Button btnAboutSection3;
+        private Button btnAddAboutSection;
+        private Button btnMoveAboutUp;
+        private Button btnMoveAboutDown;
+        private Button btnDeleteAboutSection;
+        private FlowLayoutPanel flpAboutSections;
+        private CheckBox chkAboutTwoParts;
+        private Label lblAboutHeading2;
+        private Label lblAboutHeading2Count;
+        private Company.OfficeApp.UI.InputFrame frmAboutHeading2;
+        private TextBox txtAboutHeading2;
         private Label lblAboutImage;
         private Label lblAboutSection;
         private Company.OfficeApp.UI.DropZone dzAbout;

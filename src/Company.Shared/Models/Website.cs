@@ -61,6 +61,27 @@ public class WebsiteService
     [Column("updated_at")] public DateTime? UpdatedAt { get; set; }
 }
 
+/// <summary>
+/// One About Us section (database/015_about_sections.sql): a row of the website's About Us with a picture, a heading
+/// and its text, and optionally a second heading and text (like OUR VISION / OUR MISSION). Any number, in sort_order.
+/// </summary>
+[Table("website_about_sections")]
+public class WebsiteAboutSection
+{
+    [Column("about_section_id")] public int AboutSectionId { get; set; }
+    [Column("sort_order")] public int SortOrder { get; set; }
+    [Column("heading")] public string Heading { get; set; } = "";
+    [Column("body")] public string? Body { get; set; }
+    [Column("heading2")] public string? Heading2 { get; set; }
+    [Column("body2")] public string? Body2 { get; set; }
+    /// <summary>Path relative to the shared files folder; null = the website keeps its own picture.</summary>
+    [Column("image_path")] public string? ImagePath { get; set; }
+    [Column("created_by")] public int? CreatedBy { get; set; }
+    [Column("created_at")] public DateTime CreatedAt { get; set; } = DateTime.Now;
+    [Column("updated_by")] public int? UpdatedBy { get; set; }
+    [Column("updated_at")] public DateTime? UpdatedAt { get; set; }
+}
+
 /// <summary>One Publish Website: a JSON snapshot of all saved content at that moment.</summary>
 [Table("website_publishes")]
 public class WebsitePublish
@@ -93,9 +114,6 @@ public static class WebsiteServiceNames
 public static class WebsiteKeys
 {
     public const string HeroImage = "home.hero_image", Headline = "home.headline", Subheadline = "home.subheadline";
-    public static string AboutImage(int section) => $"about.{section}.image";
-    public static string AboutHeading(int section) => $"about.{section}.heading";
-    public const string About1Text = "about.1.text", About2Text = "about.2.text", Vision = "about.3.vision", Mission = "about.3.mission";
     public const string Address = "contact.address", Phone = "contact.phone", Email = "contact.email", Copyright = "contact.copyright";
     public const string RecipientEmail = "inquiry.recipient_email";
 }

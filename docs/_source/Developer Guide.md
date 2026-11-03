@@ -342,7 +342,7 @@ Website Admin is a level in `users` (script 011), created in User Accounts like 
 
 ## 10.4 Home (`Pages/HomeEditorPage`) and About Us (`Pages/AboutEditorPage`)
 
-Single-item editors over `website_content`: Home = `home.hero_image`, `home.headline` (150), `home.subheadline` (300). About Us = three fixed sections chosen with buttons; each has `about.N.image` and `about.N.heading` (100) plus `about.1.text` / `about.2.text` (2000) or, for section 3, `about.3.vision` / `about.3.mission` (1000). A picked picture is only stored on Save; Remove Picture clears it. Save lists the changes (`RecordForm.ConfirmSave`); Discard Changes reloads.
+Home is a single-item editor over `website_content`: `home.hero_image`, `home.headline` (150), `home.subheadline` (300). About Us (script 015, owner request 2026-11-03) is a list over `website_about_sections` through `WebAboutService`: section cards made in code (`flpAboutSections`, wrap to more rows), **Add Section** = the same page with `addOnly: true` in `RecordForm.AddDialog`, Move Up/Down (`Ordering.Move`), Delete (refused for the last section). Each section: picture, `heading` (100) + `body` (2000), and with **Two parts** `heading2` + `body2`. Publish puts them in the snapshot as `about` (in order). A picked picture is only stored on Save; Remove Picture clears it. Save lists the changes (`RecordForm.ConfirmSave`); Discard Changes reloads.
 
 ## 10.5 Projects (`Pages/ProjectsEditorPage`, `AddWebProjectForm`, `Services/WebProjectService`)
 

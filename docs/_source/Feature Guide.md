@@ -369,7 +369,9 @@ Owner decisions 2026-11-01, following the Figma design "CCMS SUPERSYSTEM". Who: 
 
 ## 10.5 About Us
 
-Three fixed sections: About Tri-Stone, Our Principles, Our Mission and Vision. Each: picture, heading (typed, required, 100 max) and description (2000 max); section 3 has Our Vision and Our Mission (1000 max each) instead. One section is edited at a time; switching with unsaved edits asks first.
+Any number of sections (owner request 2026-11-03), shown on the website in their order; it starts with About Tri-Stone, Our Principles, and Our Vision / Our Mission. Each section: picture, heading (typed, required, 100 max) and text (2000 max). **Two parts** adds a second heading and text in the same row (that's how Our Vision and Our Mission share one row); a second text needs a second heading.
+- **Add Section** opens a pop-up; the new section goes last. **Move Up / Move Down** change the order. **Delete Section** removes the open section after a Yes/No; any section can be deleted, but at least one must stay ("About Us needs at least one section").
+- One section is edited at a time; switching, moving or adding with unsaved edits asks first. Save lists the changes. Nothing reaches the website until **Publish Website**.
 
 ## 10.6 Contact Us
 

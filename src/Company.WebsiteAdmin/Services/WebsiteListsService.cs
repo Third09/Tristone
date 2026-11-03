@@ -356,6 +356,132 @@ public static class WebServiceService
     }
 }
 
+/// <summary>What the About Us form edits. <see cref="Heading2"/> and <see cref="Body2"/> are the optional second part.</summary>
+public record AboutSectionInput(string Heading, string? Body, string? Heading2, string? Body2);
+
+/// <summary>
+/// Website Admin > About Us: the sections (website_about_sections, script 015; owner request 2026-11-03). Any number,
+/// shown on the website in this order; any one can be deleted as long as one stays. Each section has a picture, a
+/// heading and its text, and optionally a second heading and text (like Vision and Mission).
+/// </summary>
+public static class WebAboutService
+{
+    public const int MaxHeading = 100;
+    public const int MaxBody = 2000;
+
+    public static async Task<List<WebsiteAboutSection>> ListAsync()
+    {
+        using var db = Db.Open();
+        return await db.WebsiteAboutSections.AsNoTracking().OrderBy(s => s.SortOrder).ThenBy(s => s.AboutSectionId).ToListAsync();
+    }
+
+    public static async Task<SavedStamp?> LastSavedAsync(int id)
+    {
+        using var db = Db.Open();
+        var s = await db.WebsiteAboutSections.AsNoTracking().FirstOrDefaultAsync(x => x.AboutSectionId == id);
+        if (s?.UpdatedAt == null) return null;
+        var who = await db.Users.Where(u => u.UserId == s.UpdatedBy).Select(u => u.FullName).FirstOrDefaultAsync();
+        return new SavedStamp(s.UpdatedAt.Value, who ?? "-");
+    }
+
+    static AboutSectionInput Clean(AboutSectionInput i)
+    {
+        static string? C(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
+        return new(i.Heading.Trim(), C(i.Body), C(i.Heading2), C(i.Body2));
+    }
+
+    static string? Check(AboutSectionInput i, string? newImage)
+    {
+        if (i.Heading.Length == 0) return "Please fill in the section heading.";
+        if (i.Heading.Length > MaxHeading || i.Heading2?.Length > MaxHeading) return $"A heading is too long ({MaxHeading} characters at most).";
+        if (i.Body?.Length > MaxBody || i.Body2?.Length > MaxBody) return $"A text is too long ({MaxBody} characters at most).";
+        if (i.Heading2 == null && i.Body2 != null) return "Please fill in the second heading, or clear the second text.";
+        if (newImage != null && WebsiteImages.Check(newImage) is { } problem) return problem;
+        return null;
+    }
+
+    static object Snapshot(WebsiteAboutSection s) => new
+    {
+        heading = s.Heading, text = s.Body, second_heading = s.Heading2, second_text = s.Body2,
+        picture = s.ImagePath == null ? "(none)" : Path.GetFileName(s.ImagePath),
+    };
+
+    /// <summary>Adds a section at the end. <paramref name="newImage"/> = a local picture to upload (null = none yet).</summary>
+    public static async Task<(int? Id, string? Error)> CreateAsync(AboutSectionInput input, string? newImage)
+    {
+        if (WebsiteAccess.Require() is { } denied) return (null, denied);
+        input = Clean(input);
+        if (Check(input, newImage) is { } problem) return (null, problem);
+        using var db = Db.Open();
+        var s = new WebsiteAboutSection
+        {
+            Heading = input.Heading, Body = input.Body, Heading2 = input.Heading2, Body2 = input.Body2,
+            ImagePath = newImage == null ? null : await WebsiteImages.StoreAsync(newImage),
+            SortOrder = (await db.WebsiteAboutSections.MaxAsync(x => (int?)x.SortOrder) ?? 0) + 1,
+            CreatedBy = Session.CurrentUser!.UserId, CreatedAt = DateTime.Now,
+            UpdatedBy = Session.CurrentUser!.UserId, UpdatedAt = DateTime.Now,
+        };
+        db.WebsiteAboutSections.Add(s);
+        await db.SaveChangesAsync();
+        AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_about_sections", s.AboutSectionId, "About Us: " + s.Heading,
+                         AuditActions.Added, null, Snapshot(s));
+        await db.SaveChangesAsync();
+        return (s.AboutSectionId, null);
+    }
+
+    /// <summary><paramref name="newImage"/> = a new local picture; <paramref name="removeImage"/> clears it; neither keeps it.</summary>
+    public static async Task<string?> UpdateAsync(int id, AboutSectionInput input, string? newImage, bool removeImage)
+    {
+        if (WebsiteAccess.Require() is { } denied) return denied;
+        input = Clean(input);
+        if (Check(input, newImage) is { } problem) return problem;
+        using var db = Db.Open();
+        var s = await db.WebsiteAboutSections.FirstOrDefaultAsync(x => x.AboutSectionId == id);
+        if (s == null) return "This section no longer exists.";
+        var before = Snapshot(s);
+        s.Heading = input.Heading;
+        s.Body = input.Body;
+        s.Heading2 = input.Heading2;
+        s.Body2 = input.Body2;
+        if (newImage != null) s.ImagePath = await WebsiteImages.StoreAsync(newImage);
+        else if (removeImage) s.ImagePath = null;
+        s.UpdatedBy = Session.CurrentUser!.UserId;
+        s.UpdatedAt = DateTime.Now;
+        AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_about_sections", s.AboutSectionId, "About Us: " + s.Heading,
+                         AuditActions.Edited, before, Snapshot(s));
+        await db.SaveChangesAsync();
+        return null;
+    }
+
+    public static async Task<string?> MoveAsync(int id, int direction)
+    {
+        if (WebsiteAccess.Require() is { } denied) return denied;
+        using var db = Db.Open();
+        var all = await db.WebsiteAboutSections.OrderBy(x => x.SortOrder).ThenBy(x => x.AboutSectionId).ToListAsync();
+        Ordering.Move(all, all.FindIndex(x => x.AboutSectionId == id), direction, (x, n) => x.SortOrder = n);
+        await db.SaveChangesAsync();
+        return null;
+    }
+
+    /// <summary>Removes a section from the website. The last one can't be deleted (About Us would be empty).</summary>
+    public static async Task<string?> DeleteAsync(int id)
+    {
+        if (WebsiteAccess.Require() is { } denied) return denied;
+        using var db = Db.Open();
+        var s = await db.WebsiteAboutSections.FirstOrDefaultAsync(x => x.AboutSectionId == id);
+        if (s == null) return null;
+        if (await db.WebsiteAboutSections.CountAsync() <= 1) return "About Us needs at least one section. Add another one first.";
+        AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_about_sections", s.AboutSectionId, "About Us: " + s.Heading,
+                         AuditActions.Deleted, Snapshot(s), null);
+        db.WebsiteAboutSections.Remove(s);
+        await db.SaveChangesAsync();
+        var rest = await db.WebsiteAboutSections.OrderBy(x => x.SortOrder).ThenBy(x => x.AboutSectionId).ToListAsync();
+        Ordering.Move(rest, -1, 0, (x, n) => x.SortOrder = n);   // renumber 1, 2, 3...
+        await db.SaveChangesAsync();
+        return null;
+    }
+}
+
 /// <summary>Moving an item up or down a list stored with a sort_order column.</summary>
 static class Ordering
 {

@@ -11,7 +11,7 @@ namespace Company.WebsiteAdmin.Services;
 public record SavedStamp(DateTime At, string By);
 
 /// <summary>
-/// The website's single texts and images (website_content): Home hero, About Us sections, Contact details and
+/// The website's single texts and images (website_content): Home hero, Contact details and
 /// the inquiry recipient email. Save Changes writes here (not live); Publish Website makes it live
 /// (<see cref="PublishService"/>).
 /// </summary>
@@ -22,8 +22,6 @@ public static class WebsiteContentService
     {
         WebsiteKeys.Headline => 150,
         WebsiteKeys.Subheadline => 300,
-        WebsiteKeys.About1Text or WebsiteKeys.About2Text => 2000,
-        WebsiteKeys.Vision or WebsiteKeys.Mission => 1000,
         WebsiteKeys.Copyright => 200,
         WebsiteKeys.Email or WebsiteKeys.RecipientEmail => 150,
         _ when key.EndsWith(".heading") => 100,
@@ -144,6 +142,9 @@ public static class PublishService
             .OrderBy(f => f.SortOrder).ToListAsync();
         var services = await db.WebsiteServices.AsNoTracking().Where(s => s.IsVisible).OrderBy(s => s.SortOrder)
             .Select(s => new { s.ServiceName, s.Sector, s.Location, s.ShortDescription, s.ImagePath }).ToListAsync();
+        var about = await db.WebsiteAboutSections.AsNoTracking().OrderBy(s => s.SortOrder).ThenBy(s => s.AboutSectionId)
+            .Select(s => new { heading = s.Heading, text = s.Body, second_heading = s.Heading2, second_text = s.Body2, image = s.ImagePath })
+            .ToListAsync();
 
         var snapshot = new
         {
@@ -154,6 +155,7 @@ public static class PublishService
                 photos = photos.Where(f => f.WebProjectId == p.WebProjectId).Select(f => f.FilePath).ToList(),
             }),
             services,
+            about,   // About Us rows in order: picture, heading + text, optional second heading + text
         };
         db.WebsitePublishes.Add(new WebsitePublish
         {

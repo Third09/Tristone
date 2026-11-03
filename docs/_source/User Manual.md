@@ -473,9 +473,11 @@ The projects come from the office **Projects** page: an Admin or the Receipts Su
 
 **About Us**
 
-1. Click the section: **1. About Tri-Stone**, **2. Our Principles** or **3. Our Mission and Vision**.
-2. Change the picture, the heading and the text (section 3 has **Our Vision** and **Our Mission**).
+1. Click a section card at the top (for example **ABOUT TRI-STONE · Section 1**).
+2. Change the picture, the heading and the text. Tick **Two parts** to give the section a second heading and text (like **OUR VISION** and **OUR MISSION**).
 3. **Save Changes**.
+4. **Add Section** opens a small window: add a picture, a heading and the text, then click **Add Section**. New sections go last.
+5. **Move Up** / **Move Down** change the order on the website. **Delete Section** removes the open one (the last section can't be deleted).
 
 **Contact Us**
 

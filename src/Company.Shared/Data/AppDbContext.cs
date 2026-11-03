@@ -49,6 +49,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<WebsiteProject> WebsiteProjects => Set<WebsiteProject>();
     public DbSet<WebsiteProjectPhoto> WebsiteProjectPhotos => Set<WebsiteProjectPhoto>();
     public DbSet<WebsiteService> WebsiteServices => Set<WebsiteService>();
+    public DbSet<WebsiteAboutSection> WebsiteAboutSections => Set<WebsiteAboutSection>();
     public DbSet<WebsitePublish> WebsitePublishes => Set<WebsitePublish>();
     public DbSet<WebsiteVisit> WebsiteVisits => Set<WebsiteVisit>();
 
@@ -75,6 +76,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<WebsiteProject>().HasKey(p => p.WebProjectId);
         modelBuilder.Entity<WebsiteProjectPhoto>().HasKey(p => p.PhotoId);
         modelBuilder.Entity<WebsiteService>().HasKey(s => s.WebServiceId);
+        modelBuilder.Entity<WebsiteAboutSection>().HasKey(a => a.AboutSectionId);
         modelBuilder.Entity<WebsitePublish>().HasKey(p => p.PublishId);
         modelBuilder.Entity<WebsiteVisit>().HasKey(v => v.VisitId);
         modelBuilder.Entity<LoginLog>().HasKey(l => l.LogId);

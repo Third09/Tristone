@@ -357,18 +357,23 @@ const websiteAdmin = [
     form: "AboutEditorPage (UserControl), loaded in pnlContent",
     opensFrom: "About Us button in the sidebar.",
     whoSees: "Website Admin logins and Admins (both can edit)",
-    note: "Laid out like Figma \"admin about us section 1-3\" (2026-11-01). One section at a time; switching with unsaved edits asks first.",
+    note: "Laid out like Figma \"admin about us section 1-3\" (2026-11-01). Any number of sections (2026-11-03). One section at a time; switching, moving or adding with unsaved edits asks first. Add Section opens this page as a pop-up (form and save bar only; its save button says Add Section).",
     groups: [
       { name: "Sections", rows: [
         ["Title", "Label", "lblSectionsTitle", "\"About Us Page Sections\"."],
-        ["Section cards", "Button", "btnAboutSection1, btnAboutSection2, btnAboutSection3", "About Tri-Stone, Our Principles, Our Mission and Vision; the open one is light orange with an orange border."],
+        ["Add Section", "Button", "btnAddAboutSection", "Opens the Add Section pop-up; the new section goes last."],
+        ["Move Up / Move Down", "Button", "btnMoveAboutUp, btnMoveAboutDown", "Moves the open section; off at the top / bottom."],
+        ["Delete Section", "Button", "btnDeleteAboutSection", "Asks Yes/No; off when only one section is left."],
+        ["Section cards", "FlowLayoutPanel + Buttons (made in code)", "flpAboutSections, btnAboutSection1, btnAboutSection2...", "One card per section in website order (\"heading · Section N\"); wrap to more rows; the open one is light orange with an orange border."],
       ]},
       { name: "Section form (cardAboutForm)", rows: [
         ["Titles", "Label", "lblAboutImage, lblAboutSection, lblAboutInfo", "e.g. \"Our Principles - Image\", \"Section 2 of 3\"."],
         ["Picture drop zone", "DropZone + Button + Label", "dzAbout, btnRemoveAboutImage, lblAboutImageName", "Click or drop a picture; Remove Picture clears it."],
-        ["Heading", "InputFrame + TextBox (max 100) + Labels", "frmAboutHeading, txtAboutHeading, lblAboutHeading, lblAboutHeadingCount", "Typed, required."],
-        ["Description / Our Vision", "InputFrame + TextBox (multiline) + Labels", "frmAboutText1, txtAboutText1, lblAboutText1, lblAboutText1Count", "Sections 1-2: description (2000, taller box); section 3: Our Vision (1000)."],
-        ["Our Mission", "InputFrame + TextBox (multiline, max 1000) + Labels", "frmAboutText2, txtAboutText2, lblAboutText2, lblAboutText2Count", "Section 3 only."],
+        ["Two parts", "CheckBox", "chkAboutTwoParts", "Shows the second heading and text (like Vision and Mission); the labels change to First / Second."],
+        ["Heading", "InputFrame + TextBox (max 100) + Labels", "frmAboutHeading, txtAboutHeading, lblAboutHeading, lblAboutHeadingCount", "Typed, required. \"Section Heading\" or \"First Heading\"."],
+        ["Description / First Text", "InputFrame + TextBox (multiline, max 2000) + Labels", "frmAboutText1, txtAboutText1, lblAboutText1, lblAboutText1Count", "Taller box when the section has one part."],
+        ["Second Heading", "InputFrame + TextBox (max 100) + Labels", "frmAboutHeading2, txtAboutHeading2, lblAboutHeading2, lblAboutHeading2Count", "Two parts only; needed when there is a second text."],
+        ["Second Text", "InputFrame + TextBox (multiline, max 2000) + Labels", "frmAboutText2, txtAboutText2, lblAboutText2, lblAboutText2Count", "Two parts only."],
       ]},
       { name: "Right side and save bar", rows: [
         ["Live Preview", "Card + Panel (drawn in code)", "cardAboutPreview, lblAboutPreviewTitle, pnlAboutPreview", "Picture, heading and text as the website shows them."],
