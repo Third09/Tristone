@@ -49,8 +49,6 @@ public class WebsiteService
 {
     [Column("web_service_id")] public int WebServiceId { get; set; }
     [Column("service_name")] public string ServiceName { get; set; } = "";
-    /// <summary>One of <see cref="ProjectSectors"/>.</summary>
-    [Column("sector")] public string Sector { get; set; } = ProjectSectors.Residential;
     [Column("location")] public string? Location { get; set; }
     [Column("short_description")] public string? ShortDescription { get; set; }
     [Column("image_path")] public string? ImagePath { get; set; }

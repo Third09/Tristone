@@ -227,15 +227,15 @@ public static class WebProjectService
 }
 
 /// <summary>One service card in the Services editor's list.</summary>
-public record WebServiceRow(int WebServiceId, int Slot, string ServiceName, string Sector, string? Location, string Shown, string? ShortDescription);
+public record WebServiceRow(int WebServiceId, int Slot, string ServiceName, string? Location, string Shown, string? ShortDescription);
 
 /// <summary>What the Services form edits.</summary>
-public record WebServiceInput(string ServiceName, string Sector, string? Location, string? ShortDescription,
+public record WebServiceInput(string ServiceName, string? Location, string? ShortDescription,
                               string Icon = WebsiteServiceIcons.Ruler);
 
 /// <summary>
 /// Website Admin > Services: the service cards: a typed name (the 3 original services are offered; owner request
-/// 2026-11-03), a sector (the office sectors), a typed location, a short description, one of the 3 website icons and an
+/// 2026-11-03), a typed location (no category since 2026-11-03, script 021), a short description, one of the service icons and an
 /// optional picture (none = the website's own picture for that icon, like the original 3).
 /// </summary>
 public static class WebServiceService
@@ -248,7 +248,7 @@ public static class WebServiceService
     {
         using var db = Db.Open();
         var rows = await db.WebsiteServices.AsNoTracking().OrderBy(s => s.SortOrder).ThenBy(s => s.WebServiceId).ToListAsync();
-        return rows.Select((s, i) => new WebServiceRow(s.WebServiceId, i + 1, s.ServiceName, s.Sector, s.Location,
+        return rows.Select((s, i) => new WebServiceRow(s.WebServiceId, i + 1, s.ServiceName, s.Location,
                                                         s.IsVisible ? "Visible" : "Hidden", s.ShortDescription)).ToList();
     }
 
@@ -265,7 +265,6 @@ public static class WebServiceService
         if (i.ServiceName.Length > MaxName) return $"The name is too long ({MaxName} characters at most).";
         // No picture needed: the website then shows its own picture for the chosen icon (like the original 3).
         if (!WebsiteServiceIcons.All.Contains(i.Icon)) return "Choose an icon.";
-        if (!ProjectSectors.All.Contains(i.Sector)) return "Choose a category.";
         if (i.Location?.Length > MaxLocation) return $"The location is too long ({MaxLocation} characters at most).";
         if (i.ShortDescription?.Length > MaxDescription) return $"The short description is too long ({MaxDescription} characters at most).";
         if (newImage != null && WebsiteImages.Check(newImage) is { } problem) return problem;
@@ -282,7 +281,7 @@ public static class WebServiceService
 
     static object Snapshot(WebsiteService s) => new
     {
-        service = s.ServiceName, category = s.Sector, location = s.Location, description = s.ShortDescription, icon = s.Icon,
+        service = s.ServiceName, location = s.Location, description = s.ShortDescription, icon = s.Icon,
         picture = s.ImagePath == null ? "(none)" : Path.GetFileName(s.ImagePath), shown = s.IsVisible ? "Visible" : "Hidden",
     };
 
@@ -295,7 +294,7 @@ public static class WebServiceService
         using var db = Db.Open();
         var s = new WebsiteService
         {
-            ServiceName = input.ServiceName, Sector = input.Sector, Location = input.Location, ShortDescription = input.ShortDescription,
+            ServiceName = input.ServiceName, Location = input.Location, ShortDescription = input.ShortDescription,
             Icon = input.Icon,
             ImagePath = newImage == null ? null : await WebsiteImages.StoreAsync(newImage), IsVisible = true,
             SortOrder = (await db.WebsiteServices.MaxAsync(x => (int?)x.SortOrder) ?? 0) + 1,
@@ -319,7 +318,6 @@ public static class WebServiceService
         if (Check(input, newImage) is { } problem) return problem;
         var before = Snapshot(s);
         s.ServiceName = input.ServiceName;
-        s.Sector = input.Sector;
         s.Location = input.Location;
         s.ShortDescription = input.ShortDescription;
         s.Icon = input.Icon;

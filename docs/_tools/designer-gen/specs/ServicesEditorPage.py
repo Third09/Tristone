@@ -37,9 +37,7 @@ CONTROLS = [
     ("Label", "lblServiceImageName", 24, 248, None, None, {"PARENT": "cardServiceForm", "MaximumSize": "new Size(700, 0)"}),
     ("Label", "lblServiceInfo", 24, 278, None, None, {"PARENT": "cardServiceForm", "Font": SECTION, "Text": T("Service Information")}),
     ("Label", "lblServiceName", 24, 318, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Name of Service")}),
-    ("ComboBox", "cboServiceName", 24, 342, 340, 27, dict(PARENT="cardServiceForm", Font=INPUT, MaxLength=60)),   # typeable: any service (2026-11-03)
-    ("Label", "lblServiceSector", 388, 318, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Category")}),
-    ("ComboBox", "cboServiceSector", 388, 342, 340, 27, dict(DDL, PARENT="cardServiceForm", Font=INPUT, Anchor=TLR)),
+    ("ComboBox", "cboServiceName", 24, 342, 704, 27, dict(PARENT="cardServiceForm", Font=INPUT, MaxLength=60, Anchor=TLR)),   # typeable: any service (2026-11-03)
     ("Label", "lblServiceLocation", 24, 384, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Location (e.g. San Juan City)")}),
     (FRAME, "frmServiceLocation", 24, 408, 704, 44, {"PARENT": "cardServiceForm", "Anchor": TLR}),
     ("TextBox", "txtServiceLocation", 12, 11, 680, 23, {"PARENT": "frmServiceLocation", "BorderStyle": "BorderStyle.None", "Font": INPUT}),
@@ -69,7 +67,6 @@ GRID_COLUMNS = {
     "dgvWebServices": [
         (TB, "colSlot", "Slot", "Slot", {"FillWeight": "30"}),
         (TB, "colServiceName", "ServiceName", "Service", {}),
-        (TB, "colSector", "Sector", "Category", {}),
         (TB, "colLocation", "Location", "Location", {}),
         (TB, "colShown", "Shown", "On Website", {"FillWeight": "50"}),
     ],
@@ -85,7 +82,6 @@ EVENTS = {
     "txtServiceDesc": [("TextChanged", "Field_Changed")],
     "txtServiceLocation": [("TextChanged", "Field_Changed")],
     "cboServiceName": [("TextChanged", "Field_Changed")],
-    "cboServiceSector": [("SelectedIndexChanged", "Field_Changed")],
     "cboServiceIcon": [("SelectedIndexChanged", "Field_Changed")],
     "btnSaveWebService": [("Click", "btnSaveWebService_Click")],
     "btnCancelWebService": [("Click", "btnCancelWebService_Click")],

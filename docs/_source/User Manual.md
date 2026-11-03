@@ -470,7 +470,7 @@ The projects come from the office **Projects** page: an Admin or the Receipts Su
 
 **Services**
 
-1. **Add New Service**: click the picture box (or drop a picture on it), type the name of the service, or pick Residential Construction, Commercial Construction or Repairs and Home Extension from its list , choose the category and the **Icon** (picking a service from the list picks its icon for you). The picture is optional: without one the card uses the website's picture for that icon, like the first 3, type the location and a short description, click **Add Service**. The **Live Preview** shows the card as the website will.
+1. **Add New Service**: click the picture box (or drop a picture on it), type the name of the service, or pick Residential Construction, Commercial Construction or Repairs and Home Extension from its list, choose the **Icon** (picking a service from the list picks its icon for you). The picture is optional: without one the card uses the website's picture for that icon, like the first 3, type the location and a short description, click **Add Service**. The **Live Preview** shows the card as the website will.
 2. Click a service to edit it, then **Save Changes**. **Move Up** / **Move Down**, **Unpublish** and **Delete** work like on Projects.
 
 **About Us**

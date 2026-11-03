@@ -65,6 +65,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 018_any_service_name | drops the CHECK that allowed only the 3 fixed service names; adds a not-blank CHECK |
 | 019_service_icon | `website_services.icon` (ruler / helmet / tools, NOT NULL, CHECK), filled from the service name |
 | 020_more_service_icons | `website_services.icon` becomes VARCHAR(40) with a not-blank CHECK (the icon list lives in the app: 29 icons) |
+| 021_drop_service_category | drops `website_services.sector` (service cards have no category; owner decision 2026-11-03) |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
@@ -272,7 +273,7 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 - `inquiries`: New → Contacted → Closed, internal `notes`, never deleted. New rows are copied from the website's Google Sheet (through its Google Apps Script) by the Contact Us page; `source_ref` (script 016) is unique, so a message is never added twice.
 - `website_content` (key/value, one row per text or picture): `home.hero_image`, `home.headline`, `home.subheadline`, `contact.address`, `contact.phone`, `contact.email`, `contact.copyright`, `inquiry.recipient_email`. Pictures are stored as paths relative to the files folder. `updated_by/at` = last Save.
 - `website_projects`: one row per featured office project (`project_id` UNIQUE → `projects`), `sort_order`, `is_visible`, `short_description`. Its photos (`website_project_photos`, ON DELETE CASCADE) have `sort_order` and `is_showcase`; the 10-photo limit is checked by the app.
-- `website_services`: `service_name` (any text since script 018; not blank), `icon` (one of the app's 29 icon keys, scripts 019/020), `sector` CHECK (the project sectors), `location`, `short_description`, `image_path`, `sort_order`, `is_visible`.
+- `website_services`: `service_name` (any text since script 018; not blank), `icon` (one of the app's 29 icon keys, scripts 019/020), `location` (no `sector` since script 021), `short_description`, `image_path`, `sort_order`, `is_visible`.
 - `website_about_sections` (script 015): one row per About Us section, shown in `sort_order`: `heading` + `body`, optional `heading2` + `body2` (a second part in the same row, like OUR VISION / OUR MISSION), `image_path`. Any number; the app keeps at least one.
 - `website_publishes`: each successful Publish Website stores the `site.json` it pushed to the website's GitHub repository (the live site reads that file, not the database). `website_visits`: one row per page visit (the free Website Traffic counter; written by the API later).
 - `app_settings` (key/value): `file_storage_path`; `hr.work_start`, `hr.work_end`, `hr.break_start`, `hr.break_end` (HH:mm), `hr.grace_minutes`, `hr.work_days` (0 = Sunday ... 6 = Saturday, comma-separated), `hr.ot_rate`, `hr.ot_minimum_minutes`, `hr.work_days_per_month`, `hr.sss_rate`, `hr.sss_min_credit`, `hr.sss_max_credit`, `hr.philhealth_rate`, `hr.philhealth_floor`, `hr.philhealth_ceiling`, `hr.pagibig_rate`, `hr.pagibig_cap`, `hr.withholding_tax`. A missing key means "use the default in the code" (`HrSettings.Default`).

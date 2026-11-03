@@ -15,7 +15,7 @@ namespace Company.WebsiteAdmin.Pages;
 public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 {
     readonly bool addOnly;   // this copy is the Add New Service pop-up
-    record ServiceForm(string Service, string Category, string Location, string Description, string Icon, string Picture);
+    record ServiceForm(string Service, string Location, string Description, string Icon, string Picture);
 
     int? editingId;
     WebServiceRow? showingRow;
@@ -42,7 +42,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         cboServiceName.Items.AddRange([.. WebsiteServiceNames.Suggestions.Select(s => s.Name)]);
         cboServiceName.MaxDropDownItems = 15;
         cboServiceIcon.MaxDropDownItems = 12;
-        cboServiceSector.Items.AddRange(ProjectSectors.All);
         cboServiceIcon.Items.AddRange(WebsiteServiceIcons.All);
         cboServiceIcon.DrawItem += DrawIconItem;
         // Typing or picking a listed service sets its usual icon.
@@ -133,7 +132,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         loading = true;
         cboServiceName.SelectedIndex = -1;
         cboServiceName.Text = "";
-        cboServiceSector.SelectedIndex = -1;
         cboServiceIcon.SelectedItem = WebsiteServiceIcons.Ruler;
         txtServiceLocation.Clear();
         txtServiceDesc.Clear();
@@ -174,7 +172,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         lblFormMode.Text = $"Service Image - Slot {row.Slot}";
         btnHideShowService.Text = s.IsVisible ? "Unpublish" : "Publish";
         cboServiceName.Text = s.ServiceName;
-        cboServiceSector.SelectedItem = s.Sector;
         cboServiceIcon.SelectedItem = s.Icon;
         txtServiceLocation.Text = s.Location ?? "";
         txtServiceDesc.Text = s.ShortDescription ?? "";
@@ -188,7 +185,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 
     string PictureName => newImage != null ? Path.GetFileName(newImage) : storedImage != null ? Path.GetFileName(storedImage) : "(none)";
 
-    ServiceForm ReadForm() => new(cboServiceName.Text.Trim(), (string?)cboServiceSector.SelectedItem ?? "",
+    ServiceForm ReadForm() => new(cboServiceName.Text.Trim(),
                                   txtServiceLocation.Text.Trim(), txtServiceDesc.Text.Trim(), WebsiteServiceIcons.Label(Icon), PictureName);
 
     string Icon => (string?)cboServiceIcon.SelectedItem ?? WebsiteServiceIcons.Ruler;
@@ -268,7 +265,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         g.InterpolationMode = InterpolationMode.HighQualityBicubic;
         g.DrawImage(ServiceIconImages.Get(Icon), r.Width - 44, 146, 30, 30);
         TextRenderer.DrawText(g, txtServiceDesc.Text, Font, new Rectangle(14, 176, r.Width - 28, 40), Theme.TextMuted, TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
-        var where = string.Join("  ·  ", new[] { (string?)cboServiceSector.SelectedItem, txtServiceLocation.Text.Trim() }.Where(x => !string.IsNullOrEmpty(x)));
+        var where = string.Join("  ·  ", new[] { txtServiceLocation.Text.Trim() }.Where(x => !string.IsNullOrEmpty(x)));
         TextRenderer.DrawText(g, where, Font, new Rectangle(14, 220, r.Width - 28, 20), Theme.Orange, TextFormatFlags.EndEllipsis);
     }
 
@@ -285,7 +282,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     {
         if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
         var form = ReadForm();
-        var input = new WebServiceInput(form.Service, form.Category, form.Location, form.Description, Icon);
+        var input = new WebServiceInput(form.Service, form.Location, form.Description, Icon);
         if (editingId != null && original != null)
         {
             var answer = RecordForm.ConfirmSave(this, original.Service, original, form);
