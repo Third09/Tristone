@@ -186,6 +186,20 @@ public static class Theme
         b.FlatAppearance.MouseOverBackColor = active ? OrangeDark : OrangeLight;
     }
 
+    /// <summary>A sidebar sub-item (a tab of the open page): the open one light orange with orange text, others muted.</summary>
+    public static void SetActiveSubNav(Button b, bool active)
+    {
+        Round(b);
+        b.FlatStyle = FlatStyle.Flat;
+        b.FlatAppearance.BorderSize = 0;
+        b.UseVisualStyleBackColor = false;
+        b.Cursor = Cursors.Hand;
+        b.BackColor = active ? OrangeLight : Page;
+        b.ForeColor = active ? OrangeDark : TextMuted;
+        b.FlatAppearance.MouseOverBackColor = OrangeLight;
+        b.Invalidate();
+    }
+
     static readonly ConditionalWeakTable<Button, object> rounded = new();
     static readonly ConditionalWeakTable<Button, string> icons = new();
 

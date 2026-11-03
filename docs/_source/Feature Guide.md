@@ -258,7 +258,7 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 
 - Create: unique name, category, unit, unit price ≥ 0, starting stock ≥ 0, minimum ≥ 0. After creation `stock_qty` can't be edited.
 - Stock changes only through approved usage (−) and deliveries (+), each in the same save as its record.
-- Low stock: stock < minimum → light red; stock = 0 → red; tab title "Materials (n low)".
+- Low stock: stock < minimum → light red; stock = 0 → red; sidebar item "Materials (n low)".
 - Delete refused once usages, quotes or deliveries exist.
 
 ## 7.2 Material usage
@@ -276,7 +276,7 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 ## 7.4 Equipment
 
 - Owned or Rented (Rented requires company, rate and unit: Day / Week / Month); status Available, Under Repair, Retired.
-- Maintenance due when `next_maintenance` ≤ today (light yellow; tab title "Equipment (n due)").
+- Maintenance due when `next_maintenance` ≤ today (light yellow; sidebar item "Equipment (n due)").
 - Log entries (Preventive / Repair, date, work, cost, done by) may set the next maintenance date. Costs are overhead (Dashboard by date).
 - Delete refused once logs exist (set Retired).
 
@@ -288,7 +288,7 @@ Name (unique), contacts, address, bank name / account name / number, VAT or Non-
 
 ## 8.1 Directory
 
-Business name (unique), trade name, DTI/SEC, TIN, primary and secondary contacts, addresses, bank details, at least one trade, PCAB number / classification / expiry. PCAB expired → light red; expiring within 30 days → light yellow; tab title counts them. TIN and account number logged only as on file. Delete refused once jobs exist.
+Business name (unique), trade name, DTI/SEC, TIN, primary and secondary contacts, addresses, bank details, at least one trade, PCAB number / classification / expiry. PCAB expired → light red; expiring within 30 days → light yellow; the sidebar item counts them. TIN and account number logged only as on file. Delete refused once jobs exist.
 
 ## 8.2 Jobs
 
@@ -321,7 +321,7 @@ Example (₱100,000, 10%): stages pay ₱27,000 + ₱36,000 + ₱27,000, then th
 
 ## 9.2 Needs Review
 
-No-receipt expenses, Waiting first; the tab title shows the waiting count. **Attach Receipt** adds the receipt number and copy later, clears the no-receipt flag and keeps the existing decision.
+No-receipt expenses, Waiting first; the sidebar item shows the waiting count. **Attach Receipt** adds the receipt number and copy later, clears the no-receipt flag and keeps the existing decision.
 
 ## 9.3 Stock purchases
 

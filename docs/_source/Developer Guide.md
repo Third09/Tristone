@@ -125,6 +125,8 @@ Pages only show data and call services. A service re-checks who is signed in bef
 
 A sidebar on the left, a top bar (page title, who is signed in, the Admin's notification button), and `pnlContent`, where `MainForm.ShowPage` loads the chosen page.
 
+Pages with tabs (HR & Payroll, Inventory, Subcontractors, Receipts) keep their `TabControl`, but its tab strip is hidden (`UI/HiddenTabs`), and `MainForm.ShowSubPages` lists the tabs as sub-items (`btnNavTab...`, `Theme.SetActiveSubNav`) under the page's sidebar button (owner request 2026-11-03). The tabs a user may not see are already removed by the page, alert titles ("Materials (2 low)") update the sub-item, and code that uses `SelectedTab` / `SelectedIndexChanged` works as before. A new page with tabs gets this for free: put its `TabControl` directly on the page.
+
 Who sees what is decided in one class, `Services/Access.cs`:
 
 | Page | Admin | Supervisor | Employee |

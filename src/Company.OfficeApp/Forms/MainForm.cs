@@ -54,6 +54,8 @@ public partial class MainForm : Form
             (btnSignOut, ""),
         ], lblUserName, lblUserRole);
 
+        lblPageTitle.UseMnemonic = false;   // show "HR & Payroll", not "HR Payroll"
+        pnlSidebar.AutoScroll = true;   // HR's 7 sub-items can run past a short screen
         foreach (var (page, button) in navButtons)
         {
             button.Visible = Access.CanSee(u, page);
@@ -87,17 +89,65 @@ public partial class MainForm : Form
             _ => new PlaceholderPage(Access.Title(page)),   // real pages replace this as they're built
         };
 
+        var tabs = view.Controls.OfType<TabControl>().FirstOrDefault();
+        if (tabs != null) HiddenTabs.Hide(tabs);   // its tabs are listed in the sidebar instead
+
         foreach (Control old in pnlContent.Controls) old.Dispose();
         pnlContent.Controls.Clear();
         view.Dock = DockStyle.Fill;
         pnlContent.Controls.Add(view);
 
         lblPageTitle.Text = Access.Title(page);
+        ShowSubPages(page, tabs);
         foreach (var (p, b) in navButtons)
         {
             b.Font = p == page ? navFontOpen : Font;   // bold = the page that's open
             Theme.SetActiveNav(b, p == page);   // and orange (UI/Theme)
         }
+    }
+
+    readonly List<Button> subButtons = [];
+
+    /// <summary>
+    /// Pages with tabs (HR & Payroll, Inventory, Subcontractors, Receipts) list their tabs under their sidebar
+    /// button instead of on the page (owner request 2026-11-03). Only the open page's tabs show; the tabs a user
+    /// may not see were already removed by the page. Tab titles with alerts ("Materials (2 low)") update here too.
+    /// </summary>
+    void ShowSubPages(AppPage page, TabControl? tabs)
+    {
+        foreach (var old in subButtons) { pnlSidebar.Controls.Remove(old); old.Dispose(); }
+        subButtons.Clear();
+        foreach (var nav in navButtons.Values) nav.Margin = nav.Margin with { Bottom = 6 };
+        if (tabs == null) return;
+
+        var parent = navButtons[page];
+        int at = pnlSidebar.Controls.GetChildIndex(parent);
+        foreach (TabPage tab in tabs.TabPages)
+        {
+            var b = new Button
+            {
+                Name = "btnNavTab" + tab.Name[3..],
+                Text = tab.Text.Replace("&", "&&"),   // a single & would underline the next letter
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = Font,
+                Size = new Size(parent.Width - 18, 36),
+                Margin = new Padding(18, 0, 0, 4),
+            };
+            b.Click += (_, _) => tabs.SelectedTab = tab;
+            tab.TextChanged += (_, _) => { if (!b.IsDisposed) b.Text = tab.Text.Replace("&", "&&"); };
+            pnlSidebar.Controls.Add(b);
+            pnlSidebar.Controls.SetChildIndex(b, ++at);
+            subButtons.Add(b);
+        }
+        parent.Margin = parent.Margin with { Bottom = 4 };
+        tabs.SelectedIndexChanged += (_, _) => MarkSubPage(tabs);
+        MarkSubPage(tabs);
+    }
+
+    void MarkSubPage(TabControl tabs)
+    {
+        if (tabs.IsDisposed) return;
+        for (int i = 0; i < subButtons.Count; i++) Theme.SetActiveSubNav(subButtons[i], i == tabs.SelectedIndex);
     }
 
     Font? openFont;

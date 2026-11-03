@@ -96,7 +96,7 @@ Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Si
 
 - **Left sidebar:** the logo, then the pages you're allowed to use, each with a small icon. You only see your own department's page (Admins see everything). The page that's open is **orange**. **Sign Out** (red) is at the bottom.
 - **Top:** the page name in big letters, your name, and your department and level. Admins also see **Password requests (N)**.
-- **Middle:** the page you chose. Pages with several parts have **tabs** across the top; the open tab is orange with a line under it.
+- **Middle:** the page you chose. Pages with several parts (HR & Payroll, Inventory, Subcontractors, Receipts) list their parts **in the sidebar, under the page's button**, when the page is open; the open part is light orange. (They used to be tabs across the top.)
 
 **How to read the screens**
 
@@ -320,7 +320,7 @@ For the Inventory department (Admins can only look). Approve and Delete buttons 
 
 ## Materials
 
-The list of construction materials. Rows turn **light red** when stock is below the minimum and **red** when it runs out; the tab title shows how many are low, e.g. *Materials (2 low)*.
+The list of construction materials. Rows turn **light red** when stock is below the minimum and **red** when it runs out; the sidebar item shows how many are low, e.g. *Materials (2 low)*.
 
 - **Add Material** opens a window: name, category, unit, price, starting stock, minimum stock. Click **Save**.
 - After that, the stock changes only by itself: down when usage is approved, up when a delivery is recorded.
@@ -349,7 +349,7 @@ At the bottom, pick a project to see all the material it has used and the total 
 
 ## Equipment
 
-Tools, heavy equipment and vehicles, owned or rented (rented needs the company and rate). Set the **next maintenance** date; when it arrives the row turns **yellow** and the tab says *Equipment (N due)*. Use **Add Log Entry** after maintenance or a repair; it can set the next date. Retired equipment keeps its history.
+Tools, heavy equipment and vehicles, owned or rented (rented needs the company and rate). Set the **next maintenance** date; when it arrives the row turns **yellow** and the sidebar item says *Equipment (N due)*. Use **Add Log Entry** after maintenance or a repair; it can set the next date. Retired equipment keeps its history.
 
 ## Vendors
 
@@ -365,7 +365,7 @@ For the Subcontractors department (Admins can only look). Approve and Delete but
 Your subcontractors: company details, two contact people, addresses, bank details (printed on vouchers), trade categories and PCAB license.
 
 - **Add Subcontractor** opens a window: fill in the form, tick at least one trade, click **Save**.
-- PCAB reminder: a row turns **yellow** when the license expires within 30 days and **light red** once it has expired. The tab title says *Directory (N PCAB expiring)*.
+- PCAB reminder: a row turns **yellow** when the license expires within 30 days and **light red** once it has expired. The sidebar item says *Directory (N PCAB expiring)*.
 - A subcontractor with jobs can't be deleted.
 
 ## Jobs & Progress
@@ -412,7 +412,7 @@ All receipts. Filter by project (or Company Overhead), dates, category, status, 
 
 ## Needs Review
 
-Expenses with no receipt (the tab title shows how many are waiting, e.g. *Needs Review (2)*). The Supervisor approves or rejects them. If the receipt turns up later, select the expense and click **Attach Receipt**: type its number and attach the scan (or paper location). It moves to the vault and keeps its approval.
+Expenses with no receipt (its sidebar item shows how many are waiting, e.g. *Needs Review (2)*). The Supervisor approves or rejects them. If the receipt turns up later, select the expense and click **Attach Receipt**: type its number and attach the scan (or paper location). It moves to the vault and keeps its approval.
 
 ## Change Orders
 

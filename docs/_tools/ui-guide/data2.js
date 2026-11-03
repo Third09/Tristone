@@ -34,7 +34,7 @@ const hrPayroll = [
     note: "The page has 7 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the HR Employee.",
     groups: [
       { name: "Main section", rows: [
-        ["Tabs", "TabControl", "tabHrPayroll", "7 tabs: Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings, Edit History."],
+        ["Tabs (strip hidden)", "TabControl", "tabHrPayroll", "7 parts, listed in the sidebar under the page's button (btnNavTab...): Employees, Attendance, Payroll, Payslip History, Cash Advances, Settings, Edit History."],
       ]},
     ],
   },
@@ -325,7 +325,7 @@ const inventory = [
     note: "The page has 7 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the Inventory Employee.",
     groups: [
       { name: "Main section", rows: [
-        ["Tabs", "TabControl", "tabInventory", "7 tabs: Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History."],
+        ["Tabs (strip hidden)", "TabControl", "tabInventory", "7 parts, listed in the sidebar under the page's button (btnNavTab...): Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History."],
         ["Low-stock count", "Label", "lblLowStockCount", "e.g. \"2 items are below their minimum stock\". The tab title also says \"Materials (2 low)\". Empty when 0."],
       ]},
     ],
@@ -572,7 +572,7 @@ const subcontractors = [
     note: "The page has 4 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the Subcontractor Employee.",
     groups: [
       { name: "Main section", rows: [
-        ["Tabs", "TabControl", "tabSubcontractors", "4 tabs: Directory, Jobs & Progress, Billing & Payouts, Edit History."],
+        ["Tabs (strip hidden)", "TabControl", "tabSubcontractors", "4 parts, listed in the sidebar under the page's button (btnNavTab...): Directory, Jobs & Progress, Billing & Payouts, Edit History."],
       ]},
     ],
   },
@@ -736,7 +736,7 @@ const receipts = [
     note: "The page has 5 tabs across the top of the Main section. Buttons marked \"Supervisor only\" or \"Admin only\" are hidden for others.",
     groups: [
       { name: "Main section", rows: [
-        ["Tabs", "TabControl", "tabReceipts", "5 tabs: Receipt Vault, Needs Review, Change Orders, Reports, Edit History."],
+        ["Tabs (strip hidden)", "TabControl", "tabReceipts", "5 parts, listed in the sidebar under the page's button (btnNavTab...): Receipt Vault, Needs Review, Change Orders, Reports, Edit History."],
         ["Needs review count", "TabPage title", "tabNeedsReview", "The tab title shows how many no-receipt expenses are waiting, e.g. \"Needs Review (2)\"."],
       ]},
     ],
