@@ -45,6 +45,8 @@ namespace Company.WebsiteAdmin.Pages
             lblServiceDescCount = new Label();
             frmServiceDesc = new Company.OfficeApp.UI.InputFrame();
             txtServiceDesc = new TextBox();
+            lblServiceIcon = new Label();
+            cboServiceIcon = new ComboBox();
             statusService = new Company.OfficeApp.UI.StatusBox();
             pnlSideGap = new Panel();
             cardServicePreview = new Company.OfficeApp.UI.Card();
@@ -77,6 +79,8 @@ namespace Company.WebsiteAdmin.Pages
             cardServiceForm.Controls.Add(lblServiceDescCount);
             cardServiceForm.Controls.Add(frmServiceDesc);
             frmServiceDesc.Controls.Add(txtServiceDesc);
+            cardServiceForm.Controls.Add(lblServiceIcon);
+            cardServiceForm.Controls.Add(cboServiceIcon);
             pnlServicesSide.Controls.Add(statusService);
             pnlServicesSide.Controls.Add(pnlSideGap);
             pnlServicesSide.Controls.Add(cardServicePreview);
@@ -151,7 +155,7 @@ namespace Company.WebsiteAdmin.Pages
             lblServicesHint.AutoSize = true;
             lblServicesHint.Location = new Point(24, 48);
             lblServicesHint.Name = "lblServicesHint";
-            lblServicesHint.Text = "The service cards on the website, in this order. Each card's icon is fixed by its service.";
+            lblServicesHint.Text = "The service cards on the website, in this order. Each card has its own icon; one without a picture shows the website's picture for that icon.";
             // 
             // btnAddWebService
             // 
@@ -347,6 +351,26 @@ namespace Company.WebsiteAdmin.Pages
             txtServiceDesc.TabIndex = 17;
             txtServiceDesc.TextChanged += Field_Changed;
             // 
+            // lblServiceIcon
+            // 
+            lblServiceIcon.AutoSize = true;
+            lblServiceIcon.Location = new Point(24, 544);
+            lblServiceIcon.Name = "lblServiceIcon";
+            lblServiceIcon.Font = new Font("Segoe UI Semibold", 10F);
+            lblServiceIcon.Text = "Icon (also picks the website's picture when you add none)";
+            // 
+            // cboServiceIcon  (owner-drawn: icon + name)
+            // 
+            cboServiceIcon.Location = new Point(24, 568);
+            cboServiceIcon.Name = "cboServiceIcon";
+            cboServiceIcon.Size = new Size(340, 40);
+            cboServiceIcon.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboServiceIcon.DrawMode = DrawMode.OwnerDrawFixed;
+            cboServiceIcon.ItemHeight = 34;
+            cboServiceIcon.Font = new Font("Segoe UI", 10.5F);
+            cboServiceIcon.TabIndex = 18;
+            cboServiceIcon.SelectedIndexChanged += Field_Changed;
+            // 
             // statusService
             // 
             statusService.Location = new Point(20, 346);
@@ -506,6 +530,8 @@ namespace Company.WebsiteAdmin.Pages
         private Label lblServiceDescCount;
         private Company.OfficeApp.UI.InputFrame frmServiceDesc;
         private TextBox txtServiceDesc;
+        private Label lblServiceIcon;
+        private ComboBox cboServiceIcon;
         private Company.OfficeApp.UI.StatusBox statusService;
         private Panel pnlSideGap;
         private Company.OfficeApp.UI.Card cardServicePreview;

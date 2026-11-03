@@ -134,6 +134,10 @@ public static class GitHubPublisher
         var text = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode) return JsonNode.Parse(text)!;
 
+        if (response.Headers.TryGetValues("X-RateLimit-Remaining", out var left) && left.FirstOrDefault() == "0")
+            throw new GitHubException(settings.Token == ""
+                ? "GitHub's hourly limit for this PC was reached. Add the GitHub token in Website Settings (much higher limit), or try again in an hour."
+                : "GitHub's hourly limit was reached. Please try again in an hour.");
         throw new GitHubException(response.StatusCode switch
         {
             HttpStatusCode.Unauthorized => "GitHub didn't accept the token (wrong or expired). Enter a new one in Website Settings.",

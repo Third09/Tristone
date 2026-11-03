@@ -54,6 +54,8 @@ public class WebsiteService
     [Column("location")] public string? Location { get; set; }
     [Column("short_description")] public string? ShortDescription { get; set; }
     [Column("image_path")] public string? ImagePath { get; set; }
+    /// <summary>One of <see cref="WebsiteServiceIcons"/> (script 019): the card's icon, and the website's own picture when ImagePath is empty.</summary>
+    [Column("icon")] public string Icon { get; set; } = WebsiteServiceIcons.Ruler;
     [Column("sort_order")] public int SortOrder { get; set; }
     [Column("is_visible")] public bool IsVisible { get; set; } = true;
     [Column("created_by")] public int? CreatedBy { get; set; }
@@ -108,6 +110,32 @@ public static class WebsiteServiceNames
     public const string Commercial = "Commercial Construction";
     public const string Repairs = "Repairs and Home Extension";
     public static readonly string[] All = [Residential, Commercial, Repairs];
+}
+
+/// <summary>
+/// The website's 3 service icons (owner request 2026-11-03). Each one also brings the picture the website shows when a
+/// card has none: Ruler = the Residential Construction picture, Helmet = Commercial, Tools = Repairs.
+/// </summary>
+public static class WebsiteServiceIcons
+{
+    public const string Ruler = "ruler", Helmet = "helmet", Tools = "tools";
+    public static readonly string[] All = [Ruler, Helmet, Tools];
+
+    /// <summary>The icon an original service uses (typed names get Ruler until one is picked).</summary>
+    public static string For(string serviceName) => serviceName switch
+    {
+        WebsiteServiceNames.Commercial => Helmet,
+        WebsiteServiceNames.Repairs => Tools,
+        _ => Ruler,
+    };
+
+    /// <summary>Shown in the icon list.</summary>
+    public static string Label(string icon) => icon switch
+    {
+        Helmet => "Helmet (like Commercial Construction)",
+        Tools => "Tools (like Repairs and Home Extension)",
+        _ => "Ruler (like Residential Construction)",
+    };
 }
 
 /// <summary>The website_content keys the editors use.</summary>

@@ -358,7 +358,7 @@ Home is a single-item editor over `website_content`: `home.hero_image`, `home.he
 
 ## 10.6 Services (`Pages/ServicesEditorPage`, `Services/WebServiceService`)
 
-`website_services`: service name typed in `cboServiceName` (DropDown, 60; `WebsiteServiceNames` are suggestions; the CHECK was dropped by script 018), a new name needs a picture (`Check(..., hasPicture)`), category = `ProjectSectors`, typed location (100), short description (100), one picture, order, visible. Standard list page: Add opens the same page as a pop-up (`addOnly`), the form is locked until a row is clicked, Save lists changes.
+`website_services`: service name typed in `cboServiceName` (DropDown, 60; `WebsiteServiceNames` are suggestions; the CHECK was dropped by script 018); `icon` (script 019, `WebsiteServiceIcons`: ruler / helmet / tools) is picked in the owner-drawn `cboServiceIcon` (PNG icons embedded from `Resources/icon-*.png`, `ServiceIconImages`); no picture = the website picture for that icon (`content.js` `SERVICE_LOOK`, Live Preview reads it from the Preview Website copy), category = `ProjectSectors`, typed location (100), short description (100), one picture, order, visible. Standard list page: Add opens the same page as a pop-up (`addOnly`), the form is locked until a row is clicked, Save lists changes.
 
 ## 10.7 Contact Us (`Pages/ContactUsPage`, `InquiryForm`, `Services/WebsiteInquiries`)
 

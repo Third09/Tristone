@@ -23,7 +23,7 @@ CONTROLS = [
 
     # list
     ("Label", "lblServicesTitle", 24, 18, None, None, {"PARENT": "cardServicesList", "Font": SECTION, "Text": T("Featured Services Slots")}),
-    ("Label", "lblServicesHint", 24, 48, None, None, {"PARENT": "cardServicesList", "Text": T("The service cards on the website, in this order. Each card's icon is fixed by its service.")}),
+    ("Label", "lblServicesHint", 24, 48, None, None, {"PARENT": "cardServicesList", "Text": T("The service cards on the website, in this order. Each card has its own icon; one without a picture shows the website's picture for that icon.")}),
     ("Button", "btnAddWebService", 978, 18, 190, 40, {"PARENT": "cardServicesList", "Anchor": TR, "Font": BTN, "Text": T("Add New Service")}),
     ("DataGridView", "dgvWebServices", 24, 78, 1144, 150, {"PARENT": "cardServicesList", "Anchor": TLR}),
     ("Button", "btnMoveServiceUp", 24, 242, 110, 36, {"PARENT": "cardServicesList", "Text": T("Move Up")}),
@@ -47,6 +47,9 @@ CONTROLS = [
     ("Label", "lblServiceDescCount", 628, 464, 100, 20, {"PARENT": "cardServiceForm", "Anchor": TR, "TextAlign": "ContentAlignment.MiddleRight", "Text": T("0/100")}),
     (FRAME, "frmServiceDesc", 24, 488, 704, 44, {"PARENT": "cardServiceForm", "Anchor": TLR}),
     ("TextBox", "txtServiceDesc", 12, 11, 680, 23, {"PARENT": "frmServiceDesc", "BorderStyle": "BorderStyle.None", "Font": INPUT}),
+    # icon picker (owner request 2026-11-03): owner-drawn, icon + name
+    ("Label", "lblServiceIcon", 24, 544, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Icon (also picks the website's picture when you add none)")}),
+    ("ComboBox", "cboServiceIcon", 24, 568, 340, 40, dict(DDL, PARENT="cardServiceForm", Font=INPUT, DrawMode="DrawMode.OwnerDrawFixed", ItemHeight=34)),
 
     # right: preview + message (docked top; last added sits highest)
     ("Company.OfficeApp.UI.StatusBox", "statusService", 20, 346, 420, 78, {"PARENT": "pnlServicesSide", "Dock": TOP}),
@@ -83,6 +86,7 @@ EVENTS = {
     "txtServiceLocation": [("TextChanged", "Field_Changed")],
     "cboServiceName": [("TextChanged", "Field_Changed")],
     "cboServiceSector": [("SelectedIndexChanged", "Field_Changed")],
+    "cboServiceIcon": [("SelectedIndexChanged", "Field_Changed")],
     "btnSaveWebService": [("Click", "btnSaveWebService_Click")],
     "btnCancelWebService": [("Click", "btnCancelWebService_Click")],
 }

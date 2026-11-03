@@ -15,7 +15,7 @@ namespace Company.WebsiteAdmin.Pages;
 public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 {
     readonly bool addOnly;   // this copy is the Add New Service pop-up
-    record ServiceForm(string Service, string Category, string Location, string Description, string Picture);
+    record ServiceForm(string Service, string Category, string Location, string Description, string Icon, string Picture);
 
     int? editingId;
     WebServiceRow? showingRow;
@@ -41,6 +41,15 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         RecordForm.NoAutoSelect(dgvWebServices, on => filling = on, RestoreSelection);
         cboServiceName.Items.AddRange(WebsiteServiceNames.All);
         cboServiceSector.Items.AddRange(ProjectSectors.All);
+        cboServiceIcon.Items.AddRange(WebsiteServiceIcons.All);
+        cboServiceIcon.DrawItem += DrawIconItem;
+        // Typing or picking one of the 3 original services sets its usual icon.
+        cboServiceName.TextChanged += (_, _) =>
+        {
+            if (loading) return;
+            var known = WebsiteServiceNames.All.FirstOrDefault(n => n.Equals(cboServiceName.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (known != null) cboServiceIcon.SelectedItem = WebsiteServiceIcons.For(known);
+        };
         txtServiceLocation.MaxLength = WebServiceService.MaxLocation;
         EditorUi.Counter(txtServiceDesc, lblServiceDescCount, WebServiceService.MaxDescription);
         dzService.BrowseRequested += async (_, _) => { if (EditorUi.PickPicture(this) is { } path) await UsePictureAsync(path); };
@@ -55,11 +64,11 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         {
             // The pop-up: just the form and its save bar.
             cardServicesList.Visible = pnlGap1.Visible = pnlServicesSide.Visible = false;
-            Size = new Size(800, 680);
+            Size = new Size(800, 760);
             StartNew();
             return;
         }
-        AutoScrollMinSize = new Size(1100, 940);
+        AutoScrollMinSize = new Size(1100, 1010);
         ShowNothingSelected();
     }
 
@@ -123,6 +132,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         cboServiceName.SelectedIndex = -1;
         cboServiceName.Text = "";
         cboServiceSector.SelectedIndex = -1;
+        cboServiceIcon.SelectedItem = WebsiteServiceIcons.Ruler;
         txtServiceLocation.Clear();
         txtServiceDesc.Clear();
         storedImage = newImage = null;
@@ -163,6 +173,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         btnHideShowService.Text = s.IsVisible ? "Unpublish" : "Publish";
         cboServiceName.Text = s.ServiceName;
         cboServiceSector.SelectedItem = s.Sector;
+        cboServiceIcon.SelectedItem = s.Icon;
         txtServiceLocation.Text = s.Location ?? "";
         txtServiceDesc.Text = s.ShortDescription ?? "";
         storedImage = s.ImagePath;
@@ -176,7 +187,9 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     string PictureName => newImage != null ? Path.GetFileName(newImage) : storedImage != null ? Path.GetFileName(storedImage) : "(none)";
 
     ServiceForm ReadForm() => new(cboServiceName.Text.Trim(), (string?)cboServiceSector.SelectedItem ?? "",
-                                  txtServiceLocation.Text.Trim(), txtServiceDesc.Text.Trim(), PictureName);
+                                  txtServiceLocation.Text.Trim(), txtServiceDesc.Text.Trim(), WebsiteServiceIcons.Label(Icon), PictureName);
+
+    string Icon => (string?)cboServiceIcon.SelectedItem ?? WebsiteServiceIcons.Ruler;
 
     void SetPicture(Image? image)
     {
@@ -184,7 +197,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         picture = image;
         dzService.Image = image;
         old?.Dispose();
-        lblServiceImageName.Text = image == null ? "No picture yet. Click the box or drop a picture on it." : PictureName + "   (click the picture to change it)";
+        lblServiceImageName.Text = image == null ? "No picture: the website shows its own picture for the chosen icon. Click the box to add one." : PictureName + "   (click the picture to change it)";
         pnlServicePreview.Invalidate();
     }
 
@@ -201,6 +214,19 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         if (loading || editingId == null || original == null) return;
         if (HasUnsavedChanges) Say(StatusKind.Info, "Unsaved Changes", "Remember to save your changes to keep your website content updated.");
         else Say(StatusKind.None, "", "");
+    }
+
+    /// <summary>Icon list: the icon picture, then its name.</summary>
+    void DrawIconItem(object? sender, DrawItemEventArgs e)
+    {
+        e.DrawBackground();
+        if (e.Index < 0) return;
+        var icon = (string)cboServiceIcon.Items[e.Index]!;
+        e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        e.Graphics.DrawImage(ServiceIconImages.Get(icon), e.Bounds.X + 4, e.Bounds.Y + 3, e.Bounds.Height - 6, e.Bounds.Height - 6);
+        var text = new Rectangle(e.Bounds.X + e.Bounds.Height + 6, e.Bounds.Y, e.Bounds.Width - e.Bounds.Height - 6, e.Bounds.Height);
+        TextRenderer.DrawText(e.Graphics, WebsiteServiceIcons.Label(icon), e.Font ?? Font, text, e.ForeColor, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+        e.DrawFocusRectangle();
     }
 
     /// <summary>The service card as the website shows it: picture on top, then the name, description and where.</summary>
@@ -224,10 +250,21 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.DrawImage(picture, pic.X + (pic.Width - w) / 2, pic.Y + (pic.Height - h) / 2, w, h);
         }
+        else if (ServiceIconImages.DefaultPicture(Icon) is { } site)
+        {
+            // No picture of its own: the website's picture for this icon (from the Preview Website copy, when there is one).
+            float scale = Math.Max((float)pic.Width / site.Width, (float)pic.Height / site.Height);
+            int w = (int)(site.Width * scale), h = (int)(site.Height * scale);
+            g.SetClip(pic, CombineMode.Intersect);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(site, pic.X + (pic.Width - w) / 2, pic.Y + (pic.Height - h) / 2, w, h);
+        }
         else using (var gray = new SolidBrush(Theme.GridEmpty)) g.FillRectangle(gray, pic);
         g.ResetClip();
         using var head = new Font("Segoe UI", 11f, FontStyle.Bold);
-        TextRenderer.DrawText(g, cboServiceName.Text.Trim(), head, new Rectangle(14, 150, r.Width - 28, 24), Theme.Text, TextFormatFlags.EndEllipsis);
+        TextRenderer.DrawText(g, cboServiceName.Text.Trim(), head, new Rectangle(14, 150, r.Width - 64, 24), Theme.Text, TextFormatFlags.EndEllipsis);
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        g.DrawImage(ServiceIconImages.Get(Icon), r.Width - 44, 146, 30, 30);
         TextRenderer.DrawText(g, txtServiceDesc.Text, Font, new Rectangle(14, 176, r.Width - 28, 40), Theme.TextMuted, TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
         var where = string.Join("  ·  ", new[] { (string?)cboServiceSector.SelectedItem, txtServiceLocation.Text.Trim() }.Where(x => !string.IsNullOrEmpty(x)));
         TextRenderer.DrawText(g, where, Font, new Rectangle(14, 220, r.Width - 28, 20), Theme.Orange, TextFormatFlags.EndEllipsis);
@@ -246,7 +283,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     {
         if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
         var form = ReadForm();
-        var input = new WebServiceInput(form.Service, form.Category, form.Location, form.Description);
+        var input = new WebServiceInput(form.Service, form.Category, form.Location, form.Description, Icon);
         if (editingId != null && original != null)
         {
             var answer = RecordForm.ConfirmSave(this, original.Service, original, form);

@@ -368,7 +368,7 @@ Owner decisions 2026-11-01, following the Figma design "CCMS SUPERSYSTEM". Who: 
 
 ## 10.4 Services
 
-- Fields: name of service (typed, 60 max; the list offers Residential Construction, Commercial Construction, Repairs and Home Extension; owner request 2026-11-03), category (the project sectors), location (typed, 100 max), short description (100 max), picture. The 3 original services keep their icon and the website's own picture when none is chosen; a typed new service shows no icon and **must have a picture** ("Please add a picture: a new service has no picture of its own on the website."). Extra spaces are tidied; typing one of the 3 in any case saves it the usual way.
+- Fields: name of service (typed, 60 max; the list offers Residential Construction, Commercial Construction, Repairs and Home Extension; owner request 2026-11-03), category (the project sectors), location (typed, 100 max), short description (100 max), picture. **Icon** (owner request 2026-11-03): Ruler, Helmet or Tools, the website's 3 service icons; typing or picking one of the 3 original names sets its usual icon (Residential = Ruler, Commercial = Helmet, Repairs = Tools); new cards start with Ruler. The picture is optional: a card without one shows the website's own picture for its icon (Ruler = the Residential picture, Helmet = Commercial, Tools = Repairs), exactly like the original 3; the Live Preview shows that picture once Preview Website has been opened on the PC. Extra spaces are tidied; typing one of the 3 in any case saves it the usual way.
 - Add New Service (pop-up), edit (Yes/No list of changes), Move Up/Down, Unpublish/Publish, Delete (asks first). The same service may appear more than once (e.g. different locations).
 
 ## 10.5 About Us

@@ -230,11 +230,13 @@ public static class WebProjectService
 public record WebServiceRow(int WebServiceId, int Slot, string ServiceName, string Sector, string? Location, string Shown, string? ShortDescription);
 
 /// <summary>What the Services form edits.</summary>
-public record WebServiceInput(string ServiceName, string Sector, string? Location, string? ShortDescription);
+public record WebServiceInput(string ServiceName, string Sector, string? Location, string? ShortDescription,
+                              string Icon = WebsiteServiceIcons.Ruler);
 
 /// <summary>
-/// Website Admin > Services: the service cards. The name is one of the 3 fixed services, with a sector (the office
-/// sectors), a typed location, a short description and a picture (owner decisions 2026-11-01). Icons are fixed per service.
+/// Website Admin > Services: the service cards: a typed name (the 3 original services are offered; owner request
+/// 2026-11-03), a sector (the office sectors), a typed location, a short description, one of the 3 website icons and an
+/// optional picture (none = the website's own picture for that icon, like the original 3).
 /// </summary>
 public static class WebServiceService
 {
@@ -256,14 +258,13 @@ public static class WebServiceService
         return await db.WebsiteServices.AsNoTracking().FirstOrDefaultAsync(s => s.WebServiceId == id);
     }
 
-    /// <summary><paramref name="hasPicture"/>: the card will have its own picture (needed for a typed new service, which has no default one).</summary>
-    static string? Check(WebServiceInput i, string? newImage, bool hasPicture)
+    static string? Check(WebServiceInput i, string? newImage)
     {
         // Any service can be typed (owner request 2026-11-03); the 3 original ones are offered in the list.
         if (i.ServiceName == "") return "Please type or choose the name of the service.";
         if (i.ServiceName.Length > MaxName) return $"The name is too long ({MaxName} characters at most).";
-        if (!hasPicture && !WebsiteServiceNames.All.Contains(i.ServiceName, StringComparer.OrdinalIgnoreCase))
-            return "Please add a picture: a new service has no picture of its own on the website.";
+        // No picture needed: the website then shows its own picture for the chosen icon (like the original 3).
+        if (!WebsiteServiceIcons.All.Contains(i.Icon)) return "Choose an icon.";
         if (!ProjectSectors.All.Contains(i.Sector)) return "Choose a category.";
         if (i.Location?.Length > MaxLocation) return $"The location is too long ({MaxLocation} characters at most).";
         if (i.ShortDescription?.Length > MaxDescription) return $"The short description is too long ({MaxDescription} characters at most).";
@@ -281,7 +282,7 @@ public static class WebServiceService
 
     static object Snapshot(WebsiteService s) => new
     {
-        service = s.ServiceName, category = s.Sector, location = s.Location, description = s.ShortDescription,
+        service = s.ServiceName, category = s.Sector, location = s.Location, description = s.ShortDescription, icon = s.Icon,
         picture = s.ImagePath == null ? "(none)" : Path.GetFileName(s.ImagePath), shown = s.IsVisible ? "Visible" : "Hidden",
     };
 
@@ -290,11 +291,12 @@ public static class WebServiceService
     {
         if (WebsiteAccess.Require() is { } denied) return (null, denied);
         input = Clean(input);
-        if (Check(input, newImage, newImage != null) is { } problem) return (null, problem);
+        if (Check(input, newImage) is { } problem) return (null, problem);
         using var db = Db.Open();
         var s = new WebsiteService
         {
             ServiceName = input.ServiceName, Sector = input.Sector, Location = input.Location, ShortDescription = input.ShortDescription,
+            Icon = input.Icon,
             ImagePath = newImage == null ? null : await WebsiteImages.StoreAsync(newImage), IsVisible = true,
             SortOrder = (await db.WebsiteServices.MaxAsync(x => (int?)x.SortOrder) ?? 0) + 1,
             CreatedBy = Session.CurrentUser!.UserId, CreatedAt = DateTime.Now,
@@ -314,12 +316,13 @@ public static class WebServiceService
         using var db = Db.Open();
         var s = await db.WebsiteServices.FirstOrDefaultAsync(x => x.WebServiceId == id);
         if (s == null) return "This service no longer exists.";
-        if (Check(input, newImage, newImage != null || s.ImagePath != null) is { } problem) return problem;
+        if (Check(input, newImage) is { } problem) return problem;
         var before = Snapshot(s);
         s.ServiceName = input.ServiceName;
         s.Sector = input.Sector;
         s.Location = input.Location;
         s.ShortDescription = input.ShortDescription;
+        s.Icon = input.Icon;
         if (newImage != null) s.ImagePath = await WebsiteImages.StoreAsync(newImage);
         s.UpdatedAt = DateTime.Now;
         AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_services", s.WebServiceId, s.ServiceName, AuditActions.Edited, before, Snapshot(s));
