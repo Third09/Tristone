@@ -68,11 +68,55 @@ public static class GitHubPublisher
         });
     }
 
-    static async Task<string?> RunAsync(PublishSettings settings, Func<HttpClient, Task<string?>> work)
+    /// <summary>
+    /// Preview Website: makes <paramref name="folder"/> a copy of the website's files on the branch (everything except
+    /// <paramref name="skipFolder"/>, which the preview fills itself). Only files whose contents changed since the last
+    /// copy are downloaded (folder\.files.json remembers each file's git id); files gone from GitHub are deleted.
+    /// Works without a token while the repository is public. Null when done, otherwise the reason.
+    /// </summary>
+    public static async Task<string?> CopySiteAsync(PublishSettings settings, string folder, string siteRoot, string skipFolder)
     {
-        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
-        using var http = new HttpClient { BaseAddress = new Uri("https://api.github.com/"), Timeout = TimeSpan.FromSeconds(60) };
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.Token);
+        return await RunAsync(settings, async http =>
+        {
+            var repo = $"repos/{settings.Repository}/";
+            var head = await SendAsync(http, HttpMethod.Get, repo + $"git/ref/heads/{settings.Branch}", null, settings);
+            var commit = await SendAsync(http, HttpMethod.Get, repo + $"git/commits/{(string)head["object"]!["sha"]!}", null, settings);
+            var tree = await SendAsync(http, HttpMethod.Get, repo + $"git/trees/{(string)commit["tree"]!["sha"]!}?recursive=1", null, settings);
+            var wanted = tree["tree"]!.AsArray()
+                .Where(e => (string?)e!["type"] == "blob" && ((string)e["path"]!).StartsWith(siteRoot + "/")
+                            && !((string)e["path"]!).StartsWith(skipFolder + "/"))
+                .ToDictionary(e => (string)e!["path"]!, e => (string)e!["sha"]!);
+
+            var listFile = Path.Combine(folder, ".files.json");
+            var have = File.Exists(listFile)
+                ? System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(listFile)) ?? []
+                : [];
+            foreach (var (path, sha) in wanted)
+            {
+                var full = Path.Combine(folder, path.Replace('/', Path.DirectorySeparatorChar));
+                if (have.GetValueOrDefault(path) == sha && File.Exists(full)) continue;
+                var blob = await SendAsync(http, HttpMethod.Get, repo + $"git/blobs/{sha}", null, settings);
+                Directory.CreateDirectory(Path.GetDirectoryName(full)!);
+                await File.WriteAllBytesAsync(full, Convert.FromBase64String(((string)blob["content"]!).Replace("\n", "")));
+                have[path] = sha;
+                File.WriteAllText(listFile, System.Text.Json.JsonSerializer.Serialize(have));   // progress kept if stopped halfway
+            }
+            foreach (var path in have.Keys.Where(p => !wanted.ContainsKey(p)).ToList())
+            {
+                var full = Path.Combine(folder, path.Replace('/', Path.DirectorySeparatorChar));
+                if (File.Exists(full)) File.Delete(full);
+                have.Remove(path);
+            }
+            File.WriteAllText(listFile, System.Text.Json.JsonSerializer.Serialize(have));
+            return null;
+        }, needToken: false);
+    }
+
+    static async Task<string?> RunAsync(PublishSettings settings, Func<HttpClient, Task<string?>> work, bool needToken = true)
+    {
+        if (needToken && !settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
+        using var http = new HttpClient { BaseAddress = new Uri("https://api.github.com/"), Timeout = TimeSpan.FromSeconds(120) };
+        if (settings.Token != "") http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.Token);
         http.DefaultRequestHeaders.UserAgent.ParseAdd("TriStone-WebsiteAdmin");
         http.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
         http.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");

@@ -163,6 +163,16 @@ public partial class MainForm : Form
 
     void btnWebsiteSettings_Click(object sender, EventArgs e) => ShowWebsiteSettings();
 
+    /// <summary>Preview Website: the saved changes on a copy of the website; unsaved edits on the open page are not in it.</summary>
+    void btnPreviewWebsite_Click(object sender, EventArgs e)
+    {
+        if (OpenEditor is { HasUnsavedChanges: true } &&
+            MessageBox.Show(this, "This page has unsaved changes. They are NOT in the preview: click Save Changes first if you want them.\n\nPreview anyway?",
+                "Preview Website", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        using var preview = new PreviewForm();
+        preview.ShowDialog(this);
+    }
+
     /// <summary>Opens Website Settings; true when they were saved.</summary>
     bool ShowWebsiteSettings()
     {

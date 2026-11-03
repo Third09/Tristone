@@ -17,6 +17,9 @@ public class PublishSettings
     public string Repository { get; set; } = "Third09/tristone_website";
     public string Branch { get; set; } = "Frontend";
 
+    /// <summary>The live website (Netlify). Preview Website loads its design from here.</summary>
+    public string SiteUrl { get; set; } = "https://tristone.netlify.app";
+
     /// <summary>DPAPI-encrypted token, Base64. Never the plain token.</summary>
     public string EncryptedToken { get; set; } = "";
 

@@ -32,6 +32,7 @@ namespace Company.WebsiteAdmin.Forms
             lblUserName = new Label();
             btnPublishWebsite = new Button();
             btnWebsiteSettings = new Button();
+            btnPreviewWebsite = new Button();
             lblLastPublished = new Label();
             pnlContent = new Panel();
             pnlSidebar.SuspendLayout();
@@ -130,6 +131,7 @@ namespace Company.WebsiteAdmin.Forms
             pnlTopBar.Controls.Add(lblUserName);
             pnlTopBar.Controls.Add(btnPublishWebsite);
             pnlTopBar.Controls.Add(btnWebsiteSettings);
+            pnlTopBar.Controls.Add(btnPreviewWebsite);
             pnlTopBar.Controls.Add(lblLastPublished);
             pnlTopBar.Dock = DockStyle.Top;
             pnlTopBar.Name = "pnlTopBar";
@@ -171,6 +173,17 @@ namespace Company.WebsiteAdmin.Forms
             btnWebsiteSettings.TabIndex = 7;
             btnWebsiteSettings.Text = "Website Settings";
             btnWebsiteSettings.Click += btnWebsiteSettings_Click;
+            //
+            // btnPreviewWebsite  (the whole website with the saved changes, not live)
+            //
+            btnPreviewWebsite.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPreviewWebsite.Location = new Point(358, 18);
+            btnPreviewWebsite.Name = "btnPreviewWebsite";
+            btnPreviewWebsite.Font = new Font("Segoe UI", 10F);
+            btnPreviewWebsite.Size = new Size(136, 40);
+            btnPreviewWebsite.TabIndex = 8;
+            btnPreviewWebsite.Text = "Preview Website";
+            btnPreviewWebsite.Click += btnPreviewWebsite_Click;
             //
             // lblLastPublished
             //
@@ -231,6 +244,7 @@ namespace Company.WebsiteAdmin.Forms
         private Label lblUserName;
         private Button btnPublishWebsite;
         private Button btnWebsiteSettings;
+        private Button btnPreviewWebsite;
         private Label lblLastPublished;
         private Panel pnlContent;
         private System.Windows.Forms.Timer tmrIdle;

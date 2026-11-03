@@ -103,7 +103,7 @@ The sidebar follows the Figma design: **Home, Projects, Services, About Us, Cont
 
 **Save Changes** keeps your edits; **Publish Website** (top right) puts everything saved on the live website.
 
-Publish sends your changes to the website's GitHub page, and Netlify (the website's host) shows them in about a minute. Each PC needs the GitHub token once (Website Settings).
+**Preview Website** shows the whole site with your saved changes before you publish. Publish sends your changes to the website's GitHub page, and Netlify (the website's host) shows them in about a minute. Each PC needs the GitHub token once (Website Settings).
 
 # 6. How it looks
 

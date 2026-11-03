@@ -448,6 +448,7 @@ The Website Admin window looks like the office app: click a button in the **left
 - **Save Changes** (on each page) keeps your edits. The live website does **not** change yet.
 - **Publish Website** (top right) puts **everything saved** on the live website. The website shows it in **about a minute**. Under it you see when it was last published and by whom.
 - The first time on a PC, Publish opens **Website Settings**: paste the GitHub token, click **Test**, then **Save**. (See "Making the GitHub token" below.)
+- **Preview Website** (top right) shows the whole website with your **saved** changes, before you publish. **Desktop** / **Phone** switch the width; **Refresh** shows changes you saved since. The first time it downloads the website's files (about a minute); after that it opens in a second. Nothing goes live.
 - Leaving a page with unsaved edits asks first. **Discard Changes** brings back the saved version.
 - Pictures must be **JPEG or PNG**, **8 MB** at most.
 
