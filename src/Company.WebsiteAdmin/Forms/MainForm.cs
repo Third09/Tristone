@@ -144,17 +144,29 @@ public partial class MainForm : Form
             ? "\n\nThis page has unsaved changes. They are NOT included: click Save Changes first if you want them." : "";
         if (MessageBox.Show(this, "Put every saved change (Home, Projects, Services, About Us and the company details) on the live website?" + unsaved,
                 "Publish Website", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+        // First publish on this PC: ask where to send it.
+        if (!PublishSettings.Load().IsSet && !ShowGitHubSettings()) return;
         btnPublishWebsite.Enabled = false;
+        UseWaitCursor = true;
         try
         {
             var error = await PublishService.PublishAsync();
             if (error != null) { MessageBox.Show(this, error, "Publish Website"); return; }
             await ShowLastPublishedAsync();
-            MessageBox.Show(this, "Published. The live website shows these changes once the website is connected (a minute or two).",
+            MessageBox.Show(this, "Published. The live website shows these changes in about a minute.",
                             "Publish Website", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex) { MessageBox.Show(this, "Couldn't publish. Please try again.\n" + ex.Message, "Publish Website"); }
-        finally { btnPublishWebsite.Enabled = true; }
+        finally { btnPublishWebsite.Enabled = true; UseWaitCursor = false; }
+    }
+
+    void btnGitHubSettings_Click(object sender, EventArgs e) => ShowGitHubSettings();
+
+    /// <summary>Opens GitHub Settings; true when they were saved.</summary>
+    bool ShowGitHubSettings()
+    {
+        using var form = new PublishSettingsForm();
+        return form.ShowDialog(this) == DialogResult.OK;
     }
 
     // Checked every second; the "Still there?" popup opens after IdleMonitor.Timeout (5 minutes) without activity.

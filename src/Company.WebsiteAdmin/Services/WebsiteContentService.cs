@@ -1,4 +1,5 @@
 using System.Net.Mail;
+using System.Text;
 using System.Text.Json;
 using Company.OfficeApp.Data;
 using Company.OfficeApp.Services;
@@ -120,18 +121,44 @@ public static class WebsiteContentService
 }
 
 /// <summary>
-/// Publish Website: takes a snapshot of everything saved (texts, pictures, visible projects with their showcase
-/// photos, visible services) into website_publishes. The live site is built from the latest snapshot
-/// (the Netlify rebuild is added with the API piece).
+/// Publish Website (owner decision 2026-11-03): writes everything saved (texts, pictures, visible projects with their
+/// showcase photos, visible services, About Us sections) as Updated/content/site.json + the pictures into the
+/// website's GitHub repository (<see cref="GitHubPublisher"/>); Netlify updates the live site from it in about a
+/// minute and the site's js/content.js fills the pages from site.json. A copy of site.json is kept in website_publishes.
 /// </summary>
 public static class PublishService
 {
+    /// <summary>The website repository folder Publish owns (nothing else should be put there).</summary>
+    public const string SiteFolder = "Updated/content";
+    const string WebRoot = "/" + SiteFolder + "/";
+
+    /// <summary>site.json and its pictures (repository path -> bytes), or the reason they can't be made.</summary>
+    public record SiteFiles(string Json, Dictionary<string, byte[]> Files);
+
     public static async Task<string?> PublishAsync()
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
+        var settings = PublishSettings.Load();
+        if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click GitHub Settings first.";
+
+        var (site, problem) = await BuildAsync();
+        if (problem != null) return problem;
+        var who = Session.CurrentUser!;
+        var error = await GitHubPublisher.PushAsync(settings, site!.Files, SiteFolder, $"Website Admin: published by {who.FullName}");
+        if (error != null) return error;
+
+        using var db = Db.Open();
+        db.WebsitePublishes.Add(new WebsitePublish { PublishedBy = who.UserId, PublishedAt = DateTime.Now, Content = site.Json });
+        await db.SaveChangesAsync();
+        return null;
+    }
+
+    /// <summary>Makes site.json (what the website reads) and collects the pictures it points to.</summary>
+    public static async Task<(SiteFiles? Site, string? Problem)> BuildAsync()
+    {
         using var db = Db.Open();
         var content = await db.WebsiteContent.AsNoTracking().ToDictionaryAsync(c => c.ContentKey, c => c.Value);
-        content.Remove(WebsiteKeys.RecipientEmail);   // not part of the public site
+        string? Text(string key) => content.GetValueOrDefault(key);
         var projects = await (from w in db.WebsiteProjects.AsNoTracking()
                               join p in db.Projects on w.ProjectId equals p.ProjectId
                               where w.IsVisible
@@ -140,31 +167,75 @@ public static class PublishService
         var ids = projects.Select(p => p.WebProjectId).ToList();
         var photos = await db.WebsiteProjectPhotos.AsNoTracking().Where(f => ids.Contains(f.WebProjectId) && f.IsShowcase)
             .OrderBy(f => f.SortOrder).ToListAsync();
-        var services = await db.WebsiteServices.AsNoTracking().Where(s => s.IsVisible).OrderBy(s => s.SortOrder)
-            .Select(s => new { s.ServiceName, s.Sector, s.Location, s.ShortDescription, s.ImagePath }).ToListAsync();
-        var about = await db.WebsiteAboutSections.AsNoTracking().OrderBy(s => s.SortOrder).ThenBy(s => s.AboutSectionId)
-            .Select(s => new { heading = s.Heading, text = s.Body, second_heading = s.Heading2, second_text = s.Body2, image = s.ImagePath })
-            .ToListAsync();
+        var services = await db.WebsiteServices.AsNoTracking().Where(s => s.IsVisible).OrderBy(s => s.SortOrder).ToListAsync();
+        var about = await db.WebsiteAboutSections.AsNoTracking().OrderBy(s => s.SortOrder).ThenBy(s => s.AboutSectionId).ToListAsync();
 
-        var snapshot = new
+        // Pictures: stored path in the files folder -> address on the website (a web-safe copy of its file name).
+        var files = new Dictionary<string, byte[]>();
+        var missing = new List<string>();
+        async Task<string?> Picture(string? stored)
         {
-            content,
-            projects = projects.Select(p => new
+            if (string.IsNullOrEmpty(stored)) return null;   // none: the website keeps its own picture
+            var name = string.Concat(Path.GetFileName(stored).Select(c => char.IsAsciiLetterOrDigit(c) || c is '.' or '-' or '_' ? c : '-'));
+            var full = await FileStore.FullPathAsync(stored);
+            if (!File.Exists(full)) { missing.Add(full); return null; }
+            files[SiteFolder + "/images/" + name] = await File.ReadAllBytesAsync(full);
+            return WebRoot + "images/" + name;
+        }
+
+        var site = new
+        {
+            published_at = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+            home = new
+            {
+                headline = Text(WebsiteKeys.Headline),
+                subheadline = Text(WebsiteKeys.Subheadline),
+                image = await Picture(Text(WebsiteKeys.HeroImage)),
+            },
+            contact = new   // the inquiry recipient email is not part of the public site
+            {
+                address = Text(WebsiteKeys.Address),
+                phone = Text(WebsiteKeys.Phone),
+                email = Text(WebsiteKeys.Email),
+                copyright = Text(WebsiteKeys.Copyright),
+            },
+            services = await OneByOne(services, async s => new
+            {
+                name = s.ServiceName, category = s.Sector, location = s.Location, description = s.ShortDescription,
+                image = await Picture(s.ImagePath),
+            }),
+            projects = await OneByOne(projects, async p => new
             {
                 title = p.ProjectName, location = p.SiteLocation, category = p.Sector, description = p.ShortDescription,
-                photos = photos.Where(f => f.WebProjectId == p.WebProjectId).Select(f => f.FilePath).ToList(),
+                photos = (await OneByOne(photos.Where(f => f.WebProjectId == p.WebProjectId), f => Picture(f.FilePath)))
+                         .OfType<string>().ToList(),
             }),
-            services,
-            about,   // About Us rows in order: picture, heading + text, optional second heading + text
+            // About Us rows in order: picture, heading + text, optional second heading + text
+            about = await OneByOne(about, async s => new
+            {
+                heading = s.Heading, text = s.Body, second_heading = s.Heading2, second_text = s.Body2,
+                image = await Picture(s.ImagePath),
+            }),
         };
-        db.WebsitePublishes.Add(new WebsitePublish
+        if (missing.Count > 0)
+            return (null, "These pictures are missing from the files folder, so the website can't show them:\n" +
+                          string.Join("\n", missing.Distinct()) + "\nChoose them again on their page, save, then publish.");
+
+        var json = JsonSerializer.Serialize(site, new JsonSerializerOptions
         {
-            PublishedBy = Session.CurrentUser!.UserId,
-            PublishedAt = DateTime.Now,
-            Content = JsonSerializer.Serialize(snapshot),
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,   // keep ₱, ñ readable
         });
-        await db.SaveChangesAsync();
-        return null;
+        files[SiteFolder + "/site.json"] = Encoding.UTF8.GetBytes(json);
+        return (new SiteFiles(json, files), null);
+    }
+
+    /// <summary>Runs <paramref name="make"/> for each item in turn (pictures are read one at a time).</summary>
+    static async Task<List<TOut>> OneByOne<TIn, TOut>(IEnumerable<TIn> items, Func<TIn, Task<TOut>> make)
+    {
+        var list = new List<TOut>();
+        foreach (var item in items) list.Add(await make(item));
+        return list;
     }
 
     public static async Task<SavedStamp?> LastAsync()

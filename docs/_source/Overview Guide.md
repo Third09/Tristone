@@ -103,7 +103,7 @@ The sidebar follows the Figma design: **Home, Projects, Services, About Us, Cont
 
 **Save Changes** keeps your edits; **Publish Website** (top right) puts everything saved on the live website.
 
-Not connected yet: the live website still shows its own built-in text. Connecting it needs small changes to the website's files (waiting for the website developer's OK) and the API.
+Publish sends your changes to the website's GitHub page, and Netlify (the website's host) shows them in about a minute. Each PC needs the GitHub token once (GitHub Settings).
 
 # 6. How it looks
 
@@ -138,8 +138,8 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 **Next**
 
 1. Check the "Check at home" list in the Testing Log on real data.
-2. The website side (after the website developer agrees): labels on the website's text and pictures, the Contact form changes, the visit counter.
-3. The **API**: receives inquiries and visits from the website and gives it what you published.
+2. The website side: the Contact form changes and the visit counter.
+3. The **API**: receives inquiries and visits from the website.
 4. **Phase 6, the office setup:** the Linux server (database, files, backups, security), Setup.exe for the 5 PCs, and the website connection through Cloudflare Tunnel.
 
 # 9. Words used

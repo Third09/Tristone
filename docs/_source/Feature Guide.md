@@ -343,8 +343,11 @@ Owner decisions 2026-11-01, following the Figma design "CCMS SUPERSYSTEM". Who: 
 
 ## 10.1 Layout, saving and publishing
 
-- Sidebar: Home, Projects, Services, About Us, Contact Us ("(n new)" inquiries), Log out. Top bar: page title, signed-in user, **Publish Website**, last published (date and who).
-- **Save Changes** stores edits in the database only; the live website does not change. **Publish Website** (Yes/No) takes a snapshot of everything saved and makes it the live version (`website_publishes`). Unsaved edits on the open page are not included (the message says so).
+- Sidebar: Home, Projects, Services, About Us, Contact Us ("(n new)" inquiries), Log out. Top bar: page title, signed-in user, **GitHub Settings**, **Publish Website**, last published (date and who).
+- **Save Changes** stores edits in the database only; the live website does not change. **Publish Website** (Yes/No) puts everything saved on the live website: it writes `site.json` and the pictures into the website's GitHub repository as one commit, and Netlify updates the live site in about a minute. A copy is kept in `website_publishes`. Unsaved edits on the open page are not included (the message says so).
+- **GitHub Settings** (per PC, Website Admins and Admins): repository (owner/name), branch, and a GitHub token with only this repository and Contents: Read and write. The token is kept encrypted on that PC; an empty token box keeps the saved one. **Test** checks access. The first Publish on a PC without settings opens this window.
+- Publish messages: "Can't reach GitHub" (no internet), "didn't accept the token" (wrong or expired: enter a new one), "isn't allowed to change this repository" (token permission), "can't find" (repository/branch name or token access), "changed on GitHub at the same moment" (click Publish again), missing pictures (listed by path: choose them again and save). Nothing changes on the live site when a publish fails.
+- On the website, an empty picture keeps the website's own picture; an empty Projects list hides the Projects section.
 - Leaving a page or logging out with unsaved edits asks first. Discard Changes reloads the saved version.
 - Pictures: JPEG or PNG, 8 MB at most each; stored in the shared files folder.
 
@@ -382,7 +385,7 @@ Any number of sections (owner request 2026-11-03), shown on the website in their
 
 ## 10.7 Not done yet (needs the website side)
 
-The live website does not read these yet: the website files need labels on each editable text and picture, the Publish rebuild, the visit report and the Contact form changes (3 fixed services + Other, optional Project Location). The owner is asking the website's developer first.
+Publish now reaches the live website (2026-11-03). Still to do: the visit report (Website Traffic) and the Contact form changes (3 fixed services + Other, optional Project Location), which need the API.
 
 # 11. Glossary
 

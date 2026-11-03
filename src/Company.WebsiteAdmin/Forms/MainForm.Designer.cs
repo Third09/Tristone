@@ -31,6 +31,7 @@ namespace Company.WebsiteAdmin.Forms
             lblPageTitle = new Label();
             lblUserName = new Label();
             btnPublishWebsite = new Button();
+            btnGitHubSettings = new Button();
             lblLastPublished = new Label();
             pnlContent = new Panel();
             pnlSidebar.SuspendLayout();
@@ -128,6 +129,7 @@ namespace Company.WebsiteAdmin.Forms
             pnlTopBar.Controls.Add(lblPageTitle);
             pnlTopBar.Controls.Add(lblUserName);
             pnlTopBar.Controls.Add(btnPublishWebsite);
+            pnlTopBar.Controls.Add(btnGitHubSettings);
             pnlTopBar.Controls.Add(lblLastPublished);
             pnlTopBar.Dock = DockStyle.Top;
             pnlTopBar.Name = "pnlTopBar";
@@ -158,6 +160,17 @@ namespace Company.WebsiteAdmin.Forms
             btnPublishWebsite.TabIndex = 6;
             btnPublishWebsite.Text = "Publish Website";
             btnPublishWebsite.Click += btnPublishWebsite_Click;
+            //
+            // btnGitHubSettings  (where Publish Website sends the content; per PC)
+            //
+            btnGitHubSettings.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnGitHubSettings.Location = new Point(504, 18);
+            btnGitHubSettings.Name = "btnGitHubSettings";
+            btnGitHubSettings.Font = new Font("Segoe UI", 10F);
+            btnGitHubSettings.Size = new Size(136, 40);
+            btnGitHubSettings.TabIndex = 7;
+            btnGitHubSettings.Text = "GitHub Settings";
+            btnGitHubSettings.Click += btnGitHubSettings_Click;
             //
             // lblLastPublished
             //
@@ -217,6 +230,7 @@ namespace Company.WebsiteAdmin.Forms
         private Label lblPageTitle;
         private Label lblUserName;
         private Button btnPublishWebsite;
+        private Button btnGitHubSettings;
         private Label lblLastPublished;
         private Panel pnlContent;
         private System.Windows.Forms.Timer tmrIdle;

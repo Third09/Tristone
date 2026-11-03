@@ -335,7 +335,12 @@ Website Admin is a level in `users` (script 011), created in User Accounts like 
 
 ## 10.3 Saving and publishing (`Services/WebsiteContentService`, `PublishService`, `WebsiteAccess`, `WebsiteImages`)
 
-- **Save Changes** writes the database only (not live). **Publish Website** (`PublishService.PublishAsync`) builds a JSON snapshot of everything saved: all `website_content` items except the recipient email, visible featured projects in order with their showcase photo paths, visible services. It inserts it into `website_publishes`. The live site will be built from the latest snapshot (Netlify rebuild, with the API piece).
+- **Save Changes** writes the database only (not live). **Publish Website** (`PublishService.PublishAsync`, owner decision 2026-11-03) pushes the content to the website's GitHub repository, and Netlify updates the live site in about a minute (no server needed):
+  - `PublishService.BuildAsync` makes `site.json`: `home` (headline, subheadline, image), `contact` (address, phone, email, copyright; never the recipient email), visible `services`, visible `projects` with their showcase photos, `about` sections in order. Pictures are copied from the files folder with web-safe names and their addresses become `/Updated/content/images/<name>`. A missing picture stops the publish with its path.
+  - `GitHubPublisher.PushAsync` makes `Updated/content` in the repository hold exactly those files as **one commit** through GitHub's REST API (blobs, tree, commit, move the branch): unchanged files are skipped (git blob hash), unused pictures are removed, and nothing changed = no commit. Errors come back as plain messages (bad or expired token, no access, branch not found, changed at the same moment).
+  - On success `site.json` is also stored in `website_publishes` (Last published).
+  - `PublishSettings` (per PC, `C:\ProgramData\TriStone\OfficeApp\publishsettings.json`): repository (default `Third09/tristone_website`), branch (default `Frontend`) and a GitHub token encrypted with DPAPI. Set in **GitHub Settings** (`Forms/PublishSettingsForm`, top bar; also opens on the first publish); **Test** calls `GitHubPublisher.TestAsync` (repository reachable, token may push, branch exists).
+  - The website side: `Updated/js/content.js` (loaded after `gallery.js`) reads `/Updated/content/site.json` and fills the hero, contact details and footer, the service cards, the projects gallery (`galleryData`) and the About Us rows (picture and text take turns). No `site.json` or an empty picture = the page keeps what `index.html` has.
 - `WebsiteAccess.Require()` = Website Admin or Admin (`User.CanOpenWebsiteAdmin`), re-checked by every service. Edit History department: `"Website"`.
 - `WebsiteImages`: JPEG/PNG, 8 MB max, stored with `FileStore` under `website\yyyy\MM`; `LoadAsync` reads into memory so files are not locked.
 - `WebsiteContentService.SaveAsync(what, texts, newImages)`: validates the length limits (`MaxLength`), required items (headline, headings, recipient email) and emails; writes only changed keys; one audit row listing the changed keys (pictures by file name).
@@ -383,11 +388,12 @@ Each part is tested with a throwaway console program (net10.0-windows, reference
 | HR Settings, Cash Advances, Payroll, Payslip History | 47 |
 | Access levels (Admin view-only, Employee / Supervisor) | 38 |
 | Website Admin editors (Home, Projects, Services, About Us, Contact Us, Publish) | 43 |
+| Publish to GitHub (site.json, pictures, one commit, errors) + website fill-in | 26 + browser check |
 
 **Not tested yet:** the "last active Admin" protection (needs a separate test database), the scanner employee file on the real scanner, and payroll on real attendance (both under "Check at home").
 
 # Coming next
 
-- The website side of Website Admin (needs the friend's OK): labels on the website's texts and pictures, the Publish rebuild, the visit counter, Contact form changes
+- The rest of the website side: the visit counter and the Contact form changes
 - The API and the website Contact form
 - Phase 6: the server and the installers
