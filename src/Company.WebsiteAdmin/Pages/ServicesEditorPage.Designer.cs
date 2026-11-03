@@ -261,10 +261,11 @@ namespace Company.WebsiteAdmin.Pages
             cboServiceName.Location = new Point(24, 342);
             cboServiceName.Name = "cboServiceName";
             cboServiceName.Size = new Size(340, 27);
-            cboServiceName.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboServiceName.DropDownStyle = ComboBoxStyle.DropDown;
+            cboServiceName.MaxLength = 60;
             cboServiceName.Font = new Font("Segoe UI", 10.5F);
             cboServiceName.TabIndex = 12;
-            cboServiceName.SelectedIndexChanged += Field_Changed;
+            cboServiceName.TextChanged += Field_Changed;
             // 
             // lblServiceSector
             // 

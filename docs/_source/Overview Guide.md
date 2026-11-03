@@ -97,7 +97,7 @@ The sidebar follows the Figma design: **Home, Projects, Services, About Us, Cont
 |---|---|
 | **Home** | the big top picture, the headline and the line under it, with a live preview |
 | **Projects** | which office projects show on the website (only ones ticked **Show on website**), their short description and up to 10 photos |
-| **Services** | the service cards (3 fixed services), each with category, location, description and picture |
+| **Services** | the service cards (any service you type), each with category, location, description and picture |
 | **About Us** | the sections (starting with About Tri-Stone, Our Principles, Vision & Mission): picture, heading, text; add, reorder, delete |
 | **Contact Us** | the inquiries from the website's Contact form, the counts and website visits, where inquiries are emailed, and the company address, phone, email and footer |
 

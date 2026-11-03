@@ -240,6 +240,7 @@ public static class WebServiceService
 {
     public const int MaxDescription = 100;
     public const int MaxLocation = 100;
+    public const int MaxName = 60;
 
     public static async Task<List<WebServiceRow>> ListAsync()
     {
@@ -255,9 +256,14 @@ public static class WebServiceService
         return await db.WebsiteServices.AsNoTracking().FirstOrDefaultAsync(s => s.WebServiceId == id);
     }
 
-    static string? Check(WebServiceInput i, string? newImage)
+    /// <summary><paramref name="hasPicture"/>: the card will have its own picture (needed for a typed new service, which has no default one).</summary>
+    static string? Check(WebServiceInput i, string? newImage, bool hasPicture)
     {
-        if (!WebsiteServiceNames.All.Contains(i.ServiceName)) return "Choose a service.";
+        // Any service can be typed (owner request 2026-11-03); the 3 original ones are offered in the list.
+        if (i.ServiceName == "") return "Please type or choose the name of the service.";
+        if (i.ServiceName.Length > MaxName) return $"The name is too long ({MaxName} characters at most).";
+        if (!hasPicture && !WebsiteServiceNames.All.Contains(i.ServiceName, StringComparer.OrdinalIgnoreCase))
+            return "Please add a picture: a new service has no picture of its own on the website.";
         if (!ProjectSectors.All.Contains(i.Sector)) return "Choose a category.";
         if (i.Location?.Length > MaxLocation) return $"The location is too long ({MaxLocation} characters at most).";
         if (i.ShortDescription?.Length > MaxDescription) return $"The short description is too long ({MaxDescription} characters at most).";
@@ -267,6 +273,8 @@ public static class WebServiceService
 
     static WebServiceInput Clean(WebServiceInput i) => i with
     {
+        ServiceName = WebsiteServiceNames.All.FirstOrDefault(n => n.Equals(i.ServiceName.Trim(), StringComparison.OrdinalIgnoreCase))
+                      ?? string.Join(' ', i.ServiceName.Split(' ', StringSplitOptions.RemoveEmptyEntries)),
         Location = string.IsNullOrWhiteSpace(i.Location) ? null : i.Location.Trim(),
         ShortDescription = string.IsNullOrWhiteSpace(i.ShortDescription) ? null : i.ShortDescription.Trim(),
     };
@@ -282,7 +290,7 @@ public static class WebServiceService
     {
         if (WebsiteAccess.Require() is { } denied) return (null, denied);
         input = Clean(input);
-        if (Check(input, newImage) is { } problem) return (null, problem);
+        if (Check(input, newImage, newImage != null) is { } problem) return (null, problem);
         using var db = Db.Open();
         var s = new WebsiteService
         {
@@ -303,10 +311,10 @@ public static class WebServiceService
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
         input = Clean(input);
-        if (Check(input, newImage) is { } problem) return problem;
         using var db = Db.Open();
         var s = await db.WebsiteServices.FirstOrDefaultAsync(x => x.WebServiceId == id);
         if (s == null) return "This service no longer exists.";
+        if (Check(input, newImage, newImage != null || s.ImagePath != null) is { } problem) return problem;
         var before = Snapshot(s);
         s.ServiceName = input.ServiceName;
         s.Sector = input.Sector;

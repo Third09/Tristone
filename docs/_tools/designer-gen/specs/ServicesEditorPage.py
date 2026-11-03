@@ -37,7 +37,7 @@ CONTROLS = [
     ("Label", "lblServiceImageName", 24, 248, None, None, {"PARENT": "cardServiceForm", "MaximumSize": "new Size(700, 0)"}),
     ("Label", "lblServiceInfo", 24, 278, None, None, {"PARENT": "cardServiceForm", "Font": SECTION, "Text": T("Service Information")}),
     ("Label", "lblServiceName", 24, 318, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Name of Service")}),
-    ("ComboBox", "cboServiceName", 24, 342, 340, 27, dict(DDL, PARENT="cardServiceForm", Font=INPUT)),
+    ("ComboBox", "cboServiceName", 24, 342, 340, 27, dict(PARENT="cardServiceForm", Font=INPUT, MaxLength=60)),   # typeable: any service (2026-11-03)
     ("Label", "lblServiceSector", 388, 318, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Category")}),
     ("ComboBox", "cboServiceSector", 388, 342, 340, 27, dict(DDL, PARENT="cardServiceForm", Font=INPUT, Anchor=TLR)),
     ("Label", "lblServiceLocation", 24, 384, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Location (e.g. San Juan City)")}),
@@ -81,7 +81,7 @@ EVENTS = {
     "btnDeleteWebService": [("Click", "btnDeleteWebService_Click")],
     "txtServiceDesc": [("TextChanged", "Field_Changed")],
     "txtServiceLocation": [("TextChanged", "Field_Changed")],
-    "cboServiceName": [("SelectedIndexChanged", "Field_Changed")],
+    "cboServiceName": [("TextChanged", "Field_Changed")],
     "cboServiceSector": [("SelectedIndexChanged", "Field_Changed")],
     "btnSaveWebService": [("Click", "btnSaveWebService_Click")],
     "btnCancelWebService": [("Click", "btnCancelWebService_Click")],

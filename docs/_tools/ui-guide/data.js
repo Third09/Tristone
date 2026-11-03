@@ -386,7 +386,7 @@ const websiteAdmin = [
         ["Title", "Label", "lblFormMode", "e.g. \"Service Image - Slot 1\" or \"New Service\"."],
         ["Picture drop zone", "DropZone + Label", "dzService, lblServiceImageName", "Click or drop a JPEG/PNG (8 MB at most)."],
         ["Section title", "Label", "lblServiceInfo", "\"Service Information\"."],
-        ["Name of service / Category", "ComboBox (DropDownList) + Labels", "cboServiceName, cboServiceSector, lblServiceName, lblServiceSector", "The 3 fixed services / the project sectors."],
+        ["Name of service / Category", "ComboBox (DropDown: type or pick) / ComboBox (DropDownList) + Labels", "cboServiceName, cboServiceSector, lblServiceName, lblServiceSector", "Any service name (the 3 originals are in its list; a new one needs a picture) / the project sectors."],
         ["Location", "InputFrame + TextBox (max 100)", "frmServiceLocation, txtServiceLocation, lblServiceLocation", "e.g. San Juan City."],
         ["Short description", "InputFrame + TextBox (max 100) + Labels", "frmServiceDesc, txtServiceDesc, lblServiceDesc, lblServiceDescCount", "With a counter."],
       ]},

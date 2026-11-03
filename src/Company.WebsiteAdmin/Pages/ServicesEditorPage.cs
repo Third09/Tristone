@@ -121,6 +121,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     {
         loading = true;
         cboServiceName.SelectedIndex = -1;
+        cboServiceName.Text = "";
         cboServiceSector.SelectedIndex = -1;
         txtServiceLocation.Clear();
         txtServiceDesc.Clear();
@@ -160,7 +161,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         showingRow = row;
         lblFormMode.Text = $"Service Image - Slot {row.Slot}";
         btnHideShowService.Text = s.IsVisible ? "Unpublish" : "Publish";
-        cboServiceName.SelectedItem = s.ServiceName;
+        cboServiceName.Text = s.ServiceName;
         cboServiceSector.SelectedItem = s.Sector;
         txtServiceLocation.Text = s.Location ?? "";
         txtServiceDesc.Text = s.ShortDescription ?? "";
@@ -174,7 +175,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 
     string PictureName => newImage != null ? Path.GetFileName(newImage) : storedImage != null ? Path.GetFileName(storedImage) : "(none)";
 
-    ServiceForm ReadForm() => new((string?)cboServiceName.SelectedItem ?? "", (string?)cboServiceSector.SelectedItem ?? "",
+    ServiceForm ReadForm() => new(cboServiceName.Text.Trim(), (string?)cboServiceSector.SelectedItem ?? "",
                                   txtServiceLocation.Text.Trim(), txtServiceDesc.Text.Trim(), PictureName);
 
     void SetPicture(Image? image)
@@ -226,7 +227,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         else using (var gray = new SolidBrush(Theme.GridEmpty)) g.FillRectangle(gray, pic);
         g.ResetClip();
         using var head = new Font("Segoe UI", 11f, FontStyle.Bold);
-        TextRenderer.DrawText(g, (string?)cboServiceName.SelectedItem ?? "", head, new Rectangle(14, 150, r.Width - 28, 24), Theme.Text, TextFormatFlags.EndEllipsis);
+        TextRenderer.DrawText(g, cboServiceName.Text.Trim(), head, new Rectangle(14, 150, r.Width - 28, 24), Theme.Text, TextFormatFlags.EndEllipsis);
         TextRenderer.DrawText(g, txtServiceDesc.Text, Font, new Rectangle(14, 176, r.Width - 28, 40), Theme.TextMuted, TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
         var where = string.Join("  ·  ", new[] { (string?)cboServiceSector.SelectedItem, txtServiceLocation.Text.Trim() }.Where(x => !string.IsNullOrEmpty(x)));
         TextRenderer.DrawText(g, where, Font, new Rectangle(14, 220, r.Width - 28, 20), Theme.Orange, TextFormatFlags.EndEllipsis);
