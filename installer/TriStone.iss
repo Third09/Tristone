@@ -10,6 +10,10 @@
 #ifndef AppVersion
   #define AppVersion "1.0.0"
 #endif
+; Tests build with /DPriv=lowest (no administrator prompt).
+#ifndef Priv
+  #define Priv "admin"
+#endif
 
 [Setup]
 AppId={{6F0C2B7E-6F3D-4A51-9B7E-2C4D9A1E5B30}
@@ -25,7 +29,7 @@ Compression=lzma2/max
 SolidCompression=yes
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-PrivilegesRequired=admin
+PrivilegesRequired={#Priv}
 UninstallDisplayIcon={app}\TriStone.exe
 WizardStyle=modern
 ; Close a running Tri-Stone before updating it.
