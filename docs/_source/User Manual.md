@@ -525,7 +525,7 @@ Never send the token in chat or email. If it leaks, delete it on GitHub and make
 5. Click **Deploy** > **Manage deployments** > the pencil (**Edit**) > **Version: New version** > **Deploy**. The web address stays the same.
 6. In Website Admin, click **Website Settings**, paste the key in **Read key**, click **Test Inquiries**, then **Save**.
 
-Each PC that uses Website Admin needs step 6 once. Keep the read key private.
+Each PC that uses Website Admin needs step 6 once. Keep the read key private. The box always looks empty when you open Website Settings again (the key is never shown back, for safety). The green line **✓ A key is saved on this PC** above the box tells you it's there; leave the box empty to keep it. The GitHub token works the same way.
 
 # 11. The office server (Phase 6)
 

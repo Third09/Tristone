@@ -18,8 +18,17 @@ public partial class PublishSettingsForm : Form
         txtRepository.Text = saved.Repository;
         txtBranch.Text = saved.Branch;
         txtInquiryScriptUrl.Text = saved.InquiryScriptUrl;
-        if (saved.Token != "") txtToken.PlaceholderText = "A token is saved on this PC. Leave empty to keep it.";
-        if (saved.InquiryKey != "") txtInquiryKey.PlaceholderText = "A key is saved on this PC. Leave empty to keep it.";
+        // Say plainly whether a token / key is already saved: the boxes always look empty (they're never filled back
+        // in, for safety), which looked like the key had been deleted (owner report 2026-11-03).
+        ShowSaved(lblToken, "GitHub token", saved.Token != "", "A token");
+        ShowSaved(lblInquiryKey, "Read key", saved.InquiryKey != "", "A key");
+    }
+
+    static void ShowSaved(Label label, string name, bool isSaved, string what)
+    {
+        label.Text = isSaved ? $"{name}   ✓ {what} is saved on this PC. Leave the box empty to keep it."
+                             : $"{name}   (nothing saved on this PC yet)";
+        label.ForeColor = isSaved ? Color.FromArgb(6, 118, 71) : Company.OfficeApp.UI.Theme.TextMuted;
     }
 
     /// <summary>The settings as typed (saved token/key when their box is empty), or null with a message shown.</summary>
