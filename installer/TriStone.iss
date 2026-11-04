@@ -1,8 +1,8 @@
 ; =====================================================================
-; Tri-Stone Setup.exe for the office PCs (Phase 6). Built by installer\build-installer.cmd with Inno Setup 6.
+; Tri-Stone Office Setup.exe for the office PCs (Phase 6). Built by installer\build-office.cmd with Inno Setup 6.
 ; Installs the self-contained Tri-Stone program (no .NET needed on the PC) into Program Files, with a desktop
-; and Start menu shortcut. On first start Tri-Stone asks for the database server (Database Settings): type the
-; office server's address (e.g. 192.168.1.50), user tristone_app and the app password.
+; and Start menu shortcut, plus edition.json: the server address and login are fixed there. The first start asks
+; only for the database password (typed once on each PC, by whoever installs it; it is not inside this Setup).
 ; Settings stay in C:\ProgramData\TriStone when Tri-Stone is uninstalled or updated.
 ; =====================================================================
 
@@ -24,7 +24,7 @@ DefaultDirName={autopf}\Tri-Stone
 DefaultGroupName=Tri-Stone
 DisableProgramGroupPage=yes
 OutputDir=output
-OutputBaseFilename=Tri-Stone-Setup-{#AppVersion}
+OutputBaseFilename=Tri-Stone-Office-Setup-{#AppVersion}
 Compression=lzma2/max
 SolidCompression=yes
 ArchitecturesAllowed=x64compatible
@@ -38,8 +38,13 @@ CloseApplications=yes
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Shortcuts:"
 
+[Dirs]
+; Every Windows user on the PC shares the saved database password and website settings.
+Name: "{commonappdata}\TriStone"; Permissions: users-modify
+
 [Files]
 Source: "publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "edition\edition.json"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\Tri-Stone"; Filename: "{app}\TriStone.exe"

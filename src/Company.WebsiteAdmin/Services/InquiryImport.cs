@@ -52,6 +52,7 @@ public static class InquiryImport
     public static async Task<string?> SetRecipientAsync(string email)
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
+        if (AppEdition.IsDemo) return null;   // the Demo has no connection to the real script
         var settings = PublishSettings.Load();
         if (!settings.InquiriesSet) return "Inquiries aren't set up on this PC yet (Website Settings).";
         try

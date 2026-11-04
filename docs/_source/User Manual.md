@@ -19,7 +19,7 @@ Site workers do not use the app. They only use the fingerprint scanner.
 
 # 2. Installing the app *(coming soon)*
 
-A normal installer (Setup.exe) will be provided at the end of the project. It installs **Tri-Stone**, the one program everyone opens (office staff and Website Admins alike), and puts a shortcut on the desktop. The first time it opens it asks for the server address once.
+**Tri-Stone** is the one program everyone opens (office staff and Website Admins alike). There are two Setup files: the **Office** version for the office PCs and the stand-alone **Demo** version (chapter 11, parts F and G).
 
 Until then, on the development PCs, the program is `Apps\Tri-Stone\TriStone.exe` inside the project folder.
 
@@ -548,7 +548,7 @@ One Linux Mint laptop holds the database, the scans and pictures, and the nightl
 **C. Each office PC (once)**
 
 1. Double-click `server\connect-files.cmd` and type the files password.
-2. Run **Tri-Stone-Setup.exe** (made with `installer\build-installer.cmd`, see below) and click through it. Tri-Stone opens **Database Settings** the first time: type Server **192.168.1.50**, User **tristone_app** and the app password, then **Test** and **Save**.
+2. Run **Tri-Stone-Office-Setup.exe** (part F) and click through it. The first time Tri-Stone opens, type the **app password** and click **Save**. The server address and login are already fixed. Staff never see this again.
 3. In Website Admin, set up **Website Settings** on the PCs that will publish.
 
 **D. Updates and backups**
@@ -569,8 +569,15 @@ The same setup also works on a Windows 10/11 PC that stays on. Use the files in 
 6. The office PCs connect exactly as in **C** above.
 7. A second backup copy: put a folder (e.g. a USB drive's `E:\Backups`) in `"CopyTo"` in `C:\ProgramData\TriStone\Server\backup.json`.
 
-**F. Making Setup.exe (for the office PCs)**
+**F. Making the Office Setup**
 
 1. Install **Inno Setup 6** once (free, jrsoftware.org).
-2. Double-click `installer\build-installer.cmd`. After a few minutes it makes `installer\output\Tri-Stone-Setup-1.0.0.exe`.
+2. Double-click `installer\build-office.cmd`. After a few minutes it makes `installer\output\Tri-Stone-Office-Setup-1.0.0.exe`, with the server address **192.168.1.50** fixed inside. A different address: `build-office.cmd 1.0.0 192.168.1.60` (the password is never inside the Setup file).
 3. Copy that file to each office PC (USB stick or the shared folder) and run it. A new version later: run the build again and install it over the old one; the settings stay.
+
+**G. The Demo version (to show Tri-Stone on any PC)**
+
+1. Double-click `installer\build-demo.cmd` (on a PC with PostgreSQL 18). It makes `installer\output\Tri-Stone-Demo-Setup-1.0.0.exe`.
+2. Copy that file to any Windows PC and run it. It needs no administrator rights, no internet and no other programs.
+3. Open **Tri-Stone Demo** and sign in as **demo.admin**, password **Demo1234**. Other logins, same password: demo.website, hr.sup, hr.emp, inv.sup, inv.emp, sub.sup, sub.emp, rec.sup, rec.emp.
+4. Everything in it is made up, and it can't change the live website. To start over: Start menu > **Reset Tri-Stone Demo**.

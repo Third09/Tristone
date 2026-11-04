@@ -20,6 +20,9 @@ docs/_tools/guides/html/
 installer/output/
 installer/publish/
 installer/obj-release/
+installer/edition/
+installer/demo/pgsql/
+installer/demo/demo.dump
 
 # Word lock files while a document is open
 ~$*.docx

@@ -132,6 +132,7 @@ public static class PublishService
     /// <summary>The website repository folder Publish owns (nothing else should be put there).</summary>
     public const string SiteFolder = "Updated/content";
     const string WebRoot = "/" + SiteFolder + "/";
+    const string DemoRefusal = "This is the Demo version: it never changes the live website.";
 
     /// <summary>site.json and its pictures (repository path -> bytes), or the reason they can't be made.</summary>
     /// <summary><paramref name="Sources"/>: each picture's repository path -> its stored path in the files folder (kept with the
@@ -141,6 +142,7 @@ public static class PublishService
     public static async Task<string?> PublishAsync()
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
+        if (AppEdition.IsDemo) return DemoRefusal;
         var settings = PublishSettings.Load();
         if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
 
@@ -175,6 +177,7 @@ public static class PublishService
     public static async Task<string?> UndoAsync()
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
+        if (AppEdition.IsDemo) return DemoRefusal;
         var settings = PublishSettings.Load();
         if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
         List<WebsitePublish> last;

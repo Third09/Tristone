@@ -394,7 +394,21 @@ Any number of sections (owner request 2026-11-03), shown on the website in their
 
 Publish reaches the live website and the Contact form is connected (2026-11-03): its service list shows the published services (each name once) plus Other, and an optional Project Location box was added; both reach the email and Contact Us. Visits are counted (above). No server needed for any of it.
 
-# 11. Glossary
+# 11. The two versions
+
+| | Office | Demo |
+|---|---|---|
+| For | the 5 office PCs | showing Tri-Stone on any Windows PC |
+| Install | Program Files, needs administrator | current user only, no administrator |
+| Database | the office server; address and login fixed in the Setup file | its own private database on that PC (this PC only, port 54329), made on first start |
+| Password | typed once per PC, kept encrypted; not in the Setup file | none needed |
+| Data | the company's real data | made-up samples (15 employees, 10 logins, 6 projects, 3 weeks of attendance, receipts, subcontractors, inquiries) |
+| Website | Publish, Undo, inquiries, visits work | Publish, Undo and Website Settings off; no connection to the real script; Preview needs internet the first time |
+| Start | sign in | sign in as `demo.admin` / `Demo1234` |
+
+Demo logins, all with password `Demo1234`: `demo.admin`, `demo.website`, `hr.sup`, `hr.emp`, `inv.sup`, `inv.emp`, `sub.sup`, `sub.emp`, `rec.sup`, `rec.emp`. **Reset Tri-Stone Demo** in the Start menu goes back to the original samples. Closing the Demo stops its database; uninstalling deletes its data.
+
+# 12. Glossary
 
 | Term | Meaning in this system |
 |---|---|

@@ -1,3 +1,4 @@
+using Company.OfficeApp.Data;
 using Company.OfficeApp.UI;
 using Company.OfficeApp.Forms;
 using Company.OfficeApp.Services;
@@ -51,6 +52,8 @@ public partial class MainForm : Form
             (btnNavHome, ""), (btnNavProjects, ""), (btnNavServices, ""), (btnNavAboutUs, ""),
             (btnNavContactUs, ""), (btnSignOut, ""),
         ], lblUserName, lblLastPublished);
+        if (AppEdition.IsDemo)   // nothing reaches the live website from the Demo
+            btnPublishWebsite.Visible = btnUndoPublish.Visible = btnWebsiteSettings.Visible = false;
     }
 
     async void MainForm_Load(object sender, EventArgs e)
@@ -131,6 +134,7 @@ public partial class MainForm : Form
 
     async Task ShowLastPublishedAsync()
     {
+        if (AppEdition.IsDemo) { lblLastPublished.Text = "Demo version: publishing is off"; return; }
         try
         {
             lblLastPublished.Text = await PublishService.LastAsync() is { } p

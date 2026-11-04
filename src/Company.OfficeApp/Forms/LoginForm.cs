@@ -20,6 +20,13 @@ public partial class LoginForm : Form
         lblSubtitle.ForeColor = UI.Theme.TextMuted;
         btnSignIn.FlatAppearance.MouseOverBackColor = Color.FromArgb(55, 55, 55);
         lblError.Text = notice ?? "";
+        // Only development copies change the connection here. Office: fixed by Setup; Demo: its own database.
+        lnkDbSettings.Visible = !Data.AppEdition.IsOffice && !Data.AppEdition.IsDemo;
+        if (Data.AppEdition.IsDemo)
+        {
+            Text = "Tri-Stone Demo - Sign In";
+            if (notice == null) lblError.Text = "Demo: sign in as demo.admin, password Demo1234";
+        }
     }
 
     void chkShowPassword_CheckedChanged(object sender, EventArgs e) =>

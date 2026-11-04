@@ -13,11 +13,27 @@ internal static class Program
     /// everyone else -> office app. After Sign Out it goes back to Sign In, until the person clicks Exit.
     /// </summary>
     [STAThread]
-    static void Main()
+    static void Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
         Theme.Enable();   // the app's look (UI/Theme.cs), applied to every window
 
+        if (AppEdition.IsDemo)
+        {
+            // One copy at a time: closing it stops the private database.
+            using var one = new Mutex(true, "TriStoneDemoRunning", out bool first);
+            if (!first) { MessageBox.Show("Tri-Stone Demo is already open.", "Tri-Stone Demo"); return; }
+            if (args.Contains("--reset-demo")) { DemoDatabase.Reset(); return; }
+            if (!DemoDatabase.Start()) return;
+            try { Run(); }
+            finally { DemoDatabase.Stop(); }
+            return;
+        }
+        Run();
+    }
+
+    static void Run()
+    {
         if (!EnsureDatabase()) return;
         Db.WarmUpInBackground();
 

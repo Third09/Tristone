@@ -20,6 +20,15 @@ public partial class DatabaseSettingsForm : Form
         txtDbPassword.Text = s.Password;
 
         if (problem != null) lblStatus.Text = problem;
+
+        if (AppEdition.IsOffice)
+        {
+            // The office PCs: everything is fixed by the Setup file, only the password is typed (and never shown again).
+            txtHost.ReadOnly = txtDatabase.ReadOnly = txtDbUser.ReadOnly = true;
+            numPort.Enabled = false;
+            txtDbPassword.Text = "";
+            lblTitle.Text = "Office database: type the password once on this PC (ask the Tri-Stone Admin)";
+        }
     }
 
     DbSettings ReadForm()

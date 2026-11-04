@@ -48,9 +48,25 @@ public class DbSettings
         }
     }
 
-    public bool Exists => File.Exists(FilePath);
+    /// <summary>Set up on this PC? The Demo always is; the Office version once its password was typed.</summary>
+    public bool Exists => AppEdition.IsDemo || (AppEdition.IsOffice ? Password != "" : File.Exists(FilePath));
 
     public static DbSettings Load()
+    {
+        if (AppEdition.IsDemo)   // the private database on this PC (trust, this PC only); nothing is read or saved
+            return new DbSettings { Host = "127.0.0.1", Port = AppEdition.DemoPort, Database = AppEdition.DemoDatabaseName, Username = "postgres" };
+        var s = LoadFile();
+        if (AppEdition.IsOffice)   // fixed by the Setup file; only the password comes from this PC
+        {
+            s.Host = AppEdition.Host;
+            s.Port = AppEdition.Port;
+            s.Database = AppEdition.Database;
+            s.Username = AppEdition.Username;
+        }
+        return s;
+    }
+
+    static DbSettings LoadFile()
     {
         if (!File.Exists(FilePath)) return new DbSettings();
         try { return JsonSerializer.Deserialize<DbSettings>(File.ReadAllText(FilePath)) ?? new DbSettings(); }
@@ -59,6 +75,7 @@ public class DbSettings
 
     public void Save()
     {
+        if (AppEdition.IsDemo) return;
         Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
         File.WriteAllText(FilePath, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
     }

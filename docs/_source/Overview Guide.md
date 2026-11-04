@@ -142,6 +142,8 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 3. The **API**: receives inquiries and visits from the website.
 4. **Phase 6, the office setup:** the server kit is ready (`server` folder: one install script for the Linux laptop with the database, shared files folder, firewall and nightly backups; a copy tool to move your data). Still to do: run it on the real laptop, Setup.exe for the 5 PCs, and the website connection through Cloudflare Tunnel.
 
+**Two versions of the program:** the **Office** version connects to the office server (address fixed, password typed once on each PC). The **Demo** version stands alone with its own database and made-up data, for showing Tri-Stone on any Windows PC; it can never change the live website.
+
 # 9. Words used
 
 | Word | Meaning |
