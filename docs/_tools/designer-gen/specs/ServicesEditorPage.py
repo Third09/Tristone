@@ -39,16 +39,13 @@ CONTROLS = [
     ("Label", "lblServiceInfo", 24, 278, None, None, {"PARENT": "cardServiceForm", "Font": SECTION, "Text": T("Service Information")}),
     ("Label", "lblServiceName", 24, 318, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Name of Service")}),
     ("ComboBox", "cboServiceName", 24, 342, 704, 27, dict(PARENT="cardServiceForm", Font=INPUT, MaxLength=60, Anchor=TLR)),   # typeable: any service (2026-11-03)
-    ("Label", "lblServiceLocation", 24, 384, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Location (e.g. San Juan City)")}),
-    (FRAME, "frmServiceLocation", 24, 408, 704, 44, {"PARENT": "cardServiceForm", "Anchor": TLR}),
-    ("TextBox", "txtServiceLocation", 12, 11, 680, 23, {"PARENT": "frmServiceLocation", "BorderStyle": "BorderStyle.None", "Font": INPUT}),
-    ("Label", "lblServiceDesc", 24, 464, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Short Description")}),
-    ("Label", "lblServiceDescCount", 628, 464, 100, 20, {"PARENT": "cardServiceForm", "Anchor": TR, "TextAlign": "ContentAlignment.MiddleRight", "Text": T("0/100")}),
-    (FRAME, "frmServiceDesc", 24, 488, 704, 44, {"PARENT": "cardServiceForm", "Anchor": TLR}),
+    ("Label", "lblServiceDesc", 24, 384, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Short Description")}),
+    ("Label", "lblServiceDescCount", 628, 384, 100, 20, {"PARENT": "cardServiceForm", "Anchor": TR, "TextAlign": "ContentAlignment.MiddleRight", "Text": T("0/100")}),
+    (FRAME, "frmServiceDesc", 24, 408, 704, 44, {"PARENT": "cardServiceForm", "Anchor": TLR}),
     ("TextBox", "txtServiceDesc", 12, 11, 680, 23, {"PARENT": "frmServiceDesc", "BorderStyle": "BorderStyle.None", "Font": INPUT}),
     # icon picker (owner request 2026-11-03): owner-drawn, icon + name
-    ("Label", "lblServiceIcon", 24, 544, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Icon (also picks the website's picture when you add none)")}),
-    ("ComboBox", "cboServiceIcon", 24, 568, 340, 40, dict(DDL, PARENT="cardServiceForm", Font=INPUT, DrawMode="DrawMode.OwnerDrawFixed", ItemHeight=34)),
+    ("Label", "lblServiceIcon", 24, 464, None, None, {"PARENT": "cardServiceForm", "Font": FIELD, "Text": T("Icon (also picks the website's picture when you add none)")}),
+    ("ComboBox", "cboServiceIcon", 24, 488, 340, 40, dict(DDL, PARENT="cardServiceForm", Font=INPUT, DrawMode="DrawMode.OwnerDrawFixed", ItemHeight=34)),
 
     # right: preview + message (docked top; last added sits highest)
     ("Company.OfficeApp.UI.StatusBox", "statusService", 20, 346, 420, 78, {"PARENT": "pnlServicesSide", "Dock": TOP}),
@@ -68,7 +65,6 @@ GRID_COLUMNS = {
     "dgvWebServices": [
         (TB, "colSlot", "Slot", "Slot", {"FillWeight": "30"}),
         (TB, "colServiceName", "ServiceName", "Service", {}),
-        (TB, "colLocation", "Location", "Location", {}),
         (TB, "colShown", "Shown", "On Website", {"FillWeight": "50"}),
     ],
 }
@@ -82,7 +78,6 @@ EVENTS = {
     "btnDeleteWebService": [("Click", "btnDeleteWebService_Click")],
     "btnDuplicateService": [("Click", "btnDuplicateService_Click")],
     "txtServiceDesc": [("TextChanged", "Field_Changed")],
-    "txtServiceLocation": [("TextChanged", "Field_Changed")],
     "cboServiceName": [("TextChanged", "Field_Changed")],
     "cboServiceIcon": [("SelectedIndexChanged", "Field_Changed")],
     "btnSaveWebService": [("Click", "btnSaveWebService_Click")],

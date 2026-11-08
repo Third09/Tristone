@@ -8,14 +8,14 @@ namespace Company.WebsiteAdmin.Pages;
 
 /// <summary>
 /// Website Admin > Services (Figma "admin services"): the service cards. The name comes from the 3 fixed services,
-/// the category from the office sectors; location and description are typed; one picture per card.
+/// a short description and one picture per card (no location since 2026-11-08, owner request).
 /// List page pattern (RecordForm): Add opens this page as a pop-up (<c>addOnly</c>: only the form and the save bar),
 /// the form is locked until a row is clicked, Save lists the changes. A Live Preview draws the card as the website shows it.
 /// </summary>
 public partial class ServicesEditorPage : UserControl, IWebsiteEditor
 {
     readonly bool addOnly;   // this copy is the Add New Service pop-up
-    record ServiceForm(string Service, string Location, string Description, string Icon, string Picture);
+    record ServiceForm(string Service, string Description, string Icon, string Picture);
 
     int? editingId;
     WebServiceRow? showingRow;
@@ -51,7 +51,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
             var known = WebsiteServiceNames.Suggestions.Any(s => s.Name.Equals(cboServiceName.Text.Trim(), StringComparison.OrdinalIgnoreCase));
             if (known) cboServiceIcon.SelectedItem = WebsiteServiceIcons.For(cboServiceName.Text);
         };
-        txtServiceLocation.MaxLength = WebServiceService.MaxLocation;
         EditorUi.Counter(txtServiceDesc, lblServiceDescCount, WebServiceService.MaxDescription);
         dzService.BrowseRequested += async (_, _) => { if (EditorUi.PickPicture(this) is { } path) await UsePictureAsync(path); };
         dzService.FilesDropped += async files =>
@@ -133,7 +132,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         cboServiceName.SelectedIndex = -1;
         cboServiceName.Text = "";
         cboServiceIcon.SelectedItem = WebsiteServiceIcons.Ruler;
-        txtServiceLocation.Clear();
         txtServiceDesc.Clear();
         storedImage = newImage = null;
         SetPicture(null);
@@ -173,7 +171,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         btnHideShowService.Text = s.IsVisible ? "Unpublish" : "Publish";
         cboServiceName.Text = s.ServiceName;
         cboServiceIcon.SelectedItem = s.Icon;
-        txtServiceLocation.Text = s.Location ?? "";
         txtServiceDesc.Text = s.ShortDescription ?? "";
         storedImage = s.ImagePath;
         newImage = null;
@@ -186,7 +183,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     string PictureName => newImage != null ? Path.GetFileName(newImage) : storedImage != null ? Path.GetFileName(storedImage) : "(none)";
 
     ServiceForm ReadForm() => new(cboServiceName.Text.Trim(),
-                                  txtServiceLocation.Text.Trim(), txtServiceDesc.Text.Trim(), WebsiteServiceIcons.Label(Icon), PictureName);
+                                  txtServiceDesc.Text.Trim(), WebsiteServiceIcons.Label(Icon), PictureName);
 
     string Icon => (string?)cboServiceIcon.SelectedItem ?? WebsiteServiceIcons.Ruler;
 
@@ -265,8 +262,6 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
         g.InterpolationMode = InterpolationMode.HighQualityBicubic;
         g.DrawImage(ServiceIconImages.Get(Icon), r.Width - 44, 146, 30, 30);
         TextRenderer.DrawText(g, txtServiceDesc.Text, Font, new Rectangle(14, 176, r.Width - 28, 40), Theme.TextMuted, TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis);
-        var where = string.Join("  ·  ", new[] { txtServiceLocation.Text.Trim() }.Where(x => !string.IsNullOrEmpty(x)));
-        TextRenderer.DrawText(g, where, Font, new Rectangle(14, 220, r.Width - 28, 20), Theme.Orange, TextFormatFlags.EndEllipsis);
     }
 
     async void btnAddWebService_Click(object sender, EventArgs e)
@@ -282,7 +277,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     {
         if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
         var form = ReadForm();
-        var input = new WebServiceInput(form.Service, form.Location, form.Description, Icon);
+        var input = new WebServiceInput(form.Service, null, form.Description, Icon);   // no location since 2026-11-08 (owner)
         if (editingId != null && original != null)
         {
             var answer = RecordForm.ConfirmSave(this, original.Service, original, form);
@@ -359,7 +354,7 @@ public partial class ServicesEditorPage : UserControl, IWebsiteEditor
     async void btnDeleteWebService_Click(object sender, EventArgs e)
     {
         if (editingId is not { } id || showingRow is not { } r) return;
-        if (MessageBox.Show(this, $"Delete the service card \"{r.ServiceName}{(r.Location == null ? "" : " - " + r.Location)}\" from the website?",
+        if (MessageBox.Show(this, $"Delete the service card \"{r.ServiceName}\" from the website?",
                 "Delete service", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
         try
         {

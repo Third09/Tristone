@@ -382,7 +382,7 @@ const websiteAdmin = [
       { name: "Featured Services Slots (cardServicesList)", rows: [
         ["Title + hint", "Label", "lblServicesTitle, lblServicesHint", "What the list is."],
         ["Add New Service", "Button", "btnAddWebService", "Opens the pop-up."],
-        ["Services table", "DataGridView", "dgvWebServices", "Columns: Slot, Service, Category, Location, On Website."],
+        ["Services table", "DataGridView", "dgvWebServices", "Columns: Slot, Service, On Website."],
         ["Move Up / Down, Unpublish, Delete", "Button", "btnMoveServiceUp, btnMoveServiceDown, btnHideShowService, btnDeleteWebService", "As on Projects."],
         ["Duplicate button", "Button", "btnDuplicateService", "A hidden copy of the chosen card, right after it."],
       ]},
@@ -392,11 +392,10 @@ const websiteAdmin = [
         ["Section title", "Label", "lblServiceInfo", "\"Service Information\"."],
         ["Name of service", "ComboBox (DropDown: type or pick) + Label", "cboServiceName, lblServiceName", "Any service name; the list offers 29 common services."],
         ["Icon", "ComboBox (owner-drawn: icon + name) + Label", "cboServiceIcon, lblServiceIcon", "29 icons shown with their pictures; a listed service picks its own. Also decides the website picture used when the card has none."],
-        ["Location", "InputFrame + TextBox (max 100)", "frmServiceLocation, txtServiceLocation, lblServiceLocation", "e.g. San Juan City."],
         ["Short description", "InputFrame + TextBox (max 100) + Labels", "frmServiceDesc, txtServiceDesc, lblServiceDesc, lblServiceDescCount", "With a counter."],
       ]},
       { name: "Right side and save bar", rows: [
-        ["Live Preview", "Card + Panel (drawn in code)", "cardServicePreview, lblServicePreviewTitle, pnlServicePreview", "The card as the website shows it: picture, icon, name, description and location."],
+        ["Live Preview", "Card + Panel (drawn in code)", "cardServicePreview, lblServicePreviewTitle, pnlServicePreview", "The card as the website shows it: picture, icon, name and description."],
         ["Message box", "StatusBox", "statusService", "Unsaved / saved / error."],
         ["Message line", "Label", "lblServiceMsg", "Short text in the save bar (the pop-up's only message)."],
         ["Discard / Save Changes", "Button", "btnCancelWebService, btnSaveWebService", "In the pop-up: Cancel / Add Service."],

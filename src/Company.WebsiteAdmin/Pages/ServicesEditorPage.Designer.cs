@@ -37,9 +37,6 @@ namespace Company.WebsiteAdmin.Pages
             lblServiceInfo = new Label();
             lblServiceName = new Label();
             cboServiceName = new ComboBox();
-            lblServiceLocation = new Label();
-            frmServiceLocation = new Company.OfficeApp.UI.InputFrame();
-            txtServiceLocation = new TextBox();
             lblServiceDesc = new Label();
             lblServiceDescCount = new Label();
             frmServiceDesc = new Company.OfficeApp.UI.InputFrame();
@@ -70,9 +67,6 @@ namespace Company.WebsiteAdmin.Pages
             cardServiceForm.Controls.Add(lblServiceInfo);
             cardServiceForm.Controls.Add(lblServiceName);
             cardServiceForm.Controls.Add(cboServiceName);
-            cardServiceForm.Controls.Add(lblServiceLocation);
-            cardServiceForm.Controls.Add(frmServiceLocation);
-            frmServiceLocation.Controls.Add(txtServiceLocation);
             cardServiceForm.Controls.Add(lblServiceDesc);
             cardServiceForm.Controls.Add(lblServiceDescCount);
             cardServiceForm.Controls.Add(frmServiceDesc);
@@ -90,7 +84,6 @@ namespace Company.WebsiteAdmin.Pages
             cardServicesSave.Controls.Add(btnSaveWebService);
             colSlot = new DataGridViewTextBoxColumn();
             colServiceName = new DataGridViewTextBoxColumn();
-            colLocation = new DataGridViewTextBoxColumn();
             colShown = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvWebServices).BeginInit();
             SuspendLayout();
@@ -170,7 +163,7 @@ namespace Company.WebsiteAdmin.Pages
             dgvWebServices.AllowUserToAddRows = false;
             dgvWebServices.AllowUserToDeleteRows = false;
             dgvWebServices.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvWebServices.Columns.AddRange(new DataGridViewColumn[] { colSlot, colServiceName, colLocation, colShown });
+            dgvWebServices.Columns.AddRange(new DataGridViewColumn[] { colSlot, colServiceName, colShown });
             dgvWebServices.MultiSelect = false;
             dgvWebServices.ReadOnly = true;
             dgvWebServices.RowHeadersVisible = false;
@@ -278,43 +271,17 @@ namespace Company.WebsiteAdmin.Pages
             cboServiceName.TabIndex = 12;
             cboServiceName.TextChanged += Field_Changed;
             // 
-            // lblServiceLocation
-            // 
-            lblServiceLocation.AutoSize = true;
-            lblServiceLocation.Location = new Point(24, 384);
-            lblServiceLocation.Name = "lblServiceLocation";
-            lblServiceLocation.Font = new Font("Segoe UI Semibold", 10F);
-            lblServiceLocation.Text = "Location (e.g. San Juan City)";
-            // 
-            // frmServiceLocation
-            // 
-            frmServiceLocation.Location = new Point(24, 408);
-            frmServiceLocation.Name = "frmServiceLocation";
-            frmServiceLocation.Size = new Size(704, 44);
-            frmServiceLocation.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            frmServiceLocation.TabIndex = 14;
-            // 
-            // txtServiceLocation
-            // 
-            txtServiceLocation.Location = new Point(12, 11);
-            txtServiceLocation.Name = "txtServiceLocation";
-            txtServiceLocation.Size = new Size(680, 23);
-            txtServiceLocation.BorderStyle = BorderStyle.None;
-            txtServiceLocation.Font = new Font("Segoe UI", 10.5F);
-            txtServiceLocation.TabIndex = 15;
-            txtServiceLocation.TextChanged += Field_Changed;
-            // 
             // lblServiceDesc
             // 
             lblServiceDesc.AutoSize = true;
-            lblServiceDesc.Location = new Point(24, 464);
+            lblServiceDesc.Location = new Point(24, 384);
             lblServiceDesc.Name = "lblServiceDesc";
             lblServiceDesc.Font = new Font("Segoe UI Semibold", 10F);
             lblServiceDesc.Text = "Short Description";
             // 
             // lblServiceDescCount
             // 
-            lblServiceDescCount.Location = new Point(628, 464);
+            lblServiceDescCount.Location = new Point(628, 384);
             lblServiceDescCount.Name = "lblServiceDescCount";
             lblServiceDescCount.Size = new Size(100, 20);
             lblServiceDescCount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -323,7 +290,7 @@ namespace Company.WebsiteAdmin.Pages
             // 
             // frmServiceDesc
             // 
-            frmServiceDesc.Location = new Point(24, 488);
+            frmServiceDesc.Location = new Point(24, 408);
             frmServiceDesc.Name = "frmServiceDesc";
             frmServiceDesc.Size = new Size(704, 44);
             frmServiceDesc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -342,14 +309,14 @@ namespace Company.WebsiteAdmin.Pages
             // lblServiceIcon
             // 
             lblServiceIcon.AutoSize = true;
-            lblServiceIcon.Location = new Point(24, 544);
+            lblServiceIcon.Location = new Point(24, 464);
             lblServiceIcon.Name = "lblServiceIcon";
             lblServiceIcon.Font = new Font("Segoe UI Semibold", 10F);
             lblServiceIcon.Text = "Icon (also picks the website's picture when you add none)";
             // 
             // cboServiceIcon  (owner-drawn: icon + name)
             // 
-            cboServiceIcon.Location = new Point(24, 568);
+            cboServiceIcon.Location = new Point(24, 488);
             cboServiceIcon.Name = "cboServiceIcon";
             cboServiceIcon.Size = new Size(340, 40);
             cboServiceIcon.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -451,12 +418,6 @@ namespace Company.WebsiteAdmin.Pages
             colServiceName.HeaderText = "Service";
             colServiceName.Name = "colServiceName";
             // 
-            // colLocation
-            // 
-            colLocation.DataPropertyName = "Location";
-            colLocation.HeaderText = "Location";
-            colLocation.Name = "colLocation";
-            // 
             // colShown
             // 
             colShown.DataPropertyName = "Shown";
@@ -504,9 +465,6 @@ namespace Company.WebsiteAdmin.Pages
         private Label lblServiceInfo;
         private Label lblServiceName;
         private ComboBox cboServiceName;
-        private Label lblServiceLocation;
-        private Company.OfficeApp.UI.InputFrame frmServiceLocation;
-        private TextBox txtServiceLocation;
         private Label lblServiceDesc;
         private Label lblServiceDescCount;
         private Company.OfficeApp.UI.InputFrame frmServiceDesc;
@@ -524,7 +482,6 @@ namespace Company.WebsiteAdmin.Pages
         private Button btnSaveWebService;
         private DataGridViewTextBoxColumn colSlot;
         private DataGridViewTextBoxColumn colServiceName;
-        private DataGridViewTextBoxColumn colLocation;
         private DataGridViewTextBoxColumn colShown;
     }
 }

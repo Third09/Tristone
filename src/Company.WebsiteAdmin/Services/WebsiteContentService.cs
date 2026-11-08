@@ -277,7 +277,7 @@ public static class PublishService
             },
             services = await OneByOne(services, async s => new
             {
-                name = s.ServiceName, location = s.Location, description = s.ShortDescription,
+                name = s.ServiceName, description = s.ShortDescription,
                 icon = s.Icon,
                 icon_url = WebsiteServiceIcons.Get(s.Icon).Url,
                 // no picture of its own: the website's picture for its icon (like the original 3 cards)
