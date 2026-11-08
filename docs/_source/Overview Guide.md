@@ -103,7 +103,7 @@ The sidebar follows the Figma design: **Home, Projects, Services, About Us, Cont
 
 **Save Changes** keeps your edits; **Publish Website** (top right) puts everything saved on the live website.
 
-**Preview Website** shows the whole site with your saved changes before you publish. The Publish button shows how many edits are waiting, **Undo Publish** puts the previous version back, Ctrl+S saves, big photos are made smaller, and a Windows notification tells you about new inquiries. Publish sends your changes to the website's GitHub page, and Netlify (the website's host) shows them in about a minute. Each PC needs the GitHub token once (Website Settings).
+**Preview Website** shows the whole site with your saved changes before you publish. The Publish button shows how many edits are waiting, **Undo Publish** puts the previous version back, Ctrl+S saves, big photos are made smaller, and a Windows notification tells you about new inquiries. Publish sends your changes to the website's GitHub page. Netlify (the website's host) shows them after you publish the new deploy there (auto-deploy is off: app.netlify.com > Deploys > Publish deploy). Each PC needs the GitHub token once (Website Settings).
 
 # 6. How it looks
 

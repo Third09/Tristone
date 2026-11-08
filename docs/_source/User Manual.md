@@ -446,7 +446,8 @@ The Website Admin window looks like the office app: click a button in the **left
 **Save Changes and Publish Website**
 
 - **Save Changes** (on each page) keeps your edits. The live website does **not** change yet.
-- **Publish Website** (top right) puts **everything saved** on the live website. The website shows it in **about a minute**. Under it you see when it was last published and by whom.
+- **Publish Website** (top right) sends **everything saved** to the website. Under it you see when it was last published and by whom.
+- **Netlify auto-deploy is turned off** (owner choice, 2026-11-08), so after **Publish Website** the change waits on Netlify: open app.netlify.com, the **tristone** site, **Deploys**, then **Publish deploy** on the newest deploy (or **Trigger deploy > Deploy site** when no new one is listed). It shows about a minute later (Ctrl+F5).
 - The first time on a PC, Publish opens **Website Settings**: paste the GitHub token, click **Test**, then **Save**. (See "Making the GitHub token" below.)
 - **Preview Website** (top right) shows the whole website with your **saved** changes, before you publish. **Desktop** / **Phone** switch the width; **Refresh** shows changes you saved since. The first time it downloads the website's files (about a minute); after that it opens in a second. Nothing goes live.
 - Leaving a page with unsaved edits asks first. **Discard Changes** brings back the saved version.
