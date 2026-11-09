@@ -258,7 +258,7 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 ## 7.1 Materials and stock
 
 - Create: unique name, category, unit, unit price ≥ 0, starting stock ≥ 0, minimum ≥ 0. After creation `stock_qty` can't be edited.
-- Stock changes only through approved usage (−) and deliveries (+), each in the same save as its record.
+- Stock changes only through approved usage (−) and approved purchases (+), each in the same save as its record (older stock also came from deliveries; that tab was removed 2026-11-09).
 - Low stock: stock < minimum → light red; stock = 0 → red; sidebar item "Materials (n low)".
 - Delete refused once usages, quotes or deliveries exist.
 
@@ -268,11 +268,12 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 - Approve (approver): re-checks stock, `stock_qty −= quantity`, `cost = quantity × unit_price` at that moment (frozen), Approved. Example: 20 bags at ₱250 → ₱5,000 to the project, stock 100 → 80.
 - Reject: no stock or money effect. Project history lists the approved usage and its total cost.
 
-## 7.3 Price comparison, purchases and deliveries
+## 7.3 Price comparison and purchases
 
 - Quotes per material from several vendors; open quotes listed first, cheapest first (highlighted).
-- Approve as Purchase (approver): the quote becomes Selected and a purchase is created (one per quote); the material's other Open quotes become Not Selected. Only Open quotes can be deleted.
-- Delivery (no approval): optional purchase (fills vendor, material, price), quantity, price, receipt number, and either a scan or "physical copy only" with the filed location (database CHECK). Effects: stock += quantity; material price = delivered price; the purchase shows delivered quantity. Delivery receipts appear in the Receipt Vault as Stock purchase.
+- Approve as Purchase (approver): the quote becomes Selected and a purchase is created (one per quote); the material's other Open quotes become Not Selected. In the same save: `stock_qty += quantity`, material price = quoted price, and the vendor's listed price for that material is set (added if missing). Example: stock 5 bags, approve 20 at ₱248 → stock 25, price ₱248. Only Open quotes can be deleted.
+- Vendors that list the material show above the quotes ("Listed by: ...", cheapest first); picking such a vendor fills Unit price with their listed price.
+- No Deliveries tab since 2026-11-09 (owner request): no delivery receipt is recorded. Old deliveries stay in the database and still show in the Receipt Vault as Stock purchase.
 
 ## 7.4 Equipment
 
@@ -284,6 +285,8 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 ## 7.5 Vendors
 
 Name (unique), contacts, address, bank name / account name / number, VAT or Non-VAT. Papers: Company Profile, Bank Details, Certificate of Registration, Other. Account number logged only as on file. Delete refused once quotes or deliveries exist.
+
+**Materials supplied** (script 026): per vendor, material + price ≥ 0, one row per pair; Employee and Supervisor add, change or remove (Admins view). Changes audited under Inventory (`vendor_materials`). Deleting a vendor or material removes its rows.
 
 # 8. Subcontractors
 
@@ -433,5 +436,5 @@ Demo logins, all with password `Demo1234`: `demo.admin`, `demo.website`, `hr.sup
 | Retention | Percentage withheld from each subcontractor stage payment, released after completion |
 | Paid day | An attendance day that payroll pays: Present, Late, or fixed by HR |
 | Locked period | A pay period whose payroll is Final; its attendance can't change |
-| Stock purchase | A delivery's receipt shown in the Receipt Vault; never a project expense |
+| Stock purchase | An older delivery's receipt shown in the Receipt Vault; never a project expense |
 | Edit History | The per-department view of `audit_logs` |

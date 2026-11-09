@@ -37,7 +37,7 @@ CONTROLS = [
     ("Button", "btnApprovePurchase", 128, 398, 160, 28, {"Text": T("Approve as Purchase")}),
     ("Label", "lblApproverNote", 300, 404, None, None, {"Text": T("Approve as Purchase: Inventory Supervisor only")}),
     # purchases
-    ("Label", "lblPurchases", 12, 444, None, None, {"Text": T("Approved purchases")}),
+    ("Label", "lblPurchases", 12, 444, None, None, {"Text": T("Approved purchases (approving adds the stock)")}),
     ("DataGridView", "dgvPurchases", 12, 464, 930, 180, {}),
 ]
 
@@ -57,14 +57,13 @@ GRID_COLUMNS = {
         (TB, "colPMaterial", "Material", "Material", {}),
         (TB, "colPQty", "Quantity", "Qty", {"DefaultCellStyle": QTY}),
         (TB, "colPTotal", "Total", "Total", {"DefaultCellStyle": MONEY}),
-        (TB, "colPDelivered", "DeliveredQty", "Delivered Qty", {"DefaultCellStyle": QTY}),
-        ("DataGridViewCheckBoxColumn", "colPDone", "Delivered", "Fully Delivered", {}),
     ],
 }
 
 EVENTS = {
     "cboCompareMaterial": [("SelectedIndexChanged", "cboCompareMaterial_SelectedIndexChanged")],
     "btnAddQuote": [("Click", "btnAddQuote_Click")],
+    "cboQuoteVendor": [("SelectionChangeCommitted", "cboQuoteVendor_SelectionChangeCommitted")],
     "dgvQuotes": [("SelectionChanged", "dgvQuotes_SelectionChanged"), ("CellFormatting", "dgvQuotes_CellFormatting")],
     "btnDeleteQuote": [("Click", "btnDeleteQuote_Click")],
     "btnApprovePurchase": [("Click", "btnApprovePurchase_Click")],

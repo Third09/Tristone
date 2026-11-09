@@ -24,27 +24,21 @@ public record QuoteInput(int MaterialId, int VendorId, DateOnly QuotedOn, string
                          string? Category, decimal UnitPrice, decimal Quantity);
 
 public record PurchaseRow(int PurchaseId, DateTime ApprovedAt, int VendorId, string Vendor, int MaterialId, string Material,
-                          decimal Quantity, decimal UnitPrice, decimal DeliveredQty)
+                          decimal Quantity, decimal UnitPrice)
 {
     public decimal Total => Quantity * UnitPrice;
-    public bool Delivered => DeliveredQty >= Quantity;
-    public override string ToString() => $"#{PurchaseId} {Material} from {Vendor} ({Quantity:0.##} @ {ProjectService.Money(UnitPrice)})";
 }
 
-public record DeliveryInput(int? PurchaseId, int VendorId, int MaterialId, decimal Quantity, decimal UnitPrice, DateOnly DeliveredOn,
-                            string ReceiptNo, string? ScanSourcePath, bool PhysicalOnly, string? FiledLocation);
-
-public record DeliveryRow(int DeliveryId, DateOnly DeliveredOn, string Vendor, string Material, decimal Quantity, decimal Total,
-                          string ReceiptNo, bool PhysicalOnly, string? ReceiptFilePath)
-{
-    public string ReceiptCopy => PhysicalOnly ? "Paper" : "Scan";
-}
+/// <summary>A material on a vendor's "Materials supplied" list.</summary>
+public record VendorMaterialRow(int MaterialId, string Material, string Unit, decimal Price, DateTime UpdatedAt);
 
 /// <summary>
-/// Inventory > Vendors, Price Comparison and Deliveries (Project Outline, Part 3).
+/// Inventory > Vendors and Price Comparison (Project Outline, Part 3).
+/// Vendors keep a "Materials supplied" list with their prices (owner request 2026-11-09).
 /// Price comparison: the Employee enters quotes from several vendors for the same material; the Supervisor
-/// picks one, which becomes the approved purchase. Deliveries need no approval: stock goes up,
-/// the material's price becomes the delivered price, and the receipt (scan or paper) is kept with it.
+/// picks one, which becomes the approved purchase: the stock goes up right away, and the material's price and
+/// that vendor's listed price become the bought price (the Deliveries tab was removed 2026-11-09; older
+/// deliveries stay in the table and still show in the Receipt Vault as stock purchases).
 /// </summary>
 public static class PurchasingService
 {
@@ -175,6 +169,71 @@ public static class PurchasingService
         return null;   // the stored file itself is kept on disk
     }
 
+    // ----- materials a vendor supplies -----
+
+    public static async Task<List<VendorMaterialRow>> ListVendorMaterialsAsync(int vendorId)
+    {
+        using var db = Db.Open();
+        return await (from vm in db.VendorMaterials
+                      join m in db.Materials on vm.MaterialId equals m.MaterialId
+                      where vm.VendorId == vendorId
+                      orderby m.Name
+                      select new VendorMaterialRow(m.MaterialId, m.Name, m.Unit, vm.Price, vm.UpdatedAt)).ToListAsync();
+    }
+
+    /// <summary>The vendors that list this material, cheapest first (for Price Comparison).</summary>
+    public static async Task<List<(int VendorId, string Vendor, decimal Price)>> SuppliersOfAsync(int materialId)
+    {
+        using var db = Db.Open();
+        var rows = await (from vm in db.VendorMaterials
+                          join v in db.Vendors on vm.VendorId equals v.VendorId
+                          where vm.MaterialId == materialId
+                          orderby vm.Price, v.Name
+                          select new { v.VendorId, v.Name, vm.Price }).ToListAsync();
+        return rows.Select(r => (r.VendorId, r.Name, r.Price)).ToList();
+    }
+
+    /// <summary>Adds the material to the vendor's list, or changes its price if it is already there.</summary>
+    public static async Task<string?> SetVendorMaterialAsync(int vendorId, int materialId, decimal price)
+    {
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return denied;
+        if (materialId <= 0) return "Choose the material.";
+        if (price < 0) return "The price can't be negative.";
+        using var db = Db.Open();
+        var vendor = await db.Vendors.Where(v => v.VendorId == vendorId).Select(v => v.Name).FirstAsync();
+        var material = await db.Materials.Where(m => m.MaterialId == materialId).Select(m => m.Name).FirstAsync();
+        var row = await db.VendorMaterials.FirstOrDefaultAsync(x => x.VendorId == vendorId && x.MaterialId == materialId);
+        if (row == null)
+        {
+            db.VendorMaterials.Add(new VendorMaterial { VendorId = vendorId, MaterialId = materialId, Price = price, UpdatedBy = Session.CurrentUser!.UserId });
+            AuditService.Add(db, Dept, "vendor_materials", vendorId, $"{material} from {vendor}", AuditActions.Added, null, new { price });
+        }
+        else
+        {
+            if (row.Price == price) return null;
+            AuditService.Add(db, Dept, "vendor_materials", vendorId, $"{material} from {vendor}", AuditActions.Edited, new { price = row.Price }, new { price });
+            row.Price = price;
+            row.UpdatedBy = Session.CurrentUser!.UserId;
+            row.UpdatedAt = DateTime.Now;
+        }
+        await db.SaveChangesAsync();
+        return null;
+    }
+
+    public static async Task<string?> RemoveVendorMaterialAsync(int vendorId, int materialId)
+    {
+        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return denied;
+        using var db = Db.Open();
+        var row = await db.VendorMaterials.FirstOrDefaultAsync(x => x.VendorId == vendorId && x.MaterialId == materialId);
+        if (row == null) return null;
+        var vendor = await db.Vendors.Where(v => v.VendorId == vendorId).Select(v => v.Name).FirstAsync();
+        var material = await db.Materials.Where(m => m.MaterialId == materialId).Select(m => m.Name).FirstAsync();
+        AuditService.Add(db, Dept, "vendor_materials", vendorId, $"{material} from {vendor}", AuditActions.Deleted, new { price = row.Price }, null);
+        db.VendorMaterials.Remove(row);
+        await db.SaveChangesAsync();
+        return null;
+    }
+
     // ----- price comparison -----
 
     public static async Task<List<QuoteRow>> ListQuotesAsync(int materialId)
@@ -230,7 +289,11 @@ public static class PurchasingService
         return null;
     }
 
-    /// <summary>The Supervisor picks a quote: it becomes the approved purchase; the other open quotes for that material close.</summary>
+    /// <summary>
+    /// The Supervisor picks a quote: it becomes the approved purchase and the other open quotes for that material
+    /// close. The stock goes up by the quantity, the material's price becomes the bought price, and the vendor's
+    /// "Materials supplied" price is set to it.
+    /// </summary>
     public static async Task<(int? PurchaseId, string? Error)> ApproveQuoteAsync(int quoteId)
     {
         if (Access.RequireApprover(Dept) is { } denied) return (null, denied);
@@ -247,82 +310,30 @@ public static class PurchasingService
             ApprovedBy = Session.CurrentUser!.UserId,
         };
         db.Purchases.Add(p);
+        var m = await db.Materials.FirstAsync(x => x.MaterialId == q.MaterialId);
+        var stockBefore = m.StockQty;
+        m.StockQty += q.Quantity;
+        m.UnitPrice = q.UnitPrice;
+        m.UpdatedAt = DateTime.Now;
+        var listed = await db.VendorMaterials.FirstOrDefaultAsync(x => x.VendorId == q.VendorId && x.MaterialId == q.MaterialId);
+        if (listed == null) db.VendorMaterials.Add(new VendorMaterial { VendorId = q.VendorId, MaterialId = q.MaterialId, Price = q.UnitPrice, UpdatedBy = Session.CurrentUser.UserId });
+        else { listed.Price = q.UnitPrice; listed.UpdatedBy = Session.CurrentUser.UserId; listed.UpdatedAt = DateTime.Now; }
         await db.SaveChangesAsync();
         var vendor = await db.Vendors.Where(v => v.VendorId == q.VendorId).Select(v => v.Name).FirstAsync();
-        AuditService.Add(db, Dept, "purchases", p.PurchaseId, $"{q.ProductName} from {vendor}", AuditActions.Added, null,
-            new { quantity = p.Quantity, unit_price = p.UnitPrice, total = p.Quantity * p.UnitPrice });
+        AuditService.Add(db, Dept, "purchases", p.PurchaseId, $"{q.ProductName} from {vendor}", AuditActions.Added, new { stock_qty = stockBefore },
+            new { quantity = p.Quantity, unit_price = p.UnitPrice, total = p.Quantity * p.UnitPrice, stock_qty = m.StockQty });
         await db.SaveChangesAsync();
         return (p.PurchaseId, null);
     }
 
-    public static async Task<List<PurchaseRow>> ListPurchasesAsync(bool undeliveredOnly = false)
+    public static async Task<List<PurchaseRow>> ListPurchasesAsync()
     {
         using var db = Db.Open();
-        var rows = await (from p in db.Purchases
-                          join v in db.Vendors on p.VendorId equals v.VendorId
-                          join m in db.Materials on p.MaterialId equals m.MaterialId
-                          orderby p.ApprovedAt descending
-                          select new PurchaseRow(p.PurchaseId, p.ApprovedAt, v.VendorId, v.Name, m.MaterialId, m.Name, p.Quantity, p.UnitPrice,
-                              db.Deliveries.Where(d => d.PurchaseId == p.PurchaseId).Sum(d => (decimal?)d.Quantity) ?? 0))
-                         .ToListAsync();
-        return undeliveredOnly ? rows.Where(r => !r.Delivered).ToList() : rows;
-    }
-
-    // ----- deliveries -----
-
-    public static string? CheckDelivery(DeliveryInput i)
-    {
-        if (i.VendorId <= 0) return "Choose the vendor.";
-        if (i.MaterialId <= 0) return "Choose the material.";
-        if (i.Quantity <= 0) return "Type how many arrived.";
-        if (i.UnitPrice < 0) return "The price can't be negative.";
-        if (string.IsNullOrWhiteSpace(i.ReceiptNo)) return "Type the receipt number.";
-        if (i.PhysicalOnly)
-        {
-            if (string.IsNullOrWhiteSpace(i.FiledLocation)) return "Type where the paper receipt is filed.";
-        }
-        else if (string.IsNullOrWhiteSpace(i.ScanSourcePath)) return "Attach the receipt scan, or tick \"Physical copy only\".";
-        else if (FileStore.Check(i.ScanSourcePath) is { } fileProblem) return fileProblem;
-        return null;
-    }
-
-    /// <summary>Saves the delivery and its receipt, adds the stock, and updates the material's price.</summary>
-    public static async Task<(int? Id, string? Error)> RecordDeliveryAsync(DeliveryInput i)
-    {
-        if (Access.RequireEdit(AppPage.Inventory) is { } denied) return (null, denied);
-        if (CheckDelivery(i) is { } problem) return (null, problem);
-
-        string? stored = i.PhysicalOnly ? null : await FileStore.SaveAsync(i.ScanSourcePath!, "receipts");
-        using var db = Db.Open();
-        var m = await db.Materials.FirstAsync(x => x.MaterialId == i.MaterialId);
-        var d = new Delivery
-        {
-            PurchaseId = i.PurchaseId, VendorId = i.VendorId, MaterialId = i.MaterialId, Quantity = i.Quantity, UnitPrice = i.UnitPrice,
-            DeliveredOn = i.DeliveredOn, ReceiptNo = i.ReceiptNo.Trim(), ReceiptFilePath = stored, PhysicalOnly = i.PhysicalOnly,
-            FiledLocation = i.PhysicalOnly ? i.FiledLocation!.Trim() : null, RecordedBy = Session.CurrentUser!.UserId,
-        };
-        db.Deliveries.Add(d);
-        var stockBefore = m.StockQty;
-        m.StockQty += i.Quantity;
-        m.UnitPrice = i.UnitPrice;
-        m.UpdatedAt = DateTime.Now;
-        await db.SaveChangesAsync();
-        var vendor = await db.Vendors.Where(v => v.VendorId == i.VendorId).Select(v => v.Name).FirstAsync();
-        AuditService.Add(db, Dept, "deliveries", d.DeliveryId, $"{m.Name} from {vendor}", AuditActions.Added, new { stock_qty = stockBefore },
-            new { quantity = d.Quantity, unit_price = d.UnitPrice, receipt_no = d.ReceiptNo, receipt_copy = d.PhysicalOnly ? "Paper" : "Scan", stock_qty = m.StockQty });
-        await db.SaveChangesAsync();
-        return (d.DeliveryId, null);
-    }
-
-    public static async Task<List<DeliveryRow>> ListDeliveriesAsync()
-    {
-        using var db = Db.Open();
-        return await (from d in db.Deliveries
-                      join v in db.Vendors on d.VendorId equals v.VendorId
-                      join m in db.Materials on d.MaterialId equals m.MaterialId
-                      orderby d.DeliveredOn descending, d.DeliveryId descending
-                      select new DeliveryRow(d.DeliveryId, d.DeliveredOn, v.Name, m.Name, d.Quantity, d.Quantity * d.UnitPrice,
-                          d.ReceiptNo, d.PhysicalOnly, d.ReceiptFilePath))
+        return await (from p in db.Purchases
+                      join v in db.Vendors on p.VendorId equals v.VendorId
+                      join m in db.Materials on p.MaterialId equals m.MaterialId
+                      orderby p.ApprovedAt descending
+                      select new PurchaseRow(p.PurchaseId, p.ApprovedAt, v.VendorId, v.Name, m.MaterialId, m.Name, p.Quantity, p.UnitPrice))
                      .ToListAsync();
     }
 }

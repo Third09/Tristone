@@ -6,7 +6,7 @@ namespace Company.OfficeApp.Pages.Inventory;
 
 /// <summary>
 /// Inventory > Materials: the material master list with low-stock alerts. Stock is set once when a material is
-/// added; after that it only changes through approved usage and deliveries.
+/// added; after that it only changes through approved usage (down) and approved purchases (up).
 /// Plain layout for now; control names match the UI Elements Guide (Part 3: Tab: Materials).
 /// </summary>
 public partial class MaterialsTab : UserControl
@@ -49,6 +49,9 @@ public partial class MaterialsTab : UserControl
     }
 
     async void MaterialsTab_Load(object sender, EventArgs e) { if (!addOnly) await LoadAsync(); }
+
+    /// <summary>Reloads the list (an approved purchase in Price Comparison changed the stock).</summary>
+    public Task ReloadAsync() => LoadAsync();
 
     async Task LoadAsync(int? selectId = null)
     {
@@ -139,7 +142,7 @@ public partial class MaterialsTab : UserControl
         cboMaterialUnit.Text = m.Unit;
         numMaterialPrice.Value = m.UnitPrice;
         numStartingStock.Value = 0;
-        numStartingStock.Enabled = lblStartingStock.Enabled = false;   // stock changes only through usage and deliveries
+        numStartingStock.Enabled = lblStartingStock.Enabled = false;   // stock changes only through usage and approved purchases
         lblCurrentStock.Text = $"Current stock: {m.StockQty:#,##0.##} {m.Unit}";
         numMinimumStock.Value = m.MinimumStock;
         lblMaterialMsg.Text = "";

@@ -96,6 +96,17 @@ public class Quote
     [Column("created_at")] public DateTime CreatedAt { get; set; } = DateTime.Now;
 }
 
+/// <summary>A material a vendor supplies and their price (Inventory > Vendors, database/026).</summary>
+[Table("vendor_materials")]
+public class VendorMaterial
+{
+    [Column("vendor_id")] public int VendorId { get; set; }
+    [Column("material_id")] public int MaterialId { get; set; }
+    [Column("price")] public decimal Price { get; set; }
+    [Column("updated_by")] public int? UpdatedBy { get; set; }
+    [Column("updated_at")] public DateTime UpdatedAt { get; set; } = DateTime.Now;
+}
+
 [Table("purchases")]
 public class Purchase
 {

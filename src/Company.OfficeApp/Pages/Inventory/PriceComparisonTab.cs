@@ -6,13 +6,14 @@ namespace Company.OfficeApp.Pages.Inventory;
 
 /// <summary>
 /// Inventory > Price Comparison: quotes from several vendors for the same material, the cheapest highlighted;
-/// the Supervisor approves one, which becomes the approved purchase. Approved purchases are
-/// listed below with how much has been delivered.
+/// the Supervisor approves one, which becomes the approved purchase and adds the stock (no Deliveries tab
+/// since 2026-11-09). Vendors that list the material on their "Materials supplied" show above the quotes,
+/// and picking a vendor fills in their listed price.
 /// Plain layout for now; control names match the UI Elements Guide (Part 3: Tab: Price Comparison).
 /// </summary>
 public partial class PriceComparisonTab : UserControl
 {
-    /// <summary>Raised after a purchase is approved (the Deliveries tab lists purchases).</summary>
+    /// <summary>Raised after a purchase is approved (stock changed, so Materials and Usage refresh).</summary>
     public event EventHandler? Changed;
 
     public PriceComparisonTab()
@@ -54,6 +55,22 @@ public partial class PriceComparisonTab : UserControl
     {
         if (cboCompareMaterial.SelectedItem is MaterialRow m) { cboQuoteCategory.Text = m.Category; txtQuoteProduct.Text = m.Name; }
         await LoadQuotesAsync();
+        await FillListedPriceAsync();
+    }
+
+    async void cboQuoteVendor_SelectionChangeCommitted(object? sender, EventArgs e) => await FillListedPriceAsync();
+
+    List<(int VendorId, string Vendor, decimal Price)> suppliers = [];
+
+    /// <summary>When the chosen vendor lists the chosen material, its price goes into Unit price.</summary>
+    async Task FillListedPriceAsync()
+    {
+        if (cboCompareMaterial.SelectedItem is not MaterialRow m || cboQuoteVendor.SelectedItem is not VendorRow v) return;
+        if (suppliers.Count == 0) suppliers = await PurchasingService.SuppliersOfAsync(m.MaterialId);
+        var listed = suppliers.FirstOrDefault(s => s.VendorId == v.VendorId);
+        if (listed.Vendor == null) return;
+        numQuoteUnitPrice.Value = Math.Min(listed.Price, numQuoteUnitPrice.Maximum);
+        lblQuoteMsg.Text = $"Unit price filled in from {v.Name}'s list.";
     }
 
     async Task LoadQuotesAsync()
@@ -66,10 +83,15 @@ public partial class PriceComparisonTab : UserControl
             return;
         }
         var quotes = await PurchasingService.ListQuotesAsync(m.MaterialId);
+        suppliers = await PurchasingService.SuppliersOfAsync(m.MaterialId);
         dgvQuotes.DataSource = quotes;
         var cheapest = quotes.Where(q => q.Status == "Open").MinBy(q => q.UnitPrice);
-        lblCheapestQuote.Text = cheapest == null ? "No open quotes for this material yet."
+        var text = cheapest == null ? "No open quotes for this material yet."
             : $"Cheapest open quote: {cheapest.Vendor}, {ProjectService.Money(cheapest.UnitPrice)} per {m.Unit}";
+        if (suppliers.Count > 0)
+            text += "   |   Listed by: " + string.Join(", ", suppliers.Take(4).Select(s => $"{s.Vendor} {ProjectService.Money(s.Price)}"))
+                  + (suppliers.Count > 4 ? $" (+{suppliers.Count - 4} more)" : "");
+        lblCheapestQuote.Text = text;
         UpdateButtons();
     }
 
@@ -109,11 +131,11 @@ public partial class PriceComparisonTab : UserControl
     async void btnApprovePurchase_Click(object sender, EventArgs e)
     {
         if (Selected is not { } q) return;
-        var ok = MessageBox.Show(this, $"Approve the quote from {q.Vendor} ({q.Quantity:#,##0.##} x {ProjectService.Money(q.UnitPrice)} = {ProjectService.Money(q.Total)})?\n\nThe other open quotes for this material will be closed.",
+        var ok = MessageBox.Show(this, $"Approve the quote from {q.Vendor} ({q.Quantity:#,##0.##} x {ProjectService.Money(q.UnitPrice)} = {ProjectService.Money(q.Total)})?\n\nThe stock goes up by {q.Quantity:#,##0.##} now, and the other open quotes for this material will be closed.",
             "Approve purchase", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         if (ok != DialogResult.Yes) return;
         var (_, error) = await PurchasingService.ApproveQuoteAsync(q.QuoteId);
-        lblQuoteMsg.Text = error ?? "Approved. Record the delivery in the Deliveries tab when it arrives.";
+        lblQuoteMsg.Text = error ?? $"Approved. {q.Quantity:#,##0.##} added to the stock.";
         await ReloadListsAsync();
         Changed?.Invoke(this, EventArgs.Empty);
     }

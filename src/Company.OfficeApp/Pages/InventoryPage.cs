@@ -6,7 +6,7 @@ using Company.Shared.Models;
 namespace Company.OfficeApp.Pages;
 
 /// <summary>
-/// Inventory & Vendors (Admin and the Inventory department). 7 tabs; each tab's content is its own UserControl
+/// Inventory & Vendors (Admin and the Inventory department). 6 tabs (Deliveries removed 2026-11-09); each tab's content is its own UserControl
 /// in Pages/Inventory. Edit History is for Admins and the Inventory Supervisor only.
 /// Tab titles carry the alerts: "Materials (2 low)", "Equipment (1 due)".
 /// </summary>
@@ -14,7 +14,6 @@ public partial class InventoryPage : UserControl
 {
     readonly MaterialsTab materials = new() { Dock = DockStyle.Fill };
     readonly UsageTab usage = new() { Dock = DockStyle.Fill };
-    readonly DeliveriesTab deliveries = new() { Dock = DockStyle.Fill };
     readonly EquipmentTab equipment = new() { Dock = DockStyle.Fill };
     readonly VendorsTab vendors = new() { Dock = DockStyle.Fill };
     readonly PriceComparisonTab prices = new() { Dock = DockStyle.Fill };
@@ -24,7 +23,6 @@ public partial class InventoryPage : UserControl
         InitializeComponent();
         tabMaterials.Controls.Add(materials);
         tabMaterialUsage.Controls.Add(usage);
-        tabDeliveries.Controls.Add(deliveries);
         tabEquipment.Controls.Add(equipment);
         tabVendors.Controls.Add(vendors);
         tabPriceComparison.Controls.Add(prices);
@@ -35,11 +33,11 @@ public partial class InventoryPage : UserControl
         Access.LockButtons(this, AppPage.Inventory);
 
         // A change in one tab refreshes the tabs that show the same data.
-        materials.Changed += async (_, _) => { await usage.ReloadListsAsync(); await prices.ReloadListsAsync(); await deliveries.ReloadListsAsync(); await RefreshAlertsAsync(); };
+        materials.Changed += async (_, _) => { await usage.ReloadListsAsync(); await prices.ReloadListsAsync(); await vendors.ReloadMaterialsAsync(); await RefreshAlertsAsync(); };
         usage.Changed += async (_, _) => await RefreshAlertsAsync();
-        deliveries.Changed += async (_, _) => { await usage.ReloadListsAsync(); await prices.ReloadListsAsync(); await RefreshAlertsAsync(); };
-        vendors.Changed += async (_, _) => { await prices.ReloadListsAsync(); await deliveries.ReloadListsAsync(); };
-        prices.Changed += async (_, _) => await deliveries.ReloadListsAsync();
+        vendors.Changed += async (_, _) => await prices.ReloadListsAsync();
+        // an approved purchase adds stock and sets the vendor's listed price
+        prices.Changed += async (_, _) => { await materials.ReloadAsync(); await usage.ReloadListsAsync(); await vendors.ReloadMaterialsAsync(); await RefreshAlertsAsync(); };
         equipment.Changed += async (_, _) => await RefreshAlertsAsync();
     }
 

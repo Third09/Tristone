@@ -53,7 +53,7 @@ Two special cases: the **Receipts Supervisor** also manages the **Projects** lis
 | **Dashboard** | the money at a glance: finished projects, revenue, expenses, profit, a chart of projects by status, the best projects. Admins see everything and the sign-in history; a Supervisor sees their own department |
 | **Projects** | the one list of all projects (name, site, client, sector, price, dates, status). Every other part picks projects from here. Tick **Show on website** to offer a project to the website |
 | **HR & Payroll** | employees and their daily rates; **Attendance** from the fingerprint scanner's file; **Payroll** computed from attendance; payslips; cash advances; settings (work hours, government rates, holidays) |
-| **Inventory** | materials and stock; using materials on a project (needs approval); deliveries; equipment and maintenance; vendors; comparing quotes |
+| **Inventory** | materials and stock; using materials on a project (needs approval); equipment and maintenance; vendors and the materials they supply with prices; comparing quotes (an approved purchase adds the stock) |
 | **Subcontractors** | the subcontractor directory; jobs with payment stages; progress; vouchers and payouts; retention |
 | **Receipts** | every receipt (for a project or company overhead); expenses with no receipt; **change orders** to a project's price or end date; reports |
 | **Quotations** | (Receipts department) price offers for clients, printed like the company's quotation paper: customer, scope of works with sizes, costs and total, notes, payment terms; printed or saved as PDF. When the client accepts, it becomes a project |
@@ -122,7 +122,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 |---|---|
 | The program | `Apps\Tri-Stone\TriStone.exe` (built from Visual Studio, project **Company.Launcher**) |
 | The code | `src\` in the TriStone folder (Visual Studio: `TriStone.slnx`) |
-| Database changes | `database\` (numbered scripts 001-025; `setup-database.cmd` applies the new ones) |
+| Database changes | `database\` (numbered scripts 001-026; `setup-database.cmd` applies the new ones) |
 | Uploaded files | the shared files folder (`C:\TriStoneFiles` on this PC) |
 | Guides | `docs\` (Word files; their text is in `docs\_source`) |
 | What was tested | `docs\Testing Log.md` (and the "Check at home" list) |

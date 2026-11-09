@@ -20,7 +20,6 @@ namespace Company.OfficeApp.Pages
             tabInventory = new TabControl();
             tabMaterials = new TabPage();
             tabMaterialUsage = new TabPage();
-            tabDeliveries = new TabPage();
             tabEquipment = new TabPage();
             tabVendors = new TabPage();
             tabPriceComparison = new TabPage();
@@ -32,7 +31,6 @@ namespace Company.OfficeApp.Pages
             //
             tabInventory.Controls.Add(tabMaterials);
             tabInventory.Controls.Add(tabMaterialUsage);
-            tabInventory.Controls.Add(tabDeliveries);
             tabInventory.Controls.Add(tabEquipment);
             tabInventory.Controls.Add(tabVendors);
             tabInventory.Controls.Add(tabPriceComparison);
@@ -51,11 +49,6 @@ namespace Company.OfficeApp.Pages
             //
             tabMaterialUsage.Name = "tabMaterialUsage";
             tabMaterialUsage.Text = "Material Usage";
-            //
-            // tabDeliveries
-            //
-            tabDeliveries.Name = "tabDeliveries";
-            tabDeliveries.Text = "Deliveries";
             //
             // tabEquipment
             //
@@ -94,7 +87,6 @@ namespace Company.OfficeApp.Pages
         private TabControl tabInventory;
         private TabPage tabMaterials;
         private TabPage tabMaterialUsage;
-        private TabPage tabDeliveries;
         private TabPage tabEquipment;
         private TabPage tabVendors;
         private TabPage tabPriceComparison;

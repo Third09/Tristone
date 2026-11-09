@@ -70,7 +70,7 @@ The database is never built by clicking in pgAdmin. Every change is a numbered s
 | 002 | `projects` |
 | 003 | `employees`, `employee_rates` |
 | 004 | one login per employee (unique index) |
-| 005 | `app_settings`, materials, usage, vendors, quotes, purchases, deliveries, equipment, maintenance |
+| 005 | `app_settings`, materials, usage, vendors, quotes, purchases, deliveries (no screen since 026), equipment, maintenance |
 | 006 | subcontractors, trades, jobs, stages, documents, progress, vouchers, payouts |
 | 007 | `receipts`, `change_orders` |
 | 008 | `website_accounts`, `website_login_logs` (the Website Admin app's own accounts; merged into `users` by 011) |
@@ -292,10 +292,9 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 |---|---|---|
 | Materials | `MaterialService.ListAsync(search, category, lowOnly)`, `CreateAsync`, `UpdateAsync`, `DeleteAsync`, `LowStockCountAsync` | Starting stock only on create; `UpdateAsync` never touches `stock_qty`. Below minimum = MistyRose, zero = LightCoral. Delete refused when usages, quotes or deliveries exist. |
 | Material Usage | `SubmitUsageAsync`, `ListUsageAsync(status, projectId)`, `ApproveUsageAsync`, `RejectUsageAsync`, `ProjectHistoryAsync` | Submit refuses more than the current stock and Cancelled projects. Approve (approver) re-checks stock, subtracts it, fixes `cost = quantity × unit_price`. |
-| Deliveries | `PurchasingService.ListPurchasesAsync(undeliveredOnly)`, `CheckDelivery`, `RecordDeliveryAsync`, `ListDeliveriesAsync` | Picking a purchase fills vendor, material and price. Scan saved through `FileStore` ("receipts" folder) or paper + filed location. Stock up, `unit_price` = delivered price. |
 | Equipment | `EquipmentService.ListAsync`, `CreateAsync`, `UpdateAsync`, `DeleteAsync`, `AddLogAsync`, `DeleteLogAsync`, `MaintenanceDueCountAsync` | Rented needs company, rate and unit. `next_maintenance <= today` = due (LightYellow). A log entry can move the next date. Delete refused once logs exist (use Retired). |
-| Vendors | `CreateVendorAsync`, `UpdateVendorAsync`, `DeleteVendorAsync`, `UploadDocumentAsync`, `ListDocumentsAsync` | Bank account number audited only as on file. Papers: Company Profile, Bank Details, Certificate of Registration, Other. |
-| Price Comparison | `ListQuotesAsync`, `AddQuoteAsync`, `DeleteQuoteAsync`, `ApproveQuoteAsync` | Open quotes first, cheapest first (Honeydew). Approve (approver) inserts the purchase and closes the other open quotes for that material. |
+| Vendors | `CreateVendorAsync`, `UpdateVendorAsync`, `DeleteVendorAsync`, `UploadDocumentAsync`, `ListDocumentsAsync`, `ListVendorMaterialsAsync`, `SetVendorMaterialAsync`, `RemoveVendorMaterialAsync` | Bank account number audited only as on file. Papers: Company Profile, Bank Details, Certificate of Registration, Other. Materials supplied (`vendor_materials`, script 026): add or change a price (upsert), remove; `ReloadMaterialsAsync` is public so the page refreshes it after a purchase. |
+| Price Comparison | `ListQuotesAsync`, `AddQuoteAsync`, `DeleteQuoteAsync`, `ApproveQuoteAsync`, `SuppliersOfAsync`, `ListPurchasesAsync` | Open quotes first, cheapest first (Honeydew). Approve (approver) inserts the purchase, closes the other open quotes, adds the stock, sets `materials.unit_price` and upserts the vendor's listed price, all in one save. Vendors listing the material are shown in `lblCheapestQuote`; picking one fills the unit price. The Deliveries tab was removed 2026-11-09 (`deliveries` stays for old rows; `ReceiptService` still reads it). |
 | Edit History | `AuditService.ListAsync(department, ...)` | Shared `Pages/Shared/EditHistoryTab`. |
 
 # Chapter 8: Subcontractors (Part 4)

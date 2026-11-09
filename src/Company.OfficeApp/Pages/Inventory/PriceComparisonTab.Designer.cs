@@ -55,8 +55,6 @@ namespace Company.OfficeApp.Pages.Inventory
             colPMaterial = new DataGridViewTextBoxColumn();
             colPQty = new DataGridViewTextBoxColumn();
             colPTotal = new DataGridViewTextBoxColumn();
-            colPDelivered = new DataGridViewTextBoxColumn();
-            colPDone = new DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)numQuoteUnitPrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numQuoteQty).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuotes).BeginInit();
@@ -100,6 +98,7 @@ namespace Company.OfficeApp.Pages.Inventory
             cboQuoteVendor.Size = new Size(230, 23);
             cboQuoteVendor.DropDownStyle = ComboBoxStyle.DropDownList;
             cboQuoteVendor.TabIndex = 1;
+            cboQuoteVendor.SelectionChangeCommitted += cboQuoteVendor_SelectionChangeCommitted;
             // 
             // lblQuoteDate
             // 
@@ -261,14 +260,14 @@ namespace Company.OfficeApp.Pages.Inventory
             lblPurchases.AutoSize = true;
             lblPurchases.Location = new Point(38, 602);
             lblPurchases.Name = "lblPurchases";
-            lblPurchases.Text = "Approved purchases";
+            lblPurchases.Text = "Approved purchases (approving adds the stock)";
             // 
             // dgvPurchases
             // 
             dgvPurchases.AllowUserToAddRows = false;
             dgvPurchases.AllowUserToDeleteRows = false;
             dgvPurchases.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvPurchases.Columns.AddRange(new DataGridViewColumn[] { colPDate, colPVendor, colPMaterial, colPQty, colPTotal, colPDelivered, colPDone });
+            dgvPurchases.Columns.AddRange(new DataGridViewColumn[] { colPDate, colPVendor, colPMaterial, colPQty, colPTotal });
             dgvPurchases.MultiSelect = false;
             dgvPurchases.ReadOnly = true;
             dgvPurchases.RowHeadersVisible = false;
@@ -357,19 +356,6 @@ namespace Company.OfficeApp.Pages.Inventory
             colPTotal.Name = "colPTotal";
             colPTotal.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" };
             // 
-            // colPDelivered
-            // 
-            colPDelivered.DataPropertyName = "DeliveredQty";
-            colPDelivered.HeaderText = "Delivered Qty";
-            colPDelivered.Name = "colPDelivered";
-            colPDelivered.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "#,##0.##" };
-            // 
-            // colPDone
-            // 
-            colPDone.DataPropertyName = "Delivered";
-            colPDone.HeaderText = "Fully Delivered";
-            colPDone.Name = "colPDone";
-            // 
             // PriceComparisonTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -452,7 +438,5 @@ namespace Company.OfficeApp.Pages.Inventory
         private DataGridViewTextBoxColumn colPMaterial;
         private DataGridViewTextBoxColumn colPQty;
         private DataGridViewTextBoxColumn colPTotal;
-        private DataGridViewTextBoxColumn colPDelivered;
-        private DataGridViewCheckBoxColumn colPDone;
     }
 }

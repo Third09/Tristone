@@ -325,7 +325,7 @@ const inventory = [
     note: "The page has 7 tabs across the top of the Main section. Buttons marked \"Supervisor only\" are hidden for the Inventory Employee.",
     groups: [
       { name: "Main section", rows: [
-        ["Tabs (strip hidden)", "TabControl", "tabInventory", "7 parts, listed in the sidebar under the page's button (btnNavTab...): Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History."],
+        ["Tabs (strip hidden)", "TabControl", "tabInventory", "6 parts, listed in the sidebar under the page's button (btnNavTab...): Materials, Material Usage, Equipment, Vendors, Price Comparison, Edit History."],
         ["Low-stock count", "Label", "lblLowStockCount", "e.g. \"2 items are below their minimum stock\". The tab title also says \"Materials (2 low)\". Empty when 0."],
       ]},
     ],
@@ -352,7 +352,7 @@ const inventory = [
         ["Category dropdown", "ComboBox", "cboMaterialCategory", "Cement, Aggregates, Steel, Wood, Electrical, Plumbing, Paint, Hardware, Other."],
         ["Unit dropdown", "ComboBox", "cboMaterialUnit", "Bag, Piece, Meter, Kilo, Box, Liter, Sheet, Cubic Meter, Set, Roll."],
         ["Unit price box", "NumericUpDown", "numMaterialPrice", "Price per unit in pesos."],
-        ["Starting stock box", "NumericUpDown", "numStartingStock", "Stock on hand when first added. After that, stock only changes through Usage and Deliveries."],
+        ["Starting stock box", "NumericUpDown", "numStartingStock", "Stock on hand when first added. After that, stock only changes through Usage (down) and approved purchases in Price Comparison (up)."],
         ["Current stock", "Label", "lblCurrentStock", "Current stock (read only)."],
         ["Minimum stock box", "NumericUpDown", "numMinimumStock", "Low-stock alert shows when stock drops below this."],
         ["Save button", "Button", "btnSaveMaterial", "Lists the changes in a Yes/No message first (when editing); saves only on Yes."],
@@ -391,41 +391,6 @@ const inventory = [
         ["History table", "DataGridView", "dgvProjectMaterials", "Columns: Date, Material, Qty, Unit, Cost."],
         ["Total cost", "Label", "lblProjectMaterialTotal", "Total material cost for that project."],
         ["Export button", "Button", "btnExportProjectMaterials", "Saves the history as an Excel file."],
-      ]},
-    ],
-  },
-  {
-    title: "Tab: Deliveries",
-    form: "TabPage: tabDeliveries",
-    opensFrom: "Inventory > Deliveries tab.",
-    whoSees: "Inventory Employee and Inventory Supervisor; Admins view only",
-    note: "No approval needed (the purchase was approved in Price Comparison). Saving adds the stock and sends the receipt to the Receipts vault as \"Stock purchase\".",
-    groups: [
-      { name: "Record a delivery", rows: [
-        ["Section title", "Label", "lblRecordTitle", "\"Record a delivery (stock goes up; no approval needed)\"."],
-        ["Approved purchase dropdown", "ComboBox", "cboDeliveryPurchase", "Pick the approved purchase this delivery is for (fills in vendor, material and price)."],
-        ["Vendor dropdown", "ComboBox", "cboDeliveryVendor", "Who delivered."],
-        ["Material dropdown", "ComboBox", "cboDeliveryMaterial", "What was delivered."],
-        ["Quantity box", "NumericUpDown", "numDeliveryQty", "How many arrived."],
-        ["Unit price box", "NumericUpDown", "numDeliveryPrice", "Price per unit on the receipt."],
-        ["Date picker", "DateTimePicker", "dtpDeliveryDate", "Date received."],
-      ]},
-      { name: "Receipt", rows: [
-        ["Receipt number box", "TextBox", "txtDeliveryReceiptNo", "Number printed on the receipt."],
-        ["Attach Scan button", "Button", "btnAttachDeliveryReceipt", "Choose a scan or photo (image or PDF)."],
-        ["Attached file name", "Label", "lblDeliveryReceiptFile", "Name of the attached file."],
-        ["Physical copy only tick box", "CheckBox", "chkDeliveryPhysicalOnly", "Tick if there is only a paper copy (no scan)."],
-        ["Filed location box", "TextBox", "txtDeliveryFiledAt", "Where the paper copy is kept, e.g. \"Folder B, Oct 2026\". Required when Physical copy only is ticked."],
-        ["Save Delivery button", "Button", "btnSaveDelivery", "Saves the delivery and adds the stock."],
-        ["Message", "Label", "lblDeliveryMsg", "\"Saved.\" or what went wrong."],
-        ["Open Receipt Scan button", "Button", "btnOpenDeliveryReceipt", "Opens the scan of the selected delivery."],
-        ["Cancel button", "Button", "btnCancelDelivery", "Clears the form."],
-      ]},
-      { name: "Deliveries list", rows: [
-        ["Deliveries table", "DataGridView", "dgvDeliveries", "Columns: Date, Vendor, Material, Qty, Total, Receipt No., Receipt (Scan / Paper)."],
-      ]},
-      { name: "Not visible (no design needed)", rows: [
-        ["File picker", "(made in code, not dragged)", "-", "The Windows \"Open file\" window, opened by Attach Scan."],
       ]},
     ],
   },
@@ -525,6 +490,13 @@ const inventory = [
         ["View button", "Button", "btnViewVendorDoc", "Opens the selected paper."],
         ["Delete Paper button", "Button", "btnDeleteVendorDoc", "Removes the selected paper (asks to confirm)."],
       ]},
+      { name: "Materials supplied", rows: [
+        ["Materials supplied table", "DataGridView", "dgvVendorMaterials", "Columns: Material, Unit, Price, Updated. Click a row to put it in the boxes."],
+        ["Material dropdown", "ComboBox", "cboVendorMaterial", "Which material this vendor sells."],
+        ["Price box", "NumericUpDown", "numVendorMaterialPrice", "Their price per unit."],
+        ["Add / Update Price button", "Button", "btnSaveVendorMaterial", "Adds the material to the list, or changes its price."],
+        ["Remove Material button", "Button", "btnRemoveVendorMaterial", "Takes the selected material off this vendor's list (asks to confirm)."],
+      ]},
       { name: "Not visible (no design needed)", rows: [
         ["File picker", "(made in code, not dragged)", "-", "The Windows \"Open file\" window, opened by Upload Paper."],
       ]},
@@ -539,7 +511,7 @@ const inventory = [
     groups: [
       { name: "Add a quote", rows: [
         ["Material dropdown", "ComboBox", "cboCompareMaterial", "What is being bought."],
-        ["Vendor dropdown", "ComboBox", "cboQuoteVendor", "Who gave the quote."],
+        ["Vendor dropdown", "ComboBox", "cboQuoteVendor", "Who gave the quote. A vendor that lists this material fills Unit price with their price."],
         ["Date inputted picker", "DateTimePicker", "dtpQuoteDate", "Date of the quote."],
         ["Product name box", "TextBox", "txtQuoteProduct", "Vendor's product name."],
         ["Description box", "TextBox", "txtQuoteDescription", "Product description."],
@@ -551,12 +523,12 @@ const inventory = [
       ]},
       { name: "Compare", rows: [
         ["Quotes table", "DataGridView", "dgvQuotes", "Columns: Vendor, Date, Product, Unit Price, Qty, Total, Status. The cheapest open quote is highlighted."],
-        ["Cheapest label", "Label", "lblCheapestQuote", "e.g. \"Cheapest open quote: ABC Hardware, ₱245.00 per Bag\"."],
+        ["Cheapest label", "Label", "lblCheapestQuote", "e.g. \"Cheapest open quote: ABC Hardware, ₱245.00 per Bag | Listed by: ABC Hardware ₱245.00\" (vendors listing this material)."],
         ["Delete Quote button", "Button", "btnDeleteQuote", "Removes the selected quote."],
-        ["Approve as Purchase button", "Button", "btnApprovePurchase", "Picks the selected quote as the approved purchase. Supervisor only."],
+        ["Approve as Purchase button", "Button", "btnApprovePurchase", "Picks the selected quote as the approved purchase; the stock goes up right away. Supervisor only."],
       ]},
       { name: "Approved purchases", rows: [
-        ["Purchases table", "DataGridView", "dgvPurchases", "Columns: Approved (date), Vendor, Material, Qty, Total, Delivered Qty, Fully Delivered (tick)."],
+        ["Purchases table", "DataGridView", "dgvPurchases", "Columns: Approved (date), Vendor, Material, Qty, Total."],
       ]},
     ],
   },

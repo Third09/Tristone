@@ -6,7 +6,8 @@ namespace Company.OfficeApp.Pages.Inventory;
 
 /// <summary>
 /// Inventory > Vendors: supplier details, bank details, VAT status and their papers (company profile, bank
-/// details, certificate of registration). Plain layout for now; control names match the UI Elements Guide.
+/// details, certificate of registration), and the materials they supply with their price (owner request
+/// 2026-11-09; Price Comparison fills these prices in). Control names match the UI Elements Guide.
 /// </summary>
 public partial class VendorsTab : UserControl
 {
@@ -31,13 +32,17 @@ public partial class VendorsTab : UserControl
         dgvVendors.AutoGenerateColumns = false;
         RecordForm.NoAutoSelect(dgvVendors, on => filling = on, RestoreSelection);
         dgvVendorDocs.AutoGenerateColumns = false;
+        dgvVendorMaterials.AutoGenerateColumns = false;
+        colVmPrice.DefaultCellStyle.FormatProvider = ProjectService.Peso;
         cboVendorVat.Items.AddRange(InventoryLists.VatStatuses);
         cboVendorDocType.Items.AddRange(InventoryLists.VendorDocTypes);
         cboVendorDocType.SelectedIndex = 0;
         if (addOnly)
         {
             // Papers are uploaded after the vendor exists, on the Vendors tab.
-            RecordForm.ShowFormOnly(this, lblFormMode, lblPapers, dgvVendorDocs, cboVendorDocType, btnUploadVendorDoc, btnViewVendorDoc, btnDeleteVendorDoc);
+            RecordForm.ShowFormOnly(this, lblFormMode, lblPapers, dgvVendorDocs, cboVendorDocType, btnUploadVendorDoc, btnViewVendorDoc, btnDeleteVendorDoc,
+                                    lblVendorMaterials, dgvVendorMaterials, lblVendorMaterial, cboVendorMaterial, lblVendorMaterialPrice,
+                                    numVendorMaterialPrice, btnSaveVendorMaterial, btnRemoveVendorMaterial);
             StartNew();
             return;
         }
@@ -109,6 +114,10 @@ public partial class VendorsTab : UserControl
         cboVendorVat.SelectedItem = "VAT";
         dgvVendorDocs.DataSource = null;
         btnUploadVendorDoc.Enabled = btnViewVendorDoc.Enabled = btnDeleteVendorDoc.Enabled = false;
+        dgvVendorMaterials.DataSource = null;
+        cboVendorMaterial.SelectedIndex = -1;
+        numVendorMaterialPrice.Value = 0;
+        btnSaveVendorMaterial.Enabled = btnRemoveVendorMaterial.Enabled = false;
         lblVendorMsg.Text = "";
     }
 
@@ -129,6 +138,56 @@ public partial class VendorsTab : UserControl
         lblVendorMsg.Text = "";
         original = ReadForm();
         await LoadDocsAsync();
+        await ReloadMaterialsAsync();
+    }
+
+    // ----- materials this vendor supplies -----
+
+    VendorMaterialRow? SelectedMaterial => dgvVendorMaterials.SelectedRows.Count > 0 ? dgvVendorMaterials.SelectedRows[0].DataBoundItem as VendorMaterialRow : null;
+    bool fillingMaterials;
+
+    /// <summary>Reloads the material dropdown and this vendor's list (also after a purchase changed a price).</summary>
+    public async Task ReloadMaterialsAsync()
+    {
+        var keep = (cboVendorMaterial.SelectedItem as MaterialRow)?.MaterialId;
+        var all = await MaterialService.ListAsync();
+        cboVendorMaterial.Items.Clear();
+        cboVendorMaterial.Items.AddRange([.. all]);
+        cboVendorMaterial.SelectedItem = all.FirstOrDefault(m => m.MaterialId == keep);
+        fillingMaterials = true;
+        dgvVendorMaterials.DataSource = editingId is { } id ? await PurchasingService.ListVendorMaterialsAsync(id) : null;
+        dgvVendorMaterials.ClearSelection();
+        fillingMaterials = false;
+        btnSaveVendorMaterial.Enabled = editingId != null;
+        btnRemoveVendorMaterial.Enabled = false;
+    }
+
+    /// <summary>Clicking a listed material puts it in the boxes, ready for a new price.</summary>
+    void dgvVendorMaterials_SelectionChanged(object? sender, EventArgs e)
+    {
+        if (fillingMaterials) return;
+        btnRemoveVendorMaterial.Enabled = SelectedMaterial != null;
+        if (SelectedMaterial is not { } row) return;
+        cboVendorMaterial.SelectedItem = cboVendorMaterial.Items.Cast<MaterialRow>().FirstOrDefault(m => m.MaterialId == row.MaterialId);
+        numVendorMaterialPrice.Value = Math.Min(row.Price, numVendorMaterialPrice.Maximum);
+    }
+
+    async void btnSaveVendorMaterial_Click(object? sender, EventArgs e)
+    {
+        if (editingId is not { } id) return;
+        if (cboVendorMaterial.SelectedItem is not MaterialRow m) { lblVendorMsg.Text = "Choose the material."; return; }
+        var error = await PurchasingService.SetVendorMaterialAsync(id, m.MaterialId, numVendorMaterialPrice.Value);
+        lblVendorMsg.Text = error ?? $"{m.Name}: {ProjectService.Money(numVendorMaterialPrice.Value)} per {m.Unit} saved for this vendor.";
+        if (error == null) { await ReloadMaterialsAsync(); Changed?.Invoke(this, EventArgs.Empty); }
+    }
+
+    async void btnRemoveVendorMaterial_Click(object? sender, EventArgs e)
+    {
+        if (editingId is not { } id || SelectedMaterial is not { } row) return;
+        if (MessageBox.Show(this, $"Remove {row.Material} from this vendor's list?", "Remove material", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        var error = await PurchasingService.RemoveVendorMaterialAsync(id, row.MaterialId);
+        lblVendorMsg.Text = error ?? $"{row.Material} removed from this vendor's list.";
+        if (error == null) { await ReloadMaterialsAsync(); Changed?.Invoke(this, EventArgs.Empty); }
     }
 
     async Task LoadDocsAsync()
@@ -147,7 +206,7 @@ public partial class VendorsTab : UserControl
         if (RecordForm.AddDialog(this, "Add Vendor", page, a => page.Added += a) is not { } newId) return;
         editingId = null;
         await LoadAsync(newId);
-        lblVendorMsg.Text = "Vendor added. You can upload their papers now.";
+        lblVendorMsg.Text = "Vendor added. You can upload their papers and list the materials they supply now.";
         Changed?.Invoke(this, EventArgs.Empty);
     }
 

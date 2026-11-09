@@ -70,6 +70,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 023_quotations | `quotations` (client price offers, QT-0001; status Draft / Waiting / Approved / Rejected / Accepted / Declined; CHECK Accepted ⇔ `project_id` set; `valid_until >= quote_date`) and `quotation_items` (lines, deleted with their quotation) |
 | 024_quotation_template | quotations follow the company paper: adds `client_address`, `attention`, `work_duration`, `payment_terms`, `payable_to`, `payable_number`, `signatory_name`, `signatory_title`; renames `terms` → `printed_notes`, `notes` → `internal_notes`; drops `discount`, `vat_applies`; `quotation_items` becomes description + `amount` (quantity, unit, unit price dropped); new `quotation_scope` (Scope of Works lines) |
 | 025_quotation_work_price | `quotation_scope.price` (optional, ≥ 0): a price per Scope of Works line, added to the Total Cost |
+| 026_vendor_materials | `vendor_materials` (vendor + material + price, primary key on the pair, both deleted with their vendor or material). Same day: the Deliveries screen was removed; approved purchases add the stock |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
@@ -172,7 +173,8 @@ PROJECT MONEY          projects <--- material_usages ---> materials
 PURCHASING             vendors <--- vendor_documents
                        quotes ---> materials, vendors
                        purchases ---> quotes (1:1), materials, vendors
-                       deliveries ---> purchases (optional), materials, vendors
+                       deliveries ---> purchases (optional), materials, vendors   (old rows; no screen since 026)
+                       vendor_materials ---> vendors, materials                 (materials supplied + price)
                        equipment <--- maintenance_logs
 
 HR                     employees <--- employee_rates           (rate history)
@@ -258,9 +260,9 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 
 ## 4.6 Inventory
 
-- **Stock is a ledger result, not an input.** `materials.stock_qty` is set once at creation, then changes only when a `material_usages` row is approved (down) or a `deliveries` row is inserted (up), in the same save.
+- **Stock is a ledger result, not an input.** `materials.stock_qty` is set once at creation, then changes only when a `material_usages` row is approved (down) or a purchase is approved (up; before script 026 a `deliveries` row did this), in the same save.
 - **Cost is frozen on approval:** `material_usages.cost` = quantity × `materials.unit_price` at that moment; a later price change doesn't alter project expenses.
-- **Buying chain:** `quotes` (Open) → approve one → `purchases` row (1:1 with the quote), the other open quotes of that material become Not Selected → `deliveries` (optionally against the purchase; delivered quantity = Σ deliveries per purchase) → the delivered price becomes `materials.unit_price`.
+- **Buying chain:** `quotes` (Open) → approve one → `purchases` row (1:1 with the quote), the other open quotes of that material become Not Selected → in the same save `materials.stock_qty += quantity`, `materials.unit_price` = the quoted price, and `vendor_materials.price` for that vendor and material is set (inserted if missing). `deliveries` is no longer written (old rows remain).
 
 ## 4.7 Subcontractors
 
@@ -305,7 +307,7 @@ R = reads, W = writes. Every write also inserts into `audit_logs`, except sign-i
 | HR > Cash Advances | `CashAdvanceService` | `cash_advances`, `cash_advance_deductions` | `cash_advances` |
 | HR > Settings | `HrSettingsService` | `app_settings`, `holidays` | `app_settings`, `holidays`; recomputes `attendance_days` |
 | Inventory > Materials / Usage | `MaterialService` | `materials`, `material_usages`, `projects` | `materials`, `material_usages` |
-| Inventory > Deliveries / Price Comparison / Vendors | `PurchasingService` | `vendors`, `vendor_documents`, `quotes`, `purchases`, `deliveries` | the same, plus `materials.stock_qty/unit_price` |
+| Inventory > Price Comparison / Vendors | `PurchasingService` | `vendors`, `vendor_documents`, `vendor_materials`, `quotes`, `purchases` | the same, plus `materials.stock_qty/unit_price` |
 | Inventory > Equipment | `EquipmentService` | `equipment`, `maintenance_logs` | the same |
 | Subcontractors > Directory | `SubcontractorService` | `subcontractors`, `subcontractor_trades` | the same |
 | Subcontractors > Jobs & Progress | `SubJobService` | `sub_jobs`, `sub_job_stages`, `sub_job_documents`, `sub_progress` | the same |
@@ -340,7 +342,7 @@ The Data Flow Diagram (`docs\diagrams\Desktop_App_DFD.drawio`) names data stores
 | D3.2 Equipment Records | `equipment` |
 | D3.3 Site Deployment Records | not built (location tracking dropped by the owner) |
 | D3.4 Maintenance Logs | `maintenance_logs` |
-| D3.5 Quotation Records | `quotes`, `purchases`, `vendors`, `vendor_documents` |
+| D3.5 Quotation Records | `quotes`, `purchases`, `vendors`, `vendor_documents`, `vendor_materials` |
 | D4.1 Subcontractor Records | `subcontractors`, `subcontractor_trades` |
 | D4.2 Scope & Progress Records | `sub_jobs`, `sub_job_stages`, `sub_job_documents`, `sub_progress` |
 | D4.3 Billing & Payout Records | `sub_vouchers`, `sub_payouts` |
@@ -384,9 +386,12 @@ SELECT r.pay_group, r.pay_date, COUNT(p.*) AS payslips, SUM(p.gross_pay) AS gros
 FROM payroll_runs r JOIN payslips p USING (run_id)
 WHERE r.status = 'Final' GROUP BY r.run_id ORDER BY r.pay_date DESC;
 
--- A material's stock ledger: deliveries in, approved usage out, running total
+-- A material's stock ledger: purchases and old deliveries in, approved usage out, running total
 WITH moves AS (
   SELECT delivered_on AS day, quantity AS change, 'delivery' AS what FROM deliveries WHERE material_id = 1
+  UNION ALL
+  SELECT approved_at::date, quantity, 'purchase' FROM purchases WHERE material_id = 1
+    AND purchase_id NOT IN (SELECT purchase_id FROM deliveries WHERE purchase_id IS NOT NULL)
   UNION ALL
   SELECT used_on, -quantity, 'usage' FROM material_usages WHERE material_id = 1 AND status = 'Approved')
 SELECT day, what, change, SUM(change) OVER (ORDER BY day, what) AS running_change FROM moves;
@@ -419,7 +424,7 @@ Back up the file storage folder together with the database: the tables only hold
 
 <!-- schema:start -->
 
-Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 47 tables. Types: `int` = 32-bit integer (`serial` = auto-numbered), `numeric(p,s)` = exact decimal, `timestamp` = date and time without time zone, `time` = time of day. "Null" = may be empty.
+Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 48 tables. Types: `int` = 32-bit integer (`serial` = auto-numbered), `numeric(p,s)` = exact decimal, `timestamp` = date and time without time zone, `time` = time of day. "Null" = may be empty.
 
 ## Login, accounts and history (scripts 001, 004, 011)
 
@@ -970,6 +975,23 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 47 tables
 - **Foreign key** `maintenance_logs_recorded_by_fkey`: `FOREIGN KEY recorded_by REFERENCES users(user_id)`
 - **Check** `maintenance_logs_cost_check`: `CHECK (cost >= 0)`
 - **Check** `maintenance_logs_kind_check`: `CHECK ((kind IN ('Preventive', 'Repair')))`
+
+### vendor_materials
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `vendor_id` | int |  |  |
+| `material_id` | int |  |  |
+| `price` | numeric(12,2) |  |  |
+| `updated_by` | int | yes |  |
+| `updated_at` | timestamp |  | now() |
+
+- **Primary key** `vendor_materials_pkey`: `PRIMARY KEY (vendor_id, material_id)`
+- **Foreign key** `vendor_materials_material_id_fkey`: `FOREIGN KEY material_id REFERENCES materials(material_id) ON DELETE CASCADE`
+- **Foreign key** `vendor_materials_updated_by_fkey`: `FOREIGN KEY updated_by REFERENCES users(user_id)`
+- **Foreign key** `vendor_materials_vendor_id_fkey`: `FOREIGN KEY vendor_id REFERENCES vendors(vendor_id) ON DELETE CASCADE`
+- **Check** `vendor_materials_price_check`: `CHECK (price >= 0)`
+- **Index** `ix_vendor_materials_material`: `material_id`
 
 ## Subcontractors (006)
 

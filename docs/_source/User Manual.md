@@ -316,14 +316,14 @@ Every payslip of a finalized payroll. Search a name or pick a payroll, select a 
 
 # 7. Inventory & Vendors
 
-For the Inventory department (Admins can only look). Approve and Delete buttons are for the **Inventory Supervisor**. Tabs: Materials, Material Usage, Deliveries, Equipment, Vendors, Price Comparison, Edit History (Supervisor and Admins).
+For the Inventory department (Admins can only look). Approve and Delete buttons are for the **Inventory Supervisor**. Tabs: Materials, Material Usage, Equipment, Vendors, Price Comparison, Edit History (Supervisor and Admins).
 
 ## Materials
 
 The list of construction materials. Rows turn **light red** when stock is below the minimum and **red** when it runs out; the sidebar item shows how many are low, e.g. *Materials (2 low)*.
 
 - **Add Material** opens a window: name, category, unit, price, starting stock, minimum stock. Click **Save**.
-- After that, the stock changes only by itself: down when usage is approved, up when a delivery is recorded.
+- After that, the stock changes only by itself: down when usage is approved, up when a purchase is approved in Price Comparison.
 
 ## Material Usage
 
@@ -336,16 +336,9 @@ At the bottom, pick a project to see all the material it has used and the total 
 
 1. Choose the **material to buy**.
 2. Add a **quote** from each vendor (product, price, quantity). The cheapest open quote is highlighted.
-3. The Supervisor selects one and clicks **Approve as Purchase**. The other quotes for that material close.
+3. The Supervisor selects one and clicks **Approve as Purchase**. The stock goes up by that quantity right away, the material's price becomes the bought price, and the other quotes for that material close.
 
-## Deliveries
-
-1. Pick the **approved purchase** (or "no approved purchase"); vendor, material and price fill in.
-2. Type the quantity received and the **receipt number**.
-3. **Attach Scan** of the receipt, or tick **Physical copy only** and type where the paper is filed.
-4. Click **Save Delivery**. The stock goes up.
-
-**Open Receipt Scan** shows a saved scan.
+Vendors that list the material (Vendors > Materials supplied) show above the quotes with their prices. When you pick one of them as the vendor, **Unit price** fills in by itself.
 
 ## Equipment
 
@@ -354,6 +347,15 @@ Tools, heavy equipment and vehicles, owned or rented (rented needs the company a
 ## Vendors
 
 Supplier details, bank details and VAT status. After saving a vendor, upload their papers (company profile, bank details, certificate of registration) and open them with **View**.
+
+**Materials supplied:** under the vendor's details, list the materials they sell and their price:
+
+1. Click the vendor in the list.
+2. Choose the **Material**, type **Their price per unit**, and click **Add / Update Price**.
+3. To change a price, click the material in the table, type the new price, and click **Add / Update Price** again.
+4. **Remove Material** takes it off this vendor's list.
+
+When a purchase from this vendor is approved, their price here is updated to the bought price.
 
 
 # 8. Subcontractors

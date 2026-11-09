@@ -48,6 +48,14 @@ namespace Company.OfficeApp.Pages.Inventory
             btnUploadVendorDoc = new Button();
             btnViewVendorDoc = new Button();
             btnDeleteVendorDoc = new Button();
+            lblVendorMaterials = new Label();
+            dgvVendorMaterials = new DataGridView();
+            lblVendorMaterial = new Label();
+            cboVendorMaterial = new ComboBox();
+            lblVendorMaterialPrice = new Label();
+            numVendorMaterialPrice = new NumericUpDown();
+            btnSaveVendorMaterial = new Button();
+            btnRemoveVendorMaterial = new Button();
             lblVendorMsg = new Label();
             btnSaveVendor = new Button();
             btnCancelVendor = new Button();
@@ -58,8 +66,14 @@ namespace Company.OfficeApp.Pages.Inventory
             colDocType = new DataGridViewTextBoxColumn();
             colDocFile = new DataGridViewTextBoxColumn();
             colDocDate = new DataGridViewTextBoxColumn();
+            colVmMaterial = new DataGridViewTextBoxColumn();
+            colVmUnit = new DataGridViewTextBoxColumn();
+            colVmPrice = new DataGridViewTextBoxColumn();
+            colVmUpdated = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvVendors).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvVendorDocs).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvVendorMaterials).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numVendorMaterialPrice).BeginInit();
             SuspendLayout();
             // 
             // lblSearch
@@ -312,28 +326,101 @@ namespace Company.OfficeApp.Pages.Inventory
             btnDeleteVendorDoc.TabIndex = 18;
             btnDeleteVendorDoc.Click += btnDeleteVendorDoc_Click;
             // 
+            // lblVendorMaterials
+            // 
+            lblVendorMaterials.AutoSize = true;
+            lblVendorMaterials.Location = new Point(38, 795);
+            lblVendorMaterials.Name = "lblVendorMaterials";
+            lblVendorMaterials.Text = "Materials supplied (save the vendor first)";
+            // 
+            // dgvVendorMaterials
+            // 
+            dgvVendorMaterials.AllowUserToAddRows = false;
+            dgvVendorMaterials.AllowUserToDeleteRows = false;
+            dgvVendorMaterials.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvVendorMaterials.Columns.AddRange(new DataGridViewColumn[] { colVmMaterial, colVmUnit, colVmPrice, colVmUpdated });
+            dgvVendorMaterials.MultiSelect = false;
+            dgvVendorMaterials.ReadOnly = true;
+            dgvVendorMaterials.RowHeadersVisible = false;
+            dgvVendorMaterials.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvVendorMaterials.Location = new Point(38, 819);
+            dgvVendorMaterials.Name = "dgvVendorMaterials";
+            dgvVendorMaterials.Size = new Size(653, 172);
+            dgvVendorMaterials.TabIndex = 19;
+            dgvVendorMaterials.SelectionChanged += dgvVendorMaterials_SelectionChanged;
+            // 
+            // lblVendorMaterial
+            // 
+            lblVendorMaterial.AutoSize = true;
+            lblVendorMaterial.Location = new Point(726, 819);
+            lblVendorMaterial.Name = "lblVendorMaterial";
+            lblVendorMaterial.Text = "Material";
+            // 
+            // cboVendorMaterial
+            // 
+            cboVendorMaterial.Location = new Point(726, 842);
+            cboVendorMaterial.Name = "cboVendorMaterial";
+            cboVendorMaterial.Size = new Size(382, 23);
+            cboVendorMaterial.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboVendorMaterial.TabIndex = 20;
+            // 
+            // lblVendorMaterialPrice
+            // 
+            lblVendorMaterialPrice.AutoSize = true;
+            lblVendorMaterialPrice.Location = new Point(726, 882);
+            lblVendorMaterialPrice.Name = "lblVendorMaterialPrice";
+            lblVendorMaterialPrice.Text = "Their price per unit";
+            // 
+            // numVendorMaterialPrice
+            // 
+            numVendorMaterialPrice.Location = new Point(726, 906);
+            numVendorMaterialPrice.Name = "numVendorMaterialPrice";
+            numVendorMaterialPrice.Size = new Size(161, 23);
+            numVendorMaterialPrice.DecimalPlaces = 2;
+            numVendorMaterialPrice.ThousandsSeparator = true;
+            numVendorMaterialPrice.Maximum = 999999999m;
+            numVendorMaterialPrice.TabIndex = 21;
+            // 
+            // btnSaveVendorMaterial
+            // 
+            btnSaveVendorMaterial.Location = new Point(898, 903);
+            btnSaveVendorMaterial.Name = "btnSaveVendorMaterial";
+            btnSaveVendorMaterial.Size = new Size(209, 36);
+            btnSaveVendorMaterial.Text = "Add / Update Price";
+            btnSaveVendorMaterial.TabIndex = 22;
+            btnSaveVendorMaterial.Click += btnSaveVendorMaterial_Click;
+            // 
+            // btnRemoveVendorMaterial
+            // 
+            btnRemoveVendorMaterial.Location = new Point(726, 953);
+            btnRemoveVendorMaterial.Name = "btnRemoveVendorMaterial";
+            btnRemoveVendorMaterial.Size = new Size(172, 36);
+            btnRemoveVendorMaterial.Text = "Remove Material";
+            btnRemoveVendorMaterial.TabIndex = 23;
+            btnRemoveVendorMaterial.Click += btnRemoveVendorMaterial_Click;
+            // 
             // lblVendorMsg
             // 
             lblVendorMsg.AutoSize = true;
-            lblVendorMsg.Location = new Point(38, 790);
+            lblVendorMsg.Location = new Point(38, 1003);
             lblVendorMsg.Name = "lblVendorMsg";
             // 
             // btnSaveVendor
             // 
-            btnSaveVendor.Location = new Point(38, 819);
+            btnSaveVendor.Location = new Point(38, 1032);
             btnSaveVendor.Name = "btnSaveVendor";
             btnSaveVendor.Size = new Size(103, 36);
             btnSaveVendor.Text = "Save";
-            btnSaveVendor.TabIndex = 19;
+            btnSaveVendor.TabIndex = 24;
             btnSaveVendor.Click += btnSaveVendor_Click;
             // 
             // btnCancelVendor
             // 
-            btnCancelVendor.Location = new Point(148, 819);
+            btnCancelVendor.Location = new Point(148, 1032);
             btnCancelVendor.Name = "btnCancelVendor";
             btnCancelVendor.Size = new Size(103, 36);
             btnCancelVendor.Text = "Cancel";
-            btnCancelVendor.TabIndex = 20;
+            btnCancelVendor.TabIndex = 25;
             btnCancelVendor.Click += btnCancelVendor_Click;
             // 
             // colName
@@ -379,6 +466,36 @@ namespace Company.OfficeApp.Pages.Inventory
             colDocDate.Name = "colDocDate";
             colDocDate.DefaultCellStyle = new DataGridViewCellStyle { Format = "MMM d, yyyy" };
             // 
+            // colVmMaterial
+            // 
+            colVmMaterial.DataPropertyName = "Material";
+            colVmMaterial.HeaderText = "Material";
+            colVmMaterial.Name = "colVmMaterial";
+            colVmMaterial.FillWeight = 160;
+            // 
+            // colVmUnit
+            // 
+            colVmUnit.DataPropertyName = "Unit";
+            colVmUnit.HeaderText = "Unit";
+            colVmUnit.Name = "colVmUnit";
+            colVmUnit.FillWeight = 50;
+            // 
+            // colVmPrice
+            // 
+            colVmPrice.DataPropertyName = "Price";
+            colVmPrice.HeaderText = "Price";
+            colVmPrice.Name = "colVmPrice";
+            colVmPrice.FillWeight = 70;
+            colVmPrice.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N2" };
+            // 
+            // colVmUpdated
+            // 
+            colVmUpdated.DataPropertyName = "UpdatedAt";
+            colVmUpdated.HeaderText = "Updated";
+            colVmUpdated.Name = "colVmUpdated";
+            colVmUpdated.FillWeight = 70;
+            colVmUpdated.DefaultCellStyle = new DataGridViewCellStyle { Format = "MMM d, yyyy" };
+            // 
             // VendorsTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -415,14 +532,24 @@ namespace Company.OfficeApp.Pages.Inventory
             Controls.Add(btnUploadVendorDoc);
             Controls.Add(btnViewVendorDoc);
             Controls.Add(btnDeleteVendorDoc);
+            Controls.Add(lblVendorMaterials);
+            Controls.Add(dgvVendorMaterials);
+            Controls.Add(lblVendorMaterial);
+            Controls.Add(cboVendorMaterial);
+            Controls.Add(lblVendorMaterialPrice);
+            Controls.Add(numVendorMaterialPrice);
+            Controls.Add(btnSaveVendorMaterial);
+            Controls.Add(btnRemoveVendorMaterial);
             Controls.Add(lblVendorMsg);
             Controls.Add(btnSaveVendor);
             Controls.Add(btnCancelVendor);
             Name = "VendorsTab";
-            Size = new Size(1152, 903);
+            Size = new Size(1152, 1109);
             Load += VendorsTab_Load;
             ((System.ComponentModel.ISupportInitialize)dgvVendors).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvVendorDocs).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvVendorMaterials).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numVendorMaterialPrice).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -460,6 +587,14 @@ namespace Company.OfficeApp.Pages.Inventory
         private Button btnUploadVendorDoc;
         private Button btnViewVendorDoc;
         private Button btnDeleteVendorDoc;
+        private Label lblVendorMaterials;
+        private DataGridView dgvVendorMaterials;
+        private Label lblVendorMaterial;
+        private ComboBox cboVendorMaterial;
+        private Label lblVendorMaterialPrice;
+        private NumericUpDown numVendorMaterialPrice;
+        private Button btnSaveVendorMaterial;
+        private Button btnRemoveVendorMaterial;
         private Label lblVendorMsg;
         private Button btnSaveVendor;
         private Button btnCancelVendor;
@@ -470,5 +605,9 @@ namespace Company.OfficeApp.Pages.Inventory
         private DataGridViewTextBoxColumn colDocType;
         private DataGridViewTextBoxColumn colDocFile;
         private DataGridViewTextBoxColumn colDocDate;
+        private DataGridViewTextBoxColumn colVmMaterial;
+        private DataGridViewTextBoxColumn colVmUnit;
+        private DataGridViewTextBoxColumn colVmPrice;
+        private DataGridViewTextBoxColumn colVmUpdated;
     }
 }

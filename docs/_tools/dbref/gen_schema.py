@@ -21,7 +21,7 @@ GROUPS = [
     ("Projects (002)", ["projects"]),
     ("HR: employees and attendance (003, 012)", ["employees", "employee_rates", "attendance_imports", "attendance_scans", "attendance_days"]),
     ("HR: payroll (013)", ["holidays", "cash_advances", "payroll_runs", "payslips", "cash_advance_deductions"]),
-    ("Inventory (005)", ["materials", "material_usages", "vendors", "vendor_documents", "quotes", "purchases", "deliveries", "equipment", "maintenance_logs"]),
+    ("Inventory (005)", ["materials", "material_usages", "vendors", "vendor_documents", "quotes", "purchases", "deliveries", "equipment", "maintenance_logs", "vendor_materials"]),
     ("Subcontractors (006)", ["subcontractors", "subcontractor_trades", "sub_jobs", "sub_job_stages", "sub_job_documents", "sub_progress", "sub_vouchers", "sub_payouts"]),
     ("Receipts (007)", ["receipts", "change_orders"]),
     ("Quotations (023-025)", ["quotations", "quotation_items", "quotation_scope"]),

@@ -27,7 +27,7 @@ public record ProjectOption(int ProjectId, string Name)
 
 /// <summary>
 /// Inventory > Materials and Material Usage (Project Outline, Part 3).
-/// Stock only changes through approved usage (down) and deliveries (up), never by typing it in.
+/// Stock only changes through approved usage (down) and approved purchases (up; older stock came from deliveries), never by typing it in.
 /// Usage: the Inventory Employee records it; the Inventory Supervisor approves; then the stock
 /// goes down and quantity x the material's current price becomes that project's material expense.
 /// </summary>

@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Quote> Quotes => Set<Quote>();
     public DbSet<Purchase> Purchases => Set<Purchase>();
     public DbSet<Delivery> Deliveries => Set<Delivery>();
+    public DbSet<VendorMaterial> VendorMaterials => Set<VendorMaterial>();
     public DbSet<Equipment> Equipment => Set<Equipment>();
     public DbSet<MaintenanceLog> MaintenanceLogs => Set<MaintenanceLog>();
     public DbSet<Subcontractor> Subcontractors => Set<Subcontractor>();
@@ -101,6 +102,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Quote>().HasKey(q => q.QuoteId);
         modelBuilder.Entity<Purchase>().HasKey(p => p.PurchaseId);
         modelBuilder.Entity<Delivery>().HasKey(d => d.DeliveryId);
+        modelBuilder.Entity<VendorMaterial>().HasKey(v => new { v.VendorId, v.MaterialId });
         modelBuilder.Entity<Equipment>().HasKey(e => e.EquipmentId);
         modelBuilder.Entity<MaintenanceLog>().HasKey(l => l.LogId);
 

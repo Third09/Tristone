@@ -2,7 +2,7 @@
 NAMESPACE = "Company.OfficeApp.Pages.Inventory"
 CLASS = "VendorsTab"
 ROOMY = True   # spread out like the Figma pages (2026-11-01)
-SIZE = (960, 660)
+SIZE = (960, 816)
 LOAD_EVENT = "VendorsTab_Load"
 DATE = 'new DataGridViewCellStyle { Format = "MMM d, yyyy" }'
 
@@ -41,10 +41,19 @@ CONTROLS = [
     ("Button", "btnUploadVendorDoc", 816, 484, 126, 28, {"Text": T("Upload Paper")}),
     ("Button", "btnViewVendorDoc", 610, 516, 90, 28, {"Text": T("View")}),
     ("Button", "btnDeleteVendorDoc", 706, 516, 104, 28, {"Text": T("Delete Paper")}),
+    # materials supplied (save the vendor first)
+    ("Label", "lblVendorMaterials", 12, 590, None, None, {"Text": T("Materials supplied (save the vendor first)")}),
+    ("DataGridView", "dgvVendorMaterials", 12, 608, 568, 130, {}),
+    ("Label", "lblVendorMaterial", 610, 608, None, None, {"Text": T("Material")}),
+    ("ComboBox", "cboVendorMaterial", 610, 626, 332, 23, DDL),
+    ("Label", "lblVendorMaterialPrice", 610, 656, None, None, {"Text": T("Their price per unit")}),
+    ("NumericUpDown", "numVendorMaterialPrice", 610, 674, 140, 23, {"DecimalPlaces": "2", "ThousandsSeparator": "true", "Maximum": "999999999m"}),
+    ("Button", "btnSaveVendorMaterial", 760, 672, 182, 28, {"Text": T("Add / Update Price")}),
+    ("Button", "btnRemoveVendorMaterial", 610, 710, 150, 28, {"Text": T("Remove Material")}),
     # bottom
-    ("Label", "lblVendorMsg", 12, 586, None, None, {}),
-    ("Button", "btnSaveVendor", 12, 608, 90, 28, {"Text": T("Save")}),
-    ("Button", "btnCancelVendor", 108, 608, 90, 28, {"Text": T("Cancel")}),
+    ("Label", "lblVendorMsg", 12, 748, None, None, {}),
+    ("Button", "btnSaveVendor", 12, 770, 90, 28, {"Text": T("Save")}),
+    ("Button", "btnCancelVendor", 108, 770, 90, 28, {"Text": T("Cancel")}),
 ]
 
 GRID_COLUMNS = {
@@ -59,6 +68,12 @@ GRID_COLUMNS = {
         (TB, "colDocFile", "OriginalName", "File", {}),
         (TB, "colDocDate", "UploadedAt", "Uploaded", {"DefaultCellStyle": DATE}),
     ],
+    "dgvVendorMaterials": [
+        (TB, "colVmMaterial", "Material", "Material", {"FillWeight": "160"}),
+        (TB, "colVmUnit", "Unit", "Unit", {"FillWeight": "50"}),
+        (TB, "colVmPrice", "Price", "Price", {"FillWeight": "70", "DefaultCellStyle": 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N2" }'}),
+        (TB, "colVmUpdated", "UpdatedAt", "Updated", {"FillWeight": "70", "DefaultCellStyle": DATE}),
+    ],
 }
 
 EVENTS = {
@@ -71,4 +86,7 @@ EVENTS = {
     "btnDeleteVendorDoc": [("Click", "btnDeleteVendorDoc_Click")],
     "btnSaveVendor": [("Click", "btnSaveVendor_Click")],
     "btnCancelVendor": [("Click", "btnCancelVendor_Click")],
+    "dgvVendorMaterials": [("SelectionChanged", "dgvVendorMaterials_SelectionChanged")],
+    "btnSaveVendorMaterial": [("Click", "btnSaveVendorMaterial_Click")],
+    "btnRemoveVendorMaterial": [("Click", "btnRemoveVendorMaterial_Click")],
 }
