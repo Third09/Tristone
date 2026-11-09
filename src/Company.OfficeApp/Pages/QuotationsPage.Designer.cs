@@ -29,38 +29,51 @@ namespace Company.OfficeApp.Pages
             lblFormMode = new Label();
             lblClientName = new Label();
             txtClientName = new TextBox();
+            lblClientAddress = new Label();
+            txtClientAddress = new TextBox();
+            lblAttention = new Label();
+            txtAttention = new TextBox();
             lblClientContact = new Label();
             txtClientContact = new TextBox();
             lblClientEmail = new Label();
             txtClientEmail = new TextBox();
-            lblProjectTitle = new Label();
-            txtProjectTitle = new TextBox();
-            lblSiteLocation = new Label();
-            txtSiteLocation = new TextBox();
-            lblSector = new Label();
-            cboSector = new ComboBox();
+            lblFromInquiry = new Label();
+            cboFromInquiry = new ComboBox();
             lblQuoteDate = new Label();
             dtpQuoteDate = new DateTimePicker();
             lblValidUntil = new Label();
             dtpValidUntil = new DateTimePicker();
             lblPlannedStart = new Label();
             dtpPlannedStart = new DateTimePicker();
-            lblFromInquiry = new Label();
-            cboFromInquiry = new ComboBox();
-            lblLines = new Label();
+            lblProjectTitle = new Label();
+            txtProjectTitle = new TextBox();
+            lblSiteLocation = new Label();
+            txtSiteLocation = new TextBox();
+            lblSector = new Label();
+            cboSector = new ComboBox();
+            lblScope = new Label();
+            dgvScope = new DataGridView();
+            btnRemoveScope = new Button();
+            lblCosts = new Label();
             dgvLines = new DataGridView();
             btnRemoveLine = new Button();
-            lblDiscount = new Label();
-            numDiscount = new NumericUpDown();
-            chkVat = new CheckBox();
-            lblSubtotal = new Label();
-            lblDiscountShown = new Label();
-            lblVatShown = new Label();
             lblTotal = new Label();
-            lblTerms = new Label();
-            txtTerms = new TextBox();
-            lblNotes = new Label();
-            txtNotes = new TextBox();
+            lblPrintedNotes = new Label();
+            txtPrintedNotes = new TextBox();
+            lblWorkDuration = new Label();
+            txtWorkDuration = new TextBox();
+            lblPaymentTerms = new Label();
+            txtPaymentTerms = new TextBox();
+            lblPayableTo = new Label();
+            txtPayableTo = new TextBox();
+            lblPayableNumber = new Label();
+            txtPayableNumber = new TextBox();
+            lblSignatoryName = new Label();
+            txtSignatoryName = new TextBox();
+            lblSignatoryTitle = new Label();
+            txtSignatoryTitle = new TextBox();
+            lblInternalNotes = new Label();
+            txtInternalNotes = new TextBox();
             lblQuotationMsg = new Label();
             btnSaveQuotation = new Button();
             btnCancelQuotation = new Button();
@@ -76,14 +89,13 @@ namespace Company.OfficeApp.Pages
             colTotal = new DataGridViewTextBoxColumn();
             colValidUntil = new DataGridViewTextBoxColumn();
             colStatus = new DataGridViewTextBoxColumn();
+            colWork = new DataGridViewTextBoxColumn();
+            colDetails = new DataGridViewTextBoxColumn();
             colItem = new DataGridViewTextBoxColumn();
-            colQty = new DataGridViewTextBoxColumn();
-            colUnit = new DataGridViewTextBoxColumn();
-            colUnitPrice = new DataGridViewTextBoxColumn();
             colAmount = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvQuotations).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvScope).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvLines).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numDiscount).BeginInit();
             SuspendLayout();
             // 
             // lblSearch
@@ -182,7 +194,7 @@ namespace Company.OfficeApp.Pages
             lblClientName.AutoSize = true;
             lblClientName.Location = new Point(38, 399);
             lblClientName.Name = "lblClientName";
-            lblClientName.Text = "Client name";
+            lblClientName.Text = "Customer";
             // 
             // txtClientName
             // 
@@ -192,88 +204,88 @@ namespace Company.OfficeApp.Pages
             txtClientName.MaxLength = 150;
             txtClientName.TabIndex = 7;
             // 
+            // lblClientAddress
+            // 
+            lblClientAddress.AutoSize = true;
+            lblClientAddress.Location = new Point(38, 462);
+            lblClientAddress.Name = "lblClientAddress";
+            lblClientAddress.Text = "Address";
+            // 
+            // txtClientAddress
+            // 
+            txtClientAddress.Location = new Point(38, 486);
+            txtClientAddress.Name = "txtClientAddress";
+            txtClientAddress.Size = new Size(322, 23);
+            txtClientAddress.MaxLength = 255;
+            txtClientAddress.TabIndex = 8;
+            // 
+            // lblAttention
+            // 
+            lblAttention.AutoSize = true;
+            lblAttention.Location = new Point(38, 526);
+            lblAttention.Name = "lblAttention";
+            lblAttention.Text = "Attention (person it is addressed to)";
+            // 
+            // txtAttention
+            // 
+            txtAttention.Location = new Point(38, 549);
+            txtAttention.Name = "txtAttention";
+            txtAttention.Size = new Size(322, 23);
+            txtAttention.MaxLength = 150;
+            txtAttention.TabIndex = 9;
+            // 
             // lblClientContact
             // 
             lblClientContact.AutoSize = true;
-            lblClientContact.Location = new Point(38, 462);
+            lblClientContact.Location = new Point(380, 399);
             lblClientContact.Name = "lblClientContact";
-            lblClientContact.Text = "Contact number";
+            lblClientContact.Text = "Contact number (not printed)";
             // 
             // txtClientContact
             // 
-            txtClientContact.Location = new Point(38, 486);
+            txtClientContact.Location = new Point(380, 423);
             txtClientContact.Name = "txtClientContact";
             txtClientContact.Size = new Size(322, 23);
             txtClientContact.MaxLength = 60;
-            txtClientContact.TabIndex = 8;
+            txtClientContact.TabIndex = 10;
             // 
             // lblClientEmail
             // 
             lblClientEmail.AutoSize = true;
-            lblClientEmail.Location = new Point(38, 526);
+            lblClientEmail.Location = new Point(380, 462);
             lblClientEmail.Name = "lblClientEmail";
-            lblClientEmail.Text = "Email";
+            lblClientEmail.Text = "Email (not printed)";
             // 
             // txtClientEmail
             // 
-            txtClientEmail.Location = new Point(38, 549);
+            txtClientEmail.Location = new Point(380, 486);
             txtClientEmail.Name = "txtClientEmail";
             txtClientEmail.Size = new Size(322, 23);
             txtClientEmail.MaxLength = 150;
-            txtClientEmail.TabIndex = 9;
+            txtClientEmail.TabIndex = 11;
             // 
-            // lblProjectTitle
+            // lblFromInquiry
             // 
-            lblProjectTitle.AutoSize = true;
-            lblProjectTitle.Location = new Point(380, 399);
-            lblProjectTitle.Name = "lblProjectTitle";
-            lblProjectTitle.Text = "Project (e.g. Two-storey house)";
-            lblProjectTitle.Font = new Font("Segoe UI", 9F);
+            lblFromInquiry.AutoSize = true;
+            lblFromInquiry.Location = new Point(380, 526);
+            lblFromInquiry.Name = "lblFromInquiry";
+            lblFromInquiry.Text = "From a website inquiry";
             // 
-            // txtProjectTitle
+            // cboFromInquiry
             // 
-            txtProjectTitle.Location = new Point(380, 423);
-            txtProjectTitle.Name = "txtProjectTitle";
-            txtProjectTitle.Size = new Size(322, 23);
-            txtProjectTitle.MaxLength = 150;
-            txtProjectTitle.TabIndex = 10;
-            // 
-            // lblSiteLocation
-            // 
-            lblSiteLocation.AutoSize = true;
-            lblSiteLocation.Location = new Point(380, 462);
-            lblSiteLocation.Name = "lblSiteLocation";
-            lblSiteLocation.Text = "Site location";
-            // 
-            // txtSiteLocation
-            // 
-            txtSiteLocation.Location = new Point(380, 486);
-            txtSiteLocation.Name = "txtSiteLocation";
-            txtSiteLocation.Size = new Size(322, 23);
-            txtSiteLocation.MaxLength = 255;
-            txtSiteLocation.TabIndex = 11;
-            // 
-            // lblSector
-            // 
-            lblSector.AutoSize = true;
-            lblSector.Location = new Point(380, 526);
-            lblSector.Name = "lblSector";
-            lblSector.Text = "Sector";
-            // 
-            // cboSector
-            // 
-            cboSector.Location = new Point(380, 549);
-            cboSector.Name = "cboSector";
-            cboSector.Size = new Size(322, 23);
-            cboSector.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboSector.TabIndex = 12;
+            cboFromInquiry.Location = new Point(380, 549);
+            cboFromInquiry.Name = "cboFromInquiry";
+            cboFromInquiry.Size = new Size(322, 23);
+            cboFromInquiry.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboFromInquiry.TabIndex = 12;
+            cboFromInquiry.SelectionChangeCommitted += cboFromInquiry_SelectionChangeCommitted;
             // 
             // lblQuoteDate
             // 
             lblQuoteDate.AutoSize = true;
             lblQuoteDate.Location = new Point(723, 399);
             lblQuoteDate.Name = "lblQuoteDate";
-            lblQuoteDate.Text = "Quotation date";
+            lblQuoteDate.Text = "Date";
             // 
             // dtpQuoteDate
             // 
@@ -288,7 +300,7 @@ namespace Company.OfficeApp.Pages
             lblValidUntil.AutoSize = true;
             lblValidUntil.Location = new Point(723, 462);
             lblValidUntil.Name = "lblValidUntil";
-            lblValidUntil.Text = "Valid until";
+            lblValidUntil.Text = "Valid until (not printed)";
             // 
             // dtpValidUntil
             // 
@@ -315,213 +327,318 @@ namespace Company.OfficeApp.Pages
             dtpPlannedStart.Checked = false;
             dtpPlannedStart.TabIndex = 15;
             // 
-            // lblFromInquiry
+            // lblProjectTitle
             // 
-            lblFromInquiry.AutoSize = true;
-            lblFromInquiry.Location = new Point(900, 399);
-            lblFromInquiry.Name = "lblFromInquiry";
-            lblFromInquiry.Text = "From a website inquiry";
+            lblProjectTitle.AutoSize = true;
+            lblProjectTitle.Location = new Point(900, 399);
+            lblProjectTitle.Name = "lblProjectTitle";
+            lblProjectTitle.Text = "Project name";
+            lblProjectTitle.Font = new Font("Segoe UI", 9F);
             // 
-            // cboFromInquiry
+            // txtProjectTitle
             // 
-            cboFromInquiry.Location = new Point(900, 423);
-            cboFromInquiry.Name = "cboFromInquiry";
-            cboFromInquiry.Size = new Size(207, 23);
-            cboFromInquiry.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboFromInquiry.TabIndex = 16;
-            cboFromInquiry.SelectionChangeCommitted += cboFromInquiry_SelectionChangeCommitted;
+            txtProjectTitle.Location = new Point(900, 423);
+            txtProjectTitle.Name = "txtProjectTitle";
+            txtProjectTitle.Size = new Size(207, 23);
+            txtProjectTitle.MaxLength = 150;
+            txtProjectTitle.TabIndex = 16;
             // 
-            // lblLines
+            // lblSiteLocation
             // 
-            lblLines.AutoSize = true;
-            lblLines.Location = new Point(38, 597);
-            lblLines.Name = "lblLines";
-            lblLines.Text = "Items (type in the table; a new row appears as you type)";
+            lblSiteLocation.AutoSize = true;
+            lblSiteLocation.Location = new Point(900, 462);
+            lblSiteLocation.Name = "lblSiteLocation";
+            lblSiteLocation.Text = "Site location";
+            // 
+            // txtSiteLocation
+            // 
+            txtSiteLocation.Location = new Point(900, 486);
+            txtSiteLocation.Name = "txtSiteLocation";
+            txtSiteLocation.Size = new Size(207, 23);
+            txtSiteLocation.MaxLength = 255;
+            txtSiteLocation.TabIndex = 17;
+            // 
+            // lblSector
+            // 
+            lblSector.AutoSize = true;
+            lblSector.Location = new Point(900, 526);
+            lblSector.Name = "lblSector";
+            lblSector.Text = "Sector";
+            // 
+            // cboSector
+            // 
+            cboSector.Location = new Point(900, 549);
+            cboSector.Name = "cboSector";
+            cboSector.Size = new Size(207, 23);
+            cboSector.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboSector.TabIndex = 18;
+            // 
+            // lblScope
+            // 
+            lblScope.AutoSize = true;
+            lblScope.Location = new Point(38, 597);
+            lblScope.Name = "lblScope";
+            lblScope.Text = "Scope of Works (printed A, B, C...; type in the table)";
+            // 
+            // dgvScope
+            // 
+            dgvScope.AllowUserToAddRows = false;
+            dgvScope.AllowUserToDeleteRows = false;
+            dgvScope.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvScope.Columns.AddRange(new DataGridViewColumn[] { colWork, colDetails });
+            dgvScope.MultiSelect = false;
+            dgvScope.ReadOnly = true;
+            dgvScope.RowHeadersVisible = false;
+            dgvScope.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvScope.Location = new Point(38, 621);
+            dgvScope.Name = "dgvScope";
+            dgvScope.Size = new Size(690, 172);
+            dgvScope.TabIndex = 19;
+            // 
+            // btnRemoveScope
+            // 
+            btnRemoveScope.Location = new Point(38, 800);
+            btnRemoveScope.Name = "btnRemoveScope";
+            btnRemoveScope.Size = new Size(126, 36);
+            btnRemoveScope.Text = "Remove Line";
+            btnRemoveScope.TabIndex = 20;
+            btnRemoveScope.Click += btnRemoveScope_Click;
+            // 
+            // lblCosts
+            // 
+            lblCosts.AutoSize = true;
+            lblCosts.Location = new Point(748, 597);
+            lblCosts.Name = "lblCosts";
+            lblCosts.Text = "Costs (e.g. Labor Cost)";
             // 
             // dgvLines
             // 
             dgvLines.AllowUserToAddRows = false;
             dgvLines.AllowUserToDeleteRows = false;
             dgvLines.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvLines.Columns.AddRange(new DataGridViewColumn[] { colItem, colQty, colUnit, colUnitPrice, colAmount });
+            dgvLines.Columns.AddRange(new DataGridViewColumn[] { colItem, colAmount });
             dgvLines.MultiSelect = false;
             dgvLines.ReadOnly = true;
             dgvLines.RowHeadersVisible = false;
             dgvLines.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLines.Location = new Point(38, 621);
+            dgvLines.Location = new Point(748, 621);
             dgvLines.Name = "dgvLines";
-            dgvLines.Size = new Size(713, 211);
-            dgvLines.TabIndex = 17;
+            dgvLines.Size = new Size(359, 172);
+            dgvLines.TabIndex = 21;
             dgvLines.CellEndEdit += Lines_Changed;
             dgvLines.RowsRemoved += Lines_RowsRemoved;
             // 
             // btnRemoveLine
             // 
-            btnRemoveLine.Location = new Point(38, 840);
+            btnRemoveLine.Location = new Point(748, 800);
             btnRemoveLine.Name = "btnRemoveLine";
             btnRemoveLine.Size = new Size(126, 36);
-            btnRemoveLine.Text = "Remove Line";
-            btnRemoveLine.TabIndex = 18;
+            btnRemoveLine.Text = "Remove Cost";
+            btnRemoveLine.TabIndex = 22;
             btnRemoveLine.Click += btnRemoveLine_Click;
-            // 
-            // lblDiscount
-            // 
-            lblDiscount.AutoSize = true;
-            lblDiscount.Location = new Point(771, 621);
-            lblDiscount.Name = "lblDiscount";
-            lblDiscount.Text = "Discount (pesos)";
-            // 
-            // numDiscount
-            // 
-            numDiscount.Location = new Point(771, 644);
-            numDiscount.Name = "numDiscount";
-            numDiscount.Size = new Size(161, 23);
-            numDiscount.DecimalPlaces = 2;
-            numDiscount.ThousandsSeparator = true;
-            numDiscount.Maximum = 999999999m;
-            numDiscount.TabIndex = 19;
-            numDiscount.ValueChanged += Totals_Changed;
-            // 
-            // chkVat
-            // 
-            chkVat.AutoSize = true;
-            chkVat.Location = new Point(771, 684);
-            chkVat.Name = "chkVat";
-            chkVat.Text = "Add 12% VAT";
-            chkVat.TabIndex = 20;
-            chkVat.CheckedChanged += Totals_Changed;
-            // 
-            // lblSubtotal
-            // 
-            lblSubtotal.AutoSize = true;
-            lblSubtotal.Location = new Point(771, 724);
-            lblSubtotal.Name = "lblSubtotal";
-            lblSubtotal.Text = "Subtotal: -";
-            // 
-            // lblDiscountShown
-            // 
-            lblDiscountShown.AutoSize = true;
-            lblDiscountShown.Location = new Point(771, 750);
-            lblDiscountShown.Name = "lblDiscountShown";
-            lblDiscountShown.Text = "Discount: -";
-            // 
-            // lblVatShown
-            // 
-            lblVatShown.AutoSize = true;
-            lblVatShown.Location = new Point(771, 776);
-            lblVatShown.Name = "lblVatShown";
-            lblVatShown.Text = "VAT: -";
             // 
             // lblTotal
             // 
             lblTotal.AutoSize = true;
-            lblTotal.Location = new Point(771, 808);
+            lblTotal.Location = new Point(886, 805);
             lblTotal.Name = "lblTotal";
-            lblTotal.Text = "TOTAL: -";
+            lblTotal.Text = "Total Cost: -";
             lblTotal.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             // 
-            // lblTerms
+            // lblPrintedNotes
             // 
-            lblTerms.AutoSize = true;
-            lblTerms.Location = new Point(38, 887);
-            lblTerms.Name = "lblTerms";
-            lblTerms.Text = "Terms and conditions (printed)";
+            lblPrintedNotes.AutoSize = true;
+            lblPrintedNotes.Location = new Point(38, 850);
+            lblPrintedNotes.Name = "lblPrintedNotes";
+            lblPrintedNotes.Text = "Notes (printed; one per line)";
             // 
-            // txtTerms
+            // txtPrintedNotes
             // 
-            txtTerms.Location = new Point(38, 911);
-            txtTerms.Name = "txtTerms";
-            txtTerms.Size = new Size(529, 106);
-            txtTerms.Multiline = true;
-            txtTerms.ScrollBars = ScrollBars.Vertical;
-            txtTerms.MaxLength = 2000;
-            txtTerms.TabIndex = 21;
+            txtPrintedNotes.Location = new Point(38, 874);
+            txtPrintedNotes.Name = "txtPrintedNotes";
+            txtPrintedNotes.Size = new Size(529, 92);
+            txtPrintedNotes.Multiline = true;
+            txtPrintedNotes.ScrollBars = ScrollBars.Vertical;
+            txtPrintedNotes.MaxLength = 2000;
+            txtPrintedNotes.TabIndex = 23;
             // 
-            // lblNotes
+            // lblWorkDuration
             // 
-            lblNotes.AutoSize = true;
-            lblNotes.Location = new Point(588, 887);
-            lblNotes.Name = "lblNotes";
-            lblNotes.Text = "Internal notes (not printed)";
+            lblWorkDuration.AutoSize = true;
+            lblWorkDuration.Location = new Point(588, 850);
+            lblWorkDuration.Name = "lblWorkDuration";
+            lblWorkDuration.Text = "Work duration";
             // 
-            // txtNotes
+            // txtWorkDuration
             // 
-            txtNotes.Location = new Point(588, 911);
-            txtNotes.Name = "txtNotes";
-            txtNotes.Size = new Size(520, 106);
-            txtNotes.Multiline = true;
-            txtNotes.ScrollBars = ScrollBars.Vertical;
-            txtNotes.MaxLength = 1000;
-            txtNotes.TabIndex = 22;
+            txtWorkDuration.Location = new Point(588, 874);
+            txtWorkDuration.Name = "txtWorkDuration";
+            txtWorkDuration.Size = new Size(161, 23);
+            txtWorkDuration.MaxLength = 100;
+            txtWorkDuration.PlaceholderText = "e.g. 30 days";
+            txtWorkDuration.TabIndex = 24;
+            // 
+            // lblPaymentTerms
+            // 
+            lblPaymentTerms.AutoSize = true;
+            lblPaymentTerms.Location = new Point(762, 850);
+            lblPaymentTerms.Name = "lblPaymentTerms";
+            lblPaymentTerms.Text = "Terms of payment";
+            // 
+            // txtPaymentTerms
+            // 
+            txtPaymentTerms.Location = new Point(762, 874);
+            txtPaymentTerms.Name = "txtPaymentTerms";
+            txtPaymentTerms.Size = new Size(161, 23);
+            txtPaymentTerms.MaxLength = 150;
+            txtPaymentTerms.TabIndex = 25;
+            // 
+            // lblPayableTo
+            // 
+            lblPayableTo.AutoSize = true;
+            lblPayableTo.Location = new Point(937, 850);
+            lblPayableTo.Name = "lblPayableTo";
+            lblPayableTo.Text = "Cash payable to";
+            // 
+            // txtPayableTo
+            // 
+            txtPayableTo.Location = new Point(937, 874);
+            txtPayableTo.Name = "txtPayableTo";
+            txtPayableTo.Size = new Size(170, 23);
+            txtPayableTo.MaxLength = 150;
+            txtPayableTo.TabIndex = 26;
+            // 
+            // lblPayableNumber
+            // 
+            lblPayableNumber.AutoSize = true;
+            lblPayableNumber.Location = new Point(588, 914);
+            lblPayableNumber.Name = "lblPayableNumber";
+            lblPayableNumber.Text = "Payable number (#)";
+            // 
+            // txtPayableNumber
+            // 
+            txtPayableNumber.Location = new Point(588, 937);
+            txtPayableNumber.Name = "txtPayableNumber";
+            txtPayableNumber.Size = new Size(161, 23);
+            txtPayableNumber.MaxLength = 60;
+            txtPayableNumber.TabIndex = 27;
+            // 
+            // lblSignatoryName
+            // 
+            lblSignatoryName.AutoSize = true;
+            lblSignatoryName.Location = new Point(762, 914);
+            lblSignatoryName.Name = "lblSignatoryName";
+            lblSignatoryName.Text = "Very truly yours (name)";
+            // 
+            // txtSignatoryName
+            // 
+            txtSignatoryName.Location = new Point(762, 937);
+            txtSignatoryName.Name = "txtSignatoryName";
+            txtSignatoryName.Size = new Size(161, 23);
+            txtSignatoryName.MaxLength = 150;
+            txtSignatoryName.TabIndex = 28;
+            // 
+            // lblSignatoryTitle
+            // 
+            lblSignatoryTitle.AutoSize = true;
+            lblSignatoryTitle.Location = new Point(937, 914);
+            lblSignatoryTitle.Name = "lblSignatoryTitle";
+            lblSignatoryTitle.Text = "Position";
+            lblSignatoryTitle.Font = new Font("Segoe UI", 9F);
+            // 
+            // txtSignatoryTitle
+            // 
+            txtSignatoryTitle.Location = new Point(937, 937);
+            txtSignatoryTitle.Name = "txtSignatoryTitle";
+            txtSignatoryTitle.Size = new Size(170, 23);
+            txtSignatoryTitle.MaxLength = 100;
+            txtSignatoryTitle.TabIndex = 29;
+            // 
+            // lblInternalNotes
+            // 
+            lblInternalNotes.AutoSize = true;
+            lblInternalNotes.Location = new Point(38, 977);
+            lblInternalNotes.Name = "lblInternalNotes";
+            lblInternalNotes.Text = "Internal notes (not printed)";
+            // 
+            // txtInternalNotes
+            // 
+            txtInternalNotes.Location = new Point(38, 1001);
+            txtInternalNotes.Name = "txtInternalNotes";
+            txtInternalNotes.Size = new Size(1070, 53);
+            txtInternalNotes.Multiline = true;
+            txtInternalNotes.ScrollBars = ScrollBars.Vertical;
+            txtInternalNotes.MaxLength = 1000;
+            txtInternalNotes.TabIndex = 30;
             // 
             // lblQuotationMsg
             // 
             lblQuotationMsg.AutoSize = true;
-            lblQuotationMsg.Location = new Point(38, 1027);
+            lblQuotationMsg.Location = new Point(38, 1064);
             lblQuotationMsg.Name = "lblQuotationMsg";
             lblQuotationMsg.MaximumSize = new Size(930, 0);
             // 
             // btnSaveQuotation
             // 
-            btnSaveQuotation.Location = new Point(38, 1059);
+            btnSaveQuotation.Location = new Point(38, 1096);
             btnSaveQuotation.Name = "btnSaveQuotation";
             btnSaveQuotation.Size = new Size(103, 36);
             btnSaveQuotation.Text = "Save";
-            btnSaveQuotation.TabIndex = 23;
+            btnSaveQuotation.TabIndex = 31;
             btnSaveQuotation.Click += btnSaveQuotation_Click;
             // 
             // btnCancelQuotation
             // 
-            btnCancelQuotation.Location = new Point(148, 1059);
+            btnCancelQuotation.Location = new Point(148, 1096);
             btnCancelQuotation.Name = "btnCancelQuotation";
             btnCancelQuotation.Size = new Size(103, 36);
             btnCancelQuotation.Text = "Cancel";
-            btnCancelQuotation.TabIndex = 24;
+            btnCancelQuotation.TabIndex = 32;
             btnCancelQuotation.Click += btnCancelQuotation_Click;
             // 
             // btnSubmitQuotation
             // 
-            btnSubmitQuotation.Location = new Point(259, 1059);
+            btnSubmitQuotation.Location = new Point(259, 1096);
             btnSubmitQuotation.Name = "btnSubmitQuotation";
             btnSubmitQuotation.Size = new Size(172, 36);
             btnSubmitQuotation.Text = "Send for Approval";
-            btnSubmitQuotation.TabIndex = 25;
+            btnSubmitQuotation.TabIndex = 33;
             btnSubmitQuotation.Click += btnSubmitQuotation_Click;
             // 
             // btnApproveQuotation
             // 
-            btnApproveQuotation.Location = new Point(438, 1059);
+            btnApproveQuotation.Location = new Point(438, 1096);
             btnApproveQuotation.Name = "btnApproveQuotation";
             btnApproveQuotation.Size = new Size(103, 36);
             btnApproveQuotation.Text = "Approve";
-            btnApproveQuotation.TabIndex = 26;
+            btnApproveQuotation.TabIndex = 34;
             btnApproveQuotation.Click += btnApproveQuotation_Click;
             // 
             // btnRejectQuotation
             // 
-            btnRejectQuotation.Location = new Point(548, 1059);
+            btnRejectQuotation.Location = new Point(548, 1096);
             btnRejectQuotation.Name = "btnRejectQuotation";
             btnRejectQuotation.Size = new Size(103, 36);
             btnRejectQuotation.Text = "Reject";
-            btnRejectQuotation.TabIndex = 27;
+            btnRejectQuotation.TabIndex = 35;
             btnRejectQuotation.Click += btnRejectQuotation_Click;
             // 
             // btnAcceptQuotation
             // 
-            btnAcceptQuotation.Location = new Point(659, 1059);
+            btnAcceptQuotation.Location = new Point(659, 1096);
             btnAcceptQuotation.Name = "btnAcceptQuotation";
             btnAcceptQuotation.Size = new Size(207, 36);
             btnAcceptQuotation.Text = "Client Accepted: Make Project";
-            btnAcceptQuotation.TabIndex = 28;
+            btnAcceptQuotation.TabIndex = 36;
             btnAcceptQuotation.Click += btnAcceptQuotation_Click;
             // 
             // btnDeclineQuotation
             // 
-            btnDeclineQuotation.Location = new Point(873, 1059);
+            btnDeclineQuotation.Location = new Point(873, 1096);
             btnDeclineQuotation.Name = "btnDeclineQuotation";
             btnDeclineQuotation.Size = new Size(138, 36);
             btnDeclineQuotation.Text = "Client Declined";
-            btnDeclineQuotation.TabIndex = 29;
+            btnDeclineQuotation.TabIndex = 37;
             btnDeclineQuotation.Click += btnDeclineQuotation_Click;
             // 
             // colQuoteNo
@@ -574,42 +691,33 @@ namespace Company.OfficeApp.Pages
             colStatus.Name = "colStatus";
             colStatus.FillWeight = 50;
             // 
+            // colWork
+            // 
+            colWork.DataPropertyName = "Work";
+            colWork.HeaderText = "Work";
+            colWork.Name = "colWork";
+            colWork.FillWeight = 180;
+            // 
+            // colDetails
+            // 
+            colDetails.DataPropertyName = "Details";
+            colDetails.HeaderText = "Size / Details";
+            colDetails.Name = "colDetails";
+            colDetails.FillWeight = 120;
+            // 
             // colItem
             // 
             colItem.DataPropertyName = "Description";
-            colItem.HeaderText = "Item / Description";
+            colItem.HeaderText = "Cost";
             colItem.Name = "colItem";
-            colItem.FillWeight = 220;
-            // 
-            // colQty
-            // 
-            colQty.DataPropertyName = "Quantity";
-            colQty.HeaderText = "Qty";
-            colQty.Name = "colQty";
-            colQty.FillWeight = 45;
-            colQty.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight };
-            // 
-            // colUnit
-            // 
-            colUnit.DataPropertyName = "Unit";
-            colUnit.HeaderText = "Unit";
-            colUnit.Name = "colUnit";
-            colUnit.FillWeight = 45;
-            // 
-            // colUnitPrice
-            // 
-            colUnitPrice.DataPropertyName = "UnitPrice";
-            colUnitPrice.HeaderText = "Unit Price";
-            colUnitPrice.Name = "colUnitPrice";
-            colUnitPrice.FillWeight = 70;
-            colUnitPrice.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N2" };
+            colItem.FillWeight = 150;
             // 
             // colAmount
             // 
             colAmount.DataPropertyName = "Amount";
             colAmount.HeaderText = "Amount";
             colAmount.Name = "colAmount";
-            colAmount.FillWeight = 75;
+            colAmount.FillWeight = 90;
             colAmount.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N2" };
             // 
             // QuotationsPage
@@ -629,38 +737,51 @@ namespace Company.OfficeApp.Pages
             Controls.Add(lblFormMode);
             Controls.Add(lblClientName);
             Controls.Add(txtClientName);
+            Controls.Add(lblClientAddress);
+            Controls.Add(txtClientAddress);
+            Controls.Add(lblAttention);
+            Controls.Add(txtAttention);
             Controls.Add(lblClientContact);
             Controls.Add(txtClientContact);
             Controls.Add(lblClientEmail);
             Controls.Add(txtClientEmail);
-            Controls.Add(lblProjectTitle);
-            Controls.Add(txtProjectTitle);
-            Controls.Add(lblSiteLocation);
-            Controls.Add(txtSiteLocation);
-            Controls.Add(lblSector);
-            Controls.Add(cboSector);
+            Controls.Add(lblFromInquiry);
+            Controls.Add(cboFromInquiry);
             Controls.Add(lblQuoteDate);
             Controls.Add(dtpQuoteDate);
             Controls.Add(lblValidUntil);
             Controls.Add(dtpValidUntil);
             Controls.Add(lblPlannedStart);
             Controls.Add(dtpPlannedStart);
-            Controls.Add(lblFromInquiry);
-            Controls.Add(cboFromInquiry);
-            Controls.Add(lblLines);
+            Controls.Add(lblProjectTitle);
+            Controls.Add(txtProjectTitle);
+            Controls.Add(lblSiteLocation);
+            Controls.Add(txtSiteLocation);
+            Controls.Add(lblSector);
+            Controls.Add(cboSector);
+            Controls.Add(lblScope);
+            Controls.Add(dgvScope);
+            Controls.Add(btnRemoveScope);
+            Controls.Add(lblCosts);
             Controls.Add(dgvLines);
             Controls.Add(btnRemoveLine);
-            Controls.Add(lblDiscount);
-            Controls.Add(numDiscount);
-            Controls.Add(chkVat);
-            Controls.Add(lblSubtotal);
-            Controls.Add(lblDiscountShown);
-            Controls.Add(lblVatShown);
             Controls.Add(lblTotal);
-            Controls.Add(lblTerms);
-            Controls.Add(txtTerms);
-            Controls.Add(lblNotes);
-            Controls.Add(txtNotes);
+            Controls.Add(lblPrintedNotes);
+            Controls.Add(txtPrintedNotes);
+            Controls.Add(lblWorkDuration);
+            Controls.Add(txtWorkDuration);
+            Controls.Add(lblPaymentTerms);
+            Controls.Add(txtPaymentTerms);
+            Controls.Add(lblPayableTo);
+            Controls.Add(txtPayableTo);
+            Controls.Add(lblPayableNumber);
+            Controls.Add(txtPayableNumber);
+            Controls.Add(lblSignatoryName);
+            Controls.Add(txtSignatoryName);
+            Controls.Add(lblSignatoryTitle);
+            Controls.Add(txtSignatoryTitle);
+            Controls.Add(lblInternalNotes);
+            Controls.Add(txtInternalNotes);
             Controls.Add(lblQuotationMsg);
             Controls.Add(btnSaveQuotation);
             Controls.Add(btnCancelQuotation);
@@ -670,11 +791,11 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnAcceptQuotation);
             Controls.Add(btnDeclineQuotation);
             Name = "QuotationsPage";
-            Size = new Size(1152, 1141);
+            Size = new Size(1152, 1175);
             Load += QuotationsPage_Load;
             ((System.ComponentModel.ISupportInitialize)dgvQuotations).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvScope).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvLines).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numDiscount).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -693,38 +814,51 @@ namespace Company.OfficeApp.Pages
         private Label lblFormMode;
         private Label lblClientName;
         private TextBox txtClientName;
+        private Label lblClientAddress;
+        private TextBox txtClientAddress;
+        private Label lblAttention;
+        private TextBox txtAttention;
         private Label lblClientContact;
         private TextBox txtClientContact;
         private Label lblClientEmail;
         private TextBox txtClientEmail;
-        private Label lblProjectTitle;
-        private TextBox txtProjectTitle;
-        private Label lblSiteLocation;
-        private TextBox txtSiteLocation;
-        private Label lblSector;
-        private ComboBox cboSector;
+        private Label lblFromInquiry;
+        private ComboBox cboFromInquiry;
         private Label lblQuoteDate;
         private DateTimePicker dtpQuoteDate;
         private Label lblValidUntil;
         private DateTimePicker dtpValidUntil;
         private Label lblPlannedStart;
         private DateTimePicker dtpPlannedStart;
-        private Label lblFromInquiry;
-        private ComboBox cboFromInquiry;
-        private Label lblLines;
+        private Label lblProjectTitle;
+        private TextBox txtProjectTitle;
+        private Label lblSiteLocation;
+        private TextBox txtSiteLocation;
+        private Label lblSector;
+        private ComboBox cboSector;
+        private Label lblScope;
+        private DataGridView dgvScope;
+        private Button btnRemoveScope;
+        private Label lblCosts;
         private DataGridView dgvLines;
         private Button btnRemoveLine;
-        private Label lblDiscount;
-        private NumericUpDown numDiscount;
-        private CheckBox chkVat;
-        private Label lblSubtotal;
-        private Label lblDiscountShown;
-        private Label lblVatShown;
         private Label lblTotal;
-        private Label lblTerms;
-        private TextBox txtTerms;
-        private Label lblNotes;
-        private TextBox txtNotes;
+        private Label lblPrintedNotes;
+        private TextBox txtPrintedNotes;
+        private Label lblWorkDuration;
+        private TextBox txtWorkDuration;
+        private Label lblPaymentTerms;
+        private TextBox txtPaymentTerms;
+        private Label lblPayableTo;
+        private TextBox txtPayableTo;
+        private Label lblPayableNumber;
+        private TextBox txtPayableNumber;
+        private Label lblSignatoryName;
+        private TextBox txtSignatoryName;
+        private Label lblSignatoryTitle;
+        private TextBox txtSignatoryTitle;
+        private Label lblInternalNotes;
+        private TextBox txtInternalNotes;
         private Label lblQuotationMsg;
         private Button btnSaveQuotation;
         private Button btnCancelQuotation;
@@ -740,10 +874,9 @@ namespace Company.OfficeApp.Pages
         private DataGridViewTextBoxColumn colTotal;
         private DataGridViewTextBoxColumn colValidUntil;
         private DataGridViewTextBoxColumn colStatus;
+        private DataGridViewTextBoxColumn colWork;
+        private DataGridViewTextBoxColumn colDetails;
         private DataGridViewTextBoxColumn colItem;
-        private DataGridViewTextBoxColumn colQty;
-        private DataGridViewTextBoxColumn colUnit;
-        private DataGridViewTextBoxColumn colUnitPrice;
         private DataGridViewTextBoxColumn colAmount;
     }
 }

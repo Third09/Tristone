@@ -41,6 +41,10 @@ public static class Theme
     /// <summary>The Tri-Stone logo for white backgrounds (Resources\logo-dark.png, made from the owner's white logo).</summary>
     public static Image Logo => logo ??= LoadImage("logo-dark.png");
 
+    /// <summary>The brick-wall logo at the top of the company's quotation paper (Resources\quote-header.jpg).</summary>
+    public static Image QuoteHeader => quoteHeader ??= LoadImage("quote-header.jpg");
+    static Image? quoteHeader;
+
     static Image LoadImage(string file)
     {
         var asm = typeof(Theme).Assembly;

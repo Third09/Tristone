@@ -1,20 +1,31 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
+using System.Globalization;
 using Company.Shared.Models;
 
 namespace Company.OfficeApp.Services;
 
 /// <summary>
-/// The printed quotation for the client (Quotations > Print / Save as PDF): logo and company details, client, the
-/// lines (continued on more pages when needed), totals, terms and signature lines. Until it is approved it carries a
-/// "DRAFT" mark. To save it as PDF, choose the "Microsoft Print to PDF" printer.
+/// The printed quotation, laid out like the company's own quotation paper ("new quote.docx", owner 2026-11-09):
+/// brick-wall logo, QUOTATION, CUSTOMER / ADDRESS / ATTENTION and DATE, a line, Scope of Works (A, B, C... with
+/// sizes), the cost lines, Total Cost, Notes (with Work Duration and Terms of Payment), Cash Payable to, then
+/// CONFORME BY / VERY TRULY YOURS. Long quotations continue on more pages (the signature part is never split).
+/// Until it is approved it carries a "DRAFT" mark. To save it as PDF, choose the "Microsoft Print to PDF" printer.
 /// </summary>
 public sealed class QuotationPrint : IDisposable
 {
     readonly PrintDocument document = new();
     readonly QuotationPrintData d;
-    int nextLine;   // first line still to print (pages continue the table)
-    int page;
+    readonly Font text = new("Arial Narrow", 11.5f, FontStyle.Bold);
+    readonly Font label = new("Arial Narrow", 11.5f, FontStyle.Bold | FontStyle.Underline);
+    readonly Font totalFont = new("Arial Narrow", 13f, FontStyle.Bold | FontStyle.Underline);
+    readonly Font title = new("Cascadia Code", 17f, FontStyle.Bold);
+    readonly Font small = new("Arial Narrow", 8.5f);
+
+    /// <summary>A piece of the page with its height; drawn at the given top.</summary>
+    record Block(float Height, Action<Graphics, float> Draw);
+    List<Block>? blocks;
+    int next, page;
 
     public PrintDocument Document => document;
 
@@ -22,7 +33,7 @@ public sealed class QuotationPrint : IDisposable
     {
         d = data;
         document.DocumentName = $"Quotation {d.Quotation.QuoteNo}";
-        document.BeginPrint += (_, _) => { nextLine = 0; page = 0; };
+        document.BeginPrint += (_, _) => { next = 0; page = 0; blocks = null; };
         document.PrintPage += PrintPage;
     }
 
@@ -34,146 +45,172 @@ public sealed class QuotationPrint : IDisposable
         document.Print();
     }
 
-    static readonly Color Orange = ColorTranslator.FromHtml("#F47A20");
-    static readonly Color Dark = ColorTranslator.FromHtml("#1D2939");
-    static readonly Color Muted = ColorTranslator.FromHtml("#667085");
-    static readonly Color Line = ColorTranslator.FromHtml("#D0D5DD");
-    static readonly Color Shade = ColorTranslator.FromHtml("#F2F4F7");
+    /// <summary>₱5,000 (centavos only when there are some).</summary>
+    static string Peso(decimal v) => "₱" + Plain(v);
+    static string Plain(decimal v) => v.ToString(v == Math.Round(v) ? "#,##0" : "#,##0.00", CultureInfo.InvariantCulture);
+
+    List<Block> Build(Graphics g, RectangleF m)
+    {
+        var q = d.Quotation;
+        float x = m.Left, w = m.Width;
+        float col2 = x + w * 0.62f;          // second column: sizes, amounts, DATE, VERY TRULY YOURS
+        float letterX = x + w * 0.05f, itemX = x + w * 0.085f;
+        float lineH = text.GetHeight(g) + 3;
+        var list = new List<Block>();
+        void Gap(float h) => list.Add(new Block(h, (_, _) => { }));
+        float Measure(string s, Font f, float width) => g.MeasureString(s, f, (int)width).Height;
+        var black = Brushes.Black;
+
+        // ----- logo and title -----
+        var logo = UI.Theme.QuoteHeader;
+        float logoW = w * 0.92f, logoH = logoW * logo.Height / logo.Width;
+        list.Add(new Block(logoH + 6, (gr, y) => gr.DrawImage(logo, x + (w - logoW) / 2, y, logoW, logoH)));
+        list.Add(new Block(title.GetHeight(g) + 18, (gr, y) =>
+            gr.DrawString("QUOTATION", title, black, new RectangleF(x, y + 2, w, 40), new StringFormat { Alignment = StringAlignment.Center })));
+
+        // ----- CUSTOMER / ADDRESS / ATTENTION on the left, DATE on the right -----
+        float valueX = x + w * 0.14f, valueW = col2 - valueX - 10;
+        var date = "DATE: " + q.QuoteDate.ToString("MMMM d, yyyy", CultureInfo.InvariantCulture).ToUpperInvariant();
+        var rows = new[] { ("CUSTOMER:", q.ClientName, date), ("ADDRESS:", q.ClientAddress ?? "", $"NO.: {q.QuoteNo}"), ("ATTENTION:", q.Attention ?? "", "") };
+        foreach (var (l, v, right) in rows)
+        {
+            var h = Math.Max(lineH, Measure(v, text, valueW) + 2);
+            list.Add(new Block(h, (gr, y) =>
+            {
+                gr.DrawString(l, label, black, x, y);
+                gr.DrawString(v, text, black, new RectangleF(valueX, y, valueW, h + 2));
+                if (right != "") gr.DrawString(right, right.StartsWith("NO.") ? small : text, black, col2, y + (right.StartsWith("NO.") ? 3 : 0));
+            }));
+        }
+        Gap(14);
+        list.Add(new Block(22, (gr, y) => { using var pen = new Pen(Color.Black, 2f); gr.DrawLine(pen, x, y + 4, x + w, y + 4); }));
+
+        // ----- Scope of Works -----
+        list.Add(new Block(lineH, (gr, y) => gr.DrawString("Scope of Works:", text, black, x, y)));
+        float workW = col2 - itemX - 10, detailsW = x + w - col2;
+        for (int n = 0; n < d.Scope.Count; n++)
+        {
+            var s = d.Scope[n];
+            var letter = Letter(n) + ".";
+            var h = Math.Max(Measure(s.Work, text, workW), s.Details == null ? 0 : Measure(s.Details, text, detailsW)) + 3;
+            list.Add(new Block(Math.Max(lineH, h), (gr, y) =>
+            {
+                gr.DrawString(letter, text, black, letterX, y);
+                gr.DrawString(s.Work, text, black, new RectangleF(itemX, y, workW, h + 2));
+                if (s.Details != null) gr.DrawString(s.Details, text, black, new RectangleF(col2, y, detailsW, h + 2));
+            }));
+        }
+        Gap(lineH * 0.8f);
+
+        // ----- cost lines and Total Cost -----
+        foreach (var l in d.Lines)
+        {
+            var h = Math.Max(lineH, Measure(l.Description + " -", text, workW) + 3);
+            list.Add(new Block(h, (gr, y) =>
+            {
+                gr.DrawString(l.Description + " -", text, black, new RectangleF(itemX, y, workW, h + 2));
+                gr.DrawString(Peso(l.Amount), text, black, col2, y);
+            }));
+        }
+        Gap(lineH * 0.9f);
+        list.Add(new Block(totalFont.GetHeight(g) + 22, (gr, y) =>
+            gr.DrawString($"Total Cost: {Plain(d.Total)} pesos", totalFont, black, x + w * 0.025f, y)));
+
+        // ----- Notes, Work Duration, Terms of Payment -----
+        var notes = (q.PrintedNotes ?? "").Replace("\r\n", "\n").Split('\n').Select(s => s.Trim()).Where(s => s != "").ToList();
+        if (q.WorkDuration != null) notes.Add($"Work Duration:   {q.WorkDuration}");
+        if (notes.Count > 0 || q.PaymentTerms != null)
+            list.Add(new Block(lineH + 2, (gr, y) => gr.DrawString("Notes:", text, black, x, y)));
+        float noteW = x + w - itemX;
+        foreach (var note in notes)
+        {
+            var h = Measure(note, text, noteW) + 3;
+            list.Add(new Block(Math.Max(lineH, h), (gr, y) =>
+            {
+                gr.DrawString("•", text, black, letterX, y);
+                gr.DrawString(note, text, black, new RectangleF(itemX, y, noteW, h + 2));
+            }));
+        }
+        if (q.PaymentTerms != null)
+        {
+            Gap(lineH * 0.6f);
+            list.Add(new Block(lineH, (gr, y) =>
+            {
+                gr.DrawString("o", text, black, itemX, y);
+                gr.DrawString($"Terms of Payment:      {q.PaymentTerms}", text, black, itemX + w * 0.04f, y);
+            }));
+        }
+
+        // ----- Cash Payable to -----
+        if (q.PayableTo != null)
+        {
+            Gap(lineH * 1.4f);
+            float payX = x + w * 0.135f;
+            var first = "Cash Payable to: ";
+            float nameX = payX + g.MeasureString(first, text).Width - 4;
+            list.Add(new Block(lineH * (q.PayableNumber == null ? 1 : 2), (gr, y) =>
+            {
+                gr.DrawString(first + q.PayableTo, text, black, payX, y);
+                if (q.PayableNumber != null) gr.DrawString($"# {q.PayableNumber}", text, black, nameX + w * 0.12f, y + lineH);
+            }));
+        }
+
+        // ----- CONFORME BY / VERY TRULY YOURS (kept together) -----
+        Gap(lineH * 2);
+        list.Add(new Block(lineH * 6, (gr, y) =>
+        {
+            gr.DrawString("CONFORME BY:", text, black, x, y);
+            gr.DrawString("______________________", text, black, x, y + lineH * 2 - 6);
+            gr.DrawString("PRINT NAME & SIGNATURE", text, black, x, y + lineH * 2 + 8);
+            gr.DrawString("DATE:__________________", text, black, x, y + lineH * 4);
+            gr.DrawString("VERY TRULY YOURS,", text, black, col2, y);
+            if (q.SignatoryName != null) gr.DrawString(q.SignatoryName, text, black, col2, y + lineH * 2);
+            if (q.SignatoryTitle != null) gr.DrawString(q.SignatoryTitle, text, black, col2 + w * 0.03f, y + lineH * 3 + 6);
+        }));
+        return list;
+    }
+
+    /// <summary>A, B ... Z, AA, AB ...</summary>
+    static string Letter(int n) => n < 26 ? ((char)('A' + n)).ToString() : Letter(n / 26 - 1) + (char)('A' + n % 26);
 
     void PrintPage(object? sender, PrintPageEventArgs e)
     {
         var g = e.Graphics!;
         g.SmoothingMode = SmoothingMode.AntiAlias;
-        var q = d.Quotation;
-        var m = e.MarginBounds;
-        float x = m.Left, y = m.Top, w = m.Width;
+        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+        var m = (RectangleF)e.MarginBounds;
+        blocks ??= Build(g, m);
         page++;
-        using var title = new Font("Segoe UI", 20, FontStyle.Bold);
-        using var bold = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-        using var text = new Font("Segoe UI", 9.5f);
-        using var small = new Font("Segoe UI", 8);
-        using var dark = new SolidBrush(Dark);
-        using var muted = new SolidBrush(Muted);
-        using var linePen = new Pen(Line);
-        using var orangeBrush = new SolidBrush(Orange);
-        static string Money(decimal v) => ProjectService.Money(v);
-
-        // ----- header: logo + company on the left, QUOTATION box on the right -----
-        try { var logo = UI.Theme.Logo; g.DrawImage(logo, x, y, 170, 170f * logo.Height / logo.Width); } catch { /* print without it */ }
-        float cy = y + 52;
-        foreach (var l in new[] { d.CompanyAddress, d.CompanyPhone, d.CompanyEmail }.Where(s => !string.IsNullOrWhiteSpace(s)))
+        float y = m.Top;
+        while (next < blocks.Count)
         {
-            g.DrawString(l, small, muted, new RectangleF(x, cy, w * 0.55f, 30)); cy += 15;
+            var b = blocks[next];
+            if (y + b.Height > m.Bottom && y > m.Top) break;   // continue on the next page
+            b.Draw(g, y);
+            y += b.Height;
+            next++;
         }
-        var right = new StringFormat { Alignment = StringAlignment.Far };
-        g.DrawString("QUOTATION", title, orangeBrush, x + w, y - 4, right);
-        g.DrawString($"No. {q.QuoteNo}", bold, dark, x + w, y + 36, right);
-        g.DrawString($"Date: {q.QuoteDate:MMMM d, yyyy}", text, dark, x + w, y + 54, right);
-        g.DrawString($"Valid until: {q.ValidUntil:MMMM d, yyyy}", text, dark, x + w, y + 70, right);
-        if (page > 1) g.DrawString($"Page {page}", small, muted, x + w, y + 88, right);
-        y = Math.Max(cy, y + 104) + 8;
-        g.FillRectangle(orangeBrush, x, y, w, 3); y += 14;
-
-        if (page == 1)
-        {
-            // ----- client and project -----
-            g.DrawString("Prepared for", bold, muted, x, y);
-            g.DrawString("Project", bold, muted, x + w / 2, y); y += 18;
-            var client = string.Join("\n", new[] { q.ClientName, q.ClientContact, q.ClientEmail }.Where(s => !string.IsNullOrWhiteSpace(s)));
-            var project = string.Join("\n", new[] { q.ProjectTitle, q.SiteLocation, q.Sector, q.PlannedStart is { } s ? $"Planned start: {s:MMMM d, yyyy}" : null }.Where(s => !string.IsNullOrWhiteSpace(s)));
-            var h1 = g.MeasureString(client, text, (int)(w / 2 - 10)).Height;
-            var h2 = g.MeasureString(project, text, (int)(w / 2)).Height;
-            g.DrawString(client, text, dark, new RectangleF(x, y, w / 2 - 10, h1 + 4));
-            g.DrawString(project, text, dark, new RectangleF(x + w / 2, y, w / 2, h2 + 4));
-            y += Math.Max(h1, h2) + 16;
-        }
-
-        // ----- table -----
-        // edges: # | Item | Qty (right-aligned) | Unit | Unit Price (right-aligned) | Amount (right-aligned)
-        float[] col = [x, x + 30, x + w * 0.50f, x + w * 0.59f, x + w * 0.68f, x + w * 0.84f, x + w];
-        var farFmt = new StringFormat { Alignment = StringAlignment.Far };
-        void Header()
-        {
-            using var shade = new SolidBrush(Shade);
-            g.FillRectangle(shade, x, y, w, 24);
-            g.DrawRectangle(linePen, x, y, w, 24);
-            g.DrawString("#", bold, dark, col[0] + 6, y + 4);
-            g.DrawString("Item / Description", bold, dark, col[1] + 4, y + 4);
-            g.DrawString("Qty", bold, dark, col[3] - 6, y + 4, farFmt);
-            g.DrawString("Unit", bold, dark, col[3] + 6, y + 4);
-            g.DrawString("Unit Price", bold, dark, col[5] - 6, y + 4, farFmt);
-            g.DrawString("Amount", bold, dark, col[6] - 6, y + 4, farFmt);
-            y += 24;
-        }
-        Header();
-        float bottomRoom = 230;   // totals, terms and signatures need this much on the last page
-        while (nextLine < d.Lines.Count)
-        {
-            var l = d.Lines[nextLine];
-            var descH = g.MeasureString(l.Description, text, (int)(col[2] - col[1] - 8)).Height;
-            var rowH = Math.Max(22, descH + 8);
-            bool lastLine = nextLine == d.Lines.Count - 1;
-            if (y + rowH > m.Bottom - (lastLine ? bottomRoom : 30)) { e.HasMorePages = true; return; }
-            g.DrawRectangle(linePen, x, y, w, rowH);
-            g.DrawString((nextLine + 1).ToString(), text, dark, col[0] + 6, y + 4);
-            g.DrawString(l.Description, text, dark, new RectangleF(col[1] + 4, y + 4, col[2] - col[1] - 8, rowH));
-            g.DrawString(l.Quantity.ToString("#,##0.##"), text, dark, col[3] - 6, y + 4, farFmt);
-            g.DrawString(l.Unit, text, dark, col[3] + 6, y + 4);
-            g.DrawString(Money(l.UnitPrice), text, dark, col[5] - 6, y + 4, farFmt);
-            g.DrawString(Money(l.Amount), text, dark, col[6] - 6, y + 4, farFmt);
-            y += rowH;
-            nextLine++;
-        }
-
-        // ----- totals -----
-        y += 8;
-        void Total(string label, string value, Font f)
-        {
-            g.DrawString(label, f, dark, col[5] - 20, y, farFmt);
-            g.DrawString(value, f, dark, col[6] - 6, y, farFmt);
-            y += 20;
-        }
-        var t = d.Totals;
-        Total("Subtotal", Money(t.Subtotal), text);
-        if (t.Discount > 0) Total("Less discount", "-" + Money(t.Discount), text);
-        if (q.VatApplies) Total($"VAT {QuotationService.VatRate:P0}", Money(t.Vat), text);
-        g.FillRectangle(orangeBrush, col[4], y + 2, col[6] - col[4], 2); y += 8;
-        using (var big = new Font("Segoe UI", 12, FontStyle.Bold)) Total("TOTAL", Money(t.Total), big);
-        if (!q.VatApplies) { g.DrawString("VAT not included.", small, muted, col[6] - 6, y, farFmt); y += 16; }
-
-        // ----- terms -----
-        if (!string.IsNullOrWhiteSpace(q.Terms))
-        {
-            y += 6;
-            g.DrawString("Terms and conditions", bold, dark, x, y); y += 18;
-            var termsH = g.MeasureString(q.Terms, small, (int)w).Height;
-            g.DrawString(q.Terms, small, muted, new RectangleF(x, y, w, termsH + 4)); y += termsH + 10;
-        }
-
-        // ----- signatures -----
-        y = Math.Max(y + 20, m.Bottom - 90);
-        float half = w / 2 - 20;
-        g.DrawLine(linePen, x, y + 30, x + half, y + 30);
-        g.DrawLine(linePen, x + w - half, y + 30, x + w, y + 30);
-        g.DrawString($"Prepared by: {d.PreparedBy}", text, dark, x, y + 34);
-        g.DrawString(d.ApprovedBy is { } a ? $"Approved by: {a}" : "Approved by:", text, dark, x, y + 50);
-        g.DrawString("Client conforme (signature over printed name)", text, dark, x + w - half, y + 34);
-        g.DrawString("Date:", text, dark, x + w - half, y + 50);
-        g.DrawString($"Printed {DateTime.Now:MMMM d, yyyy h:mm tt}", small, muted, x, m.Bottom + 10);
+        bool more = next < blocks.Count;
+        if (more || page > 1)
+            g.DrawString($"{d.Quotation.QuoteNo}  page {page}", small, Brushes.Gray, m.Right, m.Bottom + 12, new StringFormat { Alignment = StringAlignment.Far });
 
         // ----- not approved yet: a light DRAFT mark across the page -----
-        if (q.Status is QuotationStatuses.Draft or QuotationStatuses.Waiting or QuotationStatuses.Rejected)
+        if (d.Quotation.Status is QuotationStatuses.Draft or QuotationStatuses.Waiting or QuotationStatuses.Rejected)
         {
             var state = g.Save();
             g.TranslateTransform(m.Left + m.Width / 2f, m.Top + m.Height / 2f);
             g.RotateTransform(-35);
             using var wm = new Font("Segoe UI", 90, FontStyle.Bold);
-            using var faint = new SolidBrush(Color.FromArgb(28, Orange));
+            using var faint = new SolidBrush(Color.FromArgb(28, ColorTranslator.FromHtml("#F47A20")));
             g.DrawString("DRAFT", wm, faint, 0, 0, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             g.Restore(state);
         }
-        e.HasMorePages = false;
+        e.HasMorePages = more;
     }
 
-    public void Dispose() => document.Dispose();
+    public void Dispose()
+    {
+        document.Dispose();
+        foreach (var f in new[] { text, label, totalFont, title, small }) f.Dispose();
+    }
 }

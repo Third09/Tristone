@@ -340,15 +340,16 @@ Expense & Receipt Report (every approved receipt in the range, by project / over
 
 ## 9.6 Quotations
 
-Own page (`AppPage.Quotations`), seen by the Receipts department and Admins (view only). Employee and Supervisor prepare; the Receipts Supervisor approves; deletes need `CanDelete`.
+Own page (`AppPage.Quotations`), seen by the Receipts department and Admins (view only). Employee and Supervisor prepare; the Receipts Supervisor approves; deletes need `CanDelete`. The printout follows the company's own quotation paper (owner's "new quote.docx", 2026-11-09).
 
-- Fields: client name (required), contact, email, project title (required), site, sector, quotation date, valid until (not before the quotation date), optional planned start, discount (₱, ≥ 0, not more than the subtotal), VAT switch, terms, internal notes, optional website inquiry.
-- Lines: at least one; description required, quantity > 0, unit, unit price ≥ 0. Amount = quantity × unit price.
-- Totals: subtotal = Σ amounts; taxable = subtotal − discount; VAT = 12% of taxable (when ticked), rounded to centavos; total = taxable + VAT.
-- Worked example: 1 lot × ₱45,000 + 28.5 sq.m × ₱1,850 + 1 lot × ₱68,000 = ₱165,725; less ₱5,000 = ₱160,725; VAT ₱19,287; total **₱180,012**.
+- Fields: customer (required), address, attention, contact and email (not printed), project name (required), site, sector, date, valid until (not printed; not before the date), optional planned start, printed notes (one per line), work duration, terms of payment, cash payable to + number, signatory name + position, internal notes, optional website inquiry.
+- Scope of Works: at least one line; work required, size/details optional; printed A, B, C... in order.
+- Costs: at least one line; description required, amount ≥ 0. **Total Cost** = Σ amounts (no discount or VAT on the company paper).
+- Worked example (the company paper): Tools and Equipment ₱5,000 + Labor Cost ₱25,000 = **Total Cost 30,000 pesos**.
+- New quotations start with the newest quotation's notes, terms of payment, payable-to and signatory (the company paper's own values for the very first).
 - States: Draft → (Send for Approval) Waiting → Approved / Rejected; Rejected → (saved) Draft; Approved → Accepted / Declined. Editing and deleting only while Draft or Rejected. Numbered QT-0001, QT-0002...
-- **Client Accepted** (Approved only) creates a project in the same save: name = project title, site = site location (or "(to follow)"), client, sector, contract price = total, start = planned start (or today), status Pending, not on the website; the quotation keeps the project link (database CHECK: Accepted ⇔ project set).
-- Printout (`QuotationPrint`): logo, company address/phone/email from the website contact details, client and project, the lines (continued on more pages), totals, terms, signature lines (prepared by, approved by, client conforme). "DRAFT" watermark until approved.
+- **Client Accepted** (Approved only) creates a project in the same step: name = project name, site = site location (else the address, else "(to follow)"), client, sector, contract price = Total Cost, start = planned start (or today), status Pending, not on the website; the quotation keeps the project link (database CHECK: Accepted ⇔ project set).
+- Printout (`QuotationPrint`, Arial Narrow bold like the paper): brick-wall logo, QUOTATION, CUSTOMER / ADDRESS / ATTENTION with DATE and the QT number, Scope of Works with sizes, costs, Total Cost, Notes with Work Duration, Terms of Payment, Cash Payable to, CONFORME BY / VERY TRULY YOURS (never split across pages). "DRAFT" watermark until approved.
 - Every change is audited under Receipts (`quotations`).
 
 # 10. Website Admin

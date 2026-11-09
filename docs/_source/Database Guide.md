@@ -68,6 +68,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 021_drop_service_category | drops `website_services.sector` (service cards have no category; owner decision 2026-11-03) |
 | 022_app_role | the app's limited login `tristone_app` (NOLOGIN until the office server enables it) and its rights |
 | 023_quotations | `quotations` (client price offers, QT-0001; status Draft / Waiting / Approved / Rejected / Accepted / Declined; CHECK Accepted ⇔ `project_id` set; `valid_until >= quote_date`) and `quotation_items` (lines, deleted with their quotation) |
+| 024_quotation_template | quotations follow the company paper: adds `client_address`, `attention`, `work_duration`, `payment_terms`, `payable_to`, `payable_number`, `signatory_name`, `signatory_title`; renames `terms` → `printed_notes`, `notes` → `internal_notes`; drops `discount`, `vat_applies`; `quotation_items` becomes description + `amount` (quantity, unit, unit price dropped); new `quotation_scope` (Scope of Works lines) |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
@@ -161,7 +162,7 @@ LOGINS                 users --(employee_id, 0..1)--> employees
 PROJECT MONEY          projects <--- material_usages ---> materials
                        projects <--- receipts
                        projects <--- change_orders
-                       projects <--- quotations (when accepted) <--- quotation_items
+                       projects <--- quotations (when accepted) <--- quotation_items, quotation_scope
                        quotations --(inquiry_id, optional)--> inquiries
                        projects <--- sub_jobs ---> subcontractors <--- subcontractor_trades
                                        ^--- sub_job_stages <--- sub_vouchers <--- sub_payouts
@@ -271,7 +272,7 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 - A receipt counts as an expense only when `status = 'Approved'`; Project receipts go to the project, Overhead ones to the Dashboard. `no_receipt` rows are listed in Needs Review; attaching a receipt later clears the flag and keeps the decision.
 - **Stock purchases** are not copied into `receipts`: the Receipt Vault unions `deliveries` into its list (marked "Stock purchase"), so they're stored once and never counted as project expenses (materials count when used).
 - **Change orders:** approving (Receipts Supervisor) adds `cost_change` to revenue through `ProjectFinance` and moves `projects.target_end_date` by `days_change` in the same save.
-- **Quotations:** money is not stored; subtotal, VAT (12% after the discount) and total are worked out from `quotation_items` every time. A quotation is not revenue: only when the client accepts does it create a `projects` row (Pending, contract price = total) in the same transaction and set `project_id`. Lines are replaced as a set on every save.
+- **Quotations:** the total is not stored; it is the sum of `quotation_items.amount`, worked out every time. `quotation_scope` holds the Scope of Works lines (printed A, B, C... by `line_no`). A quotation is not revenue: only when the client accepts does it create a `projects` row (Pending, contract price = total) in the same transaction and set `project_id`. Scope and cost lines are replaced as a set on every save; deleting a quotation deletes both (ON DELETE CASCADE).
 
 ## 4.9 Website and settings
 
@@ -311,7 +312,7 @@ R = reads, W = writes. Every write also inserts into `audit_logs`, except sign-i
 | Receipts > Vault / Needs Review | `ReceiptService` | `receipts`, `deliveries` (stock purchases), `projects` | `receipts` |
 | Receipts > Change Orders | `ChangeOrderService` | `change_orders`, `projects` | `change_orders`, `projects.target_end_date` |
 | Receipts > Reports | `ReceiptReports` | `receipts`, `projects` | — |
-| Quotations | `QuotationService` | `quotations`, `quotation_items`, `inquiries`, `website_content` (company lines) | `quotations`, `quotation_items`, `projects` (on Client Accepted) |
+| Quotations | `QuotationService` | `quotations`, `quotation_items`, `quotation_scope`, `inquiries` | `quotations`, `quotation_items`, `quotation_scope`, `projects` (on Client Accepted) |
 | Every Edit History tab | `AuditService` | `audit_logs`, `users` | — |
 | Website Admin > Home | `WebsiteContentService` | `website_content` | `website_content` |
 | Website Admin > About Us | `WebAboutService` | `website_about_sections` | `website_about_sections` |
@@ -344,7 +345,7 @@ The Data Flow Diagram (`docs\diagrams\Desktop_App_DFD.drawio`) names data stores
 | D4.3 Billing & Payout Records | `sub_vouchers`, `sub_payouts` |
 | D5.1 Receipt Records | `receipts` (+ `deliveries` shown as stock purchases) |
 | D5.2 Change Order Records | `change_orders` |
-| D5.3 Project & Contract Records | `projects`, `quotations`, `quotation_items` |
+| D5.3 Project & Contract Records | `projects`, `quotations`, `quotation_items`, `quotation_scope` |
 | not in the DFD | `audit_logs`, `inquiries`, `app_settings`, `schema_versions` |
 
 Differences from the drawn DFD: site deployment and subcontractor ratings were dropped; account statuses are Active / Locked / Disabled; Website Admin is a separate app with the same `users` table.
@@ -417,7 +418,7 @@ Back up the file storage folder together with the database: the tables only hold
 
 <!-- schema:start -->
 
-Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 46 tables. Types: `int` = 32-bit integer (`serial` = auto-numbered), `numeric(p,s)` = exact decimal, `timestamp` = date and time without time zone, `time` = time of day. "Null" = may be empty.
+Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 47 tables. Types: `int` = 32-bit integer (`serial` = auto-numbered), `numeric(p,s)` = exact decimal, `timestamp` = date and time without time zone, `time` = time of day. "Null" = may be empty.
 
 ## Login, accounts and history (scripts 001, 004, 011)
 
@@ -1216,7 +1217,7 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 46 tables
 - **Check** `change_orders_status_check`: `CHECK ((status IN ('Waiting', 'Approved', 'Rejected')))`
 - **Index** `ix_change_orders_project`: `project_id WHERE (status = 'Approved')`
 
-## Quotations (023)
+## Quotations (023, 024)
 
 ### quotations
 
@@ -1233,10 +1234,8 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 46 tables
 | `quote_date` | date |  | CURRENT_DATE |
 | `valid_until` | date |  |  |
 | `planned_start` | date | yes |  |
-| `discount` | numeric(14,2) |  | 0 |
-| `vat_applies` | boolean |  | false |
-| `terms` | varchar(2000) | yes |  |
-| `notes` | varchar(1000) | yes |  |
+| `printed_notes` | varchar(2000) | yes |  |
+| `internal_notes` | varchar(1000) | yes |  |
 | `status` | varchar(10) |  | 'Draft' |
 | `inquiry_id` | int | yes |  |
 | `project_id` | int | yes |  |
@@ -1245,6 +1244,14 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 46 tables
 | `updated_at` | timestamp | yes |  |
 | `decided_by` | int | yes |  |
 | `decided_at` | timestamp | yes |  |
+| `client_address` | varchar(255) | yes |  |
+| `attention` | varchar(150) | yes |  |
+| `work_duration` | varchar(100) | yes |  |
+| `payment_terms` | varchar(150) | yes |  |
+| `payable_to` | varchar(150) | yes |  |
+| `payable_number` | varchar(60) | yes |  |
+| `signatory_name` | varchar(150) | yes |  |
+| `signatory_title` | varchar(100) | yes |  |
 
 - **Primary key** `quotations_pkey`: `PRIMARY KEY quotation_id`
 - **Unique** `quotations_quote_no_key`: `UNIQUE quote_no`
@@ -1254,7 +1261,6 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 46 tables
 - **Foreign key** `quotations_project_id_fkey`: `FOREIGN KEY project_id REFERENCES projects(project_id)`
 - **Check** `chk_quotations_project`: `CHECK (((status = 'Accepted') = (project_id IS NOT NULL)))`
 - **Check** `chk_quotations_valid`: `CHECK (valid_until >= quote_date)`
-- **Check** `quotations_discount_check`: `CHECK (discount >= 0)`
 - **Check** `quotations_sector_check`: `CHECK ((sector IN ('Residential', 'Commercial', 'Industrial', 'Repairs / Renovations')))`
 - **Check** `quotations_status_check`: `CHECK ((status IN ('Draft', 'Waiting', 'Approved', 'Rejected', 'Accepted', 'Declined')))`
 - **Index** `ix_quotations_status`: `status`
@@ -1267,15 +1273,26 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 46 tables
 | `quotation_id` | int |  |  |
 | `line_no` | int |  |  |
 | `description` | varchar(300) |  |  |
-| `quantity` | numeric(12,2) |  |  |
-| `unit` | varchar(20) |  |  |
-| `unit_price` | numeric(14,2) |  |  |
+| `amount` | numeric(14,2) |  |  |
 
 - **Primary key** `quotation_items_pkey`: `PRIMARY KEY item_id`
 - **Unique** `quotation_items_quotation_id_line_no_key`: `UNIQUE (quotation_id, line_no)`
 - **Foreign key** `quotation_items_quotation_id_fkey`: `FOREIGN KEY quotation_id REFERENCES quotations(quotation_id) ON DELETE CASCADE`
-- **Check** `quotation_items_quantity_check`: `CHECK (quantity > 0)`
-- **Check** `quotation_items_unit_price_check`: `CHECK (unit_price >= 0)`
+- **Check** `chk_quotation_items_amount`: `CHECK (amount >= 0)`
+
+### quotation_scope
+
+| Column | Type | Null | Default |
+|---|---|---|---|
+| `scope_id` | serial |  |  |
+| `quotation_id` | int |  |  |
+| `line_no` | int |  |  |
+| `description` | varchar(300) |  |  |
+| `details` | varchar(150) | yes |  |
+
+- **Primary key** `quotation_scope_pkey`: `PRIMARY KEY scope_id`
+- **Unique** `quotation_scope_quotation_id_line_no_key`: `UNIQUE (quotation_id, line_no)`
+- **Foreign key** `quotation_scope_quotation_id_fkey`: `FOREIGN KEY quotation_id REFERENCES quotations(quotation_id) ON DELETE CASCADE`
 
 ## Website (010, 014)
 

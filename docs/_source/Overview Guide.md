@@ -56,7 +56,7 @@ Two special cases: the **Receipts Supervisor** also manages the **Projects** lis
 | **Inventory** | materials and stock; using materials on a project (needs approval); deliveries; equipment and maintenance; vendors; comparing quotes |
 | **Subcontractors** | the subcontractor directory; jobs with payment stages; progress; vouchers and payouts; retention |
 | **Receipts** | every receipt (for a project or company overhead); expenses with no receipt; **change orders** to a project's price or end date; reports |
-| **Quotations** | (Receipts department) price offers for clients: items, quantities and prices, discount, VAT, terms; printed or saved as PDF. When the client accepts, it becomes a project |
+| **Quotations** | (Receipts department) price offers for clients, printed like the company's quotation paper: customer, scope of works with sizes, costs and total, notes, payment terms; printed or saved as PDF. When the client accepts, it becomes a project |
 | **User Accounts** | (Admins) making and managing logins |
 | **My Account** | your own details; Admins change their password and security question here |
 
@@ -122,7 +122,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 |---|---|
 | The program | `Apps\Tri-Stone\TriStone.exe` (built from Visual Studio, project **Company.Launcher**) |
 | The code | `src\` in the TriStone folder (Visual Studio: `TriStone.slnx`) |
-| Database changes | `database\` (numbered scripts 001-023; `setup-database.cmd` applies the new ones) |
+| Database changes | `database\` (numbered scripts 001-024; `setup-database.cmd` applies the new ones) |
 | Uploaded files | the shared files folder (`C:\TriStoneFiles` on this PC) |
 | Guides | `docs\` (Word files; their text is in `docs\_source`) |
 | What was tested | `docs\Testing Log.md` (and the "Check at home" list) |

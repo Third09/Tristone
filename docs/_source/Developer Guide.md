@@ -321,16 +321,16 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 | Change Orders | `ChangeOrderService.ListAsync`, `PreviewAsync`, `CreateAsync`, `UpdateAsync`, `ApproveAsync`, `RejectAsync`, `PrintDataAsync` | Budget preview = current price (contract + approved COs) → revised; end date ± days. Approve/Reject: Receipts Supervisor (`RequireApprover`). CO-001 numbering. `ChangeOrderPrint` form for the client's signature. |
 | Reports | `ReceiptReports.BuildAsync(type, project, from, to)` | Detailed list, weekly or monthly summary of approved receipts; `TableReport` pages them and `SaveAsPdf` prints to "Microsoft Print to PDF". |
 
-## 9.1 Quotations (script 023)
+## 9.1 Quotations (scripts 023, 024)
 
-`Pages/QuotationsPage` (own sidebar page, `AppPage.Quotations`, icon E8A5; designer from `specs/QuotationsPage.py`). `Access.CanSee`: Receipts department + Admins; `Access.Department(page)` gives "Receipts" for Projects and Quotations in refusal messages. Audit department `Receipts`, table `quotations`.
+`Pages/QuotationsPage` (own sidebar page, `AppPage.Quotations`, icon E8A5; designer from `specs/QuotationsPage.py`). `Access.CanSee`: Receipts department + Admins; `Access.Department(page)` gives "Receipts" for Projects and Quotations in refusal messages. Audit department `Receipts`, table `quotations`. Script 024 reshaped it to the company's quotation paper.
 
 | Part | Service methods | Specifics |
 |---|---|---|
-| List + form | `QuotationService.ListAsync(search, status)`, `GetAsync`, `CreateAsync`, `UpdateAsync`, `DeleteAsync`, `InquiryChoicesAsync` | RecordForm pattern (Add = pop-up with `addOnly`). Lines grid is editable (`AllowUserToAddRows`); lines are replaced on save. `CheckInput` validates; only Draft/Rejected can change (saving a Rejected one sets Draft). |
+| List + form | `QuotationService.ListAsync(status, search)`, `GetAsync` (quotation, scope, cost lines), `CreateAsync`, `UpdateAsync`, `DeleteAsync`, `InquiryChoicesAsync`, `DefaultsAsync` | RecordForm pattern (Add = pop-up with `addOnly`). Two editable grids (`dgvScope`, `dgvLines`, `AllowUserToAddRows`); both are replaced on save. `CheckInput` validates; only Draft/Rejected can change (saving a Rejected one sets Draft). `DefaultsAsync` = newest quotation's notes / payment / signatory, else `CompanyDefaults`. |
 | Status | `SubmitAsync`, `ApproveAsync`, `RejectAsync`, `DeclineAsync`, `AcceptAsync` | Approve/Reject: `RequireApprover(Receipts)`. `AcceptAsync` calls `ProjectService.CreateAsync` (Pending, contract = total) and stores `project_id`. Buttons are enabled by status in `ShowAsync`. |
-| Totals | `QuotationService.Totals(lines, discount, vat)` | `VatRate` = 0.12; VAT rounded to centavos. Used by the page, the list and the printout. |
-| Print / PDF | `PrintDataAsync`, `QuotationPrint` (`PrintDocument`, `SaveAsPdf`) | Company lines from `website_content` (`contact.*`); table continues on more pages, the last page keeps room for totals, terms and signatures; DRAFT watermark until approved. |
+| Total | `QuotationService.Total(lines)` | Sum of the cost lines; used by the page, the list and the printout. |
+| Print / PDF | `PrintDataAsync`, `QuotationPrint` (`PrintDocument`, `SaveAsPdf`) | Built as a list of blocks with heights, drawn page by page (a block never splits; the signature block is one block). Header image `Resources/quote-header.jpg` (`Theme.QuoteHeader`, embedded). DRAFT watermark until approved. |
 
 # Chapter 10: The Website Admin app (Part 6)
 

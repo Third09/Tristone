@@ -29,6 +29,7 @@
     <EmbeddedResource Include="Resources\ScannerEmployeeForm.xls" />
     <EmbeddedResource Include="Resources\logo-dark.png" />
     <EmbeddedResource Include="Resources\logo-white.png" />
+    <EmbeddedResource Include="Resources\quote-header.jpg" />
   </ItemGroup>
 
 </Project>

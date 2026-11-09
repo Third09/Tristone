@@ -6,18 +6,21 @@ using Company.Shared.Models;
 namespace Company.OfficeApp.Pages;
 
 /// <summary>
-/// Quotations (owner request 2026-11-09): price offers to clients, QT-0001... The Receipts Employee prepares one
-/// (lines: item, qty, unit, unit price; discount; optional 12% VAT; terms) and sends it for approval; the Receipts
-/// Supervisor approves or rejects it, and later marks it Client Accepted (a project is made) or Client Declined.
+/// Quotations (owner request 2026-11-09): price offers to clients, QT-0001..., following the company's own quotation
+/// paper: Customer / Address / Attention / Date, Scope of Works (A, B, C... with sizes), cost lines and Total Cost,
+/// Notes, Work Duration, Terms of Payment, Cash Payable to, and who signs "Very truly yours". The Receipts Employee
+/// prepares one and sends it for approval; the Receipts Supervisor approves or rejects it, and later marks it
+/// Client Accepted (a project is made) or Client Declined.
 /// List page pattern (RecordForm): nothing selected by itself, New opens this page as a pop-up, the form is locked
 /// until a row is clicked (and while the quotation isn't a Draft), Save lists the changes.
 /// </summary>
 public partial class QuotationsPage : UserControl
 {
     readonly bool addOnly;   // this copy is the New Quotation pop-up
-    record QuotationForm(string Client, string? Contact, string? Email, string Project, string? Site, string Sector,
-                         DateOnly QuoteDate, DateOnly ValidUntil, DateOnly? PlannedStart, decimal Discount, bool Vat,
-                         string? Terms, string? Notes, string Items);
+    record QuotationForm(string Customer, string? Address, string? Attention, string? Contact, string? Email, string Project,
+                         string? Site, string Sector, DateOnly QuoteDate, DateOnly ValidUntil, DateOnly? PlannedStart,
+                         string? Notes, string? WorkDuration, string? PaymentTerms, string? PayableTo, string? PayableNumber,
+                         string? SignedBy, string? Position, string? InternalNotes, string ScopeOfWorks, string Costs);
 
     int? editingId;
     string? editingStatus;
@@ -45,13 +48,16 @@ public partial class QuotationsPage : UserControl
         cboSector.Items.AddRange(ProjectSectors.All);
         cboFromInquiry.DisplayMember = nameof(InquiryChoice.Text);
 
-        // The item table is typed into directly; Amount is worked out.
-        dgvLines.ReadOnly = false;
-        dgvLines.AllowUserToAddRows = true;
-        dgvLines.SelectionMode = DataGridViewSelectionMode.CellSelect;
-        colAmount.ReadOnly = true;
+        // Both tables are typed into directly; a new row appears as you type.
+        foreach (var grid in new[] { dgvScope, dgvLines })
+        {
+            grid.ReadOnly = false;
+            grid.AllowUserToAddRows = true;
+            grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
+        }
+        colWork.MaxInputLength = 300;
+        colDetails.MaxInputLength = 150;
         colItem.MaxInputLength = 300;
-        colUnit.MaxInputLength = 20;
 
         btnApproveQuotation.Visible = btnRejectQuotation.Visible = approver;
         btnAcceptQuotation.Visible = btnDeclineQuotation.Visible = approver;
@@ -110,24 +116,28 @@ public partial class QuotationsPage : UserControl
 
     // ----- the form -----
 
+    TextBox[] TextBoxes => [txtClientName, txtClientAddress, txtAttention, txtClientContact, txtClientEmail, txtProjectTitle,
+                            txtSiteLocation, txtPrintedNotes, txtWorkDuration, txtPaymentTerms, txtPayableTo, txtPayableNumber,
+                            txtSignatoryName, txtSignatoryTitle, txtInternalNotes];
+
+    static string Lines(string? s) => (s ?? "").Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
+
     void ClearForm()
     {
         loadingForm = true;
-        foreach (var t in new[] { txtClientName, txtClientContact, txtClientEmail, txtProjectTitle, txtSiteLocation, txtNotes }) t.Clear();
+        foreach (var t in TextBoxes) t.Clear();
         cboSector.SelectedItem = ProjectSectors.Residential;
         dtpQuoteDate.Value = DateTime.Today;
         dtpValidUntil.Value = DateTime.Today.AddDays(30);
         dtpPlannedStart.Value = DateTime.Today.AddDays(14);
         dtpPlannedStart.Checked = false;
-        numDiscount.Value = 0;
-        chkVat.Checked = false;
-        txtTerms.Text = QuotationService.DefaultTerms.Replace("\n", Environment.NewLine);
+        dgvScope.Rows.Clear();
         dgvLines.Rows.Clear();
         inquiryId = null;
         cboFromInquiry.DataSource = null;
         lblQuotationMsg.Text = "";
         loadingForm = false;
-        ShowTotals();
+        ShowTotal();
     }
 
     void ShowNothingSelected()
@@ -141,12 +151,20 @@ public partial class QuotationsPage : UserControl
         btnDeleteQuotation.Enabled = btnPrintQuotation.Enabled = btnSaveQuotationPdf.Enabled = false;
     }
 
+    /// <summary>A new quotation starts with the usual notes, payment and signature details (from the last quotation).</summary>
     async Task StartNewAsync()
     {
         editingId = null;
         editingStatus = QuotationStatuses.Draft;
         ClearForm();
         lblFormMode.Text = $"New quotation {await QuotationService.NextNumberAsync()}";
+        var d = await QuotationService.DefaultsAsync();
+        txtPrintedNotes.Text = Lines(d.PrintedNotes);
+        txtPaymentTerms.Text = d.PaymentTerms;
+        txtPayableTo.Text = d.PayableTo;
+        txtPayableNumber.Text = d.PayableNumber;
+        txtSignatoryName.Text = d.SignatoryName;
+        txtSignatoryTitle.Text = d.SignatoryTitle;
         await LoadInquiryChoicesAsync();
     }
 
@@ -160,11 +178,13 @@ public partial class QuotationsPage : UserControl
     async Task ShowAsync(int id)
     {
         if (await QuotationService.GetAsync(id) is not { } found) { ShowNothingSelected(); return; }
-        var (q, lines) = found;
+        var (q, scope, lines) = found;
         loadingForm = true;
         editingId = q.QuotationId;
         editingStatus = q.Status;
         txtClientName.Text = q.ClientName;
+        txtClientAddress.Text = q.ClientAddress ?? "";
+        txtAttention.Text = q.Attention ?? "";
         txtClientContact.Text = q.ClientContact ?? "";
         txtClientEmail.Text = q.ClientEmail ?? "";
         txtProjectTitle.Text = q.ProjectTitle;
@@ -174,16 +194,22 @@ public partial class QuotationsPage : UserControl
         dtpValidUntil.Value = q.ValidUntil.ToDateTime(TimeOnly.MinValue);
         dtpPlannedStart.Checked = q.PlannedStart != null;
         if (q.PlannedStart is { } ps) dtpPlannedStart.Value = ps.ToDateTime(TimeOnly.MinValue);
-        numDiscount.Value = Math.Min(q.Discount, numDiscount.Maximum);
-        chkVat.Checked = q.VatApplies;
-        txtTerms.Text = (q.Terms ?? "").Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
-        txtNotes.Text = q.Notes ?? "";
+        txtPrintedNotes.Text = Lines(q.PrintedNotes);
+        txtWorkDuration.Text = q.WorkDuration ?? "";
+        txtPaymentTerms.Text = q.PaymentTerms ?? "";
+        txtPayableTo.Text = q.PayableTo ?? "";
+        txtPayableNumber.Text = q.PayableNumber ?? "";
+        txtSignatoryName.Text = q.SignatoryName ?? "";
+        txtSignatoryTitle.Text = q.SignatoryTitle ?? "";
+        txtInternalNotes.Text = Lines(q.InternalNotes);
+        dgvScope.Rows.Clear();
+        foreach (var s in scope) dgvScope.Rows.Add(s.Work, s.Details);
         dgvLines.Rows.Clear();
-        foreach (var l in lines) dgvLines.Rows.Add(l.Description, l.Quantity.ToString("0.##"), l.Unit, l.UnitPrice.ToString("N2"), l.Amount.ToString("N2"));
+        foreach (var l in lines) dgvLines.Rows.Add(l.Description, l.Amount.ToString("N2"));
         inquiryId = q.InquiryId;
         await LoadInquiryChoicesAsync();
         loadingForm = false;
-        ShowTotals();
+        ShowTotal();
         original = ReadForm();
 
         bool editable = q.Status is QuotationStatuses.Draft or QuotationStatuses.Rejected;
@@ -213,12 +239,16 @@ public partial class QuotationsPage : UserControl
         txtClientName.Text = c.FullName;
         txtClientContact.Text = c.Phone ?? "";
         txtClientEmail.Text = c.Email ?? "";
-        if (c.Location != null) txtSiteLocation.Text = c.Location;
+        if (c.Location != null)
+        {
+            txtSiteLocation.Text = c.Location;
+            if (txtClientAddress.Text.Trim() == "") txtClientAddress.Text = c.Location;
+        }
         if (c.Service != null && txtProjectTitle.Text.Trim() == "") txtProjectTitle.Text = c.Service;
         lblQuotationMsg.Text = $"Filled in from {c.FullName}'s inquiry.";
     }
 
-    // ----- lines and totals -----
+    // ----- scope of works, costs and the total -----
 
     static decimal? Number(object? value)
     {
@@ -227,53 +257,63 @@ public partial class QuotationsPage : UserControl
         return decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var d) ? d : null;
     }
 
-    /// <summary>The typed lines (empty rows skipped), or the first problem found.</summary>
+    static string Cell(DataGridViewRow r, DataGridViewColumn c) => r.Cells[c.Index].Value?.ToString()?.Trim() ?? "";
+
+    List<QuotationScopeLine> ReadScope()
+    {
+        var scope = new List<QuotationScopeLine>();
+        foreach (DataGridViewRow r in dgvScope.Rows)
+        {
+            if (r.IsNewRow) continue;
+            var work = Cell(r, colWork);
+            var details = Cell(r, colDetails);
+            if (work == "" && details == "") continue;
+            scope.Add(new QuotationScopeLine(work, details == "" ? null : details));
+        }
+        return scope;
+    }
+
+    /// <summary>The typed cost lines (empty rows skipped), or the first problem found.</summary>
     (List<QuotationLine> Lines, string? Problem) ReadLines()
     {
         var lines = new List<QuotationLine>();
         foreach (DataGridViewRow r in dgvLines.Rows)
         {
             if (r.IsNewRow) continue;
-            var desc = r.Cells[colItem.Index].Value?.ToString()?.Trim() ?? "";
-            var qtyText = r.Cells[colQty.Index].Value?.ToString() ?? "";
-            var unit = r.Cells[colUnit.Index].Value?.ToString()?.Trim() ?? "";
-            var priceText = r.Cells[colUnitPrice.Index].Value?.ToString() ?? "";
-            if (desc == "" && qtyText.Trim() == "" && unit == "" && priceText.Trim() == "") continue;
-            var qty = Number(qtyText);
-            var price = Number(priceText);
-            if (qty == null) return (lines, $"Line {lines.Count + 1}: type the quantity as a number.");
-            if (price == null) return (lines, $"Line {lines.Count + 1}: type the unit price as a number.");
-            lines.Add(new QuotationLine(desc, qty.Value, unit, price.Value));
+            var desc = Cell(r, colItem);
+            var amountText = Cell(r, colAmount);
+            if (desc == "" && amountText == "") continue;
+            if (Number(amountText) is not { } amount) return (lines, $"Cost line {lines.Count + 1}: type the amount as a number.");
+            lines.Add(new QuotationLine(desc, amount));
         }
         return (lines, null);
     }
 
-    void ShowTotals()
+    void ShowTotal()
     {
-        foreach (DataGridViewRow r in dgvLines.Rows)
-        {
-            if (r.IsNewRow) continue;
-            var qty = Number(r.Cells[colQty.Index].Value);
-            var price = Number(r.Cells[colUnitPrice.Index].Value);
-            r.Cells[colAmount.Index].Value = qty != null && price != null ? Math.Round(qty.Value * price.Value, 2).ToString("N2") : "";
-        }
         var (lines, _) = ReadLines();
-        var t = QuotationService.Totals(lines, numDiscount.Value, chkVat.Checked);
-        lblSubtotal.Text = $"Subtotal: {ProjectService.Money(t.Subtotal)}";
-        lblDiscountShown.Text = $"Discount: {(t.Discount > 0 ? "-" : "")}{ProjectService.Money(t.Discount)}";
-        lblVatShown.Text = chkVat.Checked ? $"VAT 12%: {ProjectService.Money(t.Vat)}" : "VAT: not included";
-        lblTotal.Text = $"TOTAL: {ProjectService.Money(t.Total)}";
+        lblTotal.Text = $"Total Cost: {ProjectService.Money(QuotationService.Total(lines))}";
     }
 
-    void Lines_Changed(object? sender, DataGridViewCellEventArgs e) { if (!loadingForm) ShowTotals(); }
-    void Lines_RowsRemoved(object? sender, DataGridViewRowsRemovedEventArgs e) { if (!loadingForm) ShowTotals(); }
-    void Totals_Changed(object? sender, EventArgs e) { if (!loadingForm) ShowTotals(); }
-
-    void btnRemoveLine_Click(object sender, EventArgs e)
+    void Lines_Changed(object? sender, DataGridViewCellEventArgs e)
     {
-        var row = dgvLines.CurrentCell?.OwningRow;
+        if (loadingForm) return;
+        // show the amount the usual way (25000 -> 25,000.00)
+        if (e.RowIndex >= 0 && e.ColumnIndex == colAmount.Index && Number(dgvLines.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) is { } v)
+            dgvLines.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = v.ToString("N2");
+        ShowTotal();
+    }
+
+    void Lines_RowsRemoved(object? sender, DataGridViewRowsRemovedEventArgs e) { if (!loadingForm) ShowTotal(); }
+
+    void btnRemoveLine_Click(object sender, EventArgs e) => RemoveRow(dgvLines);
+    void btnRemoveScope_Click(object sender, EventArgs e) => RemoveRow(dgvScope);
+
+    void RemoveRow(DataGridView grid)
+    {
+        var row = grid.CurrentCell?.OwningRow;
         if (row == null || row.IsNewRow) { lblQuotationMsg.Text = "Click a line in the table first."; return; }
-        dgvLines.Rows.Remove(row);
+        grid.Rows.Remove(row);
     }
 
     // ----- saving -----
@@ -281,12 +321,15 @@ public partial class QuotationsPage : UserControl
     QuotationForm ReadForm()
     {
         var (lines, _) = ReadLines();
-        var items = string.Join("; ", lines.Select(l => $"{l.Description} {l.Quantity:0.##} {l.Unit} @ {l.UnitPrice:N2}"));
+        var scope = string.Join("; ", ReadScope().Select((s, n) => $"{(char)('A' + n % 26)}. {s.Work}{(s.Details == null ? "" : " (" + s.Details + ")")}"));
+        var costs = string.Join("; ", lines.Select(l => $"{l.Description} {l.Amount:N2}"));
         static string? N(string s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
-        return new QuotationForm(txtClientName.Text.Trim(), N(txtClientContact.Text), N(txtClientEmail.Text), txtProjectTitle.Text.Trim(),
-            N(txtSiteLocation.Text), (string?)cboSector.SelectedItem ?? "", DateOnly.FromDateTime(dtpQuoteDate.Value),
-            DateOnly.FromDateTime(dtpValidUntil.Value), dtpPlannedStart.Checked ? DateOnly.FromDateTime(dtpPlannedStart.Value) : null,
-            numDiscount.Value, chkVat.Checked, N(txtTerms.Text), N(txtNotes.Text), items);
+        return new QuotationForm(txtClientName.Text.Trim(), N(txtClientAddress.Text), N(txtAttention.Text), N(txtClientContact.Text),
+            N(txtClientEmail.Text), txtProjectTitle.Text.Trim(), N(txtSiteLocation.Text), (string?)cboSector.SelectedItem ?? "",
+            DateOnly.FromDateTime(dtpQuoteDate.Value), DateOnly.FromDateTime(dtpValidUntil.Value),
+            dtpPlannedStart.Checked ? DateOnly.FromDateTime(dtpPlannedStart.Value) : null,
+            N(txtPrintedNotes.Text), N(txtWorkDuration.Text), N(txtPaymentTerms.Text), N(txtPayableTo.Text), N(txtPayableNumber.Text),
+            N(txtSignatoryName.Text), N(txtSignatoryTitle.Text), N(txtInternalNotes.Text), scope, costs);
     }
 
     bool HasUnsavedChanges => editingId != null && original != null && ReadForm() != original;
@@ -294,16 +337,18 @@ public partial class QuotationsPage : UserControl
     async void btnSaveQuotation_Click(object sender, EventArgs e)
     {
         if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
+        dgvScope.EndEdit();
         dgvLines.EndEdit();
         var (lines, problem) = ReadLines();
         if (problem != null) { lblQuotationMsg.Text = problem; return; }
         var f = ReadForm();
-        var input = new QuotationInput(f.Client, f.Contact, f.Email, f.Project, f.Site, f.Sector, f.QuoteDate, f.ValidUntil,
-                                       f.PlannedStart, f.Discount, f.Vat, f.Terms, f.Notes, inquiryId, lines);
+        var input = new QuotationInput(f.Customer, f.Address, f.Attention, f.Contact, f.Email, f.Project, f.Site, f.Sector, f.QuoteDate,
+                                       f.ValidUntil, f.PlannedStart, f.Notes, f.InternalNotes, f.WorkDuration, f.PaymentTerms,
+                                       f.PayableTo, f.PayableNumber, f.SignedBy, f.Position, inquiryId, ReadScope(), lines);
         if (QuotationService.CheckInput(input) is { } bad) { lblQuotationMsg.Text = bad; return; }
         if (editingId != null && original != null)
         {
-            var answer = RecordForm.ConfirmSave(this, original.Client, original, f);
+            var answer = RecordForm.ConfirmSave(this, original.Customer, original, f);
             if (answer == SaveAnswer.NothingChanged) { lblQuotationMsg.Text = "Nothing changed."; return; }
             if (answer == SaveAnswer.No) { lblQuotationMsg.Text = "Not saved. Click Cancel to undo your changes."; return; }
         }
@@ -381,9 +426,8 @@ public partial class QuotationsPage : UserControl
     {
         if (editingId is not { } id) return;
         var (lines, _) = ReadLines();
-        var total = QuotationService.Totals(lines, numDiscount.Value, chkVat.Checked).Total;
         if (MessageBox.Show(this, $"The client accepted. Make the project \"{txtProjectTitle.Text.Trim()}\" for {txtClientName.Text.Trim()} " +
-                $"with a contract price of {ProjectService.Money(total)}?\n\nIt starts as Pending; add its other details in Projects.",
+                $"with a contract price of {ProjectService.Money(QuotationService.Total(lines))}?\n\nIt starts as Pending; add its other details in Projects.",
                 "Client Accepted", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
         try
         {

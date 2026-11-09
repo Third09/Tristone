@@ -429,16 +429,16 @@ Choose the report (**Expense & Receipt Report**, **Weekly** or **Monthly Expense
 
 ## Quotations (its own page in the sidebar)
 
-A price offer for a client, printed or saved as PDF. For the Receipts department: the Employee prepares it, the Supervisor approves it (Admins can only look).
+A price offer for a client, printed like the company's own quotation paper (logo, CUSTOMER / ADDRESS / ATTENTION, DATE, Scope of Works, costs, Total Cost, Notes, Cash Payable to, CONFORME BY / VERY TRULY YOURS). For the Receipts department: the Employee prepares it, the Supervisor approves it (Admins can only look).
 
-1. Click **New Quotation** (a window opens). Type the client's name, contact and email, the project name, site and sector. To start from a website message, choose it under **From a website inquiry**: the client's details are filled in.
-2. Set the **Quotation date** and **Valid until** (30 days by default), and the **Planned start** if known (tick the box).
-3. Type the items in the table: **Item / Description**, **Qty**, **Unit** (lot, sq.m, pcs...) and **Unit Price**. A new row appears as you type; **Amount** is worked out. **Remove Line** takes out the selected row.
-4. Optional: a **Discount** in pesos and **Add 12% VAT**. The subtotal, discount, VAT and **TOTAL** update as you type.
-5. Check the **Terms and conditions** (printed; 4 usual terms are filled in) and add **Internal notes** if needed (not printed). Click **Save**. It is a **Draft** (numbered QT-0001, QT-0002...).
-6. Click **Send for Approval**. The Receipts Supervisor selects it and clicks **Approve** or **Reject**. A rejected one can be fixed and saved (it becomes a Draft again).
+1. Click **New Quotation** (a window opens). Type the **Customer**, **Address** and **Attention** (the person it is addressed to). Contact number and email are kept but not printed. To start from a website message, choose it under **From a website inquiry**.
+2. Set the **Date**. Also fill in the **Project name**, site and sector (used if the client accepts) and, if known, the **Planned start** (tick the box).
+3. **Scope of Works:** type each work and its size, e.g. *Excavation* / *2.5 X 1.5 X 1.5 METERS*. They print as A, B, C... in the same order.
+4. **Costs:** type each cost and its amount, e.g. *Tools and Equipment* 5,000 and *Labor Cost* 25,000. **Total Cost** adds them up.
+5. **Notes** (printed, one per line), **Work duration** (e.g. 30 days), **Terms of payment**, **Cash payable to** with its number, and who signs **Very truly yours** with the position. A new quotation starts with the ones used last time.
+6. Click **Save**. It is a **Draft** (numbered QT-0001, QT-0002...). Then **Send for Approval**. The Receipts Supervisor clicks **Approve** or **Reject**; a rejected one can be fixed and saved (it becomes a Draft again).
 7. **Print** or **Save as PDF** and give it to the client. Until it is approved, the printout says "DRAFT" across the page.
-8. When the client answers: **Client Accepted: Make Project** adds the project to **Projects** (status Pending, contract price = the quotation total), or **Client Declined**.
+8. When the client answers: **Client Accepted: Make Project** adds the project to **Projects** (status Pending, contract price = the Total Cost), or **Client Declined**.
 
 Only a Draft or Rejected quotation can be changed or deleted (Delete: Supervisor).
 

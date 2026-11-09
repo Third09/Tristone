@@ -47,6 +47,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
     public DbSet<Quotation> Quotations => Set<Quotation>();
     public DbSet<QuotationItem> QuotationItems => Set<QuotationItem>();
+    public DbSet<QuotationScopeItem> QuotationScope => Set<QuotationScopeItem>();
     public DbSet<WebsiteContent> WebsiteContent => Set<WebsiteContent>();
     public DbSet<WebsiteProject> WebsiteProjects => Set<WebsiteProject>();
     public DbSet<WebsiteProjectPhoto> WebsiteProjectPhotos => Set<WebsiteProjectPhoto>();
@@ -76,6 +77,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Inquiry>().HasKey(i => i.InquiryId);
         modelBuilder.Entity<Quotation>().HasKey(q => q.QuotationId);
         modelBuilder.Entity<QuotationItem>().HasKey(i => i.ItemId);
+        modelBuilder.Entity<QuotationScopeItem>().HasKey(i => i.ScopeId);
         modelBuilder.Entity<WebsiteContent>().HasKey(c => c.ContentKey);
         modelBuilder.Entity<WebsiteProject>().HasKey(p => p.WebProjectId);
         modelBuilder.Entity<WebsiteProjectPhoto>().HasKey(p => p.PhotoId);

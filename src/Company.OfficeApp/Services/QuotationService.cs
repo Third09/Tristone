@@ -8,24 +8,30 @@ namespace Company.OfficeApp.Services;
 public record QuotationRow(int QuotationId, string QuoteNo, DateOnly QuoteDate, string ClientName, string ProjectTitle,
                            decimal Total, DateOnly ValidUntil, string Status);
 
-/// <summary>One line as typed in the form.</summary>
-public record QuotationLine(string Description, decimal Quantity, string Unit, decimal UnitPrice)
-{
-    public decimal Amount => Math.Round(Quantity * UnitPrice, 2);
-}
+/// <summary>One "Scope of Works" line: the work and its size or measurement (printed A, B, C...).</summary>
+public record QuotationScopeLine(string Work, string? Details);
 
-public record QuotationInput(string ClientName, string? ClientContact, string? ClientEmail, string ProjectTitle, string? SiteLocation,
-                             string Sector, DateOnly QuoteDate, DateOnly ValidUntil, DateOnly? PlannedStart, decimal Discount,
-                             bool VatApplies, string? Terms, string? Notes, int? InquiryId, IReadOnlyList<QuotationLine> Lines);
+/// <summary>One cost line (e.g. "Labor Cost", 25,000).</summary>
+public record QuotationLine(string Description, decimal Amount);
 
-/// <summary>Subtotal of the lines, minus the discount, plus 12% VAT when ticked.</summary>
-public record QuotationTotals(decimal Subtotal, decimal Discount, decimal Taxable, decimal Vat, decimal Total);
+public record QuotationInput(string ClientName, string? ClientAddress, string? Attention, string? ClientContact, string? ClientEmail,
+                             string ProjectTitle, string? SiteLocation, string Sector, DateOnly QuoteDate, DateOnly ValidUntil,
+                             DateOnly? PlannedStart, string? PrintedNotes, string? InternalNotes, string? WorkDuration,
+                             string? PaymentTerms, string? PayableTo, string? PayableNumber, string? SignatoryName,
+                             string? SignatoryTitle, int? InquiryId, IReadOnlyList<QuotationScopeLine> Scope,
+                             IReadOnlyList<QuotationLine> Lines);
+
+/// <summary>What a new quotation starts with: the last quotation's payment and signature details, or the company's usual ones.</summary>
+public record QuotationDefaults(string PrintedNotes, string PaymentTerms, string PayableTo, string PayableNumber,
+                                string SignatoryName, string SignatoryTitle);
 
 /// <summary>An inquiry a quotation can start from (its name, contact, location and service fill the form).</summary>
 public record InquiryChoice(int InquiryId, string Text, string FullName, string? Phone, string? Email, string? Location, string? Service);
 
 /// <summary>
 /// Quotations (owner request 2026-11-09): a price offer to a client before a project starts, numbered QT-0001...
+/// It follows the company's own quotation paper (script 024): Customer / Address / Attention / Date, Scope of Works,
+/// cost lines and Total Cost, Notes, Work Duration, Terms of Payment, Cash Payable to, Conforme / Very truly yours.
 /// The Receipts Employee prepares it (Draft) and sends it for approval (Waiting); the Receipts Supervisor approves or
 /// rejects it (a rejected one is fixed and sent again). An approved one is printed and given to the client. When the
 /// client accepts, the Receipts Supervisor turns it into a project (contract price = the total); or marks it Declined.
@@ -34,20 +40,15 @@ public record InquiryChoice(int InquiryId, string Text, string FullName, string?
 public static class QuotationService
 {
     const string Dept = Departments.Receipts;
-    public const decimal VatRate = 0.12m;
-    public const string DefaultTerms =
-        "1. Prices are in Philippine pesos and valid until the date above.\n" +
-        "2. 50% down payment upon signing, 40% progress billing, 10% upon completion and turnover.\n" +
-        "3. Any work not listed above is quoted separately through a change order.\n" +
-        "4. Permits and inspection fees are for the client's account unless listed above.";
 
-    public static QuotationTotals Totals(IEnumerable<QuotationLine> lines, decimal discount, bool vat)
-    {
-        var subtotal = lines.Sum(l => l.Amount);
-        var taxable = Math.Max(0, subtotal - discount);
-        var tax = vat ? Math.Round(taxable * VatRate, 2) : 0;
-        return new QuotationTotals(subtotal, discount, taxable, tax, taxable + tax);
-    }
+    /// <summary>The usual notes and details from the company's quotation paper, used until a quotation has been saved.</summary>
+    public static readonly QuotationDefaults CompanyDefaults = new(
+        "Heavy equipment, Hauling equipment, Disposal Waste Materials shouldered by the customer.\n" +
+        "Owner must provide designated place for temporary shelter of the construction personnel.\n" +
+        "Any permits, supply of electricity and water at the job site shall be shouldered by the customer.",
+        "Weekly Payroll", "ADRIAN F. MORILLA", "09691806929", "ADRIAN F. MORILLA", "Contractor");
+
+    public static decimal Total(IEnumerable<QuotationLine> lines) => lines.Sum(l => l.Amount);
 
     public static async Task<List<QuotationRow>> ListAsync(string? status, string search)
     {
@@ -62,22 +63,34 @@ public static class QuotationService
         }
         var rows = await q.OrderByDescending(x => x.QuotationId).ToListAsync();
         var ids = rows.Select(r => r.QuotationId).ToList();
-        var items = await db.QuotationItems.AsNoTracking().Where(i => ids.Contains(i.QuotationId)).ToListAsync();
+        var totals = await db.QuotationItems.AsNoTracking().Where(i => ids.Contains(i.QuotationId))
+            .GroupBy(i => i.QuotationId).Select(g => new { g.Key, Sum = g.Sum(i => i.Amount) }).ToDictionaryAsync(x => x.Key, x => x.Sum);
         return rows.Select(r => new QuotationRow(r.QuotationId, r.QuoteNo, r.QuoteDate, r.ClientName, r.ProjectTitle,
-            Totals(items.Where(i => i.QuotationId == r.QuotationId).Select(ToLine), r.Discount, r.VatApplies).Total,
-            r.ValidUntil, r.Status)).ToList();
+            totals.GetValueOrDefault(r.QuotationId), r.ValidUntil, r.Status)).ToList();
     }
 
-    public static async Task<(Quotation Quotation, List<QuotationLine> Lines)?> GetAsync(int id)
+    public static async Task<(Quotation Quotation, List<QuotationScopeLine> Scope, List<QuotationLine> Lines)?> GetAsync(int id)
     {
         using var db = Db.Open();
         var q = await db.Quotations.AsNoTracking().FirstOrDefaultAsync(x => x.QuotationId == id);
         if (q == null) return null;
-        var lines = await db.QuotationItems.AsNoTracking().Where(i => i.QuotationId == id).OrderBy(i => i.LineNo).Select(i => ToLine(i)).ToListAsync();
-        return (q, lines);
+        var scope = await db.QuotationScope.AsNoTracking().Where(i => i.QuotationId == id).OrderBy(i => i.LineNo)
+            .Select(i => new QuotationScopeLine(i.Description, i.Details)).ToListAsync();
+        var lines = await db.QuotationItems.AsNoTracking().Where(i => i.QuotationId == id).OrderBy(i => i.LineNo)
+            .Select(i => new QuotationLine(i.Description, i.Amount)).ToListAsync();
+        return (q, scope, lines);
     }
 
-    static QuotationLine ToLine(QuotationItem i) => new(i.Description, i.Quantity, i.Unit, i.UnitPrice);
+    /// <summary>The newest quotation's payment and signature details (they rarely change), else the company's usual ones.</summary>
+    public static async Task<QuotationDefaults> DefaultsAsync()
+    {
+        using var db = Db.Open();
+        var last = await db.Quotations.AsNoTracking().OrderByDescending(q => q.QuotationId).FirstOrDefaultAsync();
+        var d = CompanyDefaults;
+        if (last == null) return d;
+        return new QuotationDefaults(last.PrintedNotes ?? d.PrintedNotes, last.PaymentTerms ?? d.PaymentTerms, last.PayableTo ?? d.PayableTo,
+            last.PayableNumber ?? d.PayableNumber, last.SignatoryName ?? d.SignatoryName, last.SignatoryTitle ?? d.SignatoryTitle);
+    }
 
     public static async Task<string> NextNumberAsync()
     {
@@ -104,21 +117,19 @@ public static class QuotationService
 
     public static string? CheckInput(QuotationInput i)
     {
-        if (string.IsNullOrWhiteSpace(i.ClientName)) return "Type the client's name.";
-        if (string.IsNullOrWhiteSpace(i.ProjectTitle)) return "Type what the quotation is for (e.g. Two-storey house).";
+        if (string.IsNullOrWhiteSpace(i.ClientName)) return "Type the customer's name.";
+        if (string.IsNullOrWhiteSpace(i.ProjectTitle)) return "Type the project name (it becomes the project's name if the client accepts).";
         if (!ProjectSectors.All.Contains(i.Sector)) return "Choose a sector.";
         if (i.ValidUntil < i.QuoteDate) return "\"Valid until\" can't be before the quotation date.";
-        if (i.Discount < 0) return "The discount can't be negative.";
-        if (i.Lines.Count == 0) return "Add at least one line (item, quantity, unit, unit price).";
+        if (i.Scope.Count == 0) return "Add at least one line to the Scope of Works.";
+        for (int n = 0; n < i.Scope.Count; n++)
+            if (string.IsNullOrWhiteSpace(i.Scope[n].Work)) return $"Scope of Works line {(char)('A' + n)}: type the work.";
+        if (i.Lines.Count == 0) return "Add at least one cost line (e.g. Labor Cost and its amount).";
         for (int n = 0; n < i.Lines.Count; n++)
         {
-            var l = i.Lines[n];
-            if (string.IsNullOrWhiteSpace(l.Description)) return $"Line {n + 1}: type the item.";
-            if (l.Quantity <= 0) return $"Line {n + 1}: the quantity must be more than zero.";
-            if (string.IsNullOrWhiteSpace(l.Unit)) return $"Line {n + 1}: type the unit (e.g. lot, sq.m, pc).";
-            if (l.UnitPrice < 0) return $"Line {n + 1}: the unit price can't be negative.";
+            if (string.IsNullOrWhiteSpace(i.Lines[n].Description)) return $"Cost line {n + 1}: type what the cost is for.";
+            if (i.Lines[n].Amount < 0) return $"Cost line {n + 1}: the amount can't be negative.";
         }
-        if (i.Discount > Totals(i.Lines, 0, false).Subtotal) return "The discount can't be more than the subtotal.";
         return null;
     }
 
@@ -131,8 +142,8 @@ public static class QuotationService
         Apply(q, i);
         db.Quotations.Add(q);
         await db.SaveChangesAsync();
-        AddLines(db, q.QuotationId, i.Lines);
-        AuditService.Add(db, Dept, "quotations", q.QuotationId, $"{q.QuoteNo} {q.ClientName}", AuditActions.Added, null, Snapshot(q, i.Lines));
+        AddLines(db, q.QuotationId, i);
+        AuditService.Add(db, Dept, "quotations", q.QuotationId, $"{q.QuoteNo} {q.ClientName}", AuditActions.Added, null, Snapshot(q, i.Scope, i.Lines));
         await db.SaveChangesAsync();
         return (q.QuotationId, null);
     }
@@ -146,13 +157,16 @@ public static class QuotationService
         var q = await db.Quotations.FirstAsync(x => x.QuotationId == id);
         if (q.Status is not (QuotationStatuses.Draft or QuotationStatuses.Rejected)) return $"This quotation is {q.Status}, so it can't be changed.";
         var oldLines = await db.QuotationItems.Where(x => x.QuotationId == id).OrderBy(x => x.LineNo).ToListAsync();
-        var before = Snapshot(q, oldLines.Select(ToLine).ToList());
+        var oldScope = await db.QuotationScope.Where(x => x.QuotationId == id).OrderBy(x => x.LineNo).ToListAsync();
+        var before = Snapshot(q, oldScope.Select(s => new QuotationScopeLine(s.Description, s.Details)).ToList(),
+                              oldLines.Select(l => new QuotationLine(l.Description, l.Amount)).ToList());
         Apply(q, i);
         q.Status = QuotationStatuses.Draft;
         q.UpdatedAt = DateTime.Now;
         db.QuotationItems.RemoveRange(oldLines);
-        AddLines(db, id, i.Lines);
-        AuditService.Add(db, Dept, "quotations", q.QuotationId, $"{q.QuoteNo} {q.ClientName}", AuditActions.Edited, before, Snapshot(q, i.Lines));
+        db.QuotationScope.RemoveRange(oldScope);
+        AddLines(db, id, i);
+        AuditService.Add(db, Dept, "quotations", q.QuotationId, $"{q.QuoteNo} {q.ClientName}", AuditActions.Edited, before, Snapshot(q, i.Scope, i.Lines));
         await db.SaveChangesAsync();
         return null;
     }
@@ -160,28 +174,38 @@ public static class QuotationService
     static void Apply(Quotation q, QuotationInput i)
     {
         static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
-        q.ClientName = i.ClientName.Trim(); q.ClientContact = Clean(i.ClientContact); q.ClientEmail = Clean(i.ClientEmail);
+        q.ClientName = i.ClientName.Trim(); q.ClientAddress = Clean(i.ClientAddress); q.Attention = Clean(i.Attention);
+        q.ClientContact = Clean(i.ClientContact); q.ClientEmail = Clean(i.ClientEmail);
         q.ProjectTitle = i.ProjectTitle.Trim(); q.SiteLocation = Clean(i.SiteLocation); q.Sector = i.Sector;
         q.QuoteDate = i.QuoteDate; q.ValidUntil = i.ValidUntil; q.PlannedStart = i.PlannedStart;
-        q.Discount = i.Discount; q.VatApplies = i.VatApplies; q.Terms = Clean(i.Terms); q.Notes = Clean(i.Notes);
+        q.PrintedNotes = Clean(i.PrintedNotes); q.InternalNotes = Clean(i.InternalNotes);
+        q.WorkDuration = Clean(i.WorkDuration); q.PaymentTerms = Clean(i.PaymentTerms);
+        q.PayableTo = Clean(i.PayableTo); q.PayableNumber = Clean(i.PayableNumber);
+        q.SignatoryName = Clean(i.SignatoryName); q.SignatoryTitle = Clean(i.SignatoryTitle);
         q.InquiryId = i.InquiryId ?? q.InquiryId;
     }
 
-    static void AddLines(AppDbContext db, int quotationId, IReadOnlyList<QuotationLine> lines)
+    static void AddLines(AppDbContext db, int quotationId, QuotationInput i)
     {
-        for (int n = 0; n < lines.Count; n++)
+        for (int n = 0; n < i.Scope.Count; n++)
+            db.QuotationScope.Add(new QuotationScopeItem
+            {
+                QuotationId = quotationId, LineNo = n + 1, Description = i.Scope[n].Work.Trim(),
+                Details = string.IsNullOrWhiteSpace(i.Scope[n].Details) ? null : i.Scope[n].Details!.Trim(),
+            });
+        for (int n = 0; n < i.Lines.Count; n++)
             db.QuotationItems.Add(new QuotationItem
             {
-                QuotationId = quotationId, LineNo = n + 1, Description = lines[n].Description.Trim(),
-                Quantity = lines[n].Quantity, Unit = lines[n].Unit.Trim(), UnitPrice = lines[n].UnitPrice,
+                QuotationId = quotationId, LineNo = n + 1, Description = i.Lines[n].Description.Trim(), Amount = i.Lines[n].Amount,
             });
     }
 
-    static object Snapshot(Quotation q, IReadOnlyList<QuotationLine> lines) => new
+    static object Snapshot(Quotation q, IReadOnlyList<QuotationScopeLine> scope, IReadOnlyList<QuotationLine> lines) => new
     {
-        client = q.ClientName, project = q.ProjectTitle, site = q.SiteLocation, sector = q.Sector,
-        quote_date = q.QuoteDate, valid_until = q.ValidUntil, discount = q.Discount, vat = q.VatApplies,
-        lines = lines.Count, total = Totals(lines, q.Discount, q.VatApplies).Total, status = q.Status,
+        client = q.ClientName, address = q.ClientAddress, attention = q.Attention, project = q.ProjectTitle, site = q.SiteLocation,
+        sector = q.Sector, quote_date = q.QuoteDate, valid_until = q.ValidUntil, work_duration = q.WorkDuration,
+        payment_terms = q.PaymentTerms, payable_to = q.PayableTo, signatory = q.SignatoryName,
+        scope = scope.Count, cost_lines = lines.Count, total = Total(lines), status = q.Status,
     };
 
     async static Task<string?> MoveAsync(int id, string from, string to, Func<string?> check, bool decide)
@@ -189,8 +213,7 @@ public static class QuotationService
         if (check() is { } denied) return denied;
         using var db = Db.Open();
         var q = await db.Quotations.FirstAsync(x => x.QuotationId == id);
-        var allowed = from.Split('|');
-        if (!allowed.Contains(q.Status)) return $"This quotation is {q.Status}.";
+        if (q.Status != from) return $"This quotation is {q.Status}.";
         var old = q.Status;
         q.Status = to;
         q.UpdatedAt = DateTime.Now;
@@ -222,12 +245,11 @@ public static class QuotationService
     {
         if (Access.RequireApprover(Dept) is { } denied) return (null, denied);
         if (await GetAsync(id) is not { } found) return (null, "This quotation no longer exists.");
-        var (q, lines) = found;
+        var (q, _, lines) = found;
         if (q.Status != QuotationStatuses.Approved) return (null, $"Only an Approved quotation can be accepted (this one is {q.Status}).");
-        var total = Totals(lines, q.Discount, q.VatApplies).Total;
         var start = q.PlannedStart ?? DateOnly.FromDateTime(DateTime.Today);
-        var (projectId, error) = await ProjectService.CreateAsync(new ProjectInput(q.ProjectTitle, q.SiteLocation ?? "(to follow)",
-            q.ClientName, q.Sector, total, start, null, ProjectStatuses.Pending, false));
+        var (projectId, error) = await ProjectService.CreateAsync(new ProjectInput(q.ProjectTitle, q.SiteLocation ?? q.ClientAddress ?? "(to follow)",
+            q.ClientName, q.Sector, Total(lines), start, null, ProjectStatuses.Pending, false));
         if (projectId == null) return (null, error);
         using var db = Db.Open();
         var row = await db.Quotations.FirstAsync(x => x.QuotationId == id);
@@ -246,32 +268,21 @@ public static class QuotationService
     public static async Task<string?> DeleteAsync(int id)
     {
         if (Access.RequireDelete(AppPage.Quotations) is { } denied) return denied;
-        using var db = Db.Open();
-        var q = await db.Quotations.FirstOrDefaultAsync(x => x.QuotationId == id);
-        if (q == null) return null;
+        if (await GetAsync(id) is not { } found) return null;
+        var (q, scope, lines) = found;
         if (q.Status is not (QuotationStatuses.Draft or QuotationStatuses.Rejected)) return "Only a Draft or Rejected quotation can be deleted. Mark it Declined instead.";
-        var lines = await db.QuotationItems.Where(x => x.QuotationId == id).ToListAsync();
-        AuditService.Add(db, Dept, "quotations", q.QuotationId, $"{q.QuoteNo} {q.ClientName}", AuditActions.Deleted, Snapshot(q, lines.Select(ToLine).ToList()), null);
-        db.QuotationItems.RemoveRange(lines);
-        db.Quotations.Remove(q);
+        using var db = Db.Open();
+        AuditService.Add(db, Dept, "quotations", q.QuotationId, $"{q.QuoteNo} {q.ClientName}", AuditActions.Deleted, Snapshot(q, scope, lines), null);
+        db.Quotations.Remove(await db.Quotations.FirstAsync(x => x.QuotationId == id));   // scope and cost lines go with it (ON DELETE CASCADE)
         await db.SaveChangesAsync();
         return null;
     }
 
-    /// <summary>Everything the printed quotation needs, with the company details from Website Admin > Contact Us.</summary>
     public static async Task<QuotationPrintData> PrintDataAsync(int id)
     {
-        var (q, lines) = (await GetAsync(id))!.Value;
-        using var db = Db.Open();
-        var keys = new[] { "contact.address", "contact.phone", "contact.email" };
-        var company = await db.WebsiteContent.AsNoTracking().Where(c => keys.Contains(c.ContentKey)).ToDictionaryAsync(c => c.ContentKey, c => c.Value);
-        string? C(string k) => company.TryGetValue(k, out var v) ? v : null;
-        var by = await db.Users.Where(u => u.UserId == q.CreatedBy).Select(u => u.FullName).FirstOrDefaultAsync() ?? "";
-        var approvedBy = q.Status is QuotationStatuses.Approved or QuotationStatuses.Accepted or QuotationStatuses.Declined
-            ? await db.Users.Where(u => u.UserId == q.DecidedBy).Select(u => u.FullName).FirstOrDefaultAsync() : null;
-        return new QuotationPrintData(q, lines, Totals(lines, q.Discount, q.VatApplies), C("contact.address"), C("contact.phone"), C("contact.email"), by, approvedBy);
+        var (q, scope, lines) = (await GetAsync(id))!.Value;
+        return new QuotationPrintData(q, scope, lines, Total(lines));
     }
 }
 
-public record QuotationPrintData(Quotation Quotation, List<QuotationLine> Lines, QuotationTotals Totals,
-                                 string? CompanyAddress, string? CompanyPhone, string? CompanyEmail, string PreparedBy, string? ApprovedBy);
+public record QuotationPrintData(Quotation Quotation, List<QuotationScopeLine> Scope, List<QuotationLine> Lines, decimal Total);
