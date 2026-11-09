@@ -321,6 +321,17 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 | Change Orders | `ChangeOrderService.ListAsync`, `PreviewAsync`, `CreateAsync`, `UpdateAsync`, `ApproveAsync`, `RejectAsync`, `PrintDataAsync` | Budget preview = current price (contract + approved COs) → revised; end date ± days. Approve/Reject: Receipts Supervisor (`RequireApprover`). CO-001 numbering. `ChangeOrderPrint` form for the client's signature. |
 | Reports | `ReceiptReports.BuildAsync(type, project, from, to)` | Detailed list, weekly or monthly summary of approved receipts; `TableReport` pages them and `SaveAsPdf` prints to "Microsoft Print to PDF". |
 
+## 9.1 Quotations (script 023)
+
+`Pages/QuotationsPage` (own sidebar page, `AppPage.Quotations`, icon E8A5; designer from `specs/QuotationsPage.py`). `Access.CanSee`: Receipts department + Admins; `Access.Department(page)` gives "Receipts" for Projects and Quotations in refusal messages. Audit department `Receipts`, table `quotations`.
+
+| Part | Service methods | Specifics |
+|---|---|---|
+| List + form | `QuotationService.ListAsync(search, status)`, `GetAsync`, `CreateAsync`, `UpdateAsync`, `DeleteAsync`, `InquiryChoicesAsync` | RecordForm pattern (Add = pop-up with `addOnly`). Lines grid is editable (`AllowUserToAddRows`); lines are replaced on save. `CheckInput` validates; only Draft/Rejected can change (saving a Rejected one sets Draft). |
+| Status | `SubmitAsync`, `ApproveAsync`, `RejectAsync`, `DeclineAsync`, `AcceptAsync` | Approve/Reject: `RequireApprover(Receipts)`. `AcceptAsync` calls `ProjectService.CreateAsync` (Pending, contract = total) and stores `project_id`. Buttons are enabled by status in `ShowAsync`. |
+| Totals | `QuotationService.Totals(lines, discount, vat)` | `VatRate` = 0.12; VAT rounded to centavos. Used by the page, the list and the printout. |
+| Print / PDF | `PrintDataAsync`, `QuotationPrint` (`PrintDocument`, `SaveAsPdf`) | Company lines from `website_content` (`contact.*`); table continues on more pages, the last page keeps room for totals, terms and signatures; DRAFT watermark until approved. |
+
 # Chapter 10: The Website Admin app (Part 6)
 
 ## 10.1 One program, two sets of screens

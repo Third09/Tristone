@@ -56,6 +56,7 @@ Two special cases: the **Receipts Supervisor** also manages the **Projects** lis
 | **Inventory** | materials and stock; using materials on a project (needs approval); deliveries; equipment and maintenance; vendors; comparing quotes |
 | **Subcontractors** | the subcontractor directory; jobs with payment stages; progress; vouchers and payouts; retention |
 | **Receipts** | every receipt (for a project or company overhead); expenses with no receipt; **change orders** to a project's price or end date; reports |
+| **Quotations** | (Receipts department) price offers for clients: items, quantities and prices, discount, VAT, terms; printed or saved as PDF. When the client accepts, it becomes a project |
 | **User Accounts** | (Admins) making and managing logins |
 | **My Account** | your own details; Admins change their password and security question here |
 
@@ -83,6 +84,7 @@ The pattern is the same everywhere: the **Employee** records it, the request wai
 | Subcontractor voucher | Subcontractors Employee | Subcontractors Supervisor |
 | Receipt, or an expense with no receipt | Receipts Employee | Receipts Supervisor |
 | Change order | Receipts Employee | Receipts Supervisor |
+| Quotation | Receipts Employee | Receipts Supervisor |
 | Overtime, cash advance, final payroll | HR Employee | HR Supervisor |
 
 **Payroll in one line**
@@ -120,7 +122,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 |---|---|
 | The program | `Apps\Tri-Stone\TriStone.exe` (built from Visual Studio, project **Company.Launcher**) |
 | The code | `src\` in the TriStone folder (Visual Studio: `TriStone.slnx`) |
-| Database changes | `database\` (numbered scripts 001-014; `setup-database.cmd` applies the new ones) |
+| Database changes | `database\` (numbered scripts 001-023; `setup-database.cmd` applies the new ones) |
 | Uploaded files | the shared files folder (`C:\TriStoneFiles` on this PC) |
 | Guides | `docs\` (Word files; their text is in `docs\_source`) |
 | What was tested | `docs\Testing Log.md` (and the "Check at home" list) |
@@ -131,7 +133,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 **Done**
 
 - Sign in, accounts, access levels, idle sign-out.
-- Projects, Dashboard, HR & Payroll (employees, attendance, payroll, payslips, cash advances, settings), Inventory, Subcontractors, Receipts and change orders.
+- Projects, Dashboard, HR & Payroll (employees, attendance, payroll, payslips, cash advances, settings), Inventory, Subcontractors, Receipts and change orders, Quotations.
 - Website Admin: Home, Projects, Services, About Us, Contact Us, Publish.
 - The new look on every screen.
 
@@ -152,6 +154,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 | Approve | a Supervisor accepting a request; only approved items count |
 | Overhead | company costs not tied to a project (payroll, repairs, office receipts) |
 | Change order | an agreed change to a project's price or end date |
+| Quotation | a price offer to a client (QT-0001); accepted ones become projects |
 | Retention | part of a subcontractor's pay held back until the job is checked |
 | Voucher | the paper that allows paying a subcontractor stage |
 | Finalize | locking a payroll so it can't change |

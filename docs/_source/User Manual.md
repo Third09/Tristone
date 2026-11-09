@@ -418,14 +418,29 @@ Expenses with no receipt (its sidebar item shows how many are waiting, e.g. *Nee
 
 1. Click **New Change Order** (a window opens). Choose the project, the date the client asked, describe the change, and type the **cost change** and/or **days change** (use minus for less).
 2. The **budget impact** shows the contract price and end date now and after.
-3. **Attach Signed Document** (the client's signed paper), then **Submit**. It waits for an Admin.
-4. An Admin selects it and clicks **Approve** (or **Reject**). Once approved, the project's revenue and target end date change everywhere.
+3. **Attach Signed Document** (the client's signed paper), then **Submit**. It waits for the Receipts Supervisor.
+4. The Receipts Supervisor selects it and clicks **Approve** (or **Reject**). Once approved, the project's revenue and target end date change everywhere.
 
 **Print Form** gives the change order form for signing (choose "Microsoft Print to PDF" for a PDF). Numbers are given automatically: CO-001, CO-002...
 
 ## Reports
 
 Choose the report (**Expense & Receipt Report**, **Weekly** or **Monthly Expense Summary**), the project (or All / Company Overhead) and the dates. Then **Preview**, **Print**, **Save as PDF** or **Export Excel**. Reports include approved expenses only.
+
+## Quotations (its own page in the sidebar)
+
+A price offer for a client, printed or saved as PDF. For the Receipts department: the Employee prepares it, the Supervisor approves it (Admins can only look).
+
+1. Click **New Quotation** (a window opens). Type the client's name, contact and email, the project name, site and sector. To start from a website message, choose it under **From a website inquiry**: the client's details are filled in.
+2. Set the **Quotation date** and **Valid until** (30 days by default), and the **Planned start** if known (tick the box).
+3. Type the items in the table: **Item / Description**, **Qty**, **Unit** (lot, sq.m, pcs...) and **Unit Price**. A new row appears as you type; **Amount** is worked out. **Remove Line** takes out the selected row.
+4. Optional: a **Discount** in pesos and **Add 12% VAT**. The subtotal, discount, VAT and **TOTAL** update as you type.
+5. Check the **Terms and conditions** (printed; 4 usual terms are filled in) and add **Internal notes** if needed (not printed). Click **Save**. It is a **Draft** (numbered QT-0001, QT-0002...).
+6. Click **Send for Approval**. The Receipts Supervisor selects it and clicks **Approve** or **Reject**. A rejected one can be fixed and saved (it becomes a Draft again).
+7. **Print** or **Save as PDF** and give it to the client. Until it is approved, the printout says "DRAFT" across the page.
+8. When the client answers: **Client Accepted: Make Project** adds the project to **Projects** (status Pending, contract price = the quotation total), or **Client Declined**.
+
+Only a Draft or Rejected quotation can be changed or deleted (Delete: Supervisor).
 
 
 # 10. Website Admin

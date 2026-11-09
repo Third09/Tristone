@@ -11,6 +11,7 @@ public enum AppPage
     Inventory,
     Subcontractors,
     Receipts,
+    Quotations,
 
     UserAccounts,
     MyAccount,
@@ -39,6 +40,7 @@ public static class Access
             AppPage.Inventory => user.Department == Departments.Inventory,
             AppPage.Subcontractors => user.Department == Departments.Subcontractors,
             AppPage.Receipts => user.Department == Departments.Receipts,
+            AppPage.Quotations => user.Department == Departments.Receipts,   // the Receipts department prepares quotations
             AppPage.MyAccount => true,
             _ => false,   // User Accounts: Admin only
         };
@@ -82,13 +84,13 @@ public static class Access
         Session.CurrentUser is { } u && CanEdit(u, page) ? null
             : Session.CurrentUser is { IsAdmin: true } ? "Admins can view this page but not change it."
             : page == AppPage.Projects ? "Only the Receipts Supervisor can change projects."
-            : $"Only the {Title(page)} department can do this.";
+            : $"Only the {Department(page)} department can do this.";
 
     /// <summary>Delete check for the signed-in user; returns the message to show, or null when allowed.</summary>
     public static string? RequireDelete(AppPage page) =>
         Session.CurrentUser is { } u && CanDelete(u, page) ? null
             : Session.CurrentUser is { IsAdmin: true } ? "Admins can view this page but not change it."
-            : $"Only the {(page == AppPage.Projects ? "Receipts" : Title(page))} Supervisor can delete this.";
+            : $"Only the {Department(page)} Supervisor can delete this.";
 
     /// <summary>
     /// Hides the buttons the signed-in user may not use on a page (every button inside <paramref name="root"/>,
@@ -138,6 +140,9 @@ public static class Access
             _ => AppPage.MyAccount,
         };
     }
+
+    /// <summary>The department that works on a page (Projects and Quotations belong to Receipts).</summary>
+    static string Department(AppPage page) => page is AppPage.Projects or AppPage.Quotations ? "Receipts" : Title(page);
 
     public static string Title(AppPage page) => page switch
     {

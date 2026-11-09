@@ -40,7 +40,8 @@ Owner decision 2026-11-01: **Employees do the work, Supervisors confirm it, Admi
 | Quotes | Open → Selected / Not Selected | Selected creates a purchase |
 | Subcontractor vouchers | Waiting → Approved / Rejected → Paid | Paid (the payout row is the expense) |
 | Receipts | Waiting → Approved / Rejected | Approved |
-| Change orders | Waiting → Approved / Rejected (Admin) | Approved (revenue, end date) |
+| Change orders | Waiting → Approved / Rejected (Receipts Supervisor) | Approved (revenue, end date) |
+| Quotations | Draft → Waiting → Approved / Rejected → Accepted / Declined | Accepted makes a Pending project (contract = total) |
 | Overtime | None / Waiting → Approved / Rejected | Approved (paid by payroll) |
 | Cash advances | Waiting → Active / Rejected; Active → Paid Off | Active (deducted by payroll) |
 | Payroll runs | Draft → Final | Final (payslips issued, cash advances taken) |
@@ -336,6 +337,19 @@ Deliveries are listed in the vault as read-only "Stock purchase" rows (Approved,
 ## 9.5 Reports
 
 Expense & Receipt Report (every approved receipt in the range, by project / overhead / all), Weekly and Monthly Expense Summary (project vs. overhead totals per week starting Monday, or per month). Approved receipts only, stock purchases excluded. Preview, print, PDF, Excel.
+
+## 9.6 Quotations
+
+Own page (`AppPage.Quotations`), seen by the Receipts department and Admins (view only). Employee and Supervisor prepare; the Receipts Supervisor approves; deletes need `CanDelete`.
+
+- Fields: client name (required), contact, email, project title (required), site, sector, quotation date, valid until (not before the quotation date), optional planned start, discount (₱, ≥ 0, not more than the subtotal), VAT switch, terms, internal notes, optional website inquiry.
+- Lines: at least one; description required, quantity > 0, unit, unit price ≥ 0. Amount = quantity × unit price.
+- Totals: subtotal = Σ amounts; taxable = subtotal − discount; VAT = 12% of taxable (when ticked), rounded to centavos; total = taxable + VAT.
+- Worked example: 1 lot × ₱45,000 + 28.5 sq.m × ₱1,850 + 1 lot × ₱68,000 = ₱165,725; less ₱5,000 = ₱160,725; VAT ₱19,287; total **₱180,012**.
+- States: Draft → (Send for Approval) Waiting → Approved / Rejected; Rejected → (saved) Draft; Approved → Accepted / Declined. Editing and deleting only while Draft or Rejected. Numbered QT-0001, QT-0002...
+- **Client Accepted** (Approved only) creates a project in the same save: name = project title, site = site location (or "(to follow)"), client, sector, contract price = total, start = planned start (or today), status Pending, not on the website; the quotation keeps the project link (database CHECK: Accepted ⇔ project set).
+- Printout (`QuotationPrint`): logo, company address/phone/email from the website contact details, client and project, the lines (continued on more pages), totals, terms, signature lines (prepared by, approved by, client conforme). "DRAFT" watermark until approved.
+- Every change is audited under Receipts (`quotations`).
 
 # 10. Website Admin
 

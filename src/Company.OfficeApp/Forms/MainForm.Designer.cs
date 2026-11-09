@@ -26,6 +26,7 @@ namespace Company.OfficeApp.Forms
             btnNavInventory = new Button();
             btnNavSubcontractors = new Button();
             btnNavReceipts = new Button();
+            btnNavQuotations = new Button();
 
             btnNavUsers = new Button();
             btnNavMyAccount = new Button();
@@ -51,6 +52,7 @@ namespace Company.OfficeApp.Forms
             pnlSidebar.Controls.Add(btnNavInventory);
             pnlSidebar.Controls.Add(btnNavSubcontractors);
             pnlSidebar.Controls.Add(btnNavReceipts);
+            pnlSidebar.Controls.Add(btnNavQuotations);
 
             pnlSidebar.Controls.Add(btnNavUsers);
             pnlSidebar.Controls.Add(btnNavMyAccount);
@@ -129,6 +131,16 @@ namespace Company.OfficeApp.Forms
             btnNavReceipts.TabIndex = 5;
             btnNavReceipts.Text = "Receipts";
             btnNavReceipts.TextAlign = ContentAlignment.MiddleLeft;
+            //
+            // btnNavQuotations
+            //
+            btnNavQuotations.Margin = new Padding(0, 0, 0, 6);
+            btnNavQuotations.Name = "btnNavQuotations";
+            btnNavQuotations.Font = new Font("Segoe UI", 10.5F);
+            btnNavQuotations.Size = new Size(218, 44);
+            btnNavQuotations.TabIndex = 6;
+            btnNavQuotations.Text = "Quotations";
+            btnNavQuotations.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnNavUsers
             //
@@ -247,6 +259,7 @@ namespace Company.OfficeApp.Forms
         private Button btnNavInventory;
         private Button btnNavSubcontractors;
         private Button btnNavReceipts;
+        private Button btnNavQuotations;
 
         private Button btnNavUsers;
         private Button btnNavMyAccount;

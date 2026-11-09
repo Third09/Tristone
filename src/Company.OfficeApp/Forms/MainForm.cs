@@ -38,6 +38,7 @@ public partial class MainForm : Form
             [AppPage.Inventory] = btnNavInventory,
             [AppPage.Subcontractors] = btnNavSubcontractors,
             [AppPage.Receipts] = btnNavReceipts,
+            [AppPage.Quotations] = btnNavQuotations,
 
             [AppPage.UserAccounts] = btnNavUsers,
             [AppPage.MyAccount] = btnNavMyAccount,
@@ -54,6 +55,7 @@ public partial class MainForm : Form
             (btnSignOut, ""),
         ], lblUserName, lblUserRole);
 
+        Theme.SetIcon(btnNavQuotations, "");   // a document
         lblPageTitle.UseMnemonic = false;   // show "HR & Payroll", not "HR Payroll"
         pnlSidebar.AutoScroll = true;   // HR's 7 sub-items can run past a short screen
         foreach (var (page, button) in navButtons)
@@ -86,6 +88,7 @@ public partial class MainForm : Form
             AppPage.Inventory => new InventoryPage(),
             AppPage.Subcontractors => new SubcontractorsPage(),
             AppPage.Receipts => new ReceiptsPage(),
+            AppPage.Quotations => new QuotationsPage(),
             _ => new PlaceholderPage(Access.Title(page)),   // real pages replace this as they're built
         };
 

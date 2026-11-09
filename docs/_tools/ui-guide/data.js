@@ -98,6 +98,7 @@ const shared = [
         ["Inventory button", "Button", "btnNavInventory", "Opens Inventory & Vendors. Admin, Inventory department."],
         ["Subcontractors button", "Button", "btnNavSubcontractors", "Opens Subcontractors. Admin, Subcontractor department."],
         ["Receipts button", "Button", "btnNavReceipts", "Opens Receipts. Admin, Receipts department."],
+        ["Quotations button", "Button", "btnNavQuotations", "Opens Quotations. Admin (view only), Receipts department."],
         ["Sub-item buttons", "Button", "btnNavTab...", "Made in code under the open page's button (HR & Payroll, Inventory, Subcontractors, Receipts): one per part of the page; the open one is light orange. Alert counts show here, e.g. Materials (2 low)."],
         ["User Accounts button", "Button", "btnNavUsers", "Opens User Accounts (create logins, unlock, reset passwords). Admin only."],
         ["My Account button", "Button", "btnNavMyAccount", "Opens My Account. Everyone."],
