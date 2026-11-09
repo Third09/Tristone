@@ -323,7 +323,7 @@ Every login sees its details. Admins can also `ChangeOwnPasswordAsync` and `SetS
 
 ## 9.1 Quotations (scripts 023-025)
 
-`Pages/QuotationsPage` (own sidebar page, `AppPage.Quotations`, icon E8A5; designer from `specs/QuotationsPage.py`). `Access.CanSee`: Receipts department + Admins; `Access.Department(page)` gives "Receipts" for Projects and Quotations in refusal messages. Audit department `Receipts`, table `quotations`. Script 024 reshaped it to the company's quotation paper.
+`Pages/QuotationsPage` (own sidebar page, `AppPage.Quotations`, icon E8A5; designer from `specs/QuotationsPage.py`). `Responsive.StretchAcross` widens the form under the list to the list's right edge on big screens (the bottom button row stays left). `Access.CanSee`: Receipts department + Admins; `Access.Department(page)` gives "Receipts" for Projects and Quotations in refusal messages. Audit department `Receipts`, table `quotations`. Script 024 reshaped it to the company's quotation paper.
 
 | Part | Service methods | Specifics |
 |---|---|---|

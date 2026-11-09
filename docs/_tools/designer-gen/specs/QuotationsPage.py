@@ -2,7 +2,7 @@
 NAMESPACE = "Company.OfficeApp.Pages"
 CLASS = "QuotationsPage"
 ROOMY = True   # spread out like the Figma pages
-SIZE = (960, 866)
+SIZE = (960, 916)
 LOAD_EVENT = "QuotationsPage_Load"
 MONEY = 'new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N2" }'
 DATE = {"Format": "DateTimePickerFormat.Short"}
@@ -46,37 +46,37 @@ CONTROLS = [
     ("ComboBox", "cboSector", 762, 404, 180, 23, DDL),
 
     ("Label", "lblScope", 12, 440, None, None, {"Text": T("Scope of Works (printed A, B, C...; price optional)")}),
-    ("DataGridView", "dgvScope", 12, 458, 600, 130, {}),
-    ("Button", "btnRemoveScope", 12, 594, 110, 28, {"Text": T("Remove Line")}),
+    ("DataGridView", "dgvScope", 12, 458, 600, 180, {}),
+    ("Button", "btnRemoveScope", 12, 644, 110, 28, {"Text": T("Remove Line")}),
     ("Label", "lblCosts", 630, 440, None, None, {"Text": T("Other costs (e.g. Labor Cost)")}),
-    ("DataGridView", "dgvLines", 630, 458, 312, 130, {}),
-    ("Button", "btnRemoveLine", 630, 594, 110, 28, {"Text": T("Remove Cost")}),
-    ("Label", "lblTotal", 750, 598, None, None, {"Text": T("Total Cost: -"), "Font": 'new Font("Segoe UI", 11F, FontStyle.Bold)'}),
+    ("DataGridView", "dgvLines", 630, 458, 312, 180, {}),
+    ("Button", "btnRemoveLine", 630, 644, 110, 28, {"Text": T("Remove Cost")}),
+    ("Label", "lblTotal", 750, 648, None, None, {"Text": T("Total Cost: -"), "Font": 'new Font("Segoe UI", 11F, FontStyle.Bold)'}),
 
-    ("Label", "lblPrintedNotes", 12, 632, None, None, {"Text": T("Notes (printed; one per line)")}),
-    ("TextBox", "txtPrintedNotes", 12, 650, 460, 70, dict(MULTI, MaxLength="2000")),
-    ("Label", "lblWorkDuration", 490, 632, None, None, {"Text": T("Work duration")}),
-    ("TextBox", "txtWorkDuration", 490, 650, 140, 23, {"MaxLength": "100", "PlaceholderText": T("e.g. 30 days")}),
-    ("Label", "lblPaymentTerms", 642, 632, None, None, {"Text": T("Terms of payment")}),
-    ("ComboBox", "cboPaymentTerms", 642, 650, 140, 23, {"DropDownStyle": "ComboBoxStyle.DropDown", "MaxLength": "150"}),
-    ("Label", "lblPayableTo", 794, 632, None, None, {"Text": T("Cash payable to")}),
-    ("TextBox", "txtPayableTo", 794, 650, 148, 23, {"MaxLength": "150"}),
-    ("Label", "lblPayableNumber", 490, 680, None, None, {"Text": T("Payable number (#)")}),
-    ("TextBox", "txtPayableNumber", 490, 698, 140, 23, {"MaxLength": "60"}),
-    ("Label", "lblSignatoryName", 642, 680, None, None, {"Text": T("Very truly yours (name)")}),
-    ("TextBox", "txtSignatoryName", 642, 698, 140, 23, {"MaxLength": "150"}),
-    ("Label", "lblSignatoryTitle", 794, 680, None, None, {"Text": T("Position"), "Font": 'new Font("Segoe UI", 9F)'}),
-    ("TextBox", "txtSignatoryTitle", 794, 698, 148, 23, {"MaxLength": "100"}),
-    ("Label", "lblInternalNotes", 12, 728, None, None, {"Text": T("Internal notes (not printed)")}),
-    ("TextBox", "txtInternalNotes", 12, 746, 930, 40, dict(MULTI, MaxLength="1000")),
-    ("Label", "lblQuotationMsg", 12, 794, None, None, {"MaximumSize": "new Size(930, 0)"}),
-    ("Button", "btnSaveQuotation", 12, 818, 90, 28, {"Text": T("Save")}),
-    ("Button", "btnCancelQuotation", 108, 818, 90, 28, {"Text": T("Cancel")}),
-    ("Button", "btnSubmitQuotation", 204, 818, 150, 28, {"Text": T("Send for Approval")}),
-    ("Button", "btnApproveQuotation", 360, 818, 90, 28, {"Text": T("Approve")}),
-    ("Button", "btnRejectQuotation", 456, 818, 90, 28, {"Text": T("Reject")}),
-    ("Button", "btnAcceptQuotation", 552, 818, 180, 28, {"Text": T("Client Accepted: Make Project")}),
-    ("Button", "btnDeclineQuotation", 738, 818, 120, 28, {"Text": T("Client Declined")}),
+    ("Label", "lblPrintedNotes", 12, 682, None, None, {"Text": T("Notes (printed; one per line)")}),
+    ("TextBox", "txtPrintedNotes", 12, 700, 460, 70, dict(MULTI, MaxLength="2000")),
+    ("Label", "lblWorkDuration", 490, 682, None, None, {"Text": T("Work duration")}),
+    ("TextBox", "txtWorkDuration", 490, 700, 140, 23, {"MaxLength": "100", "PlaceholderText": T("e.g. 30 days")}),
+    ("Label", "lblPaymentTerms", 642, 682, None, None, {"Text": T("Terms of payment")}),
+    ("ComboBox", "cboPaymentTerms", 642, 700, 140, 23, {"DropDownStyle": "ComboBoxStyle.DropDown", "MaxLength": "150"}),
+    ("Label", "lblPayableTo", 794, 682, None, None, {"Text": T("Cash payable to")}),
+    ("TextBox", "txtPayableTo", 794, 700, 148, 23, {"MaxLength": "150"}),
+    ("Label", "lblPayableNumber", 490, 730, None, None, {"Text": T("Payable number (#)")}),
+    ("TextBox", "txtPayableNumber", 490, 748, 140, 23, {"MaxLength": "60"}),
+    ("Label", "lblSignatoryName", 642, 730, None, None, {"Text": T("Very truly yours (name)")}),
+    ("TextBox", "txtSignatoryName", 642, 748, 140, 23, {"MaxLength": "150"}),
+    ("Label", "lblSignatoryTitle", 794, 730, None, None, {"Text": T("Position"), "Font": 'new Font("Segoe UI", 9F)'}),
+    ("TextBox", "txtSignatoryTitle", 794, 748, 148, 23, {"MaxLength": "100"}),
+    ("Label", "lblInternalNotes", 12, 778, None, None, {"Text": T("Internal notes (not printed)")}),
+    ("TextBox", "txtInternalNotes", 12, 796, 930, 40, dict(MULTI, MaxLength="1000")),
+    ("Label", "lblQuotationMsg", 12, 844, None, None, {"MaximumSize": "new Size(930, 0)"}),
+    ("Button", "btnSaveQuotation", 12, 868, 90, 28, {"Text": T("Save")}),
+    ("Button", "btnCancelQuotation", 108, 868, 90, 28, {"Text": T("Cancel")}),
+    ("Button", "btnSubmitQuotation", 204, 868, 150, 28, {"Text": T("Send for Approval")}),
+    ("Button", "btnApproveQuotation", 360, 868, 90, 28, {"Text": T("Approve")}),
+    ("Button", "btnRejectQuotation", 456, 868, 90, 28, {"Text": T("Reject")}),
+    ("Button", "btnAcceptQuotation", 552, 868, 180, 28, {"Text": T("Client Accepted: Make Project")}),
+    ("Button", "btnDeclineQuotation", 738, 868, 120, 28, {"Text": T("Client Declined")}),
 ]
 
 GRID_COLUMNS = {

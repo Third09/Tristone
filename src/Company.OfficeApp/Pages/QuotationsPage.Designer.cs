@@ -393,14 +393,14 @@ namespace Company.OfficeApp.Pages
             dgvScope.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvScope.Location = new Point(38, 621);
             dgvScope.Name = "dgvScope";
-            dgvScope.Size = new Size(690, 172);
+            dgvScope.Size = new Size(690, 238);
             dgvScope.TabIndex = 19;
             dgvScope.CellEndEdit += Lines_Changed;
             dgvScope.RowsRemoved += Lines_RowsRemoved;
             // 
             // btnRemoveScope
             // 
-            btnRemoveScope.Location = new Point(38, 800);
+            btnRemoveScope.Location = new Point(38, 866);
             btnRemoveScope.Name = "btnRemoveScope";
             btnRemoveScope.Size = new Size(126, 36);
             btnRemoveScope.Text = "Remove Line";
@@ -426,14 +426,14 @@ namespace Company.OfficeApp.Pages
             dgvLines.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvLines.Location = new Point(748, 621);
             dgvLines.Name = "dgvLines";
-            dgvLines.Size = new Size(359, 172);
+            dgvLines.Size = new Size(359, 238);
             dgvLines.TabIndex = 21;
             dgvLines.CellEndEdit += Lines_Changed;
             dgvLines.RowsRemoved += Lines_RowsRemoved;
             // 
             // btnRemoveLine
             // 
-            btnRemoveLine.Location = new Point(748, 800);
+            btnRemoveLine.Location = new Point(748, 866);
             btnRemoveLine.Name = "btnRemoveLine";
             btnRemoveLine.Size = new Size(126, 36);
             btnRemoveLine.Text = "Remove Cost";
@@ -443,7 +443,7 @@ namespace Company.OfficeApp.Pages
             // lblTotal
             // 
             lblTotal.AutoSize = true;
-            lblTotal.Location = new Point(886, 805);
+            lblTotal.Location = new Point(886, 871);
             lblTotal.Name = "lblTotal";
             lblTotal.Text = "Total Cost: -";
             lblTotal.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
@@ -451,13 +451,13 @@ namespace Company.OfficeApp.Pages
             // lblPrintedNotes
             // 
             lblPrintedNotes.AutoSize = true;
-            lblPrintedNotes.Location = new Point(38, 850);
+            lblPrintedNotes.Location = new Point(38, 916);
             lblPrintedNotes.Name = "lblPrintedNotes";
             lblPrintedNotes.Text = "Notes (printed; one per line)";
             // 
             // txtPrintedNotes
             // 
-            txtPrintedNotes.Location = new Point(38, 874);
+            txtPrintedNotes.Location = new Point(38, 940);
             txtPrintedNotes.Name = "txtPrintedNotes";
             txtPrintedNotes.Size = new Size(529, 92);
             txtPrintedNotes.Multiline = true;
@@ -468,13 +468,13 @@ namespace Company.OfficeApp.Pages
             // lblWorkDuration
             // 
             lblWorkDuration.AutoSize = true;
-            lblWorkDuration.Location = new Point(588, 850);
+            lblWorkDuration.Location = new Point(588, 916);
             lblWorkDuration.Name = "lblWorkDuration";
             lblWorkDuration.Text = "Work duration";
             // 
             // txtWorkDuration
             // 
-            txtWorkDuration.Location = new Point(588, 874);
+            txtWorkDuration.Location = new Point(588, 940);
             txtWorkDuration.Name = "txtWorkDuration";
             txtWorkDuration.Size = new Size(161, 23);
             txtWorkDuration.MaxLength = 100;
@@ -484,13 +484,13 @@ namespace Company.OfficeApp.Pages
             // lblPaymentTerms
             // 
             lblPaymentTerms.AutoSize = true;
-            lblPaymentTerms.Location = new Point(762, 850);
+            lblPaymentTerms.Location = new Point(762, 916);
             lblPaymentTerms.Name = "lblPaymentTerms";
             lblPaymentTerms.Text = "Terms of payment";
             // 
             // cboPaymentTerms
             // 
-            cboPaymentTerms.Location = new Point(762, 874);
+            cboPaymentTerms.Location = new Point(762, 940);
             cboPaymentTerms.Name = "cboPaymentTerms";
             cboPaymentTerms.Size = new Size(161, 23);
             cboPaymentTerms.DropDownStyle = ComboBoxStyle.DropDown;
@@ -500,13 +500,13 @@ namespace Company.OfficeApp.Pages
             // lblPayableTo
             // 
             lblPayableTo.AutoSize = true;
-            lblPayableTo.Location = new Point(937, 850);
+            lblPayableTo.Location = new Point(937, 916);
             lblPayableTo.Name = "lblPayableTo";
             lblPayableTo.Text = "Cash payable to";
             // 
             // txtPayableTo
             // 
-            txtPayableTo.Location = new Point(937, 874);
+            txtPayableTo.Location = new Point(937, 940);
             txtPayableTo.Name = "txtPayableTo";
             txtPayableTo.Size = new Size(170, 23);
             txtPayableTo.MaxLength = 150;
@@ -515,13 +515,13 @@ namespace Company.OfficeApp.Pages
             // lblPayableNumber
             // 
             lblPayableNumber.AutoSize = true;
-            lblPayableNumber.Location = new Point(588, 914);
+            lblPayableNumber.Location = new Point(588, 980);
             lblPayableNumber.Name = "lblPayableNumber";
             lblPayableNumber.Text = "Payable number (#)";
             // 
             // txtPayableNumber
             // 
-            txtPayableNumber.Location = new Point(588, 937);
+            txtPayableNumber.Location = new Point(588, 1003);
             txtPayableNumber.Name = "txtPayableNumber";
             txtPayableNumber.Size = new Size(161, 23);
             txtPayableNumber.MaxLength = 60;
@@ -530,13 +530,13 @@ namespace Company.OfficeApp.Pages
             // lblSignatoryName
             // 
             lblSignatoryName.AutoSize = true;
-            lblSignatoryName.Location = new Point(762, 914);
+            lblSignatoryName.Location = new Point(762, 980);
             lblSignatoryName.Name = "lblSignatoryName";
             lblSignatoryName.Text = "Very truly yours (name)";
             // 
             // txtSignatoryName
             // 
-            txtSignatoryName.Location = new Point(762, 937);
+            txtSignatoryName.Location = new Point(762, 1003);
             txtSignatoryName.Name = "txtSignatoryName";
             txtSignatoryName.Size = new Size(161, 23);
             txtSignatoryName.MaxLength = 150;
@@ -545,14 +545,14 @@ namespace Company.OfficeApp.Pages
             // lblSignatoryTitle
             // 
             lblSignatoryTitle.AutoSize = true;
-            lblSignatoryTitle.Location = new Point(937, 914);
+            lblSignatoryTitle.Location = new Point(937, 980);
             lblSignatoryTitle.Name = "lblSignatoryTitle";
             lblSignatoryTitle.Text = "Position";
             lblSignatoryTitle.Font = new Font("Segoe UI", 9F);
             // 
             // txtSignatoryTitle
             // 
-            txtSignatoryTitle.Location = new Point(937, 937);
+            txtSignatoryTitle.Location = new Point(937, 1003);
             txtSignatoryTitle.Name = "txtSignatoryTitle";
             txtSignatoryTitle.Size = new Size(170, 23);
             txtSignatoryTitle.MaxLength = 100;
@@ -561,13 +561,13 @@ namespace Company.OfficeApp.Pages
             // lblInternalNotes
             // 
             lblInternalNotes.AutoSize = true;
-            lblInternalNotes.Location = new Point(38, 977);
+            lblInternalNotes.Location = new Point(38, 1043);
             lblInternalNotes.Name = "lblInternalNotes";
             lblInternalNotes.Text = "Internal notes (not printed)";
             // 
             // txtInternalNotes
             // 
-            txtInternalNotes.Location = new Point(38, 1001);
+            txtInternalNotes.Location = new Point(38, 1067);
             txtInternalNotes.Name = "txtInternalNotes";
             txtInternalNotes.Size = new Size(1070, 53);
             txtInternalNotes.Multiline = true;
@@ -578,13 +578,13 @@ namespace Company.OfficeApp.Pages
             // lblQuotationMsg
             // 
             lblQuotationMsg.AutoSize = true;
-            lblQuotationMsg.Location = new Point(38, 1064);
+            lblQuotationMsg.Location = new Point(38, 1130);
             lblQuotationMsg.Name = "lblQuotationMsg";
             lblQuotationMsg.MaximumSize = new Size(930, 0);
             // 
             // btnSaveQuotation
             // 
-            btnSaveQuotation.Location = new Point(38, 1096);
+            btnSaveQuotation.Location = new Point(38, 1162);
             btnSaveQuotation.Name = "btnSaveQuotation";
             btnSaveQuotation.Size = new Size(103, 36);
             btnSaveQuotation.Text = "Save";
@@ -593,7 +593,7 @@ namespace Company.OfficeApp.Pages
             // 
             // btnCancelQuotation
             // 
-            btnCancelQuotation.Location = new Point(148, 1096);
+            btnCancelQuotation.Location = new Point(148, 1162);
             btnCancelQuotation.Name = "btnCancelQuotation";
             btnCancelQuotation.Size = new Size(103, 36);
             btnCancelQuotation.Text = "Cancel";
@@ -602,7 +602,7 @@ namespace Company.OfficeApp.Pages
             // 
             // btnSubmitQuotation
             // 
-            btnSubmitQuotation.Location = new Point(259, 1096);
+            btnSubmitQuotation.Location = new Point(259, 1162);
             btnSubmitQuotation.Name = "btnSubmitQuotation";
             btnSubmitQuotation.Size = new Size(172, 36);
             btnSubmitQuotation.Text = "Send for Approval";
@@ -611,7 +611,7 @@ namespace Company.OfficeApp.Pages
             // 
             // btnApproveQuotation
             // 
-            btnApproveQuotation.Location = new Point(438, 1096);
+            btnApproveQuotation.Location = new Point(438, 1162);
             btnApproveQuotation.Name = "btnApproveQuotation";
             btnApproveQuotation.Size = new Size(103, 36);
             btnApproveQuotation.Text = "Approve";
@@ -620,7 +620,7 @@ namespace Company.OfficeApp.Pages
             // 
             // btnRejectQuotation
             // 
-            btnRejectQuotation.Location = new Point(548, 1096);
+            btnRejectQuotation.Location = new Point(548, 1162);
             btnRejectQuotation.Name = "btnRejectQuotation";
             btnRejectQuotation.Size = new Size(103, 36);
             btnRejectQuotation.Text = "Reject";
@@ -629,7 +629,7 @@ namespace Company.OfficeApp.Pages
             // 
             // btnAcceptQuotation
             // 
-            btnAcceptQuotation.Location = new Point(659, 1096);
+            btnAcceptQuotation.Location = new Point(659, 1162);
             btnAcceptQuotation.Name = "btnAcceptQuotation";
             btnAcceptQuotation.Size = new Size(207, 36);
             btnAcceptQuotation.Text = "Client Accepted: Make Project";
@@ -638,7 +638,7 @@ namespace Company.OfficeApp.Pages
             // 
             // btnDeclineQuotation
             // 
-            btnDeclineQuotation.Location = new Point(873, 1096);
+            btnDeclineQuotation.Location = new Point(873, 1162);
             btnDeclineQuotation.Name = "btnDeclineQuotation";
             btnDeclineQuotation.Size = new Size(138, 36);
             btnDeclineQuotation.Text = "Client Declined";
@@ -803,7 +803,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnAcceptQuotation);
             Controls.Add(btnDeclineQuotation);
             Name = "QuotationsPage";
-            Size = new Size(1152, 1175);
+            Size = new Size(1152, 1241);
             Load += QuotationsPage_Load;
             ((System.ComponentModel.ISupportInitialize)dgvQuotations).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvScope).EndInit();

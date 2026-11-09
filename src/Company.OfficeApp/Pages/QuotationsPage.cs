@@ -70,6 +70,9 @@ public partial class QuotationsPage : UserControl
             return;
         }
         Responsive.FitGrid(this, dgvQuotations);
+        // the form under the list reaches the list's right edge (the bottom row of buttons stays together on the left)
+        Responsive.StretchAcross(this, dgvQuotations, Controls.Cast<Control>().Where(c =>
+            c.Top >= lblClientName.Top && c != lblQuotationMsg && !(c is Button && c.Top >= btnSaveQuotation.Top - 2)));
         Responsive.OnTypingPause(txtQuotationSearch, () => LoadAsync());
         Access.LockButtons(this, AppPage.Quotations);
         ShowNothingSelected();

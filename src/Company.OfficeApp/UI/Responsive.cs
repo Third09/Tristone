@@ -36,6 +36,34 @@ public static class Responsive
     }
 
     /// <summary>
+    /// Spreads a form across the page: when <paramref name="widthOf"/> (usually the list table, made wider by
+    /// <see cref="FitGrid"/>) is wider than the design, the given controls keep their places in proportion and the
+    /// boxes, tables and dropdowns grow wider, so the form reaches the same right edge. Labels and buttons keep
+    /// their size and only move. Nothing shrinks below the design size. Call after <see cref="FitGrid"/>.
+    /// </summary>
+    public static void StretchAcross(ScrollableControl page, Control widthOf, IEnumerable<Control> controls)
+    {
+        var design = controls.Select(c => (Control: c, Left: c.Left, Width: c.Width)).ToList();
+        if (design.Count == 0) return;
+        int left = design.Min(d => d.Left);
+        int designRight = design.Where(d => d.Control is not (Label or Button)).Select(d => d.Left + d.Width).DefaultIfEmpty(left + 1).Max();
+
+        void Apply()
+        {
+            float f = Math.Max(1f, (float)(widthOf.Right - page.AutoScrollPosition.X - left) / (designRight - left));
+            int scrollX = page.AutoScrollPosition.X;
+            foreach (var (c, l, w) in design)
+            {
+                c.Left = left + (int)Math.Round((l - left) * f) + scrollX;
+                if (c is not (Label or Button)) c.Width = (int)Math.Round(w * f);
+            }
+        }
+
+        page.Resize += (_, _) => Apply();
+        Apply();
+    }
+
+    /// <summary>
     /// Runs <paramref name="action"/> once the person stops typing for a moment, instead of on every key.
     /// Keeps search boxes smooth: "santos" searches once, not six times.
     /// </summary>
