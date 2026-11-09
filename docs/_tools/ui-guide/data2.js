@@ -941,11 +941,11 @@ const receipts = [
         ["Sector dropdown", "ComboBox", "cboSector", "Residential, Commercial, Industrial, Repairs / Renovations."],
       ]},
       { name: "Scope of Works and costs", rows: [
-        ["Scope of Works table", "DataGridView (editable)", "dgvScope", "Columns: Work, Size / Details. Printed A, B, C... A new row appears as you type."],
+        ["Scope of Works table", "DataGridView (editable)", "dgvScope", "Columns: Work, Size / Details, Price (optional). Printed A, B, C... A new row appears as you type."],
         ["Remove Line button", "Button", "btnRemoveScope", "Removes the selected Scope of Works row."],
-        ["Costs table", "DataGridView (editable)", "dgvLines", "Columns: Cost, Amount (e.g. Labor Cost 25,000)."],
+        ["Other costs table", "DataGridView (editable)", "dgvLines", "Columns: Description, Amount (e.g. Labor Cost 25,000)."],
         ["Remove Cost button", "Button", "btnRemoveLine", "Removes the selected cost row."],
-        ["Total", "Label", "lblTotal", "Total Cost = sum of the amounts; updates as you type."],
+        ["Total", "Label", "lblTotal", "Total Cost = work prices + other costs; updates as you type."],
       ]},
       { name: "Notes, payment and signature", rows: [
         ["Notes box", "TextBox (Multiline = True)", "txtPrintedNotes", "Printed as bullets, one per line."],

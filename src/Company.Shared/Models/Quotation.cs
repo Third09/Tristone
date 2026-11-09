@@ -65,6 +65,8 @@ public class QuotationScopeItem
     [Column("line_no")] public int LineNo { get; set; }
     [Column("description")] public string Description { get; set; } = "";
     [Column("details")] public string? Details { get; set; }
+    /// <summary>Optional price for this work (script 025); added to the Total Cost.</summary>
+    [Column("price")] public decimal? Price { get; set; }
 }
 
 /// <summary>

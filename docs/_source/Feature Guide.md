@@ -343,9 +343,9 @@ Expense & Receipt Report (every approved receipt in the range, by project / over
 Own page (`AppPage.Quotations`), seen by the Receipts department and Admins (view only). Employee and Supervisor prepare; the Receipts Supervisor approves; deletes need `CanDelete`. The printout follows the company's own quotation paper (owner's "new quote.docx", 2026-11-09).
 
 - Fields: customer (required), address, attention, contact and email (not printed), project name (required), site, sector, date, valid until (not printed; not before the date), optional planned start, printed notes (one per line), work duration, terms of payment, cash payable to + number, signatory name + position, internal notes, optional website inquiry.
-- Scope of Works: at least one line; work required, size/details optional; printed A, B, C... in order.
-- Costs: at least one line; description required, amount ≥ 0. **Total Cost** = Σ amounts (no discount or VAT on the company paper).
-- Worked example (the company paper): Tools and Equipment ₱5,000 + Labor Cost ₱25,000 = **Total Cost 30,000 pesos**.
+- Scope of Works: at least one line; work required, size/details and price optional (price ≥ 0, script 025); printed A, B, C... in order, prices in a right-hand column.
+- Other costs: description required, amount ≥ 0. At least one work price or one cost line. **Total Cost** = Σ work prices + Σ cost amounts (no discount or VAT on the company paper).
+- Worked example: Excavation ₱8,000 + Masonry ₱12,000 + Tools and Equipment ₱5,000 + Labor Cost ₱25,000 = **Total Cost 50,000 pesos** (the company paper itself: ₱5,000 + ₱25,000 = 30,000, no work prices).
 - New quotations start with the newest quotation's notes, terms of payment, payable-to and signatory (the company paper's own values for the very first).
 - States: Draft → (Send for Approval) Waiting → Approved / Rejected; Rejected → (saved) Draft; Approved → Accepted / Declined. Editing and deleting only while Draft or Rejected. Numbered QT-0001, QT-0002...
 - **Client Accepted** (Approved only) creates a project in the same step: name = project name, site = site location (else the address, else "(to follow)"), client, sector, contract price = Total Cost, start = planned start (or today), status Pending, not on the website; the quotation keeps the project link (database CHECK: Accepted ⇔ project set).

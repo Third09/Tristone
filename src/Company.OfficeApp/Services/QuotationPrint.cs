@@ -87,7 +87,12 @@ public sealed class QuotationPrint : IDisposable
 
         // ----- Scope of Works -----
         list.Add(new Block(lineH, (gr, y) => gr.DrawString("Scope of Works:", text, black, x, y)));
-        float workW = col2 - itemX - 10, detailsW = x + w - col2;
+        // When some work has a price, a price column goes on the right (the cost amounts line up under it)
+        // and the sizes start a bit further left so they keep one line.
+        bool priced = d.Scope.Any(s => s.Price != null);
+        float sizeX = priced ? x + w * 0.52f : col2;
+        float workW = sizeX - itemX - 10, detailsW = x + w - sizeX - (priced ? w * 0.15f : 0);
+        var farRight = new StringFormat { Alignment = StringAlignment.Far };
         for (int n = 0; n < d.Scope.Count; n++)
         {
             var s = d.Scope[n];
@@ -97,7 +102,8 @@ public sealed class QuotationPrint : IDisposable
             {
                 gr.DrawString(letter, text, black, letterX, y);
                 gr.DrawString(s.Work, text, black, new RectangleF(itemX, y, workW, h + 2));
-                if (s.Details != null) gr.DrawString(s.Details, text, black, new RectangleF(col2, y, detailsW, h + 2));
+                if (s.Details != null) gr.DrawString(s.Details, text, black, new RectangleF(sizeX, y, detailsW, h + 2));
+                if (s.Price is { } p) gr.DrawString(Peso(p), text, black, x + w, y, farRight);
             }));
         }
         Gap(lineH * 0.8f);
@@ -109,7 +115,8 @@ public sealed class QuotationPrint : IDisposable
             list.Add(new Block(h, (gr, y) =>
             {
                 gr.DrawString(l.Description + " -", text, black, new RectangleF(itemX, y, workW, h + 2));
-                gr.DrawString(Peso(l.Amount), text, black, col2, y);
+                if (priced) gr.DrawString(Peso(l.Amount), text, black, x + w, y, farRight);
+                else gr.DrawString(Peso(l.Amount), text, black, col2, y);
             }));
         }
         Gap(lineH * 0.9f);

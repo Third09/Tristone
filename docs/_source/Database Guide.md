@@ -69,6 +69,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 022_app_role | the app's limited login `tristone_app` (NOLOGIN until the office server enables it) and its rights |
 | 023_quotations | `quotations` (client price offers, QT-0001; status Draft / Waiting / Approved / Rejected / Accepted / Declined; CHECK Accepted ⇔ `project_id` set; `valid_until >= quote_date`) and `quotation_items` (lines, deleted with their quotation) |
 | 024_quotation_template | quotations follow the company paper: adds `client_address`, `attention`, `work_duration`, `payment_terms`, `payable_to`, `payable_number`, `signatory_name`, `signatory_title`; renames `terms` → `printed_notes`, `notes` → `internal_notes`; drops `discount`, `vat_applies`; `quotation_items` becomes description + `amount` (quantity, unit, unit price dropped); new `quotation_scope` (Scope of Works lines) |
+| 025_quotation_work_price | `quotation_scope.price` (optional, ≥ 0): a price per Scope of Works line, added to the Total Cost |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions
@@ -272,7 +273,7 @@ payroll_runs (Draft) --Finalize--> payslips (final) + cash_advance_deductions + 
 - A receipt counts as an expense only when `status = 'Approved'`; Project receipts go to the project, Overhead ones to the Dashboard. `no_receipt` rows are listed in Needs Review; attaching a receipt later clears the flag and keeps the decision.
 - **Stock purchases** are not copied into `receipts`: the Receipt Vault unions `deliveries` into its list (marked "Stock purchase"), so they're stored once and never counted as project expenses (materials count when used).
 - **Change orders:** approving (Receipts Supervisor) adds `cost_change` to revenue through `ProjectFinance` and moves `projects.target_end_date` by `days_change` in the same save.
-- **Quotations:** the total is not stored; it is the sum of `quotation_items.amount`, worked out every time. `quotation_scope` holds the Scope of Works lines (printed A, B, C... by `line_no`). A quotation is not revenue: only when the client accepts does it create a `projects` row (Pending, contract price = total) in the same transaction and set `project_id`. Scope and cost lines are replaced as a set on every save; deleting a quotation deletes both (ON DELETE CASCADE).
+- **Quotations:** the total is not stored; it is Σ `quotation_scope.price` + Σ `quotation_items.amount`, worked out every time. `quotation_scope` holds the Scope of Works lines (printed A, B, C... by `line_no`). A quotation is not revenue: only when the client accepts does it create a `projects` row (Pending, contract price = total) in the same transaction and set `project_id`. Scope and cost lines are replaced as a set on every save; deleting a quotation deletes both (ON DELETE CASCADE).
 
 ## 4.9 Website and settings
 
@@ -1217,7 +1218,7 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 47 tables
 - **Check** `change_orders_status_check`: `CHECK ((status IN ('Waiting', 'Approved', 'Rejected')))`
 - **Index** `ix_change_orders_project`: `project_id WHERE (status = 'Approved')`
 
-## Quotations (023, 024)
+## Quotations (023-025)
 
 ### quotations
 
@@ -1289,10 +1290,12 @@ Generated from the live database by `docs/_tools/dbref/gen_schema.py`. 47 tables
 | `line_no` | int |  |  |
 | `description` | varchar(300) |  |  |
 | `details` | varchar(150) | yes |  |
+| `price` | numeric(14,2) | yes |  |
 
 - **Primary key** `quotation_scope_pkey`: `PRIMARY KEY scope_id`
 - **Unique** `quotation_scope_quotation_id_line_no_key`: `UNIQUE (quotation_id, line_no)`
 - **Foreign key** `quotation_scope_quotation_id_fkey`: `FOREIGN KEY quotation_id REFERENCES quotations(quotation_id) ON DELETE CASCADE`
+- **Check** `chk_quotation_scope_price`: `CHECK (((price IS NULL) OR (price >= 0)))`
 
 ## Website (010, 014)
 

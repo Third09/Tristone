@@ -8,8 +8,8 @@ namespace Company.OfficeApp.Services;
 public record QuotationRow(int QuotationId, string QuoteNo, DateOnly QuoteDate, string ClientName, string ProjectTitle,
                            decimal Total, DateOnly ValidUntil, string Status);
 
-/// <summary>One "Scope of Works" line: the work and its size or measurement (printed A, B, C...).</summary>
-public record QuotationScopeLine(string Work, string? Details);
+/// <summary>One "Scope of Works" line: the work, its size or measurement, and an optional price (printed A, B, C...).</summary>
+public record QuotationScopeLine(string Work, string? Details, decimal? Price = null);
 
 /// <summary>One cost line (e.g. "Labor Cost", 25,000).</summary>
 public record QuotationLine(string Description, decimal Amount);
@@ -48,7 +48,9 @@ public static class QuotationService
         "Any permits, supply of electricity and water at the job site shall be shouldered by the customer.",
         "Weekly Payroll", "ADRIAN F. MORILLA", "09691806929", "ADRIAN F. MORILLA", "Contractor");
 
-    public static decimal Total(IEnumerable<QuotationLine> lines) => lines.Sum(l => l.Amount);
+    /// <summary>Total Cost = the works' prices + the cost lines.</summary>
+    public static decimal Total(IEnumerable<QuotationScopeLine> scope, IEnumerable<QuotationLine> lines) =>
+        scope.Sum(s => s.Price ?? 0) + lines.Sum(l => l.Amount);
 
     public static async Task<List<QuotationRow>> ListAsync(string? status, string search)
     {
@@ -65,8 +67,10 @@ public static class QuotationService
         var ids = rows.Select(r => r.QuotationId).ToList();
         var totals = await db.QuotationItems.AsNoTracking().Where(i => ids.Contains(i.QuotationId))
             .GroupBy(i => i.QuotationId).Select(g => new { g.Key, Sum = g.Sum(i => i.Amount) }).ToDictionaryAsync(x => x.Key, x => x.Sum);
+        var prices = await db.QuotationScope.AsNoTracking().Where(i => ids.Contains(i.QuotationId) && i.Price != null)
+            .GroupBy(i => i.QuotationId).Select(g => new { g.Key, Sum = g.Sum(i => i.Price!.Value) }).ToDictionaryAsync(x => x.Key, x => x.Sum);
         return rows.Select(r => new QuotationRow(r.QuotationId, r.QuoteNo, r.QuoteDate, r.ClientName, r.ProjectTitle,
-            totals.GetValueOrDefault(r.QuotationId), r.ValidUntil, r.Status)).ToList();
+            totals.GetValueOrDefault(r.QuotationId) + prices.GetValueOrDefault(r.QuotationId), r.ValidUntil, r.Status)).ToList();
     }
 
     public static async Task<(Quotation Quotation, List<QuotationScopeLine> Scope, List<QuotationLine> Lines)?> GetAsync(int id)
@@ -75,7 +79,7 @@ public static class QuotationService
         var q = await db.Quotations.AsNoTracking().FirstOrDefaultAsync(x => x.QuotationId == id);
         if (q == null) return null;
         var scope = await db.QuotationScope.AsNoTracking().Where(i => i.QuotationId == id).OrderBy(i => i.LineNo)
-            .Select(i => new QuotationScopeLine(i.Description, i.Details)).ToListAsync();
+            .Select(i => new QuotationScopeLine(i.Description, i.Details, i.Price)).ToListAsync();
         var lines = await db.QuotationItems.AsNoTracking().Where(i => i.QuotationId == id).OrderBy(i => i.LineNo)
             .Select(i => new QuotationLine(i.Description, i.Amount)).ToListAsync();
         return (q, scope, lines);
@@ -123,8 +127,11 @@ public static class QuotationService
         if (i.ValidUntil < i.QuoteDate) return "\"Valid until\" can't be before the quotation date.";
         if (i.Scope.Count == 0) return "Add at least one line to the Scope of Works.";
         for (int n = 0; n < i.Scope.Count; n++)
-            if (string.IsNullOrWhiteSpace(i.Scope[n].Work)) return $"Scope of Works line {(char)('A' + n)}: type the work.";
-        if (i.Lines.Count == 0) return "Add at least one cost line (e.g. Labor Cost and its amount).";
+        {
+            if (string.IsNullOrWhiteSpace(i.Scope[n].Work)) return $"Scope of Works line {(char)('A' + n % 26)}: type the work.";
+            if (i.Scope[n].Price < 0) return $"Scope of Works line {(char)('A' + n % 26)}: the price can't be negative.";
+        }
+        if (i.Lines.Count == 0 && i.Scope.All(s => s.Price == null)) return "Add a price to the works or at least one cost line (e.g. Labor Cost and its amount).";
         for (int n = 0; n < i.Lines.Count; n++)
         {
             if (string.IsNullOrWhiteSpace(i.Lines[n].Description)) return $"Cost line {n + 1}: type what the cost is for.";
@@ -158,7 +165,7 @@ public static class QuotationService
         if (q.Status is not (QuotationStatuses.Draft or QuotationStatuses.Rejected)) return $"This quotation is {q.Status}, so it can't be changed.";
         var oldLines = await db.QuotationItems.Where(x => x.QuotationId == id).OrderBy(x => x.LineNo).ToListAsync();
         var oldScope = await db.QuotationScope.Where(x => x.QuotationId == id).OrderBy(x => x.LineNo).ToListAsync();
-        var before = Snapshot(q, oldScope.Select(s => new QuotationScopeLine(s.Description, s.Details)).ToList(),
+        var before = Snapshot(q, oldScope.Select(s => new QuotationScopeLine(s.Description, s.Details, s.Price)).ToList(),
                               oldLines.Select(l => new QuotationLine(l.Description, l.Amount)).ToList());
         Apply(q, i);
         q.Status = QuotationStatuses.Draft;
@@ -191,7 +198,7 @@ public static class QuotationService
             db.QuotationScope.Add(new QuotationScopeItem
             {
                 QuotationId = quotationId, LineNo = n + 1, Description = i.Scope[n].Work.Trim(),
-                Details = string.IsNullOrWhiteSpace(i.Scope[n].Details) ? null : i.Scope[n].Details!.Trim(),
+                Details = string.IsNullOrWhiteSpace(i.Scope[n].Details) ? null : i.Scope[n].Details!.Trim(), Price = i.Scope[n].Price,
             });
         for (int n = 0; n < i.Lines.Count; n++)
             db.QuotationItems.Add(new QuotationItem
@@ -205,7 +212,7 @@ public static class QuotationService
         client = q.ClientName, address = q.ClientAddress, attention = q.Attention, project = q.ProjectTitle, site = q.SiteLocation,
         sector = q.Sector, quote_date = q.QuoteDate, valid_until = q.ValidUntil, work_duration = q.WorkDuration,
         payment_terms = q.PaymentTerms, payable_to = q.PayableTo, signatory = q.SignatoryName,
-        scope = scope.Count, cost_lines = lines.Count, total = Total(lines), status = q.Status,
+        scope = scope.Count, cost_lines = lines.Count, total = Total(scope, lines), status = q.Status,
     };
 
     async static Task<string?> MoveAsync(int id, string from, string to, Func<string?> check, bool decide)
@@ -245,11 +252,11 @@ public static class QuotationService
     {
         if (Access.RequireApprover(Dept) is { } denied) return (null, denied);
         if (await GetAsync(id) is not { } found) return (null, "This quotation no longer exists.");
-        var (q, _, lines) = found;
+        var (q, scope, lines) = found;
         if (q.Status != QuotationStatuses.Approved) return (null, $"Only an Approved quotation can be accepted (this one is {q.Status}).");
         var start = q.PlannedStart ?? DateOnly.FromDateTime(DateTime.Today);
         var (projectId, error) = await ProjectService.CreateAsync(new ProjectInput(q.ProjectTitle, q.SiteLocation ?? q.ClientAddress ?? "(to follow)",
-            q.ClientName, q.Sector, Total(lines), start, null, ProjectStatuses.Pending, false));
+            q.ClientName, q.Sector, Total(scope, lines), start, null, ProjectStatuses.Pending, false));
         if (projectId == null) return (null, error);
         using var db = Db.Open();
         var row = await db.Quotations.FirstAsync(x => x.QuotationId == id);
@@ -281,7 +288,7 @@ public static class QuotationService
     public static async Task<QuotationPrintData> PrintDataAsync(int id)
     {
         var (q, scope, lines) = (await GetAsync(id))!.Value;
-        return new QuotationPrintData(q, scope, lines, Total(lines));
+        return new QuotationPrintData(q, scope, lines, Total(scope, lines));
     }
 }
 

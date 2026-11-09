@@ -45,10 +45,10 @@ CONTROLS = [
     ("Label", "lblSector", 762, 386, None, None, {"Text": T("Sector")}),
     ("ComboBox", "cboSector", 762, 404, 180, 23, DDL),
 
-    ("Label", "lblScope", 12, 440, None, None, {"Text": T("Scope of Works (printed A, B, C...; type in the table)")}),
+    ("Label", "lblScope", 12, 440, None, None, {"Text": T("Scope of Works (printed A, B, C...; price optional)")}),
     ("DataGridView", "dgvScope", 12, 458, 600, 130, {}),
     ("Button", "btnRemoveScope", 12, 594, 110, 28, {"Text": T("Remove Line")}),
-    ("Label", "lblCosts", 630, 440, None, None, {"Text": T("Costs (e.g. Labor Cost)")}),
+    ("Label", "lblCosts", 630, 440, None, None, {"Text": T("Other costs (e.g. Labor Cost)")}),
     ("DataGridView", "dgvLines", 630, 458, 312, 130, {}),
     ("Button", "btnRemoveLine", 630, 594, 110, 28, {"Text": T("Remove Cost")}),
     ("Label", "lblTotal", 750, 598, None, None, {"Text": T("Total Cost: -"), "Font": 'new Font("Segoe UI", 11F, FontStyle.Bold)'}),
@@ -90,11 +90,12 @@ GRID_COLUMNS = {
         (TB, "colStatus", "Status", "Status", {"FillWeight": "50"}),
     ],
     "dgvScope": [
-        (TB, "colWork", "Work", "Work", {"FillWeight": "180"}),
-        (TB, "colDetails", "Details", "Size / Details", {"FillWeight": "120"}),
+        (TB, "colWork", "Work", "Work", {"FillWeight": "170"}),
+        (TB, "colDetails", "Details", "Size / Details", {"FillWeight": "110"}),
+        (TB, "colPrice", "Price", "Price", {"FillWeight": "70", "DefaultCellStyle": MONEY}),
     ],
     "dgvLines": [
-        (TB, "colItem", "Description", "Cost", {"FillWeight": "150"}),
+        (TB, "colItem", "Description", "Description", {"FillWeight": "150"}),
         (TB, "colAmount", "Amount", "Amount", {"FillWeight": "90", "DefaultCellStyle": MONEY}),
     ],
 }
@@ -110,6 +111,7 @@ EVENTS = {
     "dgvLines": [("CellEndEdit", "Lines_Changed"), ("RowsRemoved", "Lines_RowsRemoved")],
     "btnRemoveLine": [("Click", "btnRemoveLine_Click")],
     "btnRemoveScope": [("Click", "btnRemoveScope_Click")],
+    "dgvScope": [("CellEndEdit", "Lines_Changed"), ("RowsRemoved", "Lines_RowsRemoved")],
     "btnSaveQuotation": [("Click", "btnSaveQuotation_Click")],
     "btnCancelQuotation": [("Click", "btnCancelQuotation_Click")],
     "btnSubmitQuotation": [("Click", "btnSubmitQuotation_Click")],

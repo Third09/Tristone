@@ -91,6 +91,7 @@ namespace Company.OfficeApp.Pages
             colStatus = new DataGridViewTextBoxColumn();
             colWork = new DataGridViewTextBoxColumn();
             colDetails = new DataGridViewTextBoxColumn();
+            colPrice = new DataGridViewTextBoxColumn();
             colItem = new DataGridViewTextBoxColumn();
             colAmount = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvQuotations).BeginInit();
@@ -378,14 +379,14 @@ namespace Company.OfficeApp.Pages
             lblScope.AutoSize = true;
             lblScope.Location = new Point(38, 597);
             lblScope.Name = "lblScope";
-            lblScope.Text = "Scope of Works (printed A, B, C...; type in the table)";
+            lblScope.Text = "Scope of Works (printed A, B, C...; price optional)";
             // 
             // dgvScope
             // 
             dgvScope.AllowUserToAddRows = false;
             dgvScope.AllowUserToDeleteRows = false;
             dgvScope.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvScope.Columns.AddRange(new DataGridViewColumn[] { colWork, colDetails });
+            dgvScope.Columns.AddRange(new DataGridViewColumn[] { colWork, colDetails, colPrice });
             dgvScope.MultiSelect = false;
             dgvScope.ReadOnly = true;
             dgvScope.RowHeadersVisible = false;
@@ -394,6 +395,8 @@ namespace Company.OfficeApp.Pages
             dgvScope.Name = "dgvScope";
             dgvScope.Size = new Size(690, 172);
             dgvScope.TabIndex = 19;
+            dgvScope.CellEndEdit += Lines_Changed;
+            dgvScope.RowsRemoved += Lines_RowsRemoved;
             // 
             // btnRemoveScope
             // 
@@ -409,7 +412,7 @@ namespace Company.OfficeApp.Pages
             lblCosts.AutoSize = true;
             lblCosts.Location = new Point(748, 597);
             lblCosts.Name = "lblCosts";
-            lblCosts.Text = "Costs (e.g. Labor Cost)";
+            lblCosts.Text = "Other costs (e.g. Labor Cost)";
             // 
             // dgvLines
             // 
@@ -696,19 +699,27 @@ namespace Company.OfficeApp.Pages
             colWork.DataPropertyName = "Work";
             colWork.HeaderText = "Work";
             colWork.Name = "colWork";
-            colWork.FillWeight = 180;
+            colWork.FillWeight = 170;
             // 
             // colDetails
             // 
             colDetails.DataPropertyName = "Details";
             colDetails.HeaderText = "Size / Details";
             colDetails.Name = "colDetails";
-            colDetails.FillWeight = 120;
+            colDetails.FillWeight = 110;
+            // 
+            // colPrice
+            // 
+            colPrice.DataPropertyName = "Price";
+            colPrice.HeaderText = "Price";
+            colPrice.Name = "colPrice";
+            colPrice.FillWeight = 70;
+            colPrice.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N2" };
             // 
             // colItem
             // 
             colItem.DataPropertyName = "Description";
-            colItem.HeaderText = "Cost";
+            colItem.HeaderText = "Description";
             colItem.Name = "colItem";
             colItem.FillWeight = 150;
             // 
@@ -876,6 +887,7 @@ namespace Company.OfficeApp.Pages
         private DataGridViewTextBoxColumn colStatus;
         private DataGridViewTextBoxColumn colWork;
         private DataGridViewTextBoxColumn colDetails;
+        private DataGridViewTextBoxColumn colPrice;
         private DataGridViewTextBoxColumn colItem;
         private DataGridViewTextBoxColumn colAmount;
     }

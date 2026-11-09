@@ -203,7 +203,7 @@ public partial class QuotationsPage : UserControl
         txtSignatoryTitle.Text = q.SignatoryTitle ?? "";
         txtInternalNotes.Text = Lines(q.InternalNotes);
         dgvScope.Rows.Clear();
-        foreach (var s in scope) dgvScope.Rows.Add(s.Work, s.Details);
+        foreach (var s in scope) dgvScope.Rows.Add(s.Work, s.Details, s.Price?.ToString("N2"));
         dgvLines.Rows.Clear();
         foreach (var l in lines) dgvLines.Rows.Add(l.Description, l.Amount.ToString("N2"));
         inquiryId = q.InquiryId;
@@ -259,7 +259,8 @@ public partial class QuotationsPage : UserControl
 
     static string Cell(DataGridViewRow r, DataGridViewColumn c) => r.Cells[c.Index].Value?.ToString()?.Trim() ?? "";
 
-    List<QuotationScopeLine> ReadScope()
+    /// <summary>The typed Scope of Works (empty rows skipped), or the first problem found.</summary>
+    (List<QuotationScopeLine> Scope, string? Problem) ReadScope()
     {
         var scope = new List<QuotationScopeLine>();
         foreach (DataGridViewRow r in dgvScope.Rows)
@@ -267,10 +268,17 @@ public partial class QuotationsPage : UserControl
             if (r.IsNewRow) continue;
             var work = Cell(r, colWork);
             var details = Cell(r, colDetails);
-            if (work == "" && details == "") continue;
-            scope.Add(new QuotationScopeLine(work, details == "" ? null : details));
+            var priceText = Cell(r, colPrice);
+            if (work == "" && details == "" && priceText == "") continue;
+            decimal? price = null;
+            if (priceText != "")
+            {
+                if (Number(priceText) is not { } p) return (scope, $"Scope of Works line {(char)('A' + scope.Count % 26)}: type the price as a number.");
+                price = p;
+            }
+            scope.Add(new QuotationScopeLine(work, details == "" ? null : details, price));
         }
-        return scope;
+        return (scope, null);
     }
 
     /// <summary>The typed cost lines (empty rows skipped), or the first problem found.</summary>
@@ -292,15 +300,17 @@ public partial class QuotationsPage : UserControl
     void ShowTotal()
     {
         var (lines, _) = ReadLines();
-        lblTotal.Text = $"Total Cost: {ProjectService.Money(QuotationService.Total(lines))}";
+        lblTotal.Text = $"Total Cost: {ProjectService.Money(QuotationService.Total(ReadScope().Scope, lines))}";
     }
 
     void Lines_Changed(object? sender, DataGridViewCellEventArgs e)
     {
         if (loadingForm) return;
-        // show the amount the usual way (25000 -> 25,000.00)
-        if (e.RowIndex >= 0 && e.ColumnIndex == colAmount.Index && Number(dgvLines.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) is { } v)
-            dgvLines.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = v.ToString("N2");
+        // show amounts and prices the usual way (25000 -> 25,000.00)
+        var grid = (DataGridView)sender!;
+        var moneyColumn = grid == dgvLines ? colAmount : colPrice;
+        if (e.RowIndex >= 0 && e.ColumnIndex == moneyColumn.Index && Number(grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) is { } v)
+            grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = v.ToString("N2");
         ShowTotal();
     }
 
@@ -321,7 +331,8 @@ public partial class QuotationsPage : UserControl
     QuotationForm ReadForm()
     {
         var (lines, _) = ReadLines();
-        var scope = string.Join("; ", ReadScope().Select((s, n) => $"{(char)('A' + n % 26)}. {s.Work}{(s.Details == null ? "" : " (" + s.Details + ")")}"));
+        var scope = string.Join("; ", ReadScope().Scope.Select((s, n) =>
+            $"{(char)('A' + n % 26)}. {s.Work}{(s.Details == null ? "" : " (" + s.Details + ")")}{(s.Price == null ? "" : $" {s.Price:N2}")}"));
         var costs = string.Join("; ", lines.Select(l => $"{l.Description} {l.Amount:N2}"));
         static string? N(string s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
         return new QuotationForm(txtClientName.Text.Trim(), N(txtClientAddress.Text), N(txtAttention.Text), N(txtClientContact.Text),
@@ -339,12 +350,14 @@ public partial class QuotationsPage : UserControl
         if (!addOnly && editingId == null) return;   // the form is locked when nothing is selected
         dgvScope.EndEdit();
         dgvLines.EndEdit();
+        var (scope, scopeProblem) = ReadScope();
+        if (scopeProblem != null) { lblQuotationMsg.Text = scopeProblem; return; }
         var (lines, problem) = ReadLines();
         if (problem != null) { lblQuotationMsg.Text = problem; return; }
         var f = ReadForm();
         var input = new QuotationInput(f.Customer, f.Address, f.Attention, f.Contact, f.Email, f.Project, f.Site, f.Sector, f.QuoteDate,
                                        f.ValidUntil, f.PlannedStart, f.Notes, f.InternalNotes, f.WorkDuration, f.PaymentTerms,
-                                       f.PayableTo, f.PayableNumber, f.SignedBy, f.Position, inquiryId, ReadScope(), lines);
+                                       f.PayableTo, f.PayableNumber, f.SignedBy, f.Position, inquiryId, scope, lines);
         if (QuotationService.CheckInput(input) is { } bad) { lblQuotationMsg.Text = bad; return; }
         if (editingId != null && original != null)
         {
@@ -427,7 +440,7 @@ public partial class QuotationsPage : UserControl
         if (editingId is not { } id) return;
         var (lines, _) = ReadLines();
         if (MessageBox.Show(this, $"The client accepted. Make the project \"{txtProjectTitle.Text.Trim()}\" for {txtClientName.Text.Trim()} " +
-                $"with a contract price of {ProjectService.Money(QuotationService.Total(lines))}?\n\nIt starts as Pending; add its other details in Projects.",
+                $"with a contract price of {ProjectService.Money(QuotationService.Total(ReadScope().Scope, lines))}?\n\nIt starts as Pending; add its other details in Projects.",
                 "Client Accepted", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
         try
         {

@@ -122,7 +122,7 @@ The design follows the Figma file "CCMS SUPERSYSTEM". One file, `Theme.cs`, hold
 |---|---|
 | The program | `Apps\Tri-Stone\TriStone.exe` (built from Visual Studio, project **Company.Launcher**) |
 | The code | `src\` in the TriStone folder (Visual Studio: `TriStone.slnx`) |
-| Database changes | `database\` (numbered scripts 001-024; `setup-database.cmd` applies the new ones) |
+| Database changes | `database\` (numbered scripts 001-025; `setup-database.cmd` applies the new ones) |
 | Uploaded files | the shared files folder (`C:\TriStoneFiles` on this PC) |
 | Guides | `docs\` (Word files; their text is in `docs\_source`) |
 | What was tested | `docs\Testing Log.md` (and the "Check at home" list) |

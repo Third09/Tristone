@@ -24,7 +24,7 @@ GROUPS = [
     ("Inventory (005)", ["materials", "material_usages", "vendors", "vendor_documents", "quotes", "purchases", "deliveries", "equipment", "maintenance_logs"]),
     ("Subcontractors (006)", ["subcontractors", "subcontractor_trades", "sub_jobs", "sub_job_stages", "sub_job_documents", "sub_progress", "sub_vouchers", "sub_payouts"]),
     ("Receipts (007)", ["receipts", "change_orders"]),
-    ("Quotations (023, 024)", ["quotations", "quotation_items", "quotation_scope"]),
+    ("Quotations (023-025)", ["quotations", "quotation_items", "quotation_scope"]),
     ("Website (010, 014)", ["inquiries", "website_content", "website_projects", "website_project_photos", "website_services", "website_publishes", "website_visits"]),
     ("System", ["app_settings", "schema_versions"]),
 ]
