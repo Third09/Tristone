@@ -26,7 +26,7 @@ What was tested on which PC, and what still needs checking at home (the main PC,
 - [ ] **All list pages: Add / Edit** (2026-10-30). On Projects, User Accounts, Materials, Vendors, Equipment, Subcontractors, Jobs and Change Orders: nothing is selected on opening; the Add/New/Create button opens a window; editing asks Yes/No with the list of changes.
 - [ ] **Website Admin app** (2026-10-30). Run `database\setup-database.cmd` (scripts 008-011; 011 moves any Website Admin account you made into User Accounts). Open `Apps\Tri-Stone\TriStone.exe`: sign in as ITmorilla, choose Website Admin, check Inquiries (add a test row in pgAdmin: INSERT INTO inquiries (full_name, email, message) VALUES (...), follow it up, delete it), Sign Out; in User Accounts make a Website Admin login and check it opens the Website Admin app directly.
 
-- [ ] **Scanner employee file on the real scanner** (2026-10-30). HR & Payroll > Attendance > Make Scanner Employee File, save to the USB stick, upload it on the scanner (USB menu, user information). Check the names and IDs appear on the scanner. If it refuses the file, tell Claude what the scanner shows.
+- [ ] **Scanner employee file on the real scanner** (2026-10-30). HR & Payroll > Attendance > Make Scanner Employee File, save to the USB stick, upload it on the scanner (USB menu, user information). Check the names and IDs appear on the scanner. If it refuses the file, note what the scanner shows.
 
 - [ ] **Payroll on real data** (2026-10-30). After real attendance is uploaded: compute one office payroll and one site payroll, check two payslips by hand, and have the accountant check the government deduction defaults in Settings before finalizing.
 
