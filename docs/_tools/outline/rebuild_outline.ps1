@@ -1,5 +1,5 @@
 ﻿# Re-applies every agreed outline change (Oct 26, 2026) on top of the tracked-changes backup.
-param([string]$Out = "$env:TEMP\claude_outline\rebuilt.docx")
+param([string]$Out = "$env:TEMP\tristone_outline\rebuilt.docx")
 Copy-Item "$PSScriptRoot\..\..\_archive\Project Outline - with tracked changes.docx" $Out -Force
 . "$PSScriptRoot\outline_insert.ps1"
 Open-Outline $Out
