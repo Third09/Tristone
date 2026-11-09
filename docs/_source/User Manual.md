@@ -435,7 +435,7 @@ A price offer for a client, printed like the company's own quotation paper (logo
 2. Set the **Date**. Also fill in the **Project name**, site and sector (used if the client accepts) and, if known, the **Planned start** (tick the box).
 3. **Scope of Works:** type each work, its size and, if you want, its **Price**, e.g. *Excavation* / *2.5 X 1.5 X 1.5 METERS* / 8,000. They print as A, B, C... in the same order; prices print on the right.
 4. **Other costs:** type each cost's **Description** and **Amount**, e.g. *Tools and Equipment* 5,000 and *Labor Cost* 25,000. **Total Cost** = the works' prices + these amounts.
-5. **Notes** (printed, one per line), **Work duration** (e.g. 30 days), **Terms of payment**, **Cash payable to** with its number, and who signs **Very truly yours** with the position. A new quotation starts with the ones used last time.
+5. **Notes** (printed, one per line), **Work duration** (e.g. 30 days), **Terms of payment** (pick one from the list, e.g. Weekly Payroll or 50% down payment, 50% upon completion, or type your own), **Cash payable to** with its number, and who signs **Very truly yours** with the position. A new quotation starts with the ones used last time.
 6. Click **Save**. It is a **Draft** (numbered QT-0001, QT-0002...). Then **Send for Approval**. The Receipts Supervisor clicks **Approve** or **Reject**; a rejected one can be fixed and saved (it becomes a Draft again).
 7. **Print** or **Save as PDF** and give it to the client. Until it is approved, the printout says "DRAFT" across the page.
 8. When the client answers: **Client Accepted: Make Project** adds the project to **Projects** (status Pending, contract price = the Total Cost), or **Client Declined**.

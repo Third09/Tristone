@@ -48,6 +48,17 @@ public static class QuotationService
         "Any permits, supply of electricity and water at the job site shall be shouldered by the customer.",
         "Weekly Payroll", "ADRIAN F. MORILLA", "09691806929", "ADRIAN F. MORILLA", "Contractor");
 
+    /// <summary>The usual terms of payment offered in the dropdown (another can still be typed).</summary>
+    public static readonly string[] PaymentTermChoices =
+    [
+        "Weekly Payroll",
+        "50% down payment, 50% upon completion",
+        "30% down payment, progress billing, 10% upon turnover",
+        "Full payment upon completion",
+        "Progress billing",
+        "Cash on delivery",
+    ];
+
     /// <summary>Total Cost = the works' prices + the cost lines.</summary>
     public static decimal Total(IEnumerable<QuotationScopeLine> scope, IEnumerable<QuotationLine> lines) =>
         scope.Sum(s => s.Price ?? 0) + lines.Sum(l => l.Amount);

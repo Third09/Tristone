@@ -950,7 +950,7 @@ const receipts = [
       { name: "Notes, payment and signature", rows: [
         ["Notes box", "TextBox (Multiline = True)", "txtPrintedNotes", "Printed as bullets, one per line."],
         ["Work duration box", "TextBox", "txtWorkDuration", "e.g. 30 days; printed as the last note."],
-        ["Terms of payment box", "TextBox", "txtPaymentTerms", "e.g. Weekly Payroll."],
+        ["Terms of payment dropdown", "ComboBox (DropDown: pick or type)", "cboPaymentTerms", "Weekly Payroll, 50% down / 50% on completion, 30% down + progress billing + 10% on turnover, Full payment upon completion, Progress billing, Cash on delivery; or type another."],
         ["Cash payable to box", "TextBox", "txtPayableTo", "Name printed after Cash Payable to:."],
         ["Payable number box", "TextBox", "txtPayableNumber", "Printed under it after #."],
         ["Very truly yours box", "TextBox", "txtSignatoryName", "Who signs for the company."],

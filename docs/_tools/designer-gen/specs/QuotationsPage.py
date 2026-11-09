@@ -58,7 +58,7 @@ CONTROLS = [
     ("Label", "lblWorkDuration", 490, 632, None, None, {"Text": T("Work duration")}),
     ("TextBox", "txtWorkDuration", 490, 650, 140, 23, {"MaxLength": "100", "PlaceholderText": T("e.g. 30 days")}),
     ("Label", "lblPaymentTerms", 642, 632, None, None, {"Text": T("Terms of payment")}),
-    ("TextBox", "txtPaymentTerms", 642, 650, 140, 23, {"MaxLength": "150"}),
+    ("ComboBox", "cboPaymentTerms", 642, 650, 140, 23, {"DropDownStyle": "ComboBoxStyle.DropDown", "MaxLength": "150"}),
     ("Label", "lblPayableTo", 794, 632, None, None, {"Text": T("Cash payable to")}),
     ("TextBox", "txtPayableTo", 794, 650, 148, 23, {"MaxLength": "150"}),
     ("Label", "lblPayableNumber", 490, 680, None, None, {"Text": T("Payable number (#)")}),

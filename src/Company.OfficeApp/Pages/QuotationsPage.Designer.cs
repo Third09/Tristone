@@ -63,7 +63,7 @@ namespace Company.OfficeApp.Pages
             lblWorkDuration = new Label();
             txtWorkDuration = new TextBox();
             lblPaymentTerms = new Label();
-            txtPaymentTerms = new TextBox();
+            cboPaymentTerms = new ComboBox();
             lblPayableTo = new Label();
             txtPayableTo = new TextBox();
             lblPayableNumber = new Label();
@@ -488,13 +488,14 @@ namespace Company.OfficeApp.Pages
             lblPaymentTerms.Name = "lblPaymentTerms";
             lblPaymentTerms.Text = "Terms of payment";
             // 
-            // txtPaymentTerms
+            // cboPaymentTerms
             // 
-            txtPaymentTerms.Location = new Point(762, 874);
-            txtPaymentTerms.Name = "txtPaymentTerms";
-            txtPaymentTerms.Size = new Size(161, 23);
-            txtPaymentTerms.MaxLength = 150;
-            txtPaymentTerms.TabIndex = 25;
+            cboPaymentTerms.Location = new Point(762, 874);
+            cboPaymentTerms.Name = "cboPaymentTerms";
+            cboPaymentTerms.Size = new Size(161, 23);
+            cboPaymentTerms.DropDownStyle = ComboBoxStyle.DropDown;
+            cboPaymentTerms.MaxLength = 150;
+            cboPaymentTerms.TabIndex = 25;
             // 
             // lblPayableTo
             // 
@@ -782,7 +783,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(lblWorkDuration);
             Controls.Add(txtWorkDuration);
             Controls.Add(lblPaymentTerms);
-            Controls.Add(txtPaymentTerms);
+            Controls.Add(cboPaymentTerms);
             Controls.Add(lblPayableTo);
             Controls.Add(txtPayableTo);
             Controls.Add(lblPayableNumber);
@@ -859,7 +860,7 @@ namespace Company.OfficeApp.Pages
         private Label lblWorkDuration;
         private TextBox txtWorkDuration;
         private Label lblPaymentTerms;
-        private TextBox txtPaymentTerms;
+        private ComboBox cboPaymentTerms;
         private Label lblPayableTo;
         private TextBox txtPayableTo;
         private Label lblPayableNumber;

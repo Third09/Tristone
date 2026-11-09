@@ -46,6 +46,7 @@ public partial class QuotationsPage : UserControl
         cboQuotationStatusFilter.SelectedIndex = 0;
         filling = false;
         cboSector.Items.AddRange(ProjectSectors.All);
+        cboPaymentTerms.Items.AddRange(QuotationService.PaymentTermChoices);
         cboFromInquiry.DisplayMember = nameof(InquiryChoice.Text);
 
         // Both tables are typed into directly; a new row appears as you type.
@@ -117,7 +118,7 @@ public partial class QuotationsPage : UserControl
     // ----- the form -----
 
     TextBox[] TextBoxes => [txtClientName, txtClientAddress, txtAttention, txtClientContact, txtClientEmail, txtProjectTitle,
-                            txtSiteLocation, txtPrintedNotes, txtWorkDuration, txtPaymentTerms, txtPayableTo, txtPayableNumber,
+                            txtSiteLocation, txtPrintedNotes, txtWorkDuration, txtPayableTo, txtPayableNumber,
                             txtSignatoryName, txtSignatoryTitle, txtInternalNotes];
 
     static string Lines(string? s) => (s ?? "").Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
@@ -126,6 +127,7 @@ public partial class QuotationsPage : UserControl
     {
         loadingForm = true;
         foreach (var t in TextBoxes) t.Clear();
+        cboPaymentTerms.Text = "";
         cboSector.SelectedItem = ProjectSectors.Residential;
         dtpQuoteDate.Value = DateTime.Today;
         dtpValidUntil.Value = DateTime.Today.AddDays(30);
@@ -160,7 +162,7 @@ public partial class QuotationsPage : UserControl
         lblFormMode.Text = $"New quotation {await QuotationService.NextNumberAsync()}";
         var d = await QuotationService.DefaultsAsync();
         txtPrintedNotes.Text = Lines(d.PrintedNotes);
-        txtPaymentTerms.Text = d.PaymentTerms;
+        cboPaymentTerms.Text = d.PaymentTerms;
         txtPayableTo.Text = d.PayableTo;
         txtPayableNumber.Text = d.PayableNumber;
         txtSignatoryName.Text = d.SignatoryName;
@@ -196,7 +198,7 @@ public partial class QuotationsPage : UserControl
         if (q.PlannedStart is { } ps) dtpPlannedStart.Value = ps.ToDateTime(TimeOnly.MinValue);
         txtPrintedNotes.Text = Lines(q.PrintedNotes);
         txtWorkDuration.Text = q.WorkDuration ?? "";
-        txtPaymentTerms.Text = q.PaymentTerms ?? "";
+        cboPaymentTerms.Text = q.PaymentTerms ?? "";
         txtPayableTo.Text = q.PayableTo ?? "";
         txtPayableNumber.Text = q.PayableNumber ?? "";
         txtSignatoryName.Text = q.SignatoryName ?? "";
@@ -339,7 +341,7 @@ public partial class QuotationsPage : UserControl
             N(txtClientEmail.Text), txtProjectTitle.Text.Trim(), N(txtSiteLocation.Text), (string?)cboSector.SelectedItem ?? "",
             DateOnly.FromDateTime(dtpQuoteDate.Value), DateOnly.FromDateTime(dtpValidUntil.Value),
             dtpPlannedStart.Checked ? DateOnly.FromDateTime(dtpPlannedStart.Value) : null,
-            N(txtPrintedNotes.Text), N(txtWorkDuration.Text), N(txtPaymentTerms.Text), N(txtPayableTo.Text), N(txtPayableNumber.Text),
+            N(txtPrintedNotes.Text), N(txtWorkDuration.Text), N(cboPaymentTerms.Text), N(txtPayableTo.Text), N(txtPayableNumber.Text),
             N(txtSignatoryName.Text), N(txtSignatoryTitle.Text), N(txtInternalNotes.Text), scope, costs);
     }
 
