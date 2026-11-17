@@ -46,6 +46,10 @@ DELETE FROM password_requests;
 UPDATE users SET password_hash = crypt('Test1234', gen_salt('bf', 11)), failed_login_count = 0,
                  security_question = NULL, security_answer_hash = NULL,
                  status = CASE WHEN status = 'Locked' THEN 'Active' ELSE status END;
+-- the usual Demo login too (Admin, not linked to an employee)
+INSERT INTO users (username, password_hash, full_name, level, department, status)
+SELECT 'demo.admin', crypt('Demo1234', gen_salt('bf', 11)), 'Demo Admin', 'Admin', NULL, 'Active'
+ WHERE NOT EXISTS (SELECT 1 FROM users WHERE lower(username) = 'demo.admin');
 -- the owner's own employee record: no personal ID numbers in a file given to others
 UPDATE employees SET sss_no = NULL, philhealth_no = NULL, pagibig_no = NULL, tin = NULL
  WHERE employee_id IN (SELECT employee_id FROM users WHERE username IN ('ITmorilla', 'yumi'));

@@ -38,13 +38,30 @@ internal static class Program
         Db.WarmUpInBackground();
 
         string? notice = null;
+        bool testing = false;   // Demo only: demo.admin picked a login in "Test as..."
         while (true)
         {
-            using (var login = new LoginForm(notice))
+            if (!testing)
             {
-                if (login.ShowDialog() != DialogResult.OK) return;   // Exit on the Sign In window
+                using (var login = new LoginForm(notice))
+                {
+                    if (login.ShowDialog() != DialogResult.OK) return;   // Exit on the Sign In window
+                }
+                notice = null;
+                testing = AppEdition.IsDemo &&
+                          string.Equals(Session.CurrentUser!.Username, TestAsForm.PickerLogin, StringComparison.OrdinalIgnoreCase);
             }
-            notice = null;
+            if (testing)
+            {
+                // Demo / Test version: open as any login without its password; Sign Out comes back to this list.
+                if (TestAsForm.Pick() is not { } picked)
+                {
+                    AuthService.SignOutAsync().GetAwaiter().GetResult();
+                    testing = false;
+                    continue;
+                }
+                Session.Start(picked);
+            }
 
             var user = Session.CurrentUser!;
             var app = user.IsWebsiteAdmin ? ChosenApp.Website

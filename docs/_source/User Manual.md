@@ -597,5 +597,11 @@ The same setup also works on a Windows 10/11 PC that stays on. Use the files in 
 
 1. Double-click `installer\build-demo.cmd` (on a PC with PostgreSQL 18). It makes `installer\output\Tri-Stone-Demo-Setup-1.0.0.exe`.
 2. Copy that file to any Windows PC and run it. It needs no administrator rights, no internet and no other programs.
-3. Open **Tri-Stone Demo** and sign in as **demo.admin**, password **Demo1234**. Other logins, same password: demo.website, hr.sup, hr.emp, inv.sup, inv.emp, sub.sup, sub.emp, rec.sup, rec.emp.
+3. Open **Tri-Stone Demo** and sign in as **demo.admin**, password **Demo1234**. A **Test as...** list opens: click any login and **Open as this login** (or double-click it). Tri-Stone opens as that person, with no password, so you can try every role from one sign-in. **Sign Out** brings the list back; Sign Out on the list goes back to Sign In. Other logins still work the usual way (password Demo1234).
 4. Everything in it is made up, and it can't change the live website. To start over: Start menu > **Reset Tri-Stone Demo**.
+
+**H. The Test version (a copy of the home PC's data for testers)**
+
+1. On the home PC, double-click `installer\build-test.cmd`. It makes `installer\output\Tri-Stone-Test-Setup-1.0.0.exe` (type a version after it, e.g. `build-test.cmd 1.3.0`).
+2. It copies this PC's database (only reads it), leaves out the throwaway test entries, clears the history, sets every password to **Test1234**, adds many more materials with vendors, prices, quotes, purchases and usage, and brings the uploaded files along.
+3. Install it like the Demo. Sign in as **demo.admin** / **Demo1234** for the **Test as...** list, or as any of the PC's logins with **Test1234**.

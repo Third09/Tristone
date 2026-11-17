@@ -422,9 +422,9 @@ Publish reaches the live website and the Contact form is connected (2026-11-03):
 | Password | typed once per PC, kept encrypted; not in the Setup file | none needed |
 | Data | the company's real data | made-up samples (15 employees, 10 logins, 6 projects, 3 weeks of attendance, receipts, subcontractors, inquiries) |
 | Website | Publish, Undo, inquiries, visits work | Publish, Undo and Website Settings off; no connection to the real script; Preview needs internet the first time |
-| Start | sign in | sign in as `demo.admin` / `Demo1234` |
+| Start | sign in | sign in as `demo.admin` / `Demo1234`, then **Test as...**: open as any active login without its password |
 
-Demo logins, all with password `Demo1234`: `demo.admin`, `demo.website`, `hr.sup`, `hr.emp`, `inv.sup`, `inv.emp`, `sub.sup`, `sub.emp`, `rec.sup`, `rec.emp`. **Reset Tri-Stone Demo** in the Start menu goes back to the original samples. Closing the Demo stops its database; uninstalling deletes its data.
+Demo logins, all with password `Demo1234`: `demo.admin`, `demo.website`, `hr.sup`, `hr.emp`, `inv.sup`, `inv.emp`, `sub.sup`, `sub.emp`, `rec.sup`, `rec.emp`. **Test as...** (owner request 2026-11-17, Demo edition only): signing in as `demo.admin` opens a list of every Active login (name, login, level, department, which app it opens; search); the picked login becomes the session, and Sign Out returns to the list (Sign Out there = back to Sign In). Rights are exactly the picked login's. The Office edition never shows it. **Test Setup** (`build-test.cmd`): the Demo program with a copy of the home PC's database prepared by `installer/demo/test_prepare.sql` (test entries removed, history cleared, every password `Test1234` plus `demo.admin` / `Demo1234`, about 50 more materials with vendors, price lists, quotes, purchases and usage) and the PC's uploaded files. **Reset Tri-Stone Demo** in the Start menu goes back to the original samples. Closing the Demo stops its database; uninstalling deletes its data.
 
 # 12. Glossary
 
