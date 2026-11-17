@@ -603,5 +603,5 @@ The same setup also works on a Windows 10/11 PC that stays on. Use the files in 
 **H. The Test version (a copy of the home PC's data for testers)**
 
 1. On the home PC, double-click `installer\build-test.cmd`. It makes `installer\output\Tri-Stone-Test-Setup-1.0.0.exe` (type a version after it, e.g. `build-test.cmd 1.3.0`).
-2. It copies this PC's database (only reads it), leaves out the throwaway test entries, clears the history, sets every password to **Test1234**, adds many more materials with vendors, prices, quotes, purchases and usage, and brings the uploaded files along.
+2. It copies this PC's database (only reads it), leaves out the throwaway test entries, clears the history, sets every password to **Test1234**, adds many more materials with vendors, prices, quotes, purchases and usage, and brings the uploaded files along. Receipts and old deliveries that were paper-only get a made-up receipt picture stamped SAMPLE, so the receipt viewer can be tried.
 3. Install it like the Demo. Sign in as **demo.admin** / **Demo1234** for the **Test as...** list, or as any of the PC's logins with **Test1234**.

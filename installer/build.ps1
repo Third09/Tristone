@@ -66,6 +66,9 @@ else {
         # the uploaded files (receipt scans, website pictures...) travel with it
         $stored = (& $psql -h localhost -U postgres -d construction_db -At -c "SELECT value FROM app_settings WHERE key = 'file_storage_path'").Trim()
         if ($stored -and (Test-Path $stored)) { Copy-Item $stored $files -Recurse }
+        else { New-Item -ItemType Directory -Force -Path $files | Out-Null }
+        # paper-only receipts and deliveries get a made-up "scan" (marked SAMPLE) so the receipt viewer can be tried
+        & (Join-Path $demo "make_receipts.ps1") -Psql $psql -Database $scratch -FilesDir $files
     }
     else {
         & (Join-Path $Repo "database\setup-database.ps1") -Database $scratch | Out-Null

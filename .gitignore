@@ -29,3 +29,4 @@ installer/demo/demo.dump
 
 # Built programs (recreated by every build): Apps\Office App, Apps\Website Admin
 Apps/
+installer/demo/files/
