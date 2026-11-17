@@ -186,6 +186,42 @@ INSERT INTO website_visits (visited_at, page)
 SELECT NOW() - (n || ' hours')::interval, '/' FROM generate_series(1, 86) AS n
 WHERE NOW() - (n || ' hours')::interval >= date_trunc('month', NOW());
 
+-- ---------- Vendors' materials supplied (script 026) ----------
+INSERT INTO vendor_materials (vendor_id, material_id, price, updated_by) VALUES
+ (1, 5, 16, 6), (1, 6, 690, 6), (1, 7, 3150, 6), (1, 8, 780, 6),
+ (2, 1, 245, 6), (2, 3, 1350, 6), (2, 4, 1450, 6),
+ (3, 2, 235, 6), (1, 1, 252, 6);
+
+-- ---------- Quotations (scripts 023-025), laid out like the company paper ----------
+INSERT INTO quotations (quotation_id, quote_no, client_name, client_address, attention, client_contact, client_email, project_title,
+                        site_location, sector, quote_date, valid_until, planned_start, printed_notes, internal_notes, work_duration,
+                        payment_terms, payable_to, payable_number, signatory_name, signatory_title, status, created_by, decided_by, decided_at) VALUES
+ (1, 'QT-0001', 'Mr. Ramon Bautista', '45 Sampaguita St., Marikina City', 'Mr. Ramon Bautista', '09170000101', 'ramon@example.com',
+  'Bautista Septic Tank', 'Marikina City', 'Residential', CURRENT_DATE - 6, CURRENT_DATE + 24, CURRENT_DATE + 10,
+  E'Heavy equipment, Hauling equipment, Disposal Waste Materials shouldered by the customer.\nOwner must provide designated place for temporary shelter of the construction personnel.\nAny permits, supply of electricity and water at the job site shall be shouldered by the customer.',
+  'Sample quotation', '30 days', 'Weekly Payroll', 'ADRIAN F. MORILLA', '09691806929', 'ADRIAN F. MORILLA', 'Contractor',
+  'Approved', 10, 9, NOW() - INTERVAL '5 days'),
+ (2, 'QT-0002', 'Ms. Liza Santos', '8 Mabuhay Ave., Pasig City', 'Ms. Liza Santos', '09170000102', NULL,
+  'Santos Kitchen Renovation', 'Pasig City', 'Repairs / Renovations', CURRENT_DATE - 1, CURRENT_DATE + 29, NULL,
+  E'Owner must provide designated place for temporary shelter of the construction personnel.\nAny permits, supply of electricity and water at the job site shall be shouldered by the customer.',
+  NULL, '21 days', '50% down payment, 50% upon completion', 'ADRIAN F. MORILLA', '09691806929', 'ADRIAN F. MORILLA', 'Contractor',
+  'Draft', 10, NULL, NULL);
+
+INSERT INTO quotation_scope (quotation_id, line_no, description, details, price) VALUES
+ (1, 1, 'Mobilization & Demobilization', NULL, NULL),
+ (1, 2, 'Excavation', '2.5 X 1.5 X 1.5 METERS', NULL),
+ (1, 3, 'Masonry', '2.4 X 1.2 X 1.2 METERS', NULL),
+ (1, 4, 'Water-Proofing', '2.4 X 1.2 X 1.2 METERS', NULL),
+ (1, 5, 'Metal Cover', '2.4 x 1.2 METERS', NULL),
+ (2, 1, 'Demolition of old cabinets and tiles', NULL, 18000),
+ (2, 2, 'Floor tiles 60x60', '24 SQ.M', 42000),
+ (2, 3, 'New kitchen cabinets', '3.6 METERS', 95000);
+
+INSERT INTO quotation_items (quotation_id, line_no, description, amount) VALUES
+ (1, 1, 'Tools and Equipment', 5000),
+ (1, 2, 'Labor Cost', 25000),
+ (2, 1, 'Labor Cost', 35000);
+
 -- ---------- Sequences continue after the rows above ----------
 DO $$
 DECLARE r record;
