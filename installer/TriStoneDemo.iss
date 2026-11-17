@@ -10,6 +10,9 @@
 #ifndef AppVersion
   #define AppVersion "1.0.0"
 #endif
+#ifndef SetupName
+  #define SetupName "Tri-Stone-Demo-Setup-" + AppVersion
+#endif
 
 [Setup]
 AppId={{B2A4D1C8-93E5-4F27-8C10-7E5D3A9F6B41}
@@ -20,7 +23,7 @@ DefaultDirName={autopf}\Tri-Stone Demo
 DefaultGroupName=Tri-Stone Demo
 DisableProgramGroupPage=yes
 OutputDir=output
-OutputBaseFilename=Tri-Stone-Demo-Setup-{#AppVersion}
+OutputBaseFilename={#SetupName}
 Compression=lzma2/max
 SolidCompression=yes
 ArchitecturesAllowed=x64compatible
@@ -38,6 +41,8 @@ Source: "publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs creat
 Source: "edition\edition.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "demo\pgsql\*"; DestDir: "{app}\pgsql"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "demo\demo.dump"; DestDir: "{app}\demo"; Flags: ignoreversion
+; the Test Setup (build-test.cmd) also carries the uploaded files of the PC it was made on
+Source: "demo\files\*"; DestDir: "{app}\demo\files"; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
 
 [Icons]
 Name: "{group}\Tri-Stone Demo"; Filename: "{app}\TriStone.exe"

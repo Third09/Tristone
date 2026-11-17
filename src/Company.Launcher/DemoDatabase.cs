@@ -67,6 +67,15 @@ internal static class DemoDatabase
         var dump = Path.Combine(AppContext.BaseDirectory, "demo", "demo.dump");
         Run(Bin("pg_restore"), $"{connect} --no-owner --no-acl -d {AppEdition.DemoDatabaseName} \"{dump}\"");
         Directory.CreateDirectory(Files);
+        // the Test Setup brings the uploaded files of the PC it was made on (receipt scans, website pictures...)
+        var shipped = Path.Combine(AppContext.BaseDirectory, "demo", "files");
+        if (Directory.Exists(shipped))
+            foreach (var f in Directory.EnumerateFiles(shipped, "*", SearchOption.AllDirectories))
+            {
+                var target = Path.Combine(Files, Path.GetRelativePath(shipped, f));
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                File.Copy(f, target, overwrite: true);
+            }
         Run(Bin("psql"), $"{connect} -d {AppEdition.DemoDatabaseName} -v ON_ERROR_STOP=1 -c " +
                          $"\"UPDATE app_settings SET value = '{Files}' WHERE key = 'file_storage_path'\"");
         File.WriteAllText(ReadyMark, "Sample data loaded " + DateTime.Now);

@@ -2,13 +2,16 @@
   Builds a Tri-Stone Setup file into installer\output. Started by build-office.cmd or build-demo.cmd.
   Office: Tri-Stone-Office-Setup-<version>.exe for the office PCs, with the server address fixed in it (never the password).
   Demo:   Tri-Stone-Demo-Setup-<version>.exe, stand-alone: a small PostgreSQL + sample data inside.
+  Demo -FromThisPc (build-test.cmd): Tri-Stone-Test-Setup-<version>.exe, the same stand-alone program but with a COPY of
+          this PC's construction_db, cleaned and filled by demo\test_prepare.sql, plus this PC's uploaded files.
   Needs: .NET 10 SDK, Inno Setup 6, and for the Demo a PostgreSQL 18 on this PC (its program files are copied, and a
   scratch database zz_demo_build is used and dropped to make the sample data). Real databases are not touched.
 #>
 param(
     [Parameter(Mandatory)][ValidateSet("Office", "Demo")][string]$Edition,
     [string]$Version = "1.0.0",
-    [string]$ServerAddress = "192.168.1.50"
+    [string]$ServerAddress = "192.168.1.50",
+    [switch]$FromThisPc
 )
 $ErrorActionPreference = "Stop"
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -47,9 +50,28 @@ else {
     }
     $scratch = "zz_demo_build"
     & $psql -h localhost -U postgres -d postgres -q -c "DROP DATABASE IF EXISTS $scratch" | Out-Null
-    & (Join-Path $Repo "database\setup-database.ps1") -Database $scratch | Out-Null
-    & $psql -h localhost -U postgres -d $scratch -v ON_ERROR_STOP=1 -q -f (Join-Path $demo "demo_seed.sql")
-    if ($LASTEXITCODE -ne 0) { throw "The sample data failed." }
+    $files = Join-Path $demo "files"
+    if (Test-Path $files) { Remove-Item $files -Recurse -Force }
+    if ($FromThisPc) {
+        # a copy of this PC's database (the real one is only read), cleaned up and filled for testing
+        $copy = Join-Path $demo "thispc.dump"
+        & (Join-Path $pgHome "bin\pg_dump.exe") -h localhost -U postgres -Fc -f $copy construction_db
+        if ($LASTEXITCODE -ne 0) { throw "Copying this PC's database failed." }
+        & $psql -h localhost -U postgres -d postgres -q -c "CREATE DATABASE $scratch" | Out-Null
+        & (Join-Path $pgHome "bin\pg_restore.exe") -h localhost -U postgres --no-owner --no-acl -d $scratch $copy
+        Remove-Item $copy -Force
+        & (Join-Path $Repo "database\setup-database.ps1") -Database $scratch | Out-Null
+        & $psql -h localhost -U postgres -d $scratch -v ON_ERROR_STOP=1 -q -f (Join-Path $demo "test_prepare.sql")
+        if ($LASTEXITCODE -ne 0) { throw "Preparing the test data failed." }
+        # the uploaded files (receipt scans, website pictures...) travel with it
+        $stored = (& $psql -h localhost -U postgres -d construction_db -At -c "SELECT value FROM app_settings WHERE key = 'file_storage_path'").Trim()
+        if ($stored -and (Test-Path $stored)) { Copy-Item $stored $files -Recurse }
+    }
+    else {
+        & (Join-Path $Repo "database\setup-database.ps1") -Database $scratch | Out-Null
+        & $psql -h localhost -U postgres -d $scratch -v ON_ERROR_STOP=1 -q -f (Join-Path $demo "demo_seed.sql")
+        if ($LASTEXITCODE -ne 0) { throw "The sample data failed." }
+    }
     & (Join-Path $pgHome "bin\pg_dump.exe") -h localhost -U postgres -Fc -f (Join-Path $demo "demo.dump") $scratch
     if ($LASTEXITCODE -ne 0) { throw "pg_dump failed." }
     & $psql -h localhost -U postgres -d postgres -q -c "DROP DATABASE $scratch" | Out-Null
@@ -72,8 +94,9 @@ else {
 }
 
 Write-Host "Making the Setup file..." -ForegroundColor Cyan
-& $iscc /Qp "/DAppVersion=$Version" (Join-Path $Here $script)
+$setupName = if ($FromThisPc) { "Tri-Stone-Test-Setup-$Version" } else { "Tri-Stone-$Edition-Setup-$Version" }
+& $iscc /Qp "/DAppVersion=$Version" "/DSetupName=$setupName" (Join-Path $Here $script)
 if ($LASTEXITCODE -ne 0) { throw "Making the Setup file failed." }
-Get-ChildItem (Join-Path $Here "output") -Filter "*$Edition*$Version*" | ForEach-Object {
+Get-ChildItem (Join-Path $Here "output") -Filter "$setupName.exe" | ForEach-Object {
     Write-Host ("Done: {0} ({1:N0} MB)" -f $_.FullName, ($_.Length / 1MB)) -ForegroundColor Green
 }
