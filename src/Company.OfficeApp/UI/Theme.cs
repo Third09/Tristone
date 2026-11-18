@@ -93,9 +93,98 @@ public static class Theme
             if (!done.TryGetValue(f, out _))
             {
                 if (WindowIcon != null) f.Icon = WindowIcon;
+                ScaleWindow(f);
                 Apply(f);
             }
     };
+
+    // ----- smaller screens (owner request 2026-11-18: a 1366 x 768 laptop showed the screens oversized) -----
+
+    /// <summary>
+    /// How much to tighten the layout on this PC: 1 = as designed (1920 x 1080 and up). Smaller screens get less
+    /// height (down to 80%) and a little less width (down to 90%); text keeps its size so it stays readable, only the
+    /// spacing, boxes, buttons and table rows get smaller. Measured once at start-up from the main screen.
+    /// </summary>
+    public static SizeF UiScale { get; set; } = MeasureScale();
+
+    static SizeF MeasureScale()
+    {
+        try
+        {
+            var area = Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, 1920, 1040);
+            using var g = Graphics.FromHwnd(IntPtr.Zero);
+            float dpi = g.DpiY / 96f;   // 125% / 150% Windows scaling: fewer usable pixels
+            float w = area.Width / dpi, h = area.Height / dpi;
+            float sx = w >= 1500 ? 1f : Math.Clamp(w / 1500f, 0.9f, 1f);
+            float sy = h >= 980 ? 1f : Math.Clamp(h / 980f, 0.8f, 1f);
+            return new SizeF(sx, sy);
+        }
+        catch { return new SizeF(1f, 1f); }
+    }
+
+    static bool Shrinking => UiScale.Width < 0.999f || UiScale.Height < 0.999f;
+
+    /// <summary>A height / top designed for a big screen, tightened for this one (for code that places controls itself).</summary>
+    public static int Y(int designed) => (int)Math.Round(designed * UiScale.Height);
+
+    /// <summary>A width / left designed for a big screen, tightened for this one.</summary>
+    public static int X(int designed) => (int)Math.Round(designed * UiScale.Width);
+
+    static readonly ConditionalWeakTable<Control, object> scaled = new();
+    static readonly ConditionalWeakTable<Control, List<Action<SizeF>>> rescalers = new();
+
+    /// <summary>
+    /// Code that remembers designed sizes (Responsive.FitGrid / StretchAcross) registers here to hear when its control
+    /// was tightened, so it can tighten what it remembered too.
+    /// </summary>
+    public static void OnScaled(Control c, Action<SizeF> rescale)
+    {
+        if (scaled.TryGetValue(c, out _)) { rescale(UiScale); return; }   // already tightened
+        rescalers.GetOrCreateValue(c).Add(rescale);
+    }
+
+    static void ScaleWindow(Form f)
+    {
+        if (!Shrinking || scaled.TryGetValue(f, out _)) return;
+        // the main windows (borderless, full screen) keep filling the screen; only what's inside them tightens
+        Size? keep = f.FormBorderStyle == FormBorderStyle.None || f.WindowState == FormWindowState.Maximized ? f.Size : null;
+        ScaleTree(f);
+        if (keep is { } size && f.WindowState == FormWindowState.Normal) f.Size = size;
+        // a pop-up shrank: keep it centred, and never taller or wider than the screen (it scrolls instead)
+        if (f.WindowState == FormWindowState.Normal && f.FormBorderStyle != FormBorderStyle.None)
+        {
+            var area = Screen.FromControl(f).WorkingArea;
+            if (f.Height > area.Height || f.Width > area.Width)
+            {
+                f.AutoScroll = true;
+                f.Size = new Size(Math.Min(f.Width, area.Width), Math.Min(f.Height, area.Height));
+            }
+            if (f.StartPosition is FormStartPosition.CenterParent or FormStartPosition.CenterScreen)
+            {
+                var around = f.Owner is { } o && o.Visible ? o.Bounds : area;
+                f.Location = new Point(Math.Max(area.Left, around.Left + (around.Width - f.Width) / 2),
+                                       Math.Max(area.Top, around.Top + (around.Height - f.Height) / 2));
+            }
+        }
+    }
+
+    /// <summary>Tightens a control and everything inside it (sizes and positions; fonts stay as they are).</summary>
+    static void ScaleTree(Control root)
+    {
+        if (!Shrinking || scaled.TryGetValue(root, out _)) return;
+        root.Scale(UiScale);
+        MarkScaled(root);
+    }
+
+    static void MarkScaled(Control c)
+    {
+        scaled.AddOrUpdate(c, true);
+        // a page's "scroll rather than squeeze below this size" shrinks with everything else
+        if (c is ScrollableControl sc && sc.AutoScroll && sc.AutoScrollMinSize != Size.Empty)
+            sc.AutoScrollMinSize = new Size(X(sc.AutoScrollMinSize.Width), Y(sc.AutoScrollMinSize.Height));
+        foreach (Control child in c.Controls) MarkScaled(child);
+        if (rescalers.TryGetValue(c, out var list)) { rescalers.Remove(c); foreach (var a in list) a(UiScale); }
+    }
 
     /// <summary>The Tri-Stone icon (owner choice 2026-11-18: white "TS" with an orange bar) for every window's title bar
     /// and taskbar button; the Launcher sets it from TriStone.exe's own icon.</summary>
@@ -107,7 +196,12 @@ public static class Theme
         if (done.TryGetValue(root, out _)) return;
         done.Add(root, true);
         Style(root);
-        root.ControlAdded += (_, e) => { if (e.Control != null) Apply(e.Control); };
+        root.ControlAdded += (_, e) =>
+        {
+            if (e.Control == null) return;
+            if (scaled.TryGetValue(root, out _)) ScaleTree(e.Control);   // e.g. a page opened in the main window
+            Apply(e.Control);
+        };
         foreach (Control c in root.Controls) Apply(c);
     }
 
@@ -286,7 +380,7 @@ public static class Theme
         g.EnableHeadersVisualStyles = false;
         g.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
         g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        g.ColumnHeadersHeight = HeaderHeight;
+        g.ColumnHeadersHeight = Y(HeaderHeight);
         var h = g.ColumnHeadersDefaultCellStyle;
         h.BackColor = GridHeader;
         h.ForeColor = Color.Black;
@@ -301,8 +395,8 @@ public static class Theme
         d.SelectionForeColor = Text;
         d.Padding = new Padding(6, 0, 6, 0);
         if (IsDefault(g.AlternatingRowsDefaultCellStyle.BackColor)) g.AlternatingRowsDefaultCellStyle.BackColor = GridStripe;
-        g.RowTemplate.Height = RowHeight;
-        foreach (DataGridViewRow r in g.Rows) r.Height = RowHeight;   // rows already loaded
+        g.RowTemplate.Height = Y(RowHeight);
+        foreach (DataGridViewRow r in g.Rows) r.Height = Y(RowHeight);   // rows already loaded
 
         g.Paint += PaintEmptyNote;
         g.RowsAdded += (_, _) => g.Invalidate();

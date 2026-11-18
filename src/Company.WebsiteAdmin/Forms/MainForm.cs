@@ -101,6 +101,7 @@ public partial class MainForm : Form
         pnlContent.Controls.Clear();
         view.Dock = DockStyle.Fill;
         pnlContent.Controls.Add(view);
+        Responsive.FitDockedPage(view);   // cards take the window's width (no sideways scrolling on smaller screens)
         current = page;
 
         lblPageTitle.Text = Title(page);

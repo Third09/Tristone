@@ -56,7 +56,7 @@ public partial class MainForm : Form
         ], lblUserName, lblUserRole);
 
         Theme.SetIcon(btnNavQuotations, "");   // a document
-        lblPageTitle.UseMnemonic = false;   // show "HR & Payroll", not "HR Payroll"
+        lblPageTitle.UseMnemonic = lblUserRole.UseMnemonic = false;   // show "HR & Payroll", not "HR Payroll"
         pnlSidebar.AutoScroll = true;   // HR's 7 sub-items can run past a short screen
         foreach (var (page, button) in navButtons)
         {
@@ -173,7 +173,7 @@ public partial class MainForm : Form
                     Text = tab.Text.Replace("&", "&&"),   // a single & would underline the next letter
                     TextAlign = ContentAlignment.MiddleLeft,
                     Font = Font,
-                    Size = new Size(parent.Width - 18, 36),
+                    Size = new Size(parent.Width - 18, Theme.Y(36)),
                     Margin = new Padding(18, 0, 0, 4),
                 };
                 b.Click += (_, _) =>

@@ -96,6 +96,7 @@ Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Si
 
 - **Left sidebar:** the logo, then the pages you're allowed to use, each with a small icon. You only see your own department's page (Admins see everything). The page that's open is **orange**. **Sign Out** (red) is at the bottom.
 - **Top:** the page name in big letters, your name, and your department and level. Admins also see **Password requests (N)**.
+- **Smaller screens** (laptops like 1366 × 768): Tri-Stone tightens its spacing by itself so more fits; the text keeps its size. Long pages and big pop-up windows scroll up and down.
 - **Middle:** the page you chose. Pages with several parts (HR & Payroll, Inventory, Subcontractors, Receipts) list their parts **in the sidebar, under the page's button**; the open part is light orange. Employees and Supervisors always see their department's parts there, even while My Account is open, and the page keeps its place when they come back. Admins see the parts of the page that's open. (They used to be tabs across the top.)
 
 **How to read the screens**

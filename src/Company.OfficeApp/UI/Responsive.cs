@@ -21,6 +21,14 @@ public static class Responsive
             .Where(c => c != grid && c.Top >= gridBottom)
             .Select(c => (Control: c, Top: c.Top))
             .ToList();
+        // On a smaller screen the theme tightens the page; the remembered design sizes follow (UI/Theme.UiScale).
+        Theme.OnScaled(page, f =>
+        {
+            designPage = new Size((int)Math.Round(designPage.Width * f.Width), (int)Math.Round(designPage.Height * f.Height));
+            designGrid = new Size((int)Math.Round(designGrid.Width * f.Width), (int)Math.Round(designGrid.Height * f.Height));
+            below = below.Select(b => (b.Control, (int)Math.Round(b.Top * f.Height))).ToList();
+            Apply();
+        });
 
         void Apply()
         {
@@ -36,6 +44,24 @@ public static class Responsive
     }
 
     /// <summary>
+    /// A page built from docked cards (Website Admin) that scrolls: WinForms worked its scroll area out from the width
+    /// the cards were designed at, so on a narrower window (a 1366 x 768 laptop, owner report 2026-11-18) the cards
+    /// stayed too wide and the page scrolled sideways. These pages now scroll up and down only: the cards take the
+    /// window's width, and the page still scrolls down when it is taller than the window.
+    /// </summary>
+    public static void FitDockedPage(ScrollableControl page)
+    {
+        var min = page.AutoScrollMinSize;
+        page.AutoScroll = false;
+        page.HorizontalScroll.Maximum = 0;
+        page.HorizontalScroll.Enabled = false;
+        page.HorizontalScroll.Visible = false;
+        page.AutoScrollMinSize = new Size(0, min.Height);   // keeps its height; never wider than the window
+        page.AutoScroll = true;
+        page.PerformLayout();
+    }
+
+    /// <summary>
     /// Spreads a form across the page: when <paramref name="widthOf"/> (usually the list table, made wider by
     /// <see cref="FitGrid"/>) is wider than the design, the given controls keep their places in proportion and the
     /// boxes, tables and dropdowns grow wider, so the form reaches the same right edge. Labels and buttons keep
@@ -47,6 +73,14 @@ public static class Responsive
         if (design.Count == 0) return;
         int left = design.Min(d => d.Left);
         int designRight = design.Where(d => d.Control is not (Label or Button)).Select(d => d.Left + d.Width).DefaultIfEmpty(left + 1).Max();
+        Theme.OnScaled(page, f =>
+        {
+            int S(int v) => (int)Math.Round(v * f.Width);
+            design = design.Select(d => (d.Control, S(d.Left), S(d.Width))).ToList();
+            left = S(left);
+            designRight = S(designRight);
+            Apply();
+        });
 
         void Apply()
         {

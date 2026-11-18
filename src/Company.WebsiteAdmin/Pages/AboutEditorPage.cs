@@ -194,11 +194,12 @@ public partial class AboutEditorPage : UserControl, IWebsiteEditor
         lblAboutText2.Text = "Second Text";
         foreach (var c in new Control[] { lblAboutHeading2, lblAboutHeading2Count, frmAboutHeading2, lblAboutText2, lblAboutText2Count, frmAboutText2 })
             c.Visible = two;
-        SetFrame(frmAboutText1, txtAboutText1, 442, two ? 100 : 330);
-        lblAboutHeading2.Top = lblAboutHeading2Count.Top = 556;
-        frmAboutHeading2.Top = 580;
-        lblAboutText2.Top = lblAboutText2Count.Top = 638;
-        SetFrame(frmAboutText2, txtAboutText2, 662, 110);
+        // positions designed for a big screen; Theme.Y tightens them on a smaller one
+        SetFrame(frmAboutText1, txtAboutText1, Theme.Y(442), Theme.Y(two ? 100 : 330));
+        lblAboutHeading2.Top = lblAboutHeading2Count.Top = Theme.Y(556);
+        frmAboutHeading2.Top = Theme.Y(580);
+        lblAboutText2.Top = lblAboutText2Count.Top = Theme.Y(638);
+        SetFrame(frmAboutText2, txtAboutText2, Theme.Y(662), Theme.Y(110));
         ShowCounts();
     }
 
@@ -206,7 +207,7 @@ public partial class AboutEditorPage : UserControl, IWebsiteEditor
     {
         frame.Top = top;
         frame.Height = height;
-        box.Height = height - 18;
+        box.Height = height - Theme.Y(18);
     }
 
     void ShowCounts()
