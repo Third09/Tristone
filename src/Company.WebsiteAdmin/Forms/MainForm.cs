@@ -134,7 +134,7 @@ public partial class MainForm : Form
 
     async Task ShowLastPublishedAsync()
     {
-        if (AppEdition.IsDemo) { lblLastPublished.Text = "Demo version: publishing is off"; return; }
+        if (AppEdition.IsDemo) { lblLastPublished.Text = "This copy: publishing is off"; return; }
         try
         {
             lblLastPublished.Text = await PublishService.LastAsync() is { } p

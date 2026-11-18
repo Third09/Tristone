@@ -22,7 +22,7 @@ public partial class LoginForm : Form
         lblError.Text = notice ?? "";
         // Only development copies change the connection here. Office: fixed by Setup; Demo: its own database.
         lnkDbSettings.Visible = !Data.AppEdition.IsOffice && !Data.AppEdition.IsDemo;
-        if (Data.AppEdition.IsDemo)
+        if (Data.AppEdition.IsSampleDemo)
         {
             Text = "Tri-Stone Demo - Sign In";
             if (notice == null) lblError.Text = "Demo: sign in as demo.admin, password Demo1234";

@@ -22,8 +22,8 @@ internal static class Program
         {
             // One copy at a time: closing it stops the private database.
             using var one = new Mutex(true, "TriStoneDemoRunning", out bool first);
-            if (!first) { MessageBox.Show("Tri-Stone Demo is already open.", "Tri-Stone Demo"); return; }
-            if (args.Contains("--reset-demo")) { DemoDatabase.Reset(); return; }
+            if (!first) { MessageBox.Show($"{AppEdition.Title} is already open.", AppEdition.Title); return; }
+            if (args.Contains("--reset-demo") && AppEdition.IsSampleDemo) { DemoDatabase.Reset(); return; }
             if (!DemoDatabase.Start()) return;
             try { Run(); }
             finally { DemoDatabase.Stop(); }
@@ -48,7 +48,7 @@ internal static class Program
                     if (login.ShowDialog() != DialogResult.OK) return;   // Exit on the Sign In window
                 }
                 notice = null;
-                testing = AppEdition.IsDemo &&
+                testing = AppEdition.IsSampleDemo &&
                           string.Equals(Session.CurrentUser!.Username, TestAsForm.PickerLogin, StringComparison.OrdinalIgnoreCase);
             }
             if (testing)

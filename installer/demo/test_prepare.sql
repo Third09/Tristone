@@ -1,48 +1,14 @@
 -- =====================================================================
--- Tri-Stone TEST Setup data (owner request 2026-11-17): run by build.ps1 -FromThisPc on a COPY of this PC's
--- database (zz_demo_build), never on the real one. It
---   1. removes the throwaway test entries (gibberish projects, materials, vendor, employee, inquiries, service, quotations),
---   2. clears sign-in/edit history and resets every password to the shared test password (no real hash leaves the PC),
---   3. fills the Materials side: about 50 more materials, 4 more vendors, every vendor's price list, open quotes,
+-- Tri-Stone TEST Setup extras (owner request 2026-11-17): run by build.ps1 -FromThisPc -Edition Demo AFTER
+-- clean_copy.sql, on the scratch copy only. It
+--   1. resets every password to the shared test password Test1234 (no real hash leaves the PC) and adds demo.admin
+--      / Demo1234 for the "Test as..." list,
+--   2. fills the Materials side: about 50 more materials, 4 more vendors, every vendor's price list, open quotes,
 --      approved purchases and material usage on Aster Residences.
 -- =====================================================================
 BEGIN;
 
--- ---------- 1. throwaway test entries ----------
-CREATE TEMP TABLE junk_projects AS SELECT project_id FROM projects WHERE project_name IN ('12312312', 'tesing quote', 'tesigng 234');
-CREATE TEMP TABLE junk_materials AS SELECT material_id FROM materials WHERE name IN ('weqyrhgqwe', 'testing mats', 'testing mats 2');
-
-DELETE FROM quotations WHERE project_id IN (SELECT project_id FROM junk_projects)
-                          OR client_name IN ('testing customer', 'tesigng2');          -- scope and cost lines go with them
-DELETE FROM website_project_photos WHERE web_project_id IN (SELECT web_project_id FROM website_projects WHERE project_id IN (SELECT project_id FROM junk_projects));
-DELETE FROM website_projects WHERE project_id IN (SELECT project_id FROM junk_projects);
-DELETE FROM material_usages WHERE project_id IN (SELECT project_id FROM junk_projects) OR material_id IN (SELECT material_id FROM junk_materials);
-DELETE FROM receipts WHERE project_id IN (SELECT project_id FROM junk_projects);
-DELETE FROM projects WHERE project_id IN (SELECT project_id FROM junk_projects);
-
-DELETE FROM purchases WHERE material_id IN (SELECT material_id FROM junk_materials) OR vendor_id IN (SELECT vendor_id FROM vendors WHERE name = '1223');
-DELETE FROM quotes    WHERE material_id IN (SELECT material_id FROM junk_materials) OR vendor_id IN (SELECT vendor_id FROM vendors WHERE name = '1223');
-DELETE FROM deliveries WHERE material_id IN (SELECT material_id FROM junk_materials) OR vendor_id IN (SELECT vendor_id FROM vendors WHERE name = '1223');
-DELETE FROM vendor_materials;                                                            -- the test prices; real lists below
-DELETE FROM materials WHERE material_id IN (SELECT material_id FROM junk_materials);
-DELETE FROM vendor_documents WHERE vendor_id IN (SELECT vendor_id FROM vendors WHERE name = '1223');
-DELETE FROM vendors WHERE name = '1223';
-
-DELETE FROM payslips         WHERE employee_id IN (SELECT employee_id FROM employees WHERE full_name = 'testing emp');
-DELETE FROM attendance_days  WHERE employee_id IN (SELECT employee_id FROM employees WHERE full_name = 'testing emp');
-DELETE FROM attendance_scans WHERE employee_id IN (SELECT employee_id FROM employees WHERE full_name = 'testing emp');
-DELETE FROM cash_advances    WHERE employee_id IN (SELECT employee_id FROM employees WHERE full_name = 'testing emp');
-DELETE FROM employee_rates   WHERE employee_id IN (SELECT employee_id FROM employees WHERE full_name = 'testing emp');
-DELETE FROM employees WHERE full_name = 'testing emp' AND employee_id NOT IN (SELECT employee_id FROM users WHERE employee_id IS NOT NULL);
-
-DELETE FROM quotations WHERE inquiry_id IN (SELECT inquiry_id FROM inquiries WHERE full_name IN ('testing', 'terron mapogi'));
-DELETE FROM inquiries WHERE full_name IN ('testing', 'terron mapogi');
-DELETE FROM website_services WHERE service_name = 'testing service';
-
--- ---------- 2. history and passwords ----------
-DELETE FROM audit_logs;
-DELETE FROM login_logs;
-DELETE FROM password_requests;
+-- ---------- 1. passwords ----------
 UPDATE users SET password_hash = crypt('Test1234', gen_salt('bf', 11)), failed_login_count = 0,
                  security_question = NULL, security_answer_hash = NULL,
                  status = CASE WHEN status = 'Locked' THEN 'Active' ELSE status END;
@@ -50,11 +16,8 @@ UPDATE users SET password_hash = crypt('Test1234', gen_salt('bf', 11)), failed_l
 INSERT INTO users (username, password_hash, full_name, level, department, status)
 SELECT 'demo.admin', crypt('Demo1234', gen_salt('bf', 11)), 'Demo Admin', 'Admin', NULL, 'Active'
  WHERE NOT EXISTS (SELECT 1 FROM users WHERE lower(username) = 'demo.admin');
--- the owner's own employee record: no personal ID numbers in a file given to others
-UPDATE employees SET sss_no = NULL, philhealth_no = NULL, pagibig_no = NULL, tin = NULL
- WHERE employee_id IN (SELECT employee_id FROM users WHERE username IN ('ITmorilla', 'yumi'));
 
--- ---------- 3. materials and everything connected to them ----------
+-- ---------- 2. materials and everything connected to them ----------
 INSERT INTO vendors (name, contact_person, phone, email, address, vat_status, created_by) VALUES
  ('Ilaw Electrical Supply',  'Rowena Dizon', '02-8711-2040', 'sales@ilaw-electrical.example.com', 'Quezon City',   'VAT',     130),
  ('Tubo Plumbing Center',    'Arnel Pascual','02-8932-1188', 'orders@tubo-plumbing.example.com',  'Caloocan City', 'VAT',     130),

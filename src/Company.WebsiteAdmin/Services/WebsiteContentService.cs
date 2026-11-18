@@ -132,7 +132,7 @@ public static class PublishService
     /// <summary>The website repository folder Publish owns (nothing else should be put there).</summary>
     public const string SiteFolder = "Updated/content";
     const string WebRoot = "/" + SiteFolder + "/";
-    const string DemoRefusal = "This is the Demo version: it never changes the live website.";
+    const string DemoRefusal = "This copy of Tri-Stone runs on its own: it never changes the live website.";
 
     /// <summary>site.json and its pictures (repository path -> bytes), or the reason they can't be made.</summary>
     /// <summary><paramref name="Sources"/>: each picture's repository path -> its stored path in the files folder (kept with the

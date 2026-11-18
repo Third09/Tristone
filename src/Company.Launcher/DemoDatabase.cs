@@ -11,7 +11,7 @@ namespace Company.Launcher;
 /// </summary>
 internal static class DemoDatabase
 {
-    static string Root => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TriStone Demo");
+    static string Root => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppEdition.LocalFolderName);
     static string DataDir => Path.Combine(Root, "pgdata");
     static string Files => Path.Combine(Root, "files");
     static string ReadyMark => Path.Combine(Root, "ready.txt");
@@ -25,12 +25,12 @@ internal static class DemoDatabase
         var ready = File.Exists(ReadyMark);
         using var wait = new Form
         {
-            Text = "Tri-Stone Demo", Size = new Size(420, 130), StartPosition = FormStartPosition.CenterScreen,
+            Text = AppEdition.Title, Size = new Size(420, 130), StartPosition = FormStartPosition.CenterScreen,
             FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, ControlBox = false,
         };
         wait.Controls.Add(new Label
         {
-            Text = ready ? "Starting the demo..." : "Preparing the demo for the first time (under a minute)...",
+            Text = ready ? $"Starting {AppEdition.Title}..." : $"Preparing {AppEdition.Title} for the first time (under a minute)...",
             Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter,
         });
         wait.Shown += async (_, _) =>
@@ -41,7 +41,7 @@ internal static class DemoDatabase
         };
         wait.ShowDialog();
         if (problem == null) return true;
-        MessageBox.Show("The demo database couldn't start.\n\n" + problem, "Tri-Stone Demo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("The database couldn't start.\n\n" + problem, AppEdition.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         return false;
     }
 

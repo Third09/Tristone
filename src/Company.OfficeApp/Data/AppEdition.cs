@@ -9,6 +9,8 @@ namespace Company.OfficeApp.Data;
 /// - Office: for the office PCs. Server address, port, database and login are fixed in the file; only the password is
 ///   typed, once per PC (never inside Setup.exe). Staff don't see database settings.
 /// - Demo: stand-alone. Its own private database on this PC with sample data; nothing reaches the live website.
+/// - Standalone (owner request 2026-11-18): the same private database, but a copy of the home PC's real data with
+///   its own logins and passwords; called just "Tri-Stone", no "Test as...", no reset. Nothing reaches the live website.
 /// </summary>
 public static class AppEdition
 {
@@ -35,7 +37,16 @@ public static class AppEdition
         catch (JsonException) { return null; }
     }
 
-    public static bool IsDemo => file?.Edition == "Demo";
+    /// <summary>Runs its own private database on this PC and never touches the live website (Demo and Standalone).</summary>
+    public static bool IsDemo => file?.Edition is "Demo" or "Standalone";
+    /// <summary>The real-style stand-alone copy: real logins, called "Tri-Stone".</summary>
+    public static bool IsStandalone => file?.Edition == "Standalone";
+    /// <summary>"Test as..." and the sample-data reset exist only in the Demo / Test version.</summary>
+    public static bool IsSampleDemo => file?.Edition == "Demo";
+    /// <summary>The program's name on its windows.</summary>
+    public static string Title => IsStandalone ? "Tri-Stone" : "Tri-Stone Demo";
+    /// <summary>Its folder under %LOCALAPPDATA% (separate, so a Demo and a Standalone copy can sit on one PC).</summary>
+    public static string LocalFolderName => IsStandalone ? "TriStone Local" : "TriStone Demo";
     public static bool IsOffice => file?.Edition == "Office";
 
     public static string Host => file?.Host ?? "";

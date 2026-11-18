@@ -8,7 +8,7 @@ namespace Company.Launcher;
 /// <summary>
 /// Demo / Test version only (owner request 2026-11-17): after signing in as demo.admin, pick any active login and
 /// Tri-Stone opens as that person, without their password, to try every role from one sign-in. Sign Out in the
-/// app comes back here. The Office version never shows this (Program checks <see cref="AppEdition.IsDemo"/>).
+/// app comes back here. The Office and Standalone versions never show this (Program checks <see cref="AppEdition.IsSampleDemo"/>).
 /// </summary>
 public partial class TestAsForm : Form
 {

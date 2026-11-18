@@ -605,3 +605,10 @@ The same setup also works on a Windows 10/11 PC that stays on. Use the files in 
 1. On the home PC, double-click `installer\build-test.cmd`. It makes `installer\output\Tri-Stone-Test-Setup-1.0.0.exe` (type a version after it, e.g. `build-test.cmd 1.3.0`).
 2. It copies this PC's database (only reads it), leaves out the throwaway test entries, clears the history, sets every password to **Test1234**, adds many more materials with vendors, prices, quotes, purchases and usage, and brings the uploaded files along. Receipts and old deliveries that were paper-only get a made-up receipt picture stamped SAMPLE, so the receipt viewer can be tried.
 3. Install it like the Demo. Sign in as **demo.admin** / **Demo1234** for the **Test as...** list, or as any of the PC's logins with **Test1234**.
+
+**I. The Standalone version (Tri-Stone on its own PC, with the real data and logins)**
+
+1. On the home PC, double-click `installer\build-standalone.cmd` (type a version after it, e.g. `build-standalone.cmd 1.0.1`). It makes `installer\output\Tri-Stone-Setup-1.0.0.exe`.
+2. It copies this PC's database (only reads it), leaves out the throwaway test entries and clears the history. Everything else stays as it is, **including every login and its password**. No sample extras and no **Test as...** list.
+3. Send the file (for example through Google Drive). On the other PC: run it, then open **Tri-Stone** from the Start menu or Desktop and sign in with a normal login.
+4. Its data stays on that PC only (in `%LOCALAPPDATA%\TriStone Local`), and it is kept if the program is uninstalled. It never changes the live website (Publish is off).

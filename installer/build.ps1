@@ -3,17 +3,22 @@
   Office: Tri-Stone-Office-Setup-<version>.exe for the office PCs, with the server address fixed in it (never the password).
   Demo:   Tri-Stone-Demo-Setup-<version>.exe, stand-alone: a small PostgreSQL + sample data inside.
   Demo -FromThisPc (build-test.cmd): Tri-Stone-Test-Setup-<version>.exe, the same stand-alone program but with a COPY of
-          this PC's construction_db, cleaned and filled by demo\test_prepare.sql, plus this PC's uploaded files.
+          this PC's construction_db, cleaned (demo\clean_copy.sql) and filled (demo\test_prepare.sql), plus this PC's
+          uploaded files and made-up receipt pictures; "Test as..." for demo.admin.
+  Standalone (build-standalone.cmd): Tri-Stone-Setup-<version>.exe, the same stand-alone program named just "Tri-Stone"
+          with a COPY of this PC's construction_db cleaned by demo\clean_copy.sql only: real logins and passwords, no
+          sample extras, no "Test as...", no reset; its data stays when it is uninstalled.
   Needs: .NET 10 SDK, Inno Setup 6, and for the Demo a PostgreSQL 18 on this PC (its program files are copied, and a
   scratch database zz_demo_build is used and dropped to make the sample data). Real databases are not touched.
 #>
 param(
-    [Parameter(Mandatory)][ValidateSet("Office", "Demo")][string]$Edition,
+    [Parameter(Mandatory)][ValidateSet("Office", "Demo", "Standalone")][string]$Edition,
     [string]$Version = "1.0.0",
     [string]$ServerAddress = "192.168.1.50",
     [switch]$FromThisPc
 )
 $ErrorActionPreference = "Stop"
+if ($Edition -eq "Standalone") { $FromThisPc = $true }   # always a copy of this PC's data
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Repo = (Resolve-Path (Join-Path $Here "..")).Path
 
@@ -37,7 +42,7 @@ if ($Edition -eq "Office") {
     $script = "TriStone.iss"
 }
 else {
-    @{ Edition = "Demo" } | ConvertTo-Json | Set-Content -Path $editionFile -Encoding ascii
+    @{ Edition = $Edition } | ConvertTo-Json | Set-Content -Path $editionFile -Encoding ascii
     $demo = Join-Path $Here "demo"
 
     Write-Host "Making the sample data..." -ForegroundColor Cyan
@@ -61,14 +66,18 @@ else {
         & (Join-Path $pgHome "bin\pg_restore.exe") -h localhost -U postgres --no-owner --no-acl -d $scratch $copy
         Remove-Item $copy -Force
         & (Join-Path $Repo "database\setup-database.ps1") -Database $scratch | Out-Null
-        & $psql -h localhost -U postgres -d $scratch -v ON_ERROR_STOP=1 -q -f (Join-Path $demo "test_prepare.sql")
-        if ($LASTEXITCODE -ne 0) { throw "Preparing the test data failed." }
+        & $psql -h localhost -U postgres -d $scratch -v ON_ERROR_STOP=1 -q -f (Join-Path $demo "clean_copy.sql")
+        if ($LASTEXITCODE -ne 0) { throw "Cleaning the copy failed." }
+        if ($Edition -eq "Demo") {
+            & $psql -h localhost -U postgres -d $scratch -v ON_ERROR_STOP=1 -q -f (Join-Path $demo "test_prepare.sql")
+            if ($LASTEXITCODE -ne 0) { throw "Preparing the test data failed." }
+        }
         # the uploaded files (receipt scans, website pictures...) travel with it
         $stored = (& $psql -h localhost -U postgres -d construction_db -At -c "SELECT value FROM app_settings WHERE key = 'file_storage_path'").Trim()
         if ($stored -and (Test-Path $stored)) { Copy-Item $stored $files -Recurse }
         else { New-Item -ItemType Directory -Force -Path $files | Out-Null }
-        # paper-only receipts and deliveries get a made-up "scan" (marked SAMPLE) so the receipt viewer can be tried
-        & (Join-Path $demo "make_receipts.ps1") -Psql $psql -Database $scratch -FilesDir $files
+        # Test only: paper-only receipts and deliveries get a made-up "scan" (marked SAMPLE) to try the receipt viewer
+        if ($Edition -eq "Demo") { & (Join-Path $demo "make_receipts.ps1") -Psql $psql -Database $scratch -FilesDir $files }
     }
     else {
         & (Join-Path $Repo "database\setup-database.ps1") -Database $scratch | Out-Null
@@ -97,8 +106,10 @@ else {
 }
 
 Write-Host "Making the Setup file..." -ForegroundColor Cyan
-$setupName = if ($FromThisPc) { "Tri-Stone-Test-Setup-$Version" } else { "Tri-Stone-$Edition-Setup-$Version" }
-& $iscc /Qp "/DAppVersion=$Version" "/DSetupName=$setupName" (Join-Path $Here $script)
+$setupName = if ($Edition -eq "Standalone") { "Tri-Stone-Setup-$Version" }
+             elseif ($FromThisPc) { "Tri-Stone-Test-Setup-$Version" } else { "Tri-Stone-$Edition-Setup-$Version" }
+$extra = if ($Edition -eq "Standalone") { "/DStandalone" } else { "/DSampleDemo" }
+& $iscc /Qp "/DAppVersion=$Version" "/DSetupName=$setupName" $extra (Join-Path $Here $script)
 if ($LASTEXITCODE -ne 0) { throw "Making the Setup file failed." }
 Get-ChildItem (Join-Path $Here "output") -Filter "$setupName.exe" | ForEach-Object {
     Write-Host ("Done: {0} ({1:N0} MB)" -f $_.FullName, ($_.Length / 1MB)) -ForegroundColor Green
