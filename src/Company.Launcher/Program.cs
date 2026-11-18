@@ -17,6 +17,7 @@ internal static class Program
     {
         ApplicationConfiguration.Initialize();
         Theme.Enable();   // the app's look (UI/Theme.cs), applied to every window
+        try { Theme.WindowIcon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { /* keep the default icon */ }
 
         if (AppEdition.IsDemo)
         {

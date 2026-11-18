@@ -41,6 +41,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=lowest
 UninstallDisplayIcon={app}\TriStone.exe
 WizardStyle=modern
+SetupIconFile=..\src\Company.Launcher\tristone.ico
 CloseApplications=yes
 
 [Tasks]

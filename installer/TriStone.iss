@@ -32,6 +32,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired={#Priv}
 UninstallDisplayIcon={app}\TriStone.exe
 WizardStyle=modern
+SetupIconFile=..\src\Company.Launcher\tristone.ico
 ; Close a running Tri-Stone before updating it.
 CloseApplications=yes
 

@@ -88,8 +88,16 @@ public static class Theme
     public static void Enable() => Application.Idle += (_, _) =>
     {
         foreach (Form f in Application.OpenForms)
-            if (!done.TryGetValue(f, out _)) Apply(f);
+            if (!done.TryGetValue(f, out _))
+            {
+                if (WindowIcon != null) f.Icon = WindowIcon;
+                Apply(f);
+            }
     };
+
+    /// <summary>The Tri-Stone icon (owner choice 2026-11-18: white "TS" with an orange bar) for every window's title bar
+    /// and taskbar button; the Launcher sets it from TriStone.exe's own icon.</summary>
+    public static Icon? WindowIcon { get; set; }
 
     /// <summary>Styles a control and everything inside it, and anything added to it later.</summary>
     public static void Apply(Control root)

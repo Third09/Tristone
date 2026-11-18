@@ -18,6 +18,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>TriStone</AssemblyName>
+    <!-- The program's icon (owner choice 2026-11-18): white "TS" with an orange bar on dark navy. -->
+    <ApplicationIcon>tristone.ico</ApplicationIcon>
     <RootNamespace>Company.Launcher</RootNamespace>
     <!-- Built program goes to an easy folder at the top of the project (Apps\Tri-Stone\TriStone.exe). -->
     <OutputPath>$(MSBuildProjectDirectory)\..\..\Apps\Tri-Stone\</OutputPath>
