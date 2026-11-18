@@ -25,14 +25,16 @@ public static class Theme
     public static readonly Color Green = ColorTranslator.FromHtml("#1F5C4C");        // Publish Website
     public static readonly Color GreenDark = ColorTranslator.FromHtml("#174639");
     public static readonly Color Red = ColorTranslator.FromHtml("#D92D20");          // Delete, Reject, Log out
+    // Darker text and one fixed white background (owner request 2026-11-18: grey text and grey backgrounds were hard
+    // to read on some screens). Orange stays the colour for highlights.
     public static readonly Color Page = Color.White;                                 // window and page background
-    public static readonly Color Text = ColorTranslator.FromHtml("#1D2939");
-    public static readonly Color TextMuted = ColorTranslator.FromHtml("#667085");
-    public static readonly Color Border = ColorTranslator.FromHtml("#D0D5DD");
-    public static readonly Color Line = ColorTranslator.FromHtml("#EAECF0");         // table lines
-    public static readonly Color HeaderBack = ColorTranslator.FromHtml("#F9FAFB");   // table headers
+    public static readonly Color Text = ColorTranslator.FromHtml("#101828");         // near black
+    public static readonly Color TextMuted = ColorTranslator.FromHtml("#344054");    // secondary text, still dark
+    public static readonly Color Border = ColorTranslator.FromHtml("#98A2B3");
+    public static readonly Color Line = ColorTranslator.FromHtml("#D0D5DD");
+    public static readonly Color HeaderBack = ColorTranslator.FromHtml("#F2F4F7");   // disabled boxes
     public static readonly Color Hover = ColorTranslator.FromHtml("#F2F4F7");        // plain buttons under the mouse
-    public static readonly Color Canvas = ColorTranslator.FromHtml("#F7F8FA");       // behind the white cards on redone pages
+    public static readonly Color Canvas = Color.White;                               // behind the cards: the same fixed white
 
     public const int ButtonRadius = 8;
 
@@ -261,16 +263,19 @@ public static class Theme
         TextRenderer.DrawText(e.Graphics, b.Text, b.Font, new Rectangle(x, 0, b.Width - x - (left ? 8 : 0), b.Height), fore, flags);
     }
 
-    public static readonly Color GridLine = ColorTranslator.FromHtml("#E4E7EC");      // table cell lines
-    public static readonly Color GridFrame = ColorTranslator.FromHtml("#D0D5DD");     // the border around a table
-    public static readonly Color GridHeader = ColorTranslator.FromHtml("#F2F4F7");    // table header row
-    public static readonly Color GridStripe = ColorTranslator.FromHtml("#FAFAFB");    // every other row
-    public static readonly Color GridEmpty = ColorTranslator.FromHtml("#F7F8FA");     // below the last row
+    // Tables in black and white (owner request 2026-11-18): white cells, black text, dark lines, no shading;
+    // the selected row is the one orange-tinted thing.
+    public static readonly Color GridLine = ColorTranslator.FromHtml("#667085");      // table cell lines
+    public static readonly Color GridFrame = ColorTranslator.FromHtml("#101828");     // the border around a table
+    public static readonly Color GridHeader = Color.White;                            // table header row
+    public static readonly Color GridStripe = Color.White;                            // no striped rows
+    public static readonly Color GridEmpty = Color.White;                             // below the last row
+    public static readonly Color GridSelect = ColorTranslator.FromHtml("#FFD9B8");    // the selected row
 
     /// <summary>
-    /// Tables (owner request 2026-11-01: "have grid, show where it starts and ends"): lines between every cell, a
-    /// framed header, every other row shaded, a gray area under the last row, a border around the whole table
-    /// (drawn on its parent, just outside it) and "No records to show" when it's empty.
+    /// Tables (owner requests 2026-11-01 and 2026-11-18): black and white, lines between every cell, a bold black
+    /// header, a dark border around the whole table (drawn on its parent, just outside it), the selected row light
+    /// orange, and "No records to show" when it's empty.
     /// </summary>
     static void StyleGrid(DataGridView g)
     {
@@ -284,7 +289,7 @@ public static class Theme
         g.ColumnHeadersHeight = HeaderHeight;
         var h = g.ColumnHeadersDefaultCellStyle;
         h.BackColor = GridHeader;
-        h.ForeColor = Text;
+        h.ForeColor = Color.Black;
         h.SelectionBackColor = GridHeader;
         h.SelectionForeColor = Text;
         h.Font = new Font(g.Font, FontStyle.Bold);
@@ -292,7 +297,7 @@ public static class Theme
         var d = g.DefaultCellStyle;
         if (IsDefault(d.ForeColor, SystemColors.ControlText)) d.ForeColor = Text;
         if (IsDefault(d.BackColor, SystemColors.Window)) d.BackColor = Color.White;
-        d.SelectionBackColor = OrangeLight;
+        d.SelectionBackColor = GridSelect;
         d.SelectionForeColor = Text;
         d.Padding = new Padding(6, 0, 6, 0);
         if (IsDefault(g.AlternatingRowsDefaultCellStyle.BackColor)) g.AlternatingRowsDefaultCellStyle.BackColor = GridStripe;
