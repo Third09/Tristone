@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Company.OfficeApp.Data;
 using Company.Shared.Data;
 using Company.Shared.Models;
@@ -32,7 +32,19 @@ public static partial class EmployeeService
             ? "Pay schedule: Site (paid every Saturday)"
             : "Pay schedule: Office (paid the 15th and 30th)";
 
-    [GeneratedRegex(@"^[A-Za-z0-9-]{1,20}$")]
+    /// <summary>The pay grade list (Claude's default 2026-11-21, change it here).</summary>
+    public static readonly string[] PayGrades = ["Helper / Unskilled", "Semi-skilled", "Skilled", "Junior Staff", "Senior Staff"];
+
+    /// <summary>Only digits and the given separators, with a digit count between min and max.</summary>
+    static bool GoodNumber(string text, int minDigits, int maxDigits, string separators)
+    {
+        var t = text.Trim();
+        if (t.Any(ch => !char.IsAsciiDigit(ch) && !separators.Contains(ch))) return false;
+        int digits = t.Count(char.IsAsciiDigit);
+        return digits >= minDigits && digits <= maxDigits && t.Length <= 20;
+    }
+
+    [GeneratedRegex(@"^[0-9]{1,9}$")]
     private static partial Regex BiometricPattern();
 
     public static async Task<List<EmployeeRow>> ListAsync(string search, string? status, string? paySchedule)
@@ -90,14 +102,22 @@ public static partial class EmployeeService
         if (i.DailyRate <= 0) return "Type the daily rate.";
         if (i.DailyRate > MaxDailyRate) return $"The daily rate looks too high (more than {ProjectService.Money(MaxDailyRate)}).";
         if (!string.IsNullOrWhiteSpace(i.BiometricId) && !BiometricPattern().IsMatch(i.BiometricId.Trim()))
-            return "Biometric ID: up to 20 letters, numbers or dashes (as shown on the scanner).";
-        if ((i.ContactNumber?.Length ?? 0) > 30) return "The contact number is too long.";
+            return "Biometric ID: numbers only, up to 9 digits (the ID shown on the scanner).";
+        if (!string.IsNullOrWhiteSpace(i.ContactNumber) && !GoodNumber(i.ContactNumber, 7, 13, "+-() "))
+            return "Contact number: numbers only, 7 to 13 digits (e.g. 0917 123 4567).";
         if ((i.Address?.Length ?? 0) > 255) return "The address is too long (255 characters at most).";
         if (!EmployeeRoles.For(i.Department).Contains(i.Position))
             return i.Department == EmployeeDepartments.Site ? "Choose the role: Foreman, Laborer or Helper." : "Choose the role: Employee or Supervisor.";
         if ((i.PayGrade?.Length ?? 0) > 30) return "The pay grade is too long (30 characters at most).";
-        foreach (var id in new[] { i.SssNo, i.PhilHealthNo, i.PagIbigNo, i.Tin })
-            if ((id?.Trim().Length ?? 0) > 20) return "Government ID numbers can be 20 characters at most.";
+        // Philippine ID lengths (tester report 2026-11-21); dashes and spaces may be typed between the digits
+        if (!string.IsNullOrWhiteSpace(i.SssNo) && !GoodNumber(i.SssNo, 10, 10, "- "))
+            return "SSS number: 10 digits, like 00-0000000-0.";
+        if (!string.IsNullOrWhiteSpace(i.PhilHealthNo) && !GoodNumber(i.PhilHealthNo, 12, 12, "- "))
+            return "PhilHealth number: 12 digits, like 00-000000000-0.";
+        if (!string.IsNullOrWhiteSpace(i.PagIbigNo) && !GoodNumber(i.PagIbigNo, 12, 12, "- "))
+            return "Pag-IBIG number: 12 digits, like 0000-0000-0000.";
+        if (!string.IsNullOrWhiteSpace(i.Tin) && !GoodNumber(i.Tin, 9, 14, "- "))
+            return "TIN: 9 to 14 digits, like 000-000-000-000.";
         return null;
     }
 

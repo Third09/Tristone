@@ -1,4 +1,4 @@
-namespace Company.OfficeApp.Pages
+﻿namespace Company.OfficeApp.Pages
 {
     partial class ProjectsPage
     {
@@ -30,6 +30,7 @@ namespace Company.OfficeApp.Pages
             colClient = new DataGridViewTextBoxColumn();
             colSector = new DataGridViewTextBoxColumn();
             colContractPrice = new DataGridViewTextBoxColumn();
+            colRevisedPrice = new DataGridViewTextBoxColumn();
             colStart = new DataGridViewTextBoxColumn();
             colTargetEnd = new DataGridViewTextBoxColumn();
             colStatus = new DataGridViewTextBoxColumn();
@@ -119,7 +120,7 @@ namespace Company.OfficeApp.Pages
             dgvProjects.AllowUserToAddRows = false;
             dgvProjects.AllowUserToDeleteRows = false;
             dgvProjects.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvProjects.Columns.AddRange(new DataGridViewColumn[] { colProjectName, colSite, colClient, colSector, colContractPrice, colStart, colTargetEnd, colStatus, colOnWebsite });
+            dgvProjects.Columns.AddRange(new DataGridViewColumn[] { colProjectName, colSite, colClient, colSector, colContractPrice, colRevisedPrice, colStart, colTargetEnd, colStatus, colOnWebsite });
             dgvProjects.Location = new Point(38, 74);
             dgvProjects.MultiSelect = false;
             dgvProjects.Name = "dgvProjects";
@@ -160,6 +161,14 @@ namespace Company.OfficeApp.Pages
             colContractPrice.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" };
             colContractPrice.HeaderText = "Contract Price";
             colContractPrice.Name = "colContractPrice";
+            //
+            // colRevisedPrice
+            //
+            colRevisedPrice.DataPropertyName = "RevisedPrice";
+            colRevisedPrice.DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "C2" };
+            colRevisedPrice.HeaderText = "Revised Price";
+            colRevisedPrice.Name = "colRevisedPrice";
+            colRevisedPrice.ToolTipText = "Contract price + approved change orders";
             //
             // colStart
             //
@@ -481,6 +490,7 @@ namespace Company.OfficeApp.Pages
         private DataGridViewTextBoxColumn colClient;
         private DataGridViewTextBoxColumn colSector;
         private DataGridViewTextBoxColumn colContractPrice;
+        private DataGridViewTextBoxColumn colRevisedPrice;
         private DataGridViewTextBoxColumn colStart;
         private DataGridViewTextBoxColumn colTargetEnd;
         private DataGridViewTextBoxColumn colStatus;

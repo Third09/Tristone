@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Company.OfficeApp.Data;
 using Company.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +7,8 @@ namespace Company.OfficeApp.Services;
 
 /// <summary>One row of the Projects table.</summary>
 public record ProjectRow(int ProjectId, string ProjectName, string SiteLocation, string? ClientName, string Sector,
-                         decimal ContractPrice, DateOnly StartDate, DateOnly? TargetEndDate, string Status, bool ShowOnWebsite);
+                         decimal ContractPrice, DateOnly StartDate, DateOnly? TargetEndDate, string Status, bool ShowOnWebsite,
+                         decimal RevisedPrice = 0);
 
 /// <summary>What the Admin types in the project form.</summary>
 public record ProjectInput(string ProjectName, string SiteLocation, string? ClientName, string Sector,
@@ -37,10 +38,13 @@ public static class ProjectService
         }
         if (status != null) q = q.Where(p => p.Status == status);
         if (sector != null) q = q.Where(p => p.Sector == sector);
-        return await q.OrderByDescending(p => p.StartDate).ThenBy(p => p.ProjectName)
+        var rows = await q.OrderByDescending(p => p.StartDate).ThenBy(p => p.ProjectName)
             .Select(p => new ProjectRow(p.ProjectId, p.ProjectName, p.SiteLocation, p.ClientName, p.Sector,
-                                        p.ContractPrice, p.StartDate, p.TargetEndDate, p.Status, p.ShowOnWebsite))
+                                        p.ContractPrice, p.StartDate, p.TargetEndDate, p.Status, p.ShowOnWebsite, 0))
             .ToListAsync();
+        // Revised price = contract price + approved change orders (tester report 2026-11-21).
+        var changes = await ChangeOrderService.ByProjectAsync(db, rows.Select(r => r.ProjectId).ToList());
+        return rows.Select(r => r with { RevisedPrice = r.ContractPrice + changes.GetValueOrDefault(r.ProjectId) }).ToList();
     }
 
     public static async Task<Project?> GetAsync(int projectId)

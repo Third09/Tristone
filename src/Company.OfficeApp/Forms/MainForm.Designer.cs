@@ -1,4 +1,4 @@
-namespace Company.OfficeApp.Forms
+﻿namespace Company.OfficeApp.Forms
 {
     partial class MainForm
     {
@@ -232,10 +232,6 @@ namespace Company.OfficeApp.Forms
             Controls.Add(pnlContent);
             Controls.Add(pnlTopBar);
             Controls.Add(pnlSidebar);
-            ControlBox = false;
-            FormBorderStyle = FormBorderStyle.None;
-            MaximizeBox = false;
-            MinimizeBox = false;
             WindowState = FormWindowState.Maximized;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;

@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Company.OfficeApp.Data;
 using Company.Shared.Data;
 using Company.Shared.Models;
@@ -110,6 +110,9 @@ public static class PasswordService
         r.Status = PasswordRequestStatuses.Dismissed;
         r.HandledBy = Session.CurrentUser?.UserId;
         r.HandledAt = DateTime.Now;
+        // shows in Dashboard > Log History under Password Request (owner request 2026-11-21)
+        var who = await db.Users.Where(u => u.UserId == r.UserId).Select(u => u.Username).FirstOrDefaultAsync() ?? "";
+        db.LoginLogs.Add(Log(r.UserId, who, LoginActions.PasswordRequest, $"Request dismissed by {Session.CurrentUser!.FullName}"));
         await db.SaveChangesAsync();
     }
 

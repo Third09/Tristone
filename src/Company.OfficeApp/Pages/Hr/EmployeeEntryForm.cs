@@ -1,4 +1,4 @@
-using Company.OfficeApp.Services;
+﻿using Company.OfficeApp.Services;
 using Company.Shared.Models;
 
 namespace Company.OfficeApp.Pages.Hr;
@@ -19,6 +19,7 @@ public partial class EmployeeEntryForm : Form
         numDailyRate.Maximum = EmployeeService.MaxDailyRate;
         dtpRateEffective.Value = DateTime.Today;
         lblPayScheduleValue.Text = EmployeeService.PayScheduleText(null);
+        EmployeesTab.SetUpEntryBoxes(txtEmployeeContact, txtBiometricId, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin, cboPayGrade);
     }
 
     void cboEmployeeDepartment_SelectedIndexChanged(object sender, EventArgs e)
@@ -30,7 +31,7 @@ public partial class EmployeeEntryForm : Form
     EmployeeInput ReadForm() => new(
         txtEmployeeName.Text, txtEmployeeContact.Text, txtEmployeeAddress.Text, (string?)cboEmployeeRole.SelectedItem,
         (string?)cboEmployeeDepartment.SelectedItem ?? "",
-        txtPayGrade.Text, txtBiometricId.Text, chkGovDeductions.Checked,
+        EmployeesTab.ReadPayGrade(cboPayGrade), txtBiometricId.Text, chkGovDeductions.Checked,
         txtSssNo.Text, txtPhilHealthNo.Text, txtPagIbigNo.Text, txtEmployeeTin.Text,
         numDailyRate.Value, DateOnly.FromDateTime(dtpRateEffective.Value));
 

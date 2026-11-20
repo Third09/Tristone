@@ -180,7 +180,7 @@ Responsive.SelectRow(dgvProjects, (ProjectRow row) => row.ProjectId == id);
   - The page form only edits the clicked record; `RecordForm.SetEnabled` locks it when nothing is selected.
   - Save snapshots `ReadForm()` when the record loads and calls `RecordForm.ConfirmSave(original, input, labels, privateFields)`, which lists the changes in a Yes/No message.
   - Employees uses its own `EmployeeEntryForm` pop-up (built first, same behaviour).
-- The main window is borderless and maximized to the screen's working area (`FormBorderStyle = None`, `ControlBox = false`, `MaximizedBounds` set in the constructor), so it can't be resized, moved or closed by accident.
+- The main windows (office and Website Admin) are normal windows since 1.6.1: `Theme.MainWindow(this)` in the constructor (sizable, minimize / maximize / close, opened maximized, Restore Down = a centred window 90% of the screen, at least 1000 x 600). The X asks first (`Theme.ConfirmClose`, before the idle monitor is stopped, so "No" keeps everything running), then writes the sign-out and the program ends.
 - To clear a dropdown, set `SelectedIndex = -1`, not `Text = ""`. Clearing only the text keeps the old choice selected underneath, and picking it again doesn't register (bug fixed on the Materials form).
 - Control names follow the UI Elements Guide (`btn`, `txt`, `cbo`, `dgv`...).
 - Screens stay plain, default WinForms until they are styled from the Figma design.

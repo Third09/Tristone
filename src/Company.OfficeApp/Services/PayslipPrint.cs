@@ -36,7 +36,8 @@ public sealed class PayslipPrint : IDisposable
         var area = e.MarginBounds;
         var d = slips[page];
         var s = d.Slip;
-        float x = area.Left, y = area.Top, right = area.Left + 420;
+        // the 420-wide slip sits in the middle of the page (tester report 2026-11-21: it was on the left half)
+        float x = area.Left + Math.Max(0, (area.Width - 420) / 2f), y = area.Top, right = x + 420;
         using var heading = new Font("Segoe UI", 14, FontStyle.Bold);
         using var bold = new Font("Segoe UI", 10, FontStyle.Bold);
         using var text = new Font("Segoe UI", 10);
@@ -55,7 +56,7 @@ public sealed class PayslipPrint : IDisposable
         g.DrawString("Tri-Stone Construction Services", text, Brushes.Black, x, y); y += 20;
         g.DrawString("Payslip", heading, Brushes.Black, x, y); y += 32;
         Line("Employee", d.Name, bold);
-        Line("Position / department", $"{d.Position ?? "-"} / {d.Department}");
+        Line("Role / department", $"{d.Position ?? "-"} / {d.Department}");
         Line("Pay period", $"{d.Period.From:MMM d} - {d.Period.To:MMM d, yyyy}");
         Line("Pay date", d.Period.PayDate.ToString("MMMM d, yyyy"));
         Line("Daily rate", M(s.DailyRate));

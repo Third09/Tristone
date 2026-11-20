@@ -1,4 +1,4 @@
-using Company.OfficeApp.Data;
+﻿using Company.OfficeApp.Data;
 using Company.OfficeApp.UI;
 using Company.OfficeApp.Forms;
 using Company.OfficeApp.Services;
@@ -23,7 +23,7 @@ public partial class MainForm : Form
     public bool SignedOutIdle { get; private set; }
     bool loggedOut;   // sign-out already written to login_logs
 
-    enum WebPage { Home, Projects, Services, AboutUs, ContactUs }
+    enum WebPage { Home, Projects, Services, AboutUs, ContactUs, EditHistory }
 
     readonly Dictionary<WebPage, Button> navButtons;
     WebPage? current;
@@ -31,10 +31,8 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
-        // Always full screen, stopping at the taskbar (Windows reads this position relative to the monitor).
-        var screen = Screen.FromPoint(Cursor.Position);
-        MaximizedBounds = new Rectangle(screen.WorkingArea.X - screen.Bounds.X, screen.WorkingArea.Y - screen.Bounds.Y,
-                                        screen.WorkingArea.Width, screen.WorkingArea.Height);
+        // A normal window with minimize / maximize / close (owner OK 2026-11-21), opens maximized.
+        Theme.MainWindow(this);
         lblUserName.Text = Session.CurrentUser is { } u ? $"Signed in: {u.FullName} ({u.Username}) - {u.Level}" : "";
 
         // The sidebar follows the Figma design (owner decisions 2026-11-01).
@@ -45,14 +43,15 @@ public partial class MainForm : Form
             [WebPage.Services] = btnNavServices,
             [WebPage.AboutUs] = btnNavAboutUs,
             [WebPage.ContactUs] = btnNavContactUs,
+            [WebPage.EditHistory] = btnNavEditHistory,
         };
         foreach (var (page, button) in navButtons) button.Click += (_, _) => ShowPage(page);
         Theme.StyleMainWindow(picLogo,
         [
             (btnNavHome, ""), (btnNavProjects, ""), (btnNavServices, ""), (btnNavAboutUs, ""),
-            (btnNavContactUs, ""), (btnSignOut, ""),
+            (btnNavContactUs, ""), (btnNavEditHistory, "\uE81C"), (btnSignOut, ""),
         ], lblUserName, lblLastPublished);
-        if (AppEdition.IsDemo)   // nothing reaches the live website from the Demo
+        if (AppEdition.WebsiteOff)   // nothing reaches the live website from the Demo
             btnPublishWebsite.Visible = btnUndoPublish.Visible = btnWebsiteSettings.Visible = false;
     }
 
@@ -73,6 +72,7 @@ public partial class MainForm : Form
         WebPage.Projects => "Projects Page Editor",
         WebPage.Services => "Services Page Editor",
         WebPage.AboutUs => "About Us Page Editor",
+        WebPage.EditHistory => "Edit History",
         _ => "Contact Us",
     };
 
@@ -94,6 +94,7 @@ public partial class MainForm : Form
             WebPage.Projects => new ProjectsEditorPage(),
             WebPage.Services => new ServicesEditorPage(),
             WebPage.AboutUs => new AboutEditorPage(),
+            WebPage.EditHistory => new Company.OfficeApp.Pages.Shared.EditHistoryTab(AuditService.WebsiteHistory),
             _ => ContactUs(),
         };
 
@@ -101,7 +102,7 @@ public partial class MainForm : Form
         pnlContent.Controls.Clear();
         view.Dock = DockStyle.Fill;
         pnlContent.Controls.Add(view);
-        Responsive.FitDockedPage(view);   // cards take the window's width (no sideways scrolling on smaller screens)
+        if (page != WebPage.EditHistory) Responsive.FitDockedPage(view);   // cards take the window's width (no sideways scrolling on smaller screens)
         current = page;
 
         lblPageTitle.Text = Title(page);
@@ -135,7 +136,7 @@ public partial class MainForm : Form
 
     async Task ShowLastPublishedAsync()
     {
-        if (AppEdition.IsDemo) { lblLastPublished.Text = "This copy: publishing is off"; return; }
+        if (AppEdition.WebsiteOff) { lblLastPublished.Text = "This copy: publishing is off"; return; }
         try
         {
             lblLastPublished.Text = await PublishService.LastAsync() is { } p
@@ -301,6 +302,7 @@ public partial class MainForm : Form
     // Alt+F4: write the sign-out before the window closes, or the app could exit before the row is saved.
     async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
     {
+        if (!loggedOut && !Theme.ConfirmClose(this, e)) { e.Cancel = true; return; }   // "No": keep working
         IdleMonitor.Instance.Stop();
         if (loggedOut) return;
         e.Cancel = true;

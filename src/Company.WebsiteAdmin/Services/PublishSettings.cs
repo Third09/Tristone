@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -73,7 +73,7 @@ public class PublishSettings
 
     public static PublishSettings Load()
     {
-        if (Company.OfficeApp.Data.AppEdition.IsDemo) return new PublishSettings();   // no token, no read key: nothing reaches the real website
+        if (Company.OfficeApp.Data.AppEdition.WebsiteOff) return new PublishSettings();   // no token, no read key: nothing reaches the real website
         if (!File.Exists(FilePath)) return new PublishSettings();
         try { return JsonSerializer.Deserialize<PublishSettings>(File.ReadAllText(FilePath)) ?? new PublishSettings(); }
         catch (JsonException) { return new PublishSettings(); }
@@ -81,7 +81,7 @@ public class PublishSettings
 
     public void Save()
     {
-        if (Company.OfficeApp.Data.AppEdition.IsDemo) return;
+        if (Company.OfficeApp.Data.AppEdition.WebsiteOff) return;
         Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
         File.WriteAllText(FilePath, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
     }

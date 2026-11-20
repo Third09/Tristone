@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Company.OfficeApp.UI;
@@ -94,6 +94,8 @@ public static class Theme
             {
                 if (WindowIcon != null) f.Icon = WindowIcon;
                 ScaleWindow(f);
+                FitTallPopup(f);
+                if (f is PrintPreviewDialog preview) WheelZoom(preview);
                 Apply(f);
             }
     };
@@ -166,6 +168,134 @@ public static class Theme
                                        Math.Max(area.Top, around.Top + (around.Height - f.Height) / 2));
             }
         }
+    }
+
+    /// <summary>
+    /// A pop-up taller (or wider) than the screen (tester report 2026-11-21: Add Receipt on a 1366 x 768 laptop hid its
+    /// Save button): its bottom row of buttons (Save / Cancel and the message beside them) is pinned to the bottom of
+    /// the window, everything above scrolls, and the window can be resized and maximized. Pop-ups that fit, the main
+    /// windows and windows with docked parts (print preview, website preview) are left as they are.
+    /// </summary>
+    static void FitTallPopup(Form f)
+    {
+        try
+        {
+            if (f.FormBorderStyle == FormBorderStyle.None || f.WindowState != FormWindowState.Normal || f.IsMdiContainer) return;
+            var kids = f.Controls.Cast<Control>().Where(c => c.Visible).ToList();
+            if (kids.Count == 0 || kids.Any(c => c.Dock != DockStyle.None)) return;
+            // the form itself, or the one page an Add pop-up holds
+            Control root = kids.Count == 1 && kids[0] is UserControl or Panel ? kids[0] : f;
+            var inside = root.Controls.Cast<Control>().Where(c => c.Visible).ToList();
+            if (inside.Count == 0) return;
+            int rootTop = root == f ? 0 : root.Top, rootLeft = root == f ? 0 : root.Left;
+            int needH = rootTop + inside.Max(c => c.Bottom) + 16, needW = rootLeft + inside.Max(c => c.Right) + 16;
+            var area = Screen.FromControl(f).WorkingArea;
+            int frameH = f.Height - f.ClientSize.Height, frameW = f.Width - f.ClientSize.Width;
+            if (needH + frameH <= area.Height && needW + frameW <= area.Width) return;
+
+            // the bottom row of buttons, when it really is the bottom of the form
+            var buttons = inside.OfType<Button>().ToList();
+            int rowTop = -1;
+            if (buttons.Count > 0)
+            {
+                int lastTop = buttons.Max(b => b.Top);
+                var row = buttons.Where(b => b.Top >= lastTop - 8).ToList();
+                int rowBottom = row.Max(b => b.Bottom);
+                if (!inside.Except(row).Any(c => c.Top > rowBottom))
+                {
+                    rowTop = row.Min(b => b.Top) - 4;
+                    // the form's message line just above the buttons ("Type the amount.") stays in sight with them
+                    foreach (var m in inside.OfType<Label>().Where(l => l.Name.EndsWith("Msg") && l.Top >= rowTop - 48 && l.Top < rowTop))
+                        rowTop = Math.Min(rowTop, m.Top - 4);
+                }
+            }
+            f.SuspendLayout();
+            f.AutoScroll = false;
+            var body = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = root.BackColor };
+            int footerH = 0;
+            if (rowTop > 0)
+            {
+                var pinned = inside.Where(c => c.Top >= rowTop).ToList();
+                int top = pinned.Min(c => c.Top);
+                var footer = new Panel { Dock = DockStyle.Bottom, BackColor = root.BackColor, Name = "pnlPinnedButtons" };
+                footer.Height = pinned.Max(c => c.Bottom) - top + 24;
+                footer.Paint += (_, e) => { using var pen = new Pen(Border); e.Graphics.DrawLine(pen, 0, 0, footer.Width, 0); };
+                foreach (var c in pinned)
+                {
+                    root.Controls.Remove(c);
+                    c.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                    c.Location = new Point(rootLeft + c.Left, c.Top - top + 12);
+                    footer.Controls.Add(c);
+                }
+                footerH = footer.Height;
+                needH = rootTop + inside.Except(pinned).DefaultIfEmpty(root).Max(c => c == root ? 0 : c.Bottom) + 16;
+                if (root != f) root.Height = needH - rootTop;
+                f.Controls.Add(footer);
+            }
+            if (root == f)
+                foreach (var c in f.Controls.Cast<Control>().Where(c => c.Name != "pnlPinnedButtons").ToList())
+                {
+                    f.Controls.Remove(c);
+                    body.Controls.Add(c);
+                }
+            else
+            {
+                f.Controls.Remove(root);
+                root.Location = new Point(0, 0);
+                body.Controls.Add(root);
+            }
+            f.Controls.Add(body);
+            body.BringToFront();
+            f.FormBorderStyle = FormBorderStyle.Sizable;
+            f.MaximizeBox = true;
+            int scrollW = SystemInformation.VerticalScrollBarWidth;
+            f.ClientSize = new Size(Math.Min(needW + scrollW, area.Width - frameW), Math.Min(needH + footerH, area.Height - frameH));
+            f.MinimumSize = new Size(Math.Min(f.Width, 360), Math.Min(f.Height, 300));
+            f.Location = new Point(area.Left + Math.Max(0, (area.Width - f.Width) / 2), area.Top + Math.Max(0, (area.Height - f.Height) / 2));
+            f.ResumeLayout(true);
+        }
+        catch { /* a layout nicety: never stop the window from opening */ }
+    }
+
+    /// <summary>
+    /// The office and Website Admin main windows (owner OK 2026-11-21): a normal window with minimize, maximize and
+    /// close, opened maximized; "Restore Down" gives a centred window 90% of the screen, never smaller than 1000 x 600.
+    /// </summary>
+    public static void MainWindow(Form f)
+    {
+        var area = Screen.FromPoint(Cursor.Position).WorkingArea;
+        f.FormBorderStyle = FormBorderStyle.Sizable;
+        f.ControlBox = f.MinimizeBox = f.MaximizeBox = true;
+        f.MinimumSize = new Size(Math.Min(1000, area.Width), Math.Min(600, area.Height));
+        f.StartPosition = FormStartPosition.Manual;
+        var size = new Size(Math.Max(f.MinimumSize.Width, area.Width * 9 / 10), Math.Max(f.MinimumSize.Height, area.Height * 9 / 10));
+        f.Bounds = new Rectangle(area.Left + (area.Width - size.Width) / 2, area.Top + (area.Height - size.Height) / 2, size.Width, size.Height);
+        f.WindowState = FormWindowState.Maximized;
+    }
+
+    /// <summary>
+    /// The X of a main window (or Alt+F4): "Close Tri-Stone? You will be signed out." Windows shutting down or the
+    /// program being closed by itself doesn't ask.
+    /// </summary>
+    public static bool ConfirmClose(Form f, FormClosingEventArgs e) =>
+        e.CloseReason != CloseReason.UserClosing ||
+        MessageBox.Show(f, "Close Tri-Stone? You will be signed out.", "Close", MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+
+    /// <summary>
+    /// Print previews (tester report 2026-11-21): Ctrl + mouse wheel zooms in and out; the plain wheel still scrolls.
+    /// </summary>
+    static void WheelZoom(PrintPreviewDialog dialog)
+    {
+        var view = dialog.PrintPreviewControl;
+        view.MouseEnter += (_, _) => view.Focus();
+        view.MouseWheel += (_, e) =>
+        {
+            if ((Control.ModifierKeys & Keys.Control) == 0) return;
+            if (e is HandledMouseEventArgs h) h.Handled = true;
+            view.AutoZoom = false;
+            view.Zoom = Math.Clamp(view.Zoom * (e.Delta > 0 ? 1.15 : 1 / 1.15), 0.1, 5.0);
+        };
     }
 
     /// <summary>Tightens a control and everything inside it (sizes and positions; fonts stay as they are).</summary>

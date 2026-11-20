@@ -1,4 +1,4 @@
-using Company.OfficeApp.Services;
+﻿using Company.OfficeApp.Services;
 using Company.OfficeApp.UI;
 using Company.Shared.Models;
 
@@ -30,6 +30,7 @@ public partial class EmployeesTab : UserControl
         cboPayScheduleFilter.Items.AddRange(["All", PaySchedules.Office, PaySchedules.Site]);
         cboPayScheduleFilter.SelectedIndex = 0;
         cboEmployeeDepartment.Items.AddRange(EmployeeDepartments.All);
+        SetUpEntryBoxes(txtEmployeeContact, txtBiometricId, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin, cboPayGrade);
         numDailyRate.Maximum = EmployeeService.MaxDailyRate;
         Responsive.FitGrid(this, dgvEmployees);
         Responsive.OnTypingPause(txtEmployeeSearch, () => LoadEmployeesAsync());
@@ -83,7 +84,7 @@ public partial class EmployeesTab : UserControl
     }
 
     Control[] FormInputs => [txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, cboEmployeeDepartment, cboEmployeeRole,
-                             txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions,
+                             cboPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions,
                              txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin, btnSaveEmployee, btnCancelEmployee];
 
     /// <summary>After the grid picked a row by itself on first show (RecordForm.NoAutoSelect): only the record being shown stays selected.</summary>
@@ -101,10 +102,11 @@ public partial class EmployeesTab : UserControl
     {
         editing = null;
         lblFormMode.Text = "Click an employee in the list to see or change their details. To add someone, click Add Employee.";
-        foreach (var t in new[] { txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtPayGrade,
+        foreach (var t in new[] { txtEmployeeName, txtEmployeeContact, txtEmployeeAddress,
                                   txtBiometricId, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin })
             t.Clear();
         cboEmployeeDepartment.SelectedIndex = -1;
+        ShowPayGrade(cboPayGrade, null);
         numDailyRate.Value = 0;
         dtpRateEffective.Value = DateTime.Today;
         chkGovDeductions.Checked = false;
@@ -124,7 +126,7 @@ public partial class EmployeesTab : UserControl
         txtEmployeeAddress.Text = e.Address ?? "";
         cboEmployeeDepartment.SelectedItem = e.Department;
         FillRoles(cboEmployeeRole, lblEmployeeRole, e.Department, e.Position);
-        txtPayGrade.Text = e.PayGrade ?? "";
+        ShowPayGrade(cboPayGrade, e.PayGrade);
         txtBiometricId.Text = e.BiometricId ?? "";
         chkGovDeductions.Checked = e.GovDeductions;
         txtSssNo.Text = e.SssNo ?? "";
@@ -187,6 +189,45 @@ public partial class EmployeesTab : UserControl
     /// Foreman / Laborer / Helper for Site. Keeps <paramref name="keep"/> when it fits; an old typed position that
     /// isn't in the list is shown once so it isn't lost, until another role is chosen.
     /// </summary>
+    /// <summary>
+    /// Tester report 2026-11-21: numbers-only boxes with a sample of the format shown inside, and the pay grade picked
+    /// from a list. The service checks the same rules again (pasted text skips the typing filter).
+    /// </summary>
+    internal static void SetUpEntryBoxes(TextBox contact, TextBox biometric, TextBox sss, TextBox philHealth,
+                                         TextBox pagIbig, TextBox tin, ComboBox payGrade)
+    {
+        Numbers(contact, "09XX XXX XXXX", 20, "+- ");
+        Numbers(biometric, "e.g. 201 (as on the scanner)", 9, "");
+        Numbers(sss, "00-0000000-0", 14, "- ");
+        Numbers(philHealth, "00-000000000-0", 16, "- ");
+        Numbers(pagIbig, "0000-0000-0000", 16, "- ");
+        Numbers(tin, "000-000-000-000", 19, "- ");
+        payGrade.Items.Clear();
+        payGrade.Items.Add(NoPayGrade);
+        payGrade.Items.AddRange(EmployeeService.PayGrades);
+        payGrade.SelectedIndex = 0;
+    }
+
+    const string NoPayGrade = "(none)";
+
+    static void Numbers(TextBox box, string sample, int maxLength, string alsoAllowed)
+    {
+        box.PlaceholderText = sample;
+        box.MaxLength = maxLength;
+        box.KeyPress += (_, e) =>
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && !alsoAllowed.Contains(e.KeyChar)) e.Handled = true;
+        };
+    }
+
+    internal static void ShowPayGrade(ComboBox box, string? grade)
+    {
+        if (!string.IsNullOrWhiteSpace(grade) && !box.Items.Contains(grade)) box.Items.Add(grade);   // an older typed grade
+        box.SelectedItem = string.IsNullOrWhiteSpace(grade) ? NoPayGrade : grade;
+    }
+
+    internal static string? ReadPayGrade(ComboBox box) => box.SelectedItem is string g && g != NoPayGrade ? g : null;
+
     internal static void FillRoles(ComboBox box, Label label, string? department, string? keep)
     {
         var roles = EmployeeRoles.For(department);
@@ -201,7 +242,7 @@ public partial class EmployeesTab : UserControl
     EmployeeInput ReadForm() => new(
         txtEmployeeName.Text, txtEmployeeContact.Text, txtEmployeeAddress.Text, (string?)cboEmployeeRole.SelectedItem,
         (string?)cboEmployeeDepartment.SelectedItem ?? "",
-        txtPayGrade.Text, txtBiometricId.Text, chkGovDeductions.Checked,
+        ReadPayGrade(cboPayGrade), txtBiometricId.Text, chkGovDeductions.Checked,
         txtSssNo.Text, txtPhilHealthNo.Text, txtPagIbigNo.Text, txtEmployeeTin.Text,
         numDailyRate.Value, DateOnly.FromDateTime(dtpRateEffective.Value));
 

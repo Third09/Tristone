@@ -1,4 +1,4 @@
-namespace Company.OfficeApp.Pages.Hr
+﻿namespace Company.OfficeApp.Pages.Hr
 {
     partial class EmployeeEntryForm
     {
@@ -31,7 +31,7 @@ namespace Company.OfficeApp.Pages.Hr
             cboEmployeeDepartment = new ComboBox();
             lblPayScheduleValue = new Label();
             lblPayGrade = new Label();
-            txtPayGrade = new TextBox();
+            cboPayGrade = new ComboBox();
             lblDailyRate = new Label();
             numDailyRate = new NumericUpDown();
             lblRateEffective = new Label();
@@ -148,12 +148,13 @@ namespace Company.OfficeApp.Pages.Hr
             lblPayGrade.Name = "lblPayGrade";
             lblPayGrade.Text = "Pay grade (optional)";
             // 
-            // txtPayGrade
+            // cboPayGrade
             // 
-            txtPayGrade.Location = new Point(415, 93);
-            txtPayGrade.Name = "txtPayGrade";
-            txtPayGrade.Size = new Size(230, 23);
-            txtPayGrade.TabIndex = 5;
+            cboPayGrade.Location = new Point(415, 93);
+            cboPayGrade.Name = "cboPayGrade";
+            cboPayGrade.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboPayGrade.Size = new Size(230, 23);
+            cboPayGrade.TabIndex = 5;
             // 
             // lblDailyRate
             // 
@@ -202,8 +203,11 @@ namespace Company.OfficeApp.Pages.Hr
             // 
             // chkGovDeductions
             // 
-            chkGovDeductions.AutoSize = true;
-            chkGovDeductions.Location = new Point(771, 69);
+            chkGovDeductions.AutoSize = false;
+            chkGovDeductions.Size = new Size(280, 50);
+            chkGovDeductions.CheckAlign = ContentAlignment.TopLeft;
+            chkGovDeductions.TextAlign = ContentAlignment.TopLeft;
+            chkGovDeductions.Location = new Point(771, 60);
             chkGovDeductions.Name = "chkGovDeductions";
             chkGovDeductions.Text = "Government deductions (tax, SSS, PhilHealth, Pag-IBIG)";
             chkGovDeductions.TabIndex = 9;
@@ -314,7 +318,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(cboEmployeeDepartment);
             Controls.Add(lblPayScheduleValue);
             Controls.Add(lblPayGrade);
-            Controls.Add(txtPayGrade);
+            Controls.Add(cboPayGrade);
             Controls.Add(lblDailyRate);
             Controls.Add(numDailyRate);
             Controls.Add(lblRateEffective);
@@ -355,7 +359,7 @@ namespace Company.OfficeApp.Pages.Hr
         private ComboBox cboEmployeeDepartment;
         private Label lblPayScheduleValue;
         private Label lblPayGrade;
-        private TextBox txtPayGrade;
+        private ComboBox cboPayGrade;
         private Label lblDailyRate;
         private NumericUpDown numDailyRate;
         private Label lblRateEffective;

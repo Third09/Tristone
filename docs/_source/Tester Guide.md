@@ -4,7 +4,7 @@ Thank you for testing **Tri-Stone**, the office program of Tri-Stone Constructio
 
 # 1. Install
 
-1. Double-click **Tri-Stone-Test-Setup-1.6.0.exe**.
+1. Double-click **Tri-Stone-Test-Setup-1.6.1.exe**.
 2. If Windows says *"Windows protected your PC"*: click **More info**, then **Run anyway**.
 3. Click **Next** until **Install**, then **Finish**. Tri-Stone opens by itself.
 4. The first start takes about **15 seconds** (it prepares its data). After that it opens quickly.

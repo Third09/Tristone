@@ -1,4 +1,4 @@
-using Company.OfficeApp.Data;
+﻿using Company.OfficeApp.Data;
 using Company.OfficeApp.Services;
 using Company.Shared.Data;
 using Company.Shared.Models;
@@ -111,7 +111,11 @@ public static class WebProjectService
         if (WebsiteAccess.Require() is { } denied) return denied;
         using var db = Db.Open();
         var all = await db.WebsiteProjects.OrderBy(x => x.SortOrder).ThenBy(x => x.WebProjectId).ToListAsync();
-        Ordering.Move(all, all.FindIndex(x => x.WebProjectId == webProjectId), direction, (x, n) => x.SortOrder = n);
+        int at = all.FindIndex(x => x.WebProjectId == webProjectId);
+        Ordering.Move(all, at, direction, (x, n) => x.SortOrder = n);
+        if (at >= 0 && all.IndexOf(all.First(x => x.WebProjectId == webProjectId)) != at)
+            AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_projects", webProjectId, await NameAsync(db, all.First(x => x.WebProjectId == webProjectId).ProjectId),
+                             AuditActions.Edited, new { position = at + 1 }, new { position = at + 1 + direction });
         await db.SaveChangesAsync();
         return null;
     }
@@ -204,6 +208,9 @@ public static class WebProjectService
         if (WebsiteAccess.Require() is { } denied) return denied;
         using var db = Db.Open();
         var f = await db.WebsiteProjectPhotos.FirstAsync(x => x.PhotoId == photoId);
+        if (f.IsShowcase != showcase)
+            AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_project_photos", f.PhotoId, await PhotoNameAsync(db, f.WebProjectId),
+                             AuditActions.Edited, new { showcase = f.IsShowcase }, new { showcase });
         f.IsShowcase = showcase;
         await db.SaveChangesAsync();
         return null;
@@ -215,10 +222,17 @@ public static class WebProjectService
         using var db = Db.Open();
         var f = await db.WebsiteProjectPhotos.FirstAsync(x => x.PhotoId == photoId);
         var all = await db.WebsiteProjectPhotos.Where(x => x.WebProjectId == f.WebProjectId).OrderBy(x => x.SortOrder).ThenBy(x => x.PhotoId).ToListAsync();
-        Ordering.Move(all, all.FindIndex(x => x.PhotoId == photoId), direction, (x, n) => x.SortOrder = n);
+        int at = all.FindIndex(x => x.PhotoId == photoId);
+        Ordering.Move(all, at, direction, (x, n) => x.SortOrder = n);
+        if (at >= 0 && all.IndexOf(f) != at)
+            AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_project_photos", f.PhotoId, await PhotoNameAsync(db, f.WebProjectId),
+                             AuditActions.Edited, new { position = at + 1 }, new { position = at + 1 + direction });
         await db.SaveChangesAsync();
         return null;
     }
+
+    static async Task<string> PhotoNameAsync(AppDbContext db, int webProjectId) =>
+        "Photo of " + await NameAsync(db, await db.WebsiteProjects.Where(w => w.WebProjectId == webProjectId).Select(w => w.ProjectId).FirstAsync());
 
     static async Task<string> NameAsync(AppDbContext db, int projectId) =>
         await db.Projects.Where(p => p.ProjectId == projectId).Select(p => p.ProjectName).FirstOrDefaultAsync() ?? "project";
@@ -347,7 +361,11 @@ public static class WebServiceService
         if (WebsiteAccess.Require() is { } denied) return denied;
         using var db = Db.Open();
         var all = await db.WebsiteServices.OrderBy(x => x.SortOrder).ThenBy(x => x.WebServiceId).ToListAsync();
-        Ordering.Move(all, all.FindIndex(x => x.WebServiceId == id), direction, (x, n) => x.SortOrder = n);
+        int at = all.FindIndex(x => x.WebServiceId == id);
+        Ordering.Move(all, at, direction, (x, n) => x.SortOrder = n);
+        if (at >= 0 && all.FindIndex(x => x.WebServiceId == id) != at)
+            AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_services", id, all.First(x => x.WebServiceId == id).ServiceName,
+                             AuditActions.Edited, new { position = at + 1 }, new { position = at + 1 + direction });
         await db.SaveChangesAsync();
         return null;
     }
@@ -493,7 +511,11 @@ public static class WebAboutService
         if (WebsiteAccess.Require() is { } denied) return denied;
         using var db = Db.Open();
         var all = await db.WebsiteAboutSections.OrderBy(x => x.SortOrder).ThenBy(x => x.AboutSectionId).ToListAsync();
-        Ordering.Move(all, all.FindIndex(x => x.AboutSectionId == id), direction, (x, n) => x.SortOrder = n);
+        int at = all.FindIndex(x => x.AboutSectionId == id);
+        Ordering.Move(all, at, direction, (x, n) => x.SortOrder = n);
+        if (at >= 0 && all.FindIndex(x => x.AboutSectionId == id) != at)
+            AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_about_sections", id, "About Us: " + all.First(x => x.AboutSectionId == id).Heading,
+                             AuditActions.Edited, new { position = at + 1 }, new { position = at + 1 + direction });
         await db.SaveChangesAsync();
         return null;
     }

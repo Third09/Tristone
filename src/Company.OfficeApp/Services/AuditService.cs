@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Company.OfficeApp.Data;
 using Company.Shared.Data;
 using Company.Shared.Models;
@@ -15,6 +15,24 @@ public record HistoryRow(DateTime ChangedAt, string Who, string Action, string R
 /// </summary>
 public static class AuditService
 {
+    /// <summary>Admins' Account History (User Accounts page): login changes, saved with no department (owner request 2026-11-21).</summary>
+    public const string AccountsHistory = "Accounts";
+
+    /// <summary>Website Admin > Edit History: everything changed in the Website Admin app.</summary>
+    public const string WebsiteHistory = "Website";
+
+    /// <summary>Who may read a history: Accounts = Admins; Website = Website Admins and Admins; a department = its Supervisor and Admins.</summary>
+    public static bool CanSee(string department) => Session.CurrentUser is { } u && department switch
+    {
+        AccountsHistory => u.IsAdmin,
+        WebsiteHistory => u.CanOpenWebsiteAdmin,
+        _ => Access.CanSeeHistory(u, department),
+    };
+
+    static IQueryable<AuditLog> Of(IQueryable<AuditLog> logs, string department) => department == AccountsHistory
+        ? logs.Where(a => a.Department == null && a.TableName == "users")
+        : logs.Where(a => a.Department == department);
+
     /// <param name="department">Which department's Edit History tab shows it; null = Admin-only records.</param>
     public static void Add(AppDbContext db, string? department, string table, int recordId, string recordName,
                            string action, object? before, object? after)
@@ -39,13 +57,14 @@ public static class AuditService
     /// </summary>
     public static async Task<List<HistoryRow>> ListAsync(string department, DateOnly from, DateOnly to, int? userId, string search, int max = 2000)
     {
+        if (!CanSee(department)) return [];   // checked here too, not just by hiding the tab
         using var db = Db.Open();
         var start = from.ToDateTime(TimeOnly.MinValue);
         var end = to.AddDays(1).ToDateTime(TimeOnly.MinValue);
-        var q = from a in db.AuditLogs
+        var q = from a in Of(db.AuditLogs, department)
                 join u in db.Users on a.UserId equals u.UserId into who
                 from u in who.DefaultIfEmpty()
-                where a.Department == department && a.ChangedAt >= start && a.ChangedAt < end
+                where a.ChangedAt >= start && a.ChangedAt < end
                 select new { a, Who = u == null ? "(system)" : u.FullName };
         if (userId != null) q = q.Where(x => x.a.UserId == userId);
         if (!string.IsNullOrWhiteSpace(search)) { var s = search.Trim().ToLower(); q = q.Where(x => (x.a.RecordName ?? "").ToLower().Contains(s)); }
@@ -75,10 +94,10 @@ public static class AuditService
     /// <summary>People who appear in a department's history (for the "Person" filter).</summary>
     public static async Task<List<(int UserId, string Name)>> PeopleAsync(string department)
     {
+        if (!CanSee(department)) return [];
         using var db = Db.Open();
-        var list = await (from a in db.AuditLogs
+        var list = await (from a in Of(db.AuditLogs, department)
                           join u in db.Users on a.UserId equals u.UserId
-                          where a.Department == department
                           select new { u.UserId, u.FullName }).Distinct().OrderBy(x => x.FullName).ToListAsync();
         return list.Select(x => (x.UserId, x.FullName)).ToList();
     }
@@ -122,6 +141,14 @@ public static class AuditService
         "cash_advances" => "cash advance",
         "payroll_runs" => "payroll",
         "app_settings" => "settings",
+        "users" => "login",
+        "inquiries" => "inquiry",
+        "website_content" => "page text",
+        "website_projects" => "website project",
+        "website_project_photos" => "project photo",
+        "website_services" => "service card",
+        "website_about_sections" => "About Us section",
+        "website_publishes" => "publish",
         _ => table.TrimEnd('s').Replace("_", " "),
     };
 }

@@ -1,4 +1,4 @@
-namespace Company.WebsiteAdmin.Forms
+﻿namespace Company.WebsiteAdmin.Forms
 {
     partial class MainForm
     {
@@ -26,6 +26,7 @@ namespace Company.WebsiteAdmin.Forms
             btnNavServices = new Button();
             btnNavAboutUs = new Button();
             btnNavContactUs = new Button();
+            btnNavEditHistory = new Button();
             btnSignOut = new Button();
             pnlTopBar = new Panel();
             lblPageTitle = new Label();
@@ -51,6 +52,7 @@ namespace Company.WebsiteAdmin.Forms
             pnlSidebar.Controls.Add(btnNavServices);
             pnlSidebar.Controls.Add(btnNavAboutUs);
             pnlSidebar.Controls.Add(btnNavContactUs);
+            pnlSidebar.Controls.Add(btnNavEditHistory);
             pnlSidebar.Controls.Add(btnSignOut);
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.FlowDirection = FlowDirection.TopDown;
@@ -116,6 +118,16 @@ namespace Company.WebsiteAdmin.Forms
             btnNavContactUs.TabIndex = 4;
             btnNavContactUs.Text = "Contact Us";
             btnNavContactUs.TextAlign = ContentAlignment.MiddleLeft;
+            //
+            // btnNavEditHistory
+            //
+            btnNavEditHistory.Margin = new Padding(0, 0, 0, 6);
+            btnNavEditHistory.Name = "btnNavEditHistory";
+            btnNavEditHistory.Font = new Font("Segoe UI", 10.5F);
+            btnNavEditHistory.Size = new Size(218, 44);
+            btnNavEditHistory.TabIndex = 5;
+            btnNavEditHistory.Text = "Edit History";
+            btnNavEditHistory.TextAlign = ContentAlignment.MiddleLeft;
             //
             // btnSignOut
             //
@@ -237,10 +249,6 @@ namespace Company.WebsiteAdmin.Forms
             Controls.Add(pnlContent);
             Controls.Add(pnlTopBar);
             Controls.Add(pnlSidebar);
-            ControlBox = false;
-            FormBorderStyle = FormBorderStyle.None;
-            MaximizeBox = false;
-            MinimizeBox = false;
             WindowState = FormWindowState.Maximized;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -265,6 +273,7 @@ namespace Company.WebsiteAdmin.Forms
         private Button btnNavServices;
         private Button btnNavAboutUs;
         private Button btnNavContactUs;
+        private Button btnNavEditHistory;
         private Button btnSignOut;
         private Panel pnlTopBar;
         private Label lblPageTitle;

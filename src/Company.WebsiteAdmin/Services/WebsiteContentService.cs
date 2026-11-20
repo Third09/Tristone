@@ -1,4 +1,4 @@
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -142,7 +142,7 @@ public static class PublishService
     public static async Task<string?> PublishAsync()
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
-        if (AppEdition.IsDemo) return DemoRefusal;
+        if (AppEdition.WebsiteOff) return DemoRefusal;
         var settings = PublishSettings.Load();
         if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
 
@@ -163,10 +163,15 @@ public static class PublishService
         content["_sources"] = JsonSerializer.SerializeToNode(sources);
         if (restoredFrom != null) content["_restored_from"] = restoredFrom;
         using var db = Db.Open();
-        db.WebsitePublishes.Add(new WebsitePublish
+        var row = new WebsitePublish
         {
             PublishedBy = Session.CurrentUser!.UserId, PublishedAt = DateTime.Now, Content = content.ToJsonString(),
-        });
+        };
+        db.WebsitePublishes.Add(row);
+        await db.SaveChangesAsync();
+        // in Website Admin > Edit History too (owner request 2026-11-21)
+        AuditService.Add(db, WebsiteAccess.AuditDepartment, "website_publishes", row.PublishId,
+                         restoredFrom == null ? "Website published" : "Undo Publish (an earlier version put back)", AuditActions.Added, null, null);
         await db.SaveChangesAsync();
     }
 
@@ -177,7 +182,7 @@ public static class PublishService
     public static async Task<string?> UndoAsync()
     {
         if (WebsiteAccess.Require() is { } denied) return denied;
-        if (AppEdition.IsDemo) return DemoRefusal;
+        if (AppEdition.WebsiteOff) return DemoRefusal;
         var settings = PublishSettings.Load();
         if (!settings.IsSet) return "Publishing isn't set up on this PC yet. Click Website Settings first.";
         List<WebsitePublish> last;

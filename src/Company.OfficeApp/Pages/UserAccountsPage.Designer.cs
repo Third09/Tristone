@@ -1,4 +1,4 @@
-namespace Company.OfficeApp.Pages
+﻿namespace Company.OfficeApp.Pages
 {
     partial class UserAccountsPage
     {
@@ -34,6 +34,7 @@ namespace Company.OfficeApp.Pages
             btnUnlockUser = new Button();
             btnDisableUser = new Button();
             btnEnableUser = new Button();
+            btnViewAccountHistory = new Button();
             lblFormMode = new Label();
             lblUserEmployee = new Label();
             cboUserEmployee = new ComboBox();
@@ -186,6 +187,15 @@ namespace Company.OfficeApp.Pages
             btnEnableUser.Text = "Enable";
             btnEnableUser.Click += btnEnableUser_Click;
             //
+            // btnViewAccountHistory
+            //
+            btnViewAccountHistory.Location = new Point(690, 375);
+            btnViewAccountHistory.Name = "btnViewAccountHistory";
+            btnViewAccountHistory.Size = new Size(150, 36);
+            btnViewAccountHistory.TabIndex = 8;
+            btnViewAccountHistory.Text = "Account History";
+            btnViewAccountHistory.Click += btnViewAccountHistory_Click;
+            //
             // lblFormMode
             //
             lblFormMode.AutoSize = true;
@@ -318,6 +328,7 @@ namespace Company.OfficeApp.Pages
             Controls.Add(btnUnlockUser);
             Controls.Add(btnDisableUser);
             Controls.Add(btnEnableUser);
+            Controls.Add(btnViewAccountHistory);
             Controls.Add(lblFormMode);
             Controls.Add(lblUserEmployee);
             Controls.Add(cboUserEmployee);
@@ -359,6 +370,7 @@ namespace Company.OfficeApp.Pages
         private Button btnUnlockUser;
         private Button btnDisableUser;
         private Button btnEnableUser;
+        private Button btnViewAccountHistory;
         private Label lblFormMode;
         private Label lblUserEmployee;
         private ComboBox cboUserEmployee;

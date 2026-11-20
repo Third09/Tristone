@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Company.OfficeApp.Data;
 
@@ -10,7 +10,8 @@ namespace Company.OfficeApp.Data;
 ///   typed, once per PC (never inside Setup.exe). Staff don't see database settings.
 /// - Demo: stand-alone. Its own private database on this PC with sample data; nothing reaches the live website.
 /// - Standalone (owner request 2026-11-18): the same private database, but a copy of the home PC's real data with
-///   its own logins and passwords; called just "Tri-Stone", no "Test as...", no reset. Nothing reaches the live website.
+///   its own logins and passwords; called just "Tri-Stone", no "Test as...", no reset. Publishes to the live website
+///   like the office version (since 1.6.1, owner request 2026-11-21).
 /// </summary>
 public static class AppEdition
 {
@@ -37,12 +38,15 @@ public static class AppEdition
         catch (JsonException) { return null; }
     }
 
-    /// <summary>Runs its own private database on this PC and never touches the live website (Demo and Standalone).</summary>
+    /// <summary>Runs its own private database on this PC (Demo and Standalone).</summary>
     public static bool IsDemo => file?.Edition is "Demo" or "Standalone";
     /// <summary>The real-style stand-alone copy: real logins, called "Tri-Stone".</summary>
     public static bool IsStandalone => file?.Edition == "Standalone";
     /// <summary>"Test as..." and the sample-data reset exist only in the Demo / Test version.</summary>
     public static bool IsSampleDemo => file?.Edition == "Demo";
+    /// <summary>Publish, Undo Publish, Website Settings and the inquiry import are off only in the Demo / Test version
+    /// (owner request 2026-11-21: the Standalone version publishes to the real website).</summary>
+    public static bool WebsiteOff => IsSampleDemo;
     /// <summary>The program's name on its windows.</summary>
     public static string Title => IsSampleDemo ? "Tri-Stone Demo" : "Tri-Stone";
     /// <summary>Its folder under %LOCALAPPDATA% (separate, so a Demo and a Standalone copy can sit on one PC).</summary>

@@ -67,7 +67,7 @@ const hrPayroll = [
       ]},
       { name: "Pay details", rows: [
         ["Pay schedule text", "Label", "lblPayScheduleValue", "Shown, not chosen: follows the department. Site = paid every Saturday; everyone else = paid the 15th and 30th."],
-        ["Pay grade box", "TextBox", "txtPayGrade", "Pay grade label, if used."],
+        ["Pay grade list", "ComboBox", "cboPayGrade", "Optional: (none), Helper / Unskilled, Semi-skilled, Skilled, Junior Staff, Senior Staff."],
         ["Daily rate box", "NumericUpDown", "numDailyRate", "Daily rate in pesos."],
         ["Rate applies from date picker", "DateTimePicker", "dtpRateEffective", "The date a new daily rate starts. Past payslips keep the old rate."],
         ["Rate history table", "DataGridView", "dgvRateHistory", "Columns: Applies From, Daily Rate (newest first). Who changed it is in Edit History."],
@@ -96,7 +96,7 @@ const hrPayroll = [
     groups: [
       { name: "Main section", rows: [
         ["Window title", "Label", "lblFormTitle", "\"New employee\"."],
-        ["Employee fields", "TextBox / ComboBox / NumericUpDown / DateTimePicker / CheckBox", "txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, cboEmployeeDepartment, cboEmployeeRole, txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin", "Same names and meaning as on the Employees tab."],
+        ["Employee fields", "TextBox / ComboBox / NumericUpDown / DateTimePicker / CheckBox", "txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, cboEmployeeDepartment, cboEmployeeRole, cboPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin", "Same names and meaning as on the Employees tab."],
         ["Pay schedule text", "Label", "lblPayScheduleValue", "Follows the department."],
         ["Message", "Label", "lblEmployeeFormMsg", "What is missing, e.g. \"Type the employee's full name.\""],
         ["Save button", "Button", "btnSaveEmployee", "Adds the employee and closes the window."],
@@ -299,6 +299,7 @@ const hrPayroll = [
         ["Unlock button", "Button", "btnUnlockUser", "Unlocks an account locked after 5 wrong passwords. Enabled only for Locked accounts."],
         ["Disable button", "Button", "btnDisableUser", "Turns the selected account off (asks to confirm). Not allowed on your own account or the last active Admin."],
         ["Enable button", "Button", "btnEnableUser", "Turns a Disabled account back on. Enabled only for Disabled accounts."],
+        ["Account History button", "Button", "btnViewAccountHistory", "Opens a window with every login change (created, edited, unlocked, disabled, enabled), who did it and when (since 1.6.1)."],
       ]},
       { name: "Account form", rows: [
         ["Form title", "Label", "lblFormMode", "\"Editing: (name)\", or a hint to click an account. Greyed out until a row is clicked."],

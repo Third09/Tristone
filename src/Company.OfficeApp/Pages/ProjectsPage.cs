@@ -1,4 +1,4 @@
-using Company.OfficeApp.Services;
+﻿using Company.OfficeApp.Services;
 using Company.OfficeApp.UI;
 using Company.Shared.Models;
 
@@ -28,6 +28,7 @@ public partial class ProjectsPage : UserControl
         dgvProjects.AutoGenerateColumns = false;
         RecordForm.NoAutoSelect(dgvProjects, on => filling = on, RestoreSelection);
         colContractPrice.DefaultCellStyle.FormatProvider = ProjectService.Peso;
+        colRevisedPrice.DefaultCellStyle.FormatProvider = ProjectService.Peso;
 
         cboStatusFilter.Items.Add("All");
         cboStatusFilter.Items.AddRange(ProjectStatuses.All);
@@ -252,6 +253,7 @@ public partial class ProjectsPage : UserControl
                 new("Client", r => r.ClientName),
                 new("Sector", r => r.Sector),
                 new("Contract Price", r => r.ContractPrice, "#,##0.00"),
+                new("Revised Price", r => r.RevisedPrice, "#,##0.00"),
                 new("Start", r => r.StartDate, "mmm d, yyyy"),
                 new("Target End", r => r.TargetEndDate, "mmm d, yyyy"),
                 new("Status", r => r.Status),

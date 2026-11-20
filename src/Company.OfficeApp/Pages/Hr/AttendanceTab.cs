@@ -182,7 +182,17 @@ public partial class AttendanceTab : UserControl
         if (Selected is not { } r) return;
         var error = approve ? await AttendanceService.ApproveOvertimeAsync(r.DayId) : await AttendanceService.RejectOvertimeAsync(r.DayId);
         lblAttendanceMsg.Text = error ?? $"{r.Name}'s overtime on {r.Date:MMM d} {(approve ? "approved" : "rejected")}.";
-        if (error == null) await LoadAsync(r.DayId);
+        if (error != null) return;
+        // only this row changed: update it in place instead of reloading the whole list (tester report 2026-11-21: slow)
+        if (dgvAttendance.DataSource is List<AttendanceRow> rows && rows.FindIndex(x => x.DayId == r.DayId) is var i and >= 0)
+        {
+            rows[i] = r with { OtStatus = approve ? OtStatuses.Approved : OtStatuses.Rejected };
+            dgvAttendance.InvalidateRow(i);
+            int problems = rows.Count(x => x.IsProblem);
+            lblAttendanceCount.Text = $"{rows.Count} day{(rows.Count == 1 ? "" : "s")} shown" + (problems > 0 ? $", {problems} need HR's attention (highlighted)" : "");
+            UpdateButtons();
+        }
+        else await LoadAsync(r.DayId);
     }
 
     async void btnApproveOvertime_Click(object sender, EventArgs e) => await DecideAsync(true);

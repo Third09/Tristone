@@ -1,4 +1,4 @@
-using Company.OfficeApp.Forms;
+﻿using Company.OfficeApp.Forms;
 using Company.OfficeApp.Services;
 using Company.OfficeApp.UI;
 using Company.Shared.Models;
@@ -292,4 +292,8 @@ public partial class UserAccountsPage : UserControl
         if (error != null) MessageBox.Show(this, error, "Not done", MessageBoxButtons.OK, MessageBoxIcon.Information);
         await LoadUsersAsync(u.UserId);
     }
+
+    /// <summary>Who created, changed, unlocked, disabled or enabled which login, and when (owner request 2026-11-21).</summary>
+    void btnViewAccountHistory_Click(object sender, EventArgs e) =>
+        Pages.Shared.EditHistoryTab.ShowWindow(this, AuditService.AccountsHistory, "Account History");
 }

@@ -86,7 +86,7 @@ const shared = [
     form: "MainForm (Form) in Company.OfficeApp",
     opensFrom: "After an office login signs in to Tri-Stone (Admins choose Office App). Website Admin logins get the Website Admin main window instead (Part 6).",
     whoSees: "Everyone. Sidebar buttons show or hide based on the user's Department and Level.",
-    note: "Every office-app page in this guide (Dashboard, Projects, etc.) is a UserControl that loads inside the Main section (pnlContent); Website Admin is a separate app (Part 6). The window always fills the screen above the taskbar, with no title bar and no minimize / maximize / close buttons (FormBorderStyle = None, ControlBox = False), so it can't be resized, moved or closed by accident; Sign Out is the way out. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
+    note: "Every office-app page in this guide (Dashboard, Projects, etc.) is a UserControl that loads inside the Main section (pnlContent); Website Admin is a separate app (Part 6). The window opens maximized with the usual minimize / maximize / close buttons (since 1.6.1, Theme.MainWindow); the X asks before closing and signs out. Tables stretch to fill bigger screens; on small screens the page scrolls, so design pages to work at about 1280 x 720 and grow from there.",
     groups: [
       { name: "Sidebar (left side)", rows: [
         ["Sidebar background", "FlowLayoutPanel (Dock = Left, FlowDirection = TopDown)", "pnlSidebar", "Holds the logo and the sidebar buttons, top to bottom. Hidden buttons take no space. Each button has an icon; the open page's button is orange with white text."],
@@ -236,6 +236,7 @@ const websiteAdmin = [
         ["Services button", "Button", "btnNavServices", "Opens the Services Page Editor."],
         ["About Us button", "Button", "btnNavAboutUs", "Opens the About Us Page Editor."],
         ["Contact Us button", "Button", "btnNavContactUs", "Opens Contact Us. Says how many inquiries are new, e.g. \"Contact Us (3 new)\"."],
+        ["Edit History button", "Button", "btnNavEditHistory", "Opens the Website Admin Edit History: every website change, inquiry update and Publish, with who and when (since 1.6.1)."],
         ["Log out button", "Button", "btnSignOut", "Signs out (recorded) and goes back to the Tri-Stone Sign In window."],
       ]},
       { name: "Top bar and main section", rows: [

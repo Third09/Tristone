@@ -1,4 +1,4 @@
-using Company.OfficeApp.Services;
+﻿using Company.OfficeApp.Services;
 using Company.OfficeApp.UI;
 
 namespace Company.OfficeApp.Pages.Shared;
@@ -22,6 +22,18 @@ public partial class EditHistoryTab : UserControl
         dtpHistTo.Value = DateTime.Today;
         Responsive.FitGrid(this, dgvEditHistory);
         Responsive.OnTypingPause(txtHistSearch, () => LoadAsync());
+    }
+
+    /// <summary>The same history in its own window (User Accounts > Account History).</summary>
+    public static void ShowWindow(IWin32Window owner, string department, string title)
+    {
+        using var f = new Form
+        {
+            Text = title, StartPosition = FormStartPosition.CenterParent, ShowInTaskbar = false, MinimizeBox = false,
+            AutoScaleMode = AutoScaleMode.None, Size = new Size(1200, 760),
+        };
+        f.Controls.Add(new EditHistoryTab(department) { Dock = DockStyle.Fill });
+        f.ShowDialog(owner);
     }
 
     async void EditHistoryTab_Load(object sender, EventArgs e)

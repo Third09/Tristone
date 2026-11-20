@@ -1,4 +1,4 @@
-namespace Company.OfficeApp.Pages.Hr
+﻿namespace Company.OfficeApp.Pages.Hr
 {
     partial class EmployeesTab
     {
@@ -41,7 +41,7 @@ namespace Company.OfficeApp.Pages.Hr
             cboEmployeeDepartment = new ComboBox();
             lblPayScheduleValue = new Label();
             lblPayGrade = new Label();
-            txtPayGrade = new TextBox();
+            cboPayGrade = new ComboBox();
             lblDailyRate = new Label();
             numDailyRate = new NumericUpDown();
             lblRateEffective = new Label();
@@ -271,12 +271,13 @@ namespace Company.OfficeApp.Pages.Hr
             lblPayGrade.Name = "lblPayGrade";
             lblPayGrade.Text = "Pay grade (optional)";
             // 
-            // txtPayGrade
+            // cboPayGrade
             // 
-            txtPayGrade.Location = new Point(415, 462);
-            txtPayGrade.Name = "txtPayGrade";
-            txtPayGrade.Size = new Size(230, 23);
-            txtPayGrade.TabIndex = 13;
+            cboPayGrade.Location = new Point(415, 462);
+            cboPayGrade.Name = "cboPayGrade";
+            cboPayGrade.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboPayGrade.Size = new Size(230, 23);
+            cboPayGrade.TabIndex = 13;
             // 
             // lblDailyRate
             // 
@@ -519,7 +520,7 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(cboEmployeeDepartment);
             Controls.Add(lblPayScheduleValue);
             Controls.Add(lblPayGrade);
-            Controls.Add(txtPayGrade);
+            Controls.Add(cboPayGrade);
             Controls.Add(lblDailyRate);
             Controls.Add(numDailyRate);
             Controls.Add(lblRateEffective);
@@ -576,7 +577,7 @@ namespace Company.OfficeApp.Pages.Hr
         private ComboBox cboEmployeeDepartment;
         private Label lblPayScheduleValue;
         private Label lblPayGrade;
-        private TextBox txtPayGrade;
+        private ComboBox cboPayGrade;
         private Label lblDailyRate;
         private NumericUpDown numDailyRate;
         private Label lblRateEffective;

@@ -1,4 +1,4 @@
-using Company.OfficeApp.Data;
+﻿using Company.OfficeApp.Data;
 using Company.OfficeApp.Services;
 using Company.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +79,9 @@ public static class WebsiteInquiries
         using var db = Db.Open();
         var i = await db.Inquiries.FirstOrDefaultAsync(x => x.InquiryId == inquiryId);
         if (i == null) return "This inquiry no longer exists.";
+        if (i.Status != status || i.Notes != notes)
+            AuditService.Add(db, WebsiteAccess.AuditDepartment, "inquiries", i.InquiryId, i.FullName, AuditActions.Edited,
+                             new { status = i.Status, notes = i.Notes }, new { status, notes });
         i.Status = status;
         i.Notes = notes;
         i.UpdatedBy = Session.CurrentUser!.UserId;

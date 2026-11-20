@@ -1,4 +1,4 @@
-using Company.OfficeApp.Data;
+﻿using Company.OfficeApp.Data;
 using Company.Shared.Data;
 using Company.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -154,7 +154,7 @@ public static class ChangeOrderService
         if (c.DaysChange != 0 && p.TargetEndDate is { } end)
         {
             p.TargetEndDate = end.AddDays(c.DaysChange);
-            AuditService.Add(db, null, "projects", p.ProjectId, p.ProjectName, AuditActions.Edited,
+            AuditService.Add(db, Dept, "projects", p.ProjectId, p.ProjectName, AuditActions.Edited,
                 new { target_end_date = end }, new { target_end_date = p.TargetEndDate, by_change_order = c.CoNo });
         }
         await db.SaveChangesAsync();

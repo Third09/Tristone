@@ -91,7 +91,7 @@ The app always fills the whole screen (above the taskbar). It has no title bar o
 
 ## Signing out
 
-Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Sign In window comes back. To close the app completely, close the Sign In window.
+Click **Sign Out** at the bottom of the left sidebar. It is recorded, and the Sign In window comes back. To close the app completely, click the **X** at the top right and answer **Yes** (you are signed out too). The **–** button minimizes Tri-Stone to the taskbar.
 
 ## The main window
 
@@ -122,6 +122,8 @@ Employees and Supervisors can't change their password here; ask an Admin.
 ## For Admins: User Accounts
 
 Click **User Accounts** in the sidebar.
+
+**Account History** (button next to Enable) shows who created, changed, unlocked, disabled or enabled which login, and when. Use **From / To**, **Person** and **Search record** to narrow it, **Export** for Excel.
 
 **Make a new account**
 
@@ -190,6 +192,9 @@ A project's money counts when it is finished, so a period with no finished proje
 **Log history** (Admins only): sign-ins, sign-outs, failed attempts, account locks, password changes and password requests in the period. Filter by activity or search a name or username; **Export** saves it to Excel.
 
 
+
+> **Small screens:** if a window is taller than the screen, its **Save** and **Cancel** buttons stay at the bottom and the rest scrolls. You can also maximize the window. In a print preview, hold **Ctrl** and turn the mouse wheel to zoom.
+
 # 5. Projects
 
 **Admins only.** The company's one project list. Other departments pick projects from it.
@@ -225,15 +230,15 @@ Everyone who works for the company: **office staff** and **site workers**.
 **Add an employee**
 
 1. Click **Add Employee**. A separate **Add Employee** window opens.
-2. Fill in the **full name**, contact number and address.
+2. Fill in the **full name**, contact number and address. Number boxes take numbers only; the grey text inside shows the format (for example *09XX XXX XXXX*).
 3. Choose the **department**, then the **role** under it. Choose **Site** for site workers. The pay schedule follows automatically:
    - **Site:** paid every Saturday
    - **everyone else:** paid the 15th and 30th
 
    **Roles:** office departments are **Employee** or **Supervisor**; site workers are **Foreman**, **Laborer** or **Helper**. A person's role decides their login: a Supervisor's login can approve and delete in their department. Only the HR Supervisor can change the role of someone who has a login, and nobody can change their own.
 4. Type the **daily rate** and the date it **applies from** (usually today).
-5. Type their **Biometric ID**, the number the fingerprint scanner gives them.
-6. **Government deductions** are off by default. Tick the box only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional.
+5. Type their **Biometric ID**, the number the fingerprint scanner gives them (numbers only). Pick a **pay grade** from the list if you use one.
+6. **Government deductions** are off by default. Tick the box only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional; if typed they must be complete (SSS 10 digits, PhilHealth 12, Pag-IBIG 12, TIN 9 to 14).
 7. Click **Save**. The window closes and the new employee is selected in the list.
 
 **Change an employee's details**
@@ -615,4 +620,7 @@ The same setup also works on a Windows 10/11 PC that stays on. Use the files in 
 1. On the home PC, double-click `installer\build-standalone.cmd` (type a version after it, e.g. `build-standalone.cmd 1.0.1`). It makes `installer\output\Tri-Stone-Setup-1.0.0.exe`.
 2. It copies this PC's database (only reads it), leaves out the throwaway test entries and clears the history. Everything else stays as it is, **including every login and its password**. No sample extras and no **Test as...** list.
 3. Send the file (for example through Google Drive). On the other PC: run it, then open **Tri-Stone** from the Start menu or Desktop and sign in with a normal login.
-4. Its data stays on that PC only (in `%LOCALAPPDATA%\TriStone Local`), and it is kept if the program is uninstalled. It never changes the live website (Publish is off).
+4. Its data stays on that PC only (in `%LOCALAPPDATA%\TriStone Local`), and it is kept if the program is uninstalled. Its Website Admin can **publish to the live website** (since 1.6.1). On a PC other than the home PC, open Website Admin > **Website Settings** once and type the GitHub token and the inquiry read key. The Test version never publishes.
+
+**Edit History** (sidebar, under Contact Us) lists every change made in Website Admin: page text, projects, photos, services, About Us sections, moves up and down, inquiry status and notes, and every Publish and Undo Publish, with who and when.
+
