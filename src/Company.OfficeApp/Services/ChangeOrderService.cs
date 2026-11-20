@@ -68,7 +68,28 @@ public static class ChangeOrderService
         if (i.ProjectId <= 0) return "Choose the project.";
         if (string.IsNullOrWhiteSpace(i.Description)) return "Describe what the client wants changed.";
         if (i.CostChange == 0 && i.DaysChange == 0) return "Type the cost change and/or the days change.";
+        if (Math.Abs(i.DaysChange) > MaxDays) return $"The days change can be at most {MaxDays} days (more or less).";
+        if (i.RequestedOn > DateOnly.FromDateTime(DateTime.Today)) return "The date requested can't be in the future.";
         if (i.NewDocPath != null && FileStore.Check(i.NewDocPath) is { } bad) return bad;
+        return null;
+    }
+
+    // Sensible limits (owner request 2026-11-20, before outside testing): a change order can't move the project's end
+    // before its start, can't change the price by more than the whole current price (or one million, for small
+    // projects), and moves the end date by one year at most.
+    const int MaxDays = 365;
+
+    /// <summary>Checks a change against its project: price, size of the change, end date. Null = fine.</summary>
+    static async Task<string?> CheckAgainstProjectAsync(int projectId, decimal costChange, int daysChange)
+    {
+        var preview = await PreviewAsync(projectId, costChange, daysChange);
+        if (preview.RevisedPrice < 0) return "The revised contract price can't be below zero.";
+        var limit = Math.Max(preview.CurrentPrice, 1_000_000m);
+        if (Math.Abs(costChange) > limit) return $"The cost change can be at most {ProjectService.Money(limit)} (more or less) for this project.";
+        using var db = Db.Open();
+        var start = await db.Projects.Where(p => p.ProjectId == projectId).Select(p => p.StartDate).FirstAsync();
+        if (preview.RevisedEnd is { } end && end < start)
+            return $"This would move the project's end date to {end:MMM d, yyyy}, before its start ({start:MMM d, yyyy}). Use fewer days.";
         return null;
     }
 
@@ -79,7 +100,7 @@ public static class ChangeOrderService
         using var db = Db.Open();
         var p = await db.Projects.FirstOrDefaultAsync(x => x.ProjectId == i.ProjectId);
         if (p == null || p.Status == ProjectStatuses.Cancelled) return (null, "Choose a project that isn't Cancelled.");
-        if ((await PreviewAsync(i.ProjectId, i.CostChange, i.DaysChange)).RevisedPrice < 0) return (null, "The revised contract price can't be below zero.");
+        if (await CheckAgainstProjectAsync(i.ProjectId, i.CostChange, i.DaysChange) is { } tooBig) return (null, tooBig);
         var c = new ChangeOrder { CoNo = await NextNumberAsync(db), CreatedBy = Session.CurrentUser!.UserId };
         await ApplyAsync(c, i);
         db.ChangeOrders.Add(c);
@@ -97,7 +118,7 @@ public static class ChangeOrderService
         using var db = Db.Open();
         var c = await db.ChangeOrders.FirstAsync(x => x.ChangeOrderId == id);
         if (c.Status != ApprovalStatuses.Waiting) return $"This change order is already {c.Status}, so it can't be changed.";
-        if ((await PreviewAsync(i.ProjectId, i.CostChange, i.DaysChange)).RevisedPrice < 0) return "The revised contract price can't be below zero.";
+        if (await CheckAgainstProjectAsync(i.ProjectId, i.CostChange, i.DaysChange) is { } tooBig) return tooBig;
         var before = Snapshot(c);
         await ApplyAsync(c, i);
         var name = await db.Projects.Where(p => p.ProjectId == c.ProjectId).Select(p => p.ProjectName).FirstAsync();
@@ -120,8 +141,9 @@ public static class ChangeOrderService
         using var db = Db.Open();
         var c = await db.ChangeOrders.FirstAsync(x => x.ChangeOrderId == id);
         if (c.Status != ApprovalStatuses.Waiting) return $"This change order is already {c.Status}.";
+        // checked again: the project's price or dates may have changed since it was saved
+        if (await CheckAgainstProjectAsync(c.ProjectId, c.CostChange, c.DaysChange) is { } problem) return problem;
         var preview = await PreviewAsync(c.ProjectId, c.CostChange, c.DaysChange);
-        if (preview.RevisedPrice < 0) return "The revised contract price would be below zero.";
         var p = await db.Projects.FirstAsync(x => x.ProjectId == c.ProjectId);
 
         c.Status = ApprovalStatuses.Approved;

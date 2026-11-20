@@ -72,6 +72,7 @@ Applies to Projects, User Accounts, Employees, Materials, Vendors, Equipment, Su
 - **Attachments:** PDF, JPG/JPEG, PNG, BMP, TIF/TIFF, DOC/DOCX, up to 25 MB. The file is copied into the storage folder (`<area>\yyyy\MM\<random>_<name>`), so later changes to the original don't matter. A stored file opens in its default Windows program.
 - **Delete** is allowed only while no other record references the row; otherwise the message names the history-keeping alternative (Cancelled, Inactive, Retired, Disabled, Reject).
 - **Main window:** borderless, fills the screen's working area, no minimize / maximize / close buttons; leaving is through Sign Out.
+- **Unexpected errors** (since 1.6): instead of the .NET error window, a plain message ("Something went wrong on this screen, but your saved work is safe...") and the details (time, version, who was signed in, the window, the full error) are added to `%LOCALAPPDATA%\TriStone\errors.log` (`Company.Launcher/ErrorReport`).
 
 # 2. Sign-in and session
 
@@ -81,8 +82,9 @@ Applies to Projects, User Accounts, Employees, Materials, Vendors, Equipment, Su
 |---|---|---|
 | Unknown username | "Wrong username or password." | Failed Login, "Unknown username", the typed name |
 | Status Disabled | "This account is turned off. Please contact an Admin." | Failed Login, "Account disabled" |
-| Status Locked | "This account is locked after too many wrong passwords..." (even with the right password) | Failed Login, "Account locked" |
-| Wrong password | "Wrong username or password. n attempts left before the account locks." `failed_login_count + 1` | Failed Login, "Wrong password (n of 5)" |
+| Status Locked | "This account is locked after too many wrong passwords. Try again in n minutes, or ask an Admin to unlock it." (even with the right password) | Failed Login, "Account locked" |
+| Locked for 15 minutes or more | Unlocked by itself (status Active, counter 0), then signed in as usual | Account Unlocked, "Unlocked by itself after 15 minutes" |
+| Wrong password | "Wrong username or password." (the same words as for an unknown username, since 1.6, so nobody can find out which usernames exist) `failed_login_count + 1` | Failed Login, "Wrong password (n of 5)" |
 | 5th wrong password | Status → Locked | Account Locked |
 | Correct | Counter reset, `last_login_at` set, session started | Login (with PC name) |
 
@@ -93,7 +95,7 @@ Usernames are matched case-insensitively; passwords are case-sensitive (bcrypt).
 | Status | Entered by | Left by |
 |---|---|---|
 | Active | creation, Unlock, Enable, Set New Password | — |
-| Locked | 5 consecutive wrong passwords | Admin: Unlock or Set New Password (both reset the counter) |
+| Locked | 5 consecutive wrong passwords | 15 minutes later by itself (since 1.6, `AuthService.LockDuration`); sooner by an Admin: Unlock or Set New Password (both reset the counter) |
 | Disabled | Admin: Disable; HR: employee marked Inactive | Admin: Enable (Reactivate in HR does **not** re-enable) |
 
 ## 2.3 Passwords
@@ -136,7 +138,7 @@ After 5 minutes without keyboard or mouse input, "Still there?" appears with a 6
 
 # 5. Projects (Admin)
 
-- **Validation:** name and site required; sector from the list; contract price ≥ 0; target end and completion date not before the start (also database CHECKs).
+- **Validation:** name and site required; sector from the list; contract price **more than ₱0** (since 1.6); start date from the year 2000; target end not more than 20 years after the start; target end and completion date not before the start (also database CHECKs).
 - **Automatic:** `completed_date` = today when status changes to Done, cleared when it changes away from Done.
 - **Money (to date):** Revenue = contract price + approved change orders. Expenses = approved material usage cost + approved Project receipts + subcontractor payouts. Profit = Revenue − Expenses. Payroll and equipment repairs are never project expenses.
 - **Days text:** "Day n" (running), "Starts in n days", "Finished in n days", "Cancelled".
@@ -152,6 +154,7 @@ After 5 minutes without keyboard or mouse input, "Still there?" appears with a 6
 - **Biometric ID:** optional, up to 20 characters, unique (the message names who has it).
 - **Inactive:** the record stays; every linked login becomes Disabled. **Reactivate:** active again; logins stay Disabled until an Admin enables them. You can't mark yourself or the last active Admin's employee Inactive.
 - **Government deductions switch:** off by default; turns on SSS, PhilHealth, Pag-IBIG and tax in payroll. ID numbers are optional and never logged.
+- **Role** (owner request 2026-11-20, replaces the typed Position; `employees.position`, script 027): office departments **Employee** or **Supervisor**, Site **Foreman**, **Laborer** or **Helper** (`EmployeeRoles`); required, and the list follows the department. The level of an Employee / Supervisor login **follows the role**: changing the role changes the login's level in the same save (audited), and User Accounts refuses a level that differs from the role. Only the HR Supervisor may change the role of someone who has such a login, and nobody can change their own role. Script 027 mapped the old typed positions: office staff with a login took the login's level, other "...Supervisor / Manager / Head" became Supervisor, everyone else Employee; on Site "Foreman" stayed Foreman, everyone else became Laborer.
 
 ## 6.2 Attendance: import
 
@@ -238,7 +241,7 @@ TRAIN yearly table (2023 onward): ≤ ₱250,000: 0; ≤ ₱400,000: 15% over �
 
 ## 6.8 Cash advances
 
-- **Record** (any HR user): Active employee, amount > 0, per payday > 0 and ≤ amount, date, reason required; saved Waiting with balance = amount.
+- **Record** (any HR user): Active employee, amount > 0 and **at most one month's pay** (daily rate on that date × 26, since 1.6), per payday > 0 and ≤ amount, date **not in the future**, reason required; saved Waiting with balance = amount. Example: ₱800 a day → at most ₱20,800.
 - **Approve / Reject:** approver, only while Waiting.
 - **Deduction:** only at payroll Finalize, oldest advance first, never more than the pay left; the rest carries over. Example: ₱5,000 at ₱2,000 per payday, pay left ₱1,500 → ₱1,500 taken, balance ₱3,500. Each deduction is listed with pay date, period and balance after; the payslip shows the balance left.
 
@@ -251,13 +254,13 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 - Work start / end, break start / end, grace minutes, work days, overtime rate and minimum, work days per month, and all government rates and limits (6.7), with tax on/off.
 - Validation: end after start; break inside the work hours; grace 0-120; at least one work day; rates 0-50%; maxima not below minima.
 - Saving asks Yes/No with the changes, writes the `hr.*` settings, audits before/after, and recomputes the last 120 days of attendance (fixed and finalized days excepted).
-- **Holidays:** one per date; Regular (paid when not worked) or Special (no work, no pay). Adding or deleting recomputes attendance. Effects: no Absent on a holiday; payday moves back; Regular holiday pay in payroll. Working on a holiday is paid as a normal day.
+- **Holidays:** last year, this year or next year only (since 1.6); one per date; Regular (paid when not worked) or Special (no work, no pay). Adding or deleting recomputes attendance. Effects: no Absent on a holiday; payday moves back; Regular holiday pay in payroll. Working on a holiday is paid as a normal day.
 
 # 7. Inventory & Vendors
 
 ## 7.1 Materials and stock
 
-- Create: unique name, category, unit, unit price ≥ 0, starting stock ≥ 0, minimum ≥ 0. After creation `stock_qty` can't be edited.
+- Create: unique name, category, unit, unit price ₱0–10,000,000, starting stock and minimum 0–1,000,000 (limits since 1.6). After creation `stock_qty` can't be edited.
 - Stock changes only through approved usage (−) and approved purchases (+), each in the same save as its record (older stock also came from deliveries; that tab was removed 2026-11-09).
 - Low stock: stock < minimum → light red; stock = 0 → red; sidebar item "Materials (n low)".
 - Delete refused once usages, quotes or deliveries exist.
@@ -270,7 +273,7 @@ One page per employee: period, pay date, daily rate, basic pay with days, holida
 
 ## 7.3 Price comparison and purchases
 
-- Quotes per material from several vendors; open quotes listed first, cheapest first (highlighted).
+- Quotes per material from several vendors; open quotes listed first, cheapest first (highlighted). Quantity up to 100,000, unit price up to ₱10,000,000, quote date not in the future (since 1.6).
 - Approve as Purchase (approver): the quote becomes Selected and a purchase is created (one per quote); the material's other Open quotes become Not Selected. In the same save: `stock_qty += quantity`, material price = quoted price, and the vendor's listed price for that material is set (added if missing). Example: stock 5 bags, approve 20 at ₱248 → stock 25, price ₱248. Only Open quotes can be deleted.
 - Vendors that list the material show above the quotes ("Listed by: ...", cheapest first); picking such a vendor fills Unit price with their listed price.
 - No Deliveries tab since 2026-11-09 (owner request): no delivery receipt is recorded. Old deliveries stay in the database and still show in the Receipt Vault as Stock purchase.
@@ -333,7 +336,7 @@ Deliveries are listed in the vault as read-only "Stock purchase" rows (Approved,
 
 ## 9.4 Change orders
 
-- Fields: project (not Cancelled), date requested, description, cost change (±), days change (±), optional signed document. At least one change must be non-zero; the revised price can't go below ₱0. Numbered CO-001, CO-002... across all projects.
+- Fields: project (not Cancelled), date requested (not in the future), description, cost change (±), days change (±, at most 365), optional signed document. At least one change must be non-zero; the revised price can't go below ₱0; the cost change can be at most the current price (or ₱1,000,000 for smaller projects); the revised end date can't be before the project's start. These are checked when saving **and again when approving** (since 1.6: an older change order that breaks them gets a message instead of an error). Numbered CO-001, CO-002... across all projects.
 - Budget preview: current price (contract + approved change orders) → revised; current target end → revised.
 - Approve / Reject: Receipts Supervisor only, while Waiting; editing only while Waiting. On approval: revenue += cost change; `target_end_date` += days change (if set), audited on the project too.
 

@@ -254,6 +254,9 @@ public static class PurchasingService
         if (string.IsNullOrWhiteSpace(i.ProductName)) return "Type the vendor's product name.";
         if (i.UnitPrice <= 0) return "Type the quoted price per unit.";
         if (i.Quantity <= 0) return "Type how many to buy.";
+        if (i.Quantity > 100_000) return "The quantity can be at most 100,000.";
+        if (i.UnitPrice > 10_000_000) return "The unit price can be at most 10,000,000.";
+        if (i.QuotedOn > DateOnly.FromDateTime(DateTime.Today)) return "The quote date can't be in the future.";
         return null;
     }
 

@@ -71,6 +71,7 @@ Scripts are also written to be **re-runnable** (`CREATE TABLE IF NOT EXISTS`, `C
 | 024_quotation_template | quotations follow the company paper: adds `client_address`, `attention`, `work_duration`, `payment_terms`, `payable_to`, `payable_number`, `signatory_name`, `signatory_title`; renames `terms` → `printed_notes`, `notes` → `internal_notes`; drops `discount`, `vat_applies`; `quotation_items` becomes description + `amount` (quantity, unit, unit price dropped); new `quotation_scope` (Scope of Works lines) |
 | 025_quotation_work_price | `quotation_scope.price` (optional, ≥ 0): a price per Scope of Works line, added to the Total Cost |
 | 026_vendor_materials | `vendor_materials` (vendor + material + price, primary key on the pair, both deleted with their vendor or material). Same day: the Deliveries screen was removed; approved purchases add the stock |
+| 027_employee_roles | data only: `employees.position` becomes a role (Employee / Supervisor in office departments, Foreman / Laborer / Helper on Site): office staff with an Employee / Supervisor login take their login's level, other "Supervisor / Manager / Head" positions become Supervisor, the rest Employee; site "Foreman" stays, the rest become Laborer. The app keeps it that way (`EmployeeRoles`) and makes the login's level follow it |
 | 015_about_sections | `website_about_sections` (About Us as a list of any number of sections); copies the 3 fixed sections from `website_content` and removes their `about.*` keys |
 
 ## 2.3 Design conventions

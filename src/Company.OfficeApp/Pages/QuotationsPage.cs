@@ -93,7 +93,7 @@ public partial class QuotationsPage : UserControl
         List<QuotationRow> rows;
         try { rows = await QuotationService.ListAsync(status, txtQuotationSearch.Text); }
         catch (Exception ex) { lblQuotationMsg.Text = "Can't reach the database. " + ex.Message; return; }
-        if (!loads.IsLatest(ticket)) return;
+        if (!loads.IsLatest(ticket) || Gone) return;
         selectId ??= editingId;
         filling = true;
         dgvQuotations.DataSource = rows;
@@ -112,9 +112,15 @@ public partial class QuotationsPage : UserControl
         if (Selected == null) ShowNothingSelected();
     }
 
+    /// <summary>
+    /// True once the page is being closed (another page was opened). Closing empties the list, which raises
+    /// SelectionChanged; loading a quotation then would fill tables that no longer exist (crash found 2026-11-20).
+    /// </summary>
+    bool Gone => IsDisposed || Disposing;
+
     async void dgvQuotations_SelectionChanged(object sender, EventArgs e)
     {
-        if (filling) return;
+        if (filling || Gone) return;
         if (Selected is { } s) await ShowAsync(s.QuotationId); else ShowNothingSelected();
     }
 
@@ -162,8 +168,10 @@ public partial class QuotationsPage : UserControl
         editingId = null;
         editingStatus = QuotationStatuses.Draft;
         ClearForm();
-        lblFormMode.Text = $"New quotation {await QuotationService.NextNumberAsync()}";
+        var number = await QuotationService.NextNumberAsync();
         var d = await QuotationService.DefaultsAsync();
+        if (Gone) return;
+        lblFormMode.Text = $"New quotation {number}";
         txtPrintedNotes.Text = Lines(d.PrintedNotes);
         cboPaymentTerms.Text = d.PaymentTerms;
         txtPayableTo.Text = d.PayableTo;
@@ -176,13 +184,16 @@ public partial class QuotationsPage : UserControl
     async Task LoadInquiryChoicesAsync()
     {
         var choices = await QuotationService.InquiryChoicesAsync();
+        if (Gone) return;
         cboFromInquiry.DataSource = choices.Prepend(new InquiryChoice(0, "(none)", "", null, null, null, null)).ToList();
         cboFromInquiry.SelectedIndex = 0;
     }
 
     async Task ShowAsync(int id)
     {
-        if (await QuotationService.GetAsync(id) is not { } found) { ShowNothingSelected(); return; }
+        var loaded = await QuotationService.GetAsync(id);
+        if (Gone) return;   // the page was closed while this loaded
+        if (loaded is not { } found) { ShowNothingSelected(); return; }
         var (q, scope, lines) = found;
         loadingForm = true;
         editingId = q.QuotationId;

@@ -16,6 +16,7 @@ internal static class Program
     static void Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
+        ErrorReport.Install();   // a plain message + errors.log instead of the red .NET error window
         Theme.Enable();   // the app's look (UI/Theme.cs), applied to every window
         try { Theme.WindowIcon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { /* keep the default icon */ }
 

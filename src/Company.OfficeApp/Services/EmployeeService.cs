@@ -93,7 +93,8 @@ public static partial class EmployeeService
             return "Biometric ID: up to 20 letters, numbers or dashes (as shown on the scanner).";
         if ((i.ContactNumber?.Length ?? 0) > 30) return "The contact number is too long.";
         if ((i.Address?.Length ?? 0) > 255) return "The address is too long (255 characters at most).";
-        if ((i.Position?.Length ?? 0) > 80) return "The position is too long (80 characters at most).";
+        if (!EmployeeRoles.For(i.Department).Contains(i.Position))
+            return i.Department == EmployeeDepartments.Site ? "Choose the role: Foreman, Laborer or Helper." : "Choose the role: Employee or Supervisor.";
         if ((i.PayGrade?.Length ?? 0) > 30) return "The pay grade is too long (30 characters at most).";
         foreach (var id in new[] { i.SssNo, i.PhilHealthNo, i.PagIbigNo, i.Tin })
             if ((id?.Trim().Length ?? 0) > 20) return "Government ID numbers can be 20 characters at most.";
@@ -139,6 +140,16 @@ public static partial class EmployeeService
         if (logins.FirstOrDefault(u => !UserLevels.HasNoDepartment(u.Level)) is { } login && !UserAdminService.DepartmentList.Contains(input.Department))
             return $"{e.FullName} has a {login.Level} login in {login.Department}. Change or turn off that login in User Accounts before moving them to {input.Department}.";
 
+        // The role decides a login's level (owner decision 2026-11-20), so changing it for someone who has a login is
+        // the HR Supervisor's call, and nobody changes their own.
+        bool roleChanged = (e.Position ?? "") != (input.Position ?? "");
+        if (roleChanged && logins.Any(u => !UserLevels.HasNoDepartment(u.Level)))
+        {
+            if (logins.Any(u => u.UserId == Session.CurrentUser!.UserId)) return "You can't change your own role. Ask the HR Supervisor.";
+            if (Access.RequireApprover(Departments.HrPayroll) is { } notSupervisor)
+                return $"{e.FullName} has a login, and the role decides what it can do, so only the HR Supervisor can change it.";
+        }
+
         var oldRate = await RateOn(db, employeeId, input.RateFrom);
         var before = Snapshot(e, oldRate, null);
         Apply(e, input);
@@ -147,12 +158,15 @@ public static partial class EmployeeService
         foreach (var u in logins)
         {
             var dept = UserAdminService.DepartmentFor(u.Level, e.Department);
-            if (u.FullName == e.FullName && u.Department == dept) continue;
+            // an Employee / Supervisor login takes its level from the role (Admin and Website Admin logins don't)
+            var level = !UserLevels.HasNoDepartment(u.Level) && EmployeeRoles.Office.Contains(e.Position) ? e.Position! : u.Level;
+            if (u.FullName == e.FullName && u.Department == dept && u.Level == level) continue;
             AuditService.Add(db, null, "users", u.UserId, u.FullName, AuditActions.Edited,
-                new { full_name = u.FullName, department = u.Department },
-                new { full_name = e.FullName, department = dept, reason = "Employee record changed" });
+                new { full_name = u.FullName, department = u.Department, level = u.Level },
+                new { full_name = e.FullName, department = dept, level, reason = "Employee record changed" });
             u.FullName = e.FullName;
             u.Department = dept;
+            u.Level = level;
             u.UpdatedAt = DateTime.Now;
         }
 

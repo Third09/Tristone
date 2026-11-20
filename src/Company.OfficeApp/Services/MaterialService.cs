@@ -62,6 +62,8 @@ public static class MaterialService
         if (string.IsNullOrWhiteSpace(i.Category)) return "Choose a category.";
         if (string.IsNullOrWhiteSpace(i.Unit)) return "Choose a unit.";
         if (i.UnitPrice < 0 || i.StartingStock < 0 || i.MinimumStock < 0) return "Price and quantities can't be negative.";
+        if (i.StartingStock > 1_000_000 || i.MinimumStock > 1_000_000) return "Stock and minimum stock can be at most 1,000,000.";
+        if (i.UnitPrice > 10_000_000) return "The unit price can be at most 10,000,000.";
         return null;
     }
 

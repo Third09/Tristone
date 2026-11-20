@@ -16,7 +16,7 @@ public record UserRow(int UserId, string FullName, string Username, string? Depa
 public record UserInput(int? EmployeeId, string Username, string Level);
 
 /// <summary>An office staff member who can be given a login (shown in the Employee dropdown).</summary>
-public record EmployeeOption(int? EmployeeId, string FullName, string Department)
+public record EmployeeOption(int? EmployeeId, string FullName, string Department, string? Role = null)
 {
     public override string ToString() => EmployeeId == null ? FullName : $"{FullName} ({Department})";
 }
@@ -62,7 +62,7 @@ public static partial class UserAdminService
                          && !db.Users.Any(u => u.EmployeeId == e.EmployeeId))
                         || e.EmployeeId == current)
             .OrderBy(e => e.FullName)
-            .Select(e => new EmployeeOption(e.EmployeeId, e.FullName, e.Department))
+            .Select(e => new EmployeeOption(e.EmployeeId, e.FullName, e.Department, e.Position))
             .ToListAsync();
     }
 
@@ -101,6 +101,10 @@ public static partial class UserAdminService
             return ("", null, $"{e.FullName} already has a login.");
         if (!UserLevels.HasNoDepartment(input.Level) && !DepartmentList.Contains(e.Department))
             return ("", null, $"{e.FullName} works in {e.Department}, which has no Supervisor or Employee logins. Choose level Admin or Website Admin, or change their department in HR & Payroll first.");
+
+        // the login's level follows the employee's role (owner decision 2026-11-20)
+        if (!UserLevels.HasNoDepartment(input.Level) && EmployeeRoles.Office.Contains(e.Position) && input.Level != e.Position)
+            return ("", null, $"{e.FullName}'s role in HR & Payroll is {e.Position}, so the login's level is {e.Position}. To change it, change their role in HR & Payroll.");
 
         return (e.FullName, DepartmentFor(input.Level, e.Department), null);
     }

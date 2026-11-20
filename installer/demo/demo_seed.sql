@@ -186,6 +186,28 @@ INSERT INTO website_visits (visited_at, page)
 SELECT NOW() - (n || ' hours')::interval, '/' FROM generate_series(1, 86) AS n
 WHERE NOW() - (n || ' hours')::interval >= date_trunc('month', NOW());
 
+-- ---------- Employee roles (script 027): the sample positions become roles ----------
+UPDATE employees e
+   SET position = u.level, updated_at = NOW()
+  FROM users u
+ WHERE u.employee_id = e.employee_id
+   AND u.level IN ('Employee', 'Supervisor')
+   AND e.department <> 'Site'
+   AND e.position IS DISTINCT FROM u.level
+   AND (e.position IS NULL OR e.position NOT IN ('Employee', 'Supervisor'));
+
+UPDATE employees
+   SET position = CASE WHEN position ~* '(supervisor|manager|head)' THEN 'Supervisor' ELSE 'Employee' END,
+       updated_at = NOW()
+ WHERE department <> 'Site'
+   AND (position IS NULL OR position NOT IN ('Employee', 'Supervisor'));
+
+UPDATE employees
+   SET position = CASE WHEN position ~* 'foreman' THEN 'Foreman' WHEN position ~* 'helper' THEN 'Helper' ELSE 'Laborer' END,
+       updated_at = NOW()
+ WHERE department = 'Site'
+   AND (position IS NULL OR position NOT IN ('Foreman', 'Laborer', 'Helper'));
+
 -- ---------- Vendors' materials supplied (script 026) ----------
 INSERT INTO vendor_materials (vendor_id, material_id, price, updated_by) VALUES
  (1, 5, 16, 6), (1, 6, 690, 6), (1, 7, 3150, 6), (1, 8, 780, 6),

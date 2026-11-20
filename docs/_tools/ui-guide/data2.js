@@ -49,7 +49,7 @@ const hrPayroll = [
         ["Search box", "TextBox", "txtEmployeeSearch", "Search by name or Biometric ID."],
         ["Status filter", "ComboBox", "cboEmployeeStatusFilter", "Active, Inactive, All."],
         ["Pay schedule filter", "ComboBox", "cboPayScheduleFilter", "All, Office, Site."],
-        ["Employees table", "DataGridView", "dgvEmployees", "Columns: Name, Position, Department, Pay Schedule, Daily Rate, Biometric ID, Status."],
+        ["Employees table", "DataGridView", "dgvEmployees", "Columns: Name, Role, Department, Pay Schedule, Daily Rate, Biometric ID, Status."],
       ]},
       { name: "List actions", rows: [
         ["Add Employee button", "Button", "btnAddEmployee", "Opens the Add Employee window."],
@@ -62,7 +62,7 @@ const hrPayroll = [
         ["Full name box", "TextBox", "txtEmployeeName", "Employee's full name."],
         ["Contact number box", "TextBox", "txtEmployeeContact", "Phone number."],
         ["Address box", "TextBox (Multiline = True)", "txtEmployeeAddress", "Home address."],
-        ["Position box", "TextBox", "txtEmployeePosition", "e.g. \"Mason\", \"HR Staff\"."],
+        ["Role dropdown", "ComboBox", "cboEmployeeRole", "Follows the department: Employee / Supervisor (office) or Foreman / Laborer / Helper (Site). A login's level follows it."],
         ["Department dropdown", "ComboBox (DropDownList)", "cboEmployeeDepartment", "Administration, HR & Payroll, Inventory, Subcontractors, Receipts, or Site (for site workers)."],
       ]},
       { name: "Pay details", rows: [
@@ -96,7 +96,7 @@ const hrPayroll = [
     groups: [
       { name: "Main section", rows: [
         ["Window title", "Label", "lblFormTitle", "\"New employee\"."],
-        ["Employee fields", "TextBox / ComboBox / NumericUpDown / DateTimePicker / CheckBox", "txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, cboEmployeeDepartment, txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin", "Same names and meaning as on the Employees tab."],
+        ["Employee fields", "TextBox / ComboBox / NumericUpDown / DateTimePicker / CheckBox", "txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, cboEmployeeDepartment, cboEmployeeRole, txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin", "Same names and meaning as on the Employees tab."],
         ["Pay schedule text", "Label", "lblPayScheduleValue", "Follows the department."],
         ["Message", "Label", "lblEmployeeFormMsg", "What is missing, e.g. \"Type the employee's full name.\""],
         ["Save button", "Button", "btnSaveEmployee", "Adds the employee and closes the window."],

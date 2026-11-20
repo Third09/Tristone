@@ -48,7 +48,8 @@ If it doesn't work, the message under the password box tells you why:
 
 | Message | Meaning |
 |---|---|
-| Wrong username or password. *N* attempts left... | Try again carefully. After 5 wrong tries the account locks. |
+| Wrong username or password. | Try again carefully. After 5 wrong tries the account locks for 15 minutes. |
+| This account is locked... Try again in *N* minutes | Wait, or ask an Admin to unlock it in User Accounts. |
 | This account is locked... | Ask an Admin to unlock it. |
 | This account is turned off... | Your account was disabled. Ask an Admin. |
 
@@ -224,10 +225,12 @@ Everyone who works for the company: **office staff** and **site workers**.
 **Add an employee**
 
 1. Click **Add Employee**. A separate **Add Employee** window opens.
-2. Fill in the **full name**, contact number, address and position.
-3. Choose the **department**. Choose **Site** for site workers. The pay schedule follows automatically:
+2. Fill in the **full name**, contact number and address.
+3. Choose the **department**, then the **role** under it. Choose **Site** for site workers. The pay schedule follows automatically:
    - **Site:** paid every Saturday
    - **everyone else:** paid the 15th and 30th
+
+   **Roles:** office departments are **Employee** or **Supervisor**; site workers are **Foreman**, **Laborer** or **Helper**. A person's role decides their login: a Supervisor's login can approve and delete in their department. Only the HR Supervisor can change the role of someone who has a login, and nobody can change their own.
 4. Type the **daily rate** and the date it **applies from** (usually today).
 5. Type their **Biometric ID**, the number the fingerprint scanner gives them.
 6. **Government deductions** are off by default. Tick the box only for people who should have tax, SSS, PhilHealth and Pag-IBIG deducted. The ID numbers are optional.
@@ -239,7 +242,7 @@ The form under the list is only for **changing** someone. It stays empty and gre
 
 1. Click the employee in the list.
 2. Change what you need.
-3. Click **Save**. A message lists every change (for example *Position: Mason -> Foreman*). Click **Yes** to save, or **No** to go back.
+3. Click **Save**. A message lists every change (for example *Role: Laborer -> Foreman*). Click **Yes** to save, or **No** to go back.
 4. **Cancel** puts back what's saved.
 
 **Give someone a raise**

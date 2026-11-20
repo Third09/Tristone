@@ -16,6 +16,9 @@ public static class AuthService
 {
     public const int MaxFailedAttempts = 5;
 
+    /// <summary>How long a lock from wrong passwords lasts before it lifts by itself.</summary>
+    public static readonly TimeSpan LockDuration = TimeSpan.FromMinutes(15);
+
     public static async Task<SignInResult> SignInAsync(string username, string password)
     {
         using var db = Db.Open();
@@ -36,10 +39,22 @@ public static class AuthService
             return new SignInResult(null, "This account is turned off. Please contact an Admin.");
         }
 
+        // A lock from wrong passwords lifts by itself after a while (owner OK 2026-11-20), so someone who mistyped
+        // isn't stuck waiting for an Admin; an Admin can still unlock it sooner in User Accounts.
+        if (user.Status == UserStatuses.Locked && user.UpdatedAt <= DateTime.Now - LockDuration)
+        {
+            user.Status = UserStatuses.Active;
+            user.FailedLoginCount = 0;
+            user.UpdatedAt = DateTime.Now;
+            db.LoginLogs.Add(NewLog(user.UserId, name, LoginActions.AccountUnlocked, $"Unlocked by itself after {LockDuration.TotalMinutes:0} minutes"));
+            await db.SaveChangesAsync();
+        }
+
         if (user.Status == UserStatuses.Locked)
         {
             await LogAsync(db, user.UserId, name, LoginActions.FailedLogin, "Account locked");
-            return new SignInResult(null, "This account is locked after too many wrong passwords. Please contact an Admin.");
+            var wait = Math.Max(1, (int)Math.Ceiling((user.UpdatedAt + LockDuration - DateTime.Now).TotalMinutes));
+            return new SignInResult(null, $"This account is locked after too many wrong passwords. Try again in {wait} minute{(wait == 1 ? "" : "s")}, or ask an Admin to unlock it.");
         }
 
         if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
@@ -53,12 +68,12 @@ public static class AuthService
                 user.Status = UserStatuses.Locked;
                 db.LoginLogs.Add(NewLog(user.UserId, name, LoginActions.AccountLocked, $"{MaxFailedAttempts} wrong passwords"));
                 await db.SaveChangesAsync();
-                return new SignInResult(null, "Too many wrong passwords. This account is now locked. Please contact an Admin.");
+                return new SignInResult(null, $"Too many wrong passwords. This account is now locked for {LockDuration.TotalMinutes:0} minutes, or until an Admin unlocks it.");
             }
 
             await db.SaveChangesAsync();
-            var left = MaxFailedAttempts - user.FailedLoginCount;
-            return new SignInResult(null, $"Wrong username or password. {left} attempt{(left == 1 ? "" : "s")} left before the account locks.");
+            // the same words as for an unknown username, so nobody can find out which usernames exist
+            return new SignInResult(null, "Wrong username or password.");
         }
 
         user.FailedLoginCount = 0;

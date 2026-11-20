@@ -54,6 +54,22 @@ public static class EmployeeDepartments
         [Administration, Departments.HrPayroll, Departments.Inventory, Departments.Subcontractors, Departments.Receipts, Site];
 }
 
+/// <summary>
+/// An employee's role (owner request 2026-11-20, replaces the typed Position): office staff are Employee or Supervisor
+/// (their login's level follows it); site workers are Foreman, Laborer or Helper. Stored in employees.position.
+/// </summary>
+public static class EmployeeRoles
+{
+    public const string Employee = "Employee", Supervisor = "Supervisor";
+    public const string Foreman = "Foreman", Laborer = "Laborer", Helper = "Helper";
+    public static readonly string[] Office = [Employee, Supervisor];
+    public static readonly string[] Site = [Foreman, Laborer, Helper];
+
+    /// <summary>The roles for a department (none until a department is chosen).</summary>
+    public static string[] For(string? department) =>
+        department == EmployeeDepartments.Site ? Site : EmployeeDepartments.All.Contains(department) ? Office : [];
+}
+
 public static class PaySchedules
 {
     public const string Office = "Office";

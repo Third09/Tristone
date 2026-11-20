@@ -25,8 +25,8 @@ namespace Company.OfficeApp.Pages.Hr
             txtEmployeeContact = new TextBox();
             lblEmployeeAddress = new Label();
             txtEmployeeAddress = new TextBox();
-            lblEmployeePosition = new Label();
-            txtEmployeePosition = new TextBox();
+            lblEmployeeRole = new Label();
+            cboEmployeeRole = new ComboBox();
             lblEmployeeDepartment = new Label();
             cboEmployeeDepartment = new ComboBox();
             lblPayScheduleValue = new Label();
@@ -103,35 +103,36 @@ namespace Company.OfficeApp.Pages.Hr
             txtEmployeeAddress.Multiline = true;
             txtEmployeeAddress.TabIndex = 2;
             // 
-            // lblEmployeePosition
-            // 
-            lblEmployeePosition.AutoSize = true;
-            lblEmployeePosition.Location = new Point(38, 291);
-            lblEmployeePosition.Name = "lblEmployeePosition";
-            lblEmployeePosition.Text = "Position (e.g. Mason, HR Staff)";
-            // 
-            // txtEmployeePosition
-            // 
-            txtEmployeePosition.Location = new Point(38, 314);
-            txtEmployeePosition.Name = "txtEmployeePosition";
-            txtEmployeePosition.Size = new Size(345, 23);
-            txtEmployeePosition.TabIndex = 3;
-            // 
             // lblEmployeeDepartment
             // 
             lblEmployeeDepartment.AutoSize = true;
-            lblEmployeeDepartment.Location = new Point(38, 354);
+            lblEmployeeDepartment.Location = new Point(38, 291);
             lblEmployeeDepartment.Name = "lblEmployeeDepartment";
             lblEmployeeDepartment.Text = "Department (Site for site workers)";
             // 
             // cboEmployeeDepartment
             // 
-            cboEmployeeDepartment.Location = new Point(38, 378);
+            cboEmployeeDepartment.Location = new Point(38, 314);
             cboEmployeeDepartment.Name = "cboEmployeeDepartment";
             cboEmployeeDepartment.Size = new Size(230, 23);
             cboEmployeeDepartment.DropDownStyle = ComboBoxStyle.DropDownList;
             cboEmployeeDepartment.SelectedIndexChanged += cboEmployeeDepartment_SelectedIndexChanged;
-            cboEmployeeDepartment.TabIndex = 4;
+            cboEmployeeDepartment.TabIndex = 3;
+            //
+            // lblEmployeeRole
+            //
+            lblEmployeeRole.AutoSize = true;
+            lblEmployeeRole.Location = new Point(38, 354);
+            lblEmployeeRole.Name = "lblEmployeeRole";
+            lblEmployeeRole.Text = "Role (choose the department first)";
+            //
+            // cboEmployeeRole
+            //
+            cboEmployeeRole.Location = new Point(38, 378);
+            cboEmployeeRole.Name = "cboEmployeeRole";
+            cboEmployeeRole.Size = new Size(230, 23);
+            cboEmployeeRole.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboEmployeeRole.TabIndex = 4;
             // 
             // lblPayScheduleValue
             // 
@@ -307,8 +308,8 @@ namespace Company.OfficeApp.Pages.Hr
             Controls.Add(txtEmployeeContact);
             Controls.Add(lblEmployeeAddress);
             Controls.Add(txtEmployeeAddress);
-            Controls.Add(lblEmployeePosition);
-            Controls.Add(txtEmployeePosition);
+            Controls.Add(lblEmployeeRole);
+            Controls.Add(cboEmployeeRole);
             Controls.Add(lblEmployeeDepartment);
             Controls.Add(cboEmployeeDepartment);
             Controls.Add(lblPayScheduleValue);
@@ -348,8 +349,8 @@ namespace Company.OfficeApp.Pages.Hr
         private TextBox txtEmployeeContact;
         private Label lblEmployeeAddress;
         private TextBox txtEmployeeAddress;
-        private Label lblEmployeePosition;
-        private TextBox txtEmployeePosition;
+        private Label lblEmployeeRole;
+        private ComboBox cboEmployeeRole;
         private Label lblEmployeeDepartment;
         private ComboBox cboEmployeeDepartment;
         private Label lblPayScheduleValue;

@@ -264,7 +264,9 @@ public partial class ChangeOrdersTab : UserControl
     async Task DecideAsync(bool approve)
     {
         if (Selected is not { } c) return;
-        var error = approve ? await ChangeOrderService.ApproveAsync(c.ChangeOrderId) : await ChangeOrderService.RejectAsync(c.ChangeOrderId);
+        string? error;
+        try { error = approve ? await ChangeOrderService.ApproveAsync(c.ChangeOrderId) : await ChangeOrderService.RejectAsync(c.ChangeOrderId); }
+        catch (Exception ex) { lblCoMsg.Text = "It couldn't be saved. " + (ex.InnerException ?? ex).Message; return; }
         lblCoMsg.Text = error ?? (approve ? $"{c.CoNo} approved: the project's revenue and end date are updated." : $"{c.CoNo} rejected.");
         if (error != null) return;
         editingId = null;   // reload the form with the new status

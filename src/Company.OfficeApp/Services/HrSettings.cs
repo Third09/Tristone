@@ -124,6 +124,8 @@ public static class HrSettingsService
         if (Access.RequireApprover(Dept) is { } denied) return denied;
         if (string.IsNullOrWhiteSpace(name)) return "Type the holiday's name.";
         if (!HolidayKinds.All.Contains(kind)) return "Choose Regular or Special.";
+        int year = DateTime.Today.Year;
+        if (date.Year < year - 1 || date.Year > year + 1) return $"Holidays can be added for {year - 1}, {year} or {year + 1} only.";
         using (var db = Db.Open())
         {
             if (await db.Holidays.AnyAsync(h => h.HolidayDate == date)) return $"{date:MMM d, yyyy} is already a holiday.";

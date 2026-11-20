@@ -59,7 +59,9 @@ public static class ProjectService
         if ((p.ClientName?.Trim().Length ?? 0) > 150) return "The client name is too long (150 characters at most).";
         if (!ProjectSectors.All.Contains(p.Sector)) return "Choose a sector.";
         if (!ProjectStatuses.All.Contains(p.Status)) return "Choose a status.";
-        if (p.ContractPrice < 0) return "The contract price can't be negative.";
+        if (p.ContractPrice <= 0) return "Type the contract price (more than zero).";
+        if (p.StartDate.Year < 2000) return "The start date can't be before the year 2000.";
+        if (p.TargetEndDate is { } far && far.Year > p.StartDate.Year + 20) return "The target end date is more than 20 years after the start. Check the year.";
         if (p.TargetEndDate is { } end && end < p.StartDate) return "The target end date can't be before the start date.";
         return null;
     }

@@ -44,7 +44,7 @@ public static class AppEdition
     /// <summary>"Test as..." and the sample-data reset exist only in the Demo / Test version.</summary>
     public static bool IsSampleDemo => file?.Edition == "Demo";
     /// <summary>The program's name on its windows.</summary>
-    public static string Title => IsStandalone ? "Tri-Stone" : "Tri-Stone Demo";
+    public static string Title => IsSampleDemo ? "Tri-Stone Demo" : "Tri-Stone";
     /// <summary>Its folder under %LOCALAPPDATA% (separate, so a Demo and a Standalone copy can sit on one PC).</summary>
     public static string LocalFolderName => IsStandalone ? "TriStone Local" : "TriStone Demo";
     public static bool IsOffice => file?.Edition == "Office";

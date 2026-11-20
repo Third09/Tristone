@@ -82,7 +82,7 @@ public partial class EmployeesTab : UserControl
         else if (await EmployeeService.GetAsync(row.EmployeeId) is { } emp) await StartEditAsync(emp);
     }
 
-    Control[] FormInputs => [txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, cboEmployeeDepartment,
+    Control[] FormInputs => [txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, cboEmployeeDepartment, cboEmployeeRole,
                              txtPayGrade, numDailyRate, dtpRateEffective, txtBiometricId, chkGovDeductions,
                              txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin, btnSaveEmployee, btnCancelEmployee];
 
@@ -101,7 +101,7 @@ public partial class EmployeesTab : UserControl
     {
         editing = null;
         lblFormMode.Text = "Click an employee in the list to see or change their details. To add someone, click Add Employee.";
-        foreach (var t in new[] { txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtEmployeePosition, txtPayGrade,
+        foreach (var t in new[] { txtEmployeeName, txtEmployeeContact, txtEmployeeAddress, txtPayGrade,
                                   txtBiometricId, txtSssNo, txtPhilHealthNo, txtPagIbigNo, txtEmployeeTin })
             t.Clear();
         cboEmployeeDepartment.SelectedIndex = -1;
@@ -122,8 +122,8 @@ public partial class EmployeesTab : UserControl
         txtEmployeeName.Text = e.FullName;
         txtEmployeeContact.Text = e.ContactNumber ?? "";
         txtEmployeeAddress.Text = e.Address ?? "";
-        txtEmployeePosition.Text = e.Position ?? "";
         cboEmployeeDepartment.SelectedItem = e.Department;
+        FillRoles(cboEmployeeRole, lblEmployeeRole, e.Department, e.Position);
         txtPayGrade.Text = e.PayGrade ?? "";
         txtBiometricId.Text = e.BiometricId ?? "";
         chkGovDeductions.Checked = e.GovDeductions;
@@ -161,7 +161,7 @@ public partial class EmployeesTab : UserControl
         Text("Name", e.FullName, i.FullName);
         Text("Contact number", e.ContactNumber, i.ContactNumber);
         Text("Address", e.Address, i.Address);
-        Text("Position", e.Position, i.Position);
+        Text("Role", e.Position, i.Position);
         if (e.Department != i.Department)
             lines.Add($"Department: {e.Department} -> {i.Department} ({EmployeeService.PayScheduleText(i.Department).Replace("Pay schedule: ", "pay schedule ")})");
         Text("Pay grade", e.PayGrade, i.PayGrade);
@@ -176,10 +176,30 @@ public partial class EmployeesTab : UserControl
         return lines;
     }
 
-    void cboEmployeeDepartment_SelectedIndexChanged(object sender, EventArgs e) => ShowPaySchedule();
+    void cboEmployeeDepartment_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ShowPaySchedule();
+        FillRoles(cboEmployeeRole, lblEmployeeRole, cboEmployeeDepartment.SelectedItem as string, cboEmployeeRole.SelectedItem as string);
+    }
+
+    /// <summary>
+    /// The Role list follows the department (owner request 2026-11-20): Employee / Supervisor for the office,
+    /// Foreman / Laborer / Helper for Site. Keeps <paramref name="keep"/> when it fits; an old typed position that
+    /// isn't in the list is shown once so it isn't lost, until another role is chosen.
+    /// </summary>
+    internal static void FillRoles(ComboBox box, Label label, string? department, string? keep)
+    {
+        var roles = EmployeeRoles.For(department);
+        box.Items.Clear();
+        box.Items.AddRange(roles);
+        if (keep != null && !roles.Contains(keep) && roles.Length > 0) box.Items.Add(keep);
+        box.SelectedItem = keep != null && box.Items.Contains(keep) ? keep : null;
+        if (box.SelectedIndex < 0 && roles.Length > 0) box.SelectedIndex = 0;
+        label.Text = department == EmployeeDepartments.Site ? "Role (site worker)" : roles.Length > 0 ? "Role" : "Role (choose the department first)";
+    }
 
     EmployeeInput ReadForm() => new(
-        txtEmployeeName.Text, txtEmployeeContact.Text, txtEmployeeAddress.Text, txtEmployeePosition.Text,
+        txtEmployeeName.Text, txtEmployeeContact.Text, txtEmployeeAddress.Text, (string?)cboEmployeeRole.SelectedItem,
         (string?)cboEmployeeDepartment.SelectedItem ?? "",
         txtPayGrade.Text, txtBiometricId.Text, chkGovDeductions.Checked,
         txtSssNo.Text, txtPhilHealthNo.Text, txtPagIbigNo.Text, txtEmployeeTin.Text,
@@ -261,7 +281,7 @@ public partial class EmployeesTab : UserControl
         {
             ExcelExport.Save(path, "Employees", rows,
                 new("Name", r => r.FullName),
-                new("Position", r => r.Position),
+                new("Role", r => r.Position),
                 new("Department", r => r.Department),
                 new("Pay Schedule", r => r.PaySchedule),
                 new("Daily Rate", r => r.CurrentRate, "#,##0.00"),

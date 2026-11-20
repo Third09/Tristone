@@ -21,11 +21,14 @@ public partial class EmployeeEntryForm : Form
         lblPayScheduleValue.Text = EmployeeService.PayScheduleText(null);
     }
 
-    void cboEmployeeDepartment_SelectedIndexChanged(object sender, EventArgs e) =>
+    void cboEmployeeDepartment_SelectedIndexChanged(object sender, EventArgs e)
+    {
         lblPayScheduleValue.Text = EmployeeService.PayScheduleText(cboEmployeeDepartment.SelectedItem as string);
+        EmployeesTab.FillRoles(cboEmployeeRole, lblEmployeeRole, cboEmployeeDepartment.SelectedItem as string, null);
+    }
 
     EmployeeInput ReadForm() => new(
-        txtEmployeeName.Text, txtEmployeeContact.Text, txtEmployeeAddress.Text, txtEmployeePosition.Text,
+        txtEmployeeName.Text, txtEmployeeContact.Text, txtEmployeeAddress.Text, (string?)cboEmployeeRole.SelectedItem,
         (string?)cboEmployeeDepartment.SelectedItem ?? "",
         txtPayGrade.Text, txtBiometricId.Text, chkGovDeductions.Checked,
         txtSssNo.Text, txtPhilHealthNo.Text, txtPagIbigNo.Text, txtEmployeeTin.Text,

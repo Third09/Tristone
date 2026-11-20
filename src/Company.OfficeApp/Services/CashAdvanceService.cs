@@ -54,8 +54,12 @@ public static class CashAdvanceService
         if (i.PerPayday <= 0) return "Type how much to deduct each payday.";
         if (i.PerPayday > i.Amount) return "The deduction per payday can't be more than the amount.";
         if (string.IsNullOrWhiteSpace(i.Reason)) return "Type the reason.";
+        if (i.GivenOn > DateOnly.FromDateTime(DateTime.Today)) return "The date given can't be in the future.";
         return null;
     }
+
+    /// <summary>Most a cash advance can be (owner OK 2026-11-20): one month's pay, the daily rate x 26 days.</summary>
+    public const int MaxDaysOfPay = 26;
 
     /// <summary>Saved as Waiting until the HR Supervisor approves.</summary>
     public static async Task<(int? Id, string? Error)> CreateAsync(CashAdvanceInput i)
@@ -65,6 +69,10 @@ public static class CashAdvanceService
         using var db = Db.Open();
         var e = await db.Employees.FirstOrDefaultAsync(x => x.EmployeeId == i.EmployeeId);
         if (e == null || e.Status != EmployeeStatuses.Active) return (null, "Choose an active employee.");
+        var rate = await db.EmployeeRates.Where(r => r.EmployeeId == e.EmployeeId && r.EffectiveFrom <= i.GivenOn)
+            .OrderByDescending(r => r.EffectiveFrom).Select(r => (decimal?)r.DailyRate).FirstOrDefaultAsync();
+        if (rate is { } daily && i.Amount > daily * MaxDaysOfPay)
+            return (null, $"A cash advance can be at most one month's pay: {ProjectService.Money(daily * MaxDaysOfPay)} for {e.FullName} ({ProjectService.Money(daily)} a day x {MaxDaysOfPay}).");
         var c = new CashAdvance
         {
             EmployeeId = i.EmployeeId, Amount = i.Amount, PerPayday = i.PerPayday, Balance = i.Amount, GivenOn = i.GivenOn,

@@ -104,6 +104,7 @@ public static class PasswordService
     /// <summary>Admin closes a request without changing the password (e.g. sent by mistake). It stays in the history.</summary>
     public static async Task DismissRequestAsync(int requestId)
     {
+        if (Session.CurrentUser is not { IsAdmin: true }) return;   // Admins only (checked here too, not just on the screen)
         using var db = Db.Open();
         var r = await db.PasswordRequests.FirstAsync(x => x.RequestId == requestId);
         r.Status = PasswordRequestStatuses.Dismissed;

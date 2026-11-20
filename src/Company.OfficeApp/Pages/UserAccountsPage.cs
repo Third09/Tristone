@@ -175,6 +175,10 @@ public partial class UserAccountsPage : UserControl
 
     void cboUserEmployee_SelectedIndexChanged(object sender, EventArgs e)
     {
+        // the level of an Employee / Supervisor login follows the person's role in HR & Payroll (2026-11-20)
+        if (cboUserEmployee.SelectedItem is EmployeeOption { Role: { } role } && EmployeeRoles.Office.Contains(role)
+            && !UserLevels.HasNoDepartment((string?)cboUserLevel.SelectedItem ?? ""))
+            cboUserLevel.SelectedItem = role;
         ShowDepartment(Selected?.Department);
         // Suggest a username for new accounts, e.g. "Juan Dela Cruz" -> "jdelacruz".
         if (editingUserId == null && txtNewUsername.Text == "" && cboUserEmployee.SelectedItem is EmployeeOption { EmployeeId: not null } o)
